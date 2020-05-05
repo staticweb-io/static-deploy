@@ -12,7 +12,7 @@ class AdminBar {
 
         if ( empty( $jobs ) ) {
             if ( $job_count === 0) {
-                $title = '<div style="background-color: green">StaticWeb: Deployed</div>';
+                $title = '<div style="background-color: green; border-radius: 5px"><div style="margin: 0 5px">StaticWeb: Deployed</div></div>';
             } else {
                 $title = '<div>StaticWeb: Queued</div>';
             }
