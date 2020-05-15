@@ -2,6 +2,8 @@
 
 namespace StaticWeb;
 
+use Aws\Exception\AwsException;
+
 class AdminBar {
 
     public static function admin_bar_menu_hook( \WP_Admin_Bar $wp_admin_bar ) : void {
@@ -12,7 +14,14 @@ class AdminBar {
 
         if ( empty( $jobs ) ) {
             if ( $job_count === 0) {
-                $title = '<div class="staticweb-deploy-status-container" style="background-color: green; border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Deployed</div></div>';
+                $invalidations = self::list_invalidations_in_progress();
+                if ($invalidations
+                    && array_key_exists( 'Invalidations', $invalidations)
+                    && 0 < count( $invalidations['Invalidations'] ) ) {
+                    $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Refreshing CDN cache</div></div>';
+                } else {
+                    $title = '<div class="staticweb-deploy-status-container" style="background-color: green; border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Deployed</div></div>';
+                }
             } else {
                 $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Queued</div></div>';
             }
@@ -62,8 +71,12 @@ class AdminBar {
 
              if (0 == data.jobs.length) {
                  if (0 == data.job_count) {
-                     style["background-color"] = "green";
-                     text = "Deployed"
+                     if (data.invalidations) {
+                         text = "Refreshing CDN cache"
+                     } else {
+                         style["background-color"] = "green";
+                         text = "Deployed"
+                     }
                  } else {
                      text = "Queued"
                  }
@@ -89,7 +102,17 @@ class AdminBar {
     public static function ajax_staticweb_job_queue() : void {
         $job_count = \WP2Static\JobQueue::getWaitingJobs();
         $jobs = self::get_jobs_in_progress();
-        $arr = array('job_count'=>$job_count, 'jobs'=>$jobs);
+        $invalidations = self::list_invalidations_in_progress();
+        if ($invalidations
+            && array_key_exists( 'Invalidations', $invalidations)
+            && 0 < count( $invalidations['Invalidations'] ) ) {
+            $in_progress = true;
+        } else {
+            $in_progress = false;
+        }
+        $arr = ['invalidations' => $in_progress,
+                'job_count' => $job_count,
+                'jobs' => $jobs];
         echo( json_encode ( $arr ) );
         die();
     }
@@ -106,6 +129,43 @@ class AdminBar {
         );
 
         return $jobs_in_progress;
+    }
+
+    public static function list_invalidations( int $max_items = 5) {
+        $cloudfront = \WP2StaticS3\Deployer::cloudfront_client();
+        $distribution_id = \WP2StaticS3\Controller::getValue( 'cfDistributionID' );
+
+        if ( ! $distribution_id ) {
+            return;
+        }
+
+        try {
+            return $cloudfront->listInvalidations(
+                ['DistributionId' => $distribution_id,
+                 'MaxItems' => "$max_items"] );
+        } catch ( AwsException $e ) {
+            return $e;
+        }
+    }
+
+    public static function list_invalidations_in_progress( int $max_items = 5) {
+        $invalidations = self::list_invalidations( $max_items );
+
+        if ( ! $invalidations ) {
+            return;
+        } else if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
+            return ['Exception' => $invalidations];
+        } else {
+            $inv_items = $invalidations['InvalidationList']['Items'];
+
+            $arr = [];
+            foreach( $inv_items as $inv) {
+                if ( "InProgress" === $inv['Status'] ) {
+                    array_push( $arr, $inv );
+                }
+            }
+            return ['Invalidations' => $arr];
+        }
     }
 
 }
