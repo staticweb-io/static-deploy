@@ -7,35 +7,7 @@ use Aws\Exception\AwsException;
 class AdminBar {
 
     public static function admin_bar_menu_hook( \WP_Admin_Bar $wp_admin_bar ) : void {
-        // We query waiting jobs before in-progress to prevent a timing error
-        // if a job changes from waiting to procressing between queries.
-        $job_count = \WP2Static\JobQueue::getWaitingJobs();
-        $jobs = self::get_jobs_in_progress();
-
-        if ( empty( $jobs ) ) {
-            if ( $job_count === 0) {
-                $invalidations = self::list_invalidations_in_progress();
-                if ($invalidations
-                    && array_key_exists( 'Invalidations', $invalidations)
-                    && 0 < count( $invalidations['Invalidations'] ) ) {
-                    $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Refreshing CDN cache</div></div>';
-                } else {
-                    $title = '<div class="staticweb-deploy-status-container" style="background-color: green; border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Deployed</div></div>';
-                }
-            } else {
-                $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Queued</div></div>';
-            }
-        } else {
-            $job_type_labels = array(
-                'detect' => 'Detecting URLs',
-                'crawl' => 'Crawling Site',
-                'post_process' => 'Post-Processing',
-                'deploy' => 'Deploying'
-            );
-
-            $job_type = $jobs[0]->job_type;
-            $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: ' . $job_type_labels[$job_type] . '</div></div>';
-        }
+        $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Checking status...</div></div>';
 
         $status = array(
             'id' => 'staticweb-status',
@@ -94,7 +66,7 @@ class AdminBar {
          })
      }
 
-     setTimeout(staticweb_update_status, 30000)
+     staticweb_update_status()
     </script>
 <?php
     }
