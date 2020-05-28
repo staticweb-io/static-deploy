@@ -7,6 +7,10 @@ use Aws\Exception\AwsException;
 class AdminBar {
 
     public static function admin_bar_menu_hook( \WP_Admin_Bar $wp_admin_bar ) : void {
+        if ( ! defined( 'WP2STATIC_PATH' ) ) {
+            return;
+        }
+
         $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Checking status...</div></div>';
 
         $status = array(
