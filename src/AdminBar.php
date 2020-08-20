@@ -110,7 +110,7 @@ class AdminBar {
     }
 
     public static function list_invalidations( int $max_items = 5) {
-        $cloudfront = \WP2StaticS3\Deployer::cloudfront_client();
+        $cloudfront = \WP2StaticS3\Deployer::cloudfrontClient();
         $distribution_id = \WP2StaticS3\Controller::getValue( 'cfDistributionID' );
 
         if ( ! $distribution_id ) {
