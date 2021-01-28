@@ -15,12 +15,24 @@ class AdminBar {
 
         $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px; link-color: #fff;"><a style="color: white" href="' . $deployment_url . '" target="_blank"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Checking status...</div></a></div>';
 
+        $group = array(
+            'id' => 'staticweb-group'
+        );
+        $wp_admin_bar->add_group( $group );
 
         $status = array(
             'id' => 'staticweb-status',
+            'parent' => 'staticweb-group',
             'title' => $title
         );
         $wp_admin_bar->add_node( $status );
+
+        $phpmyadmin = array(
+            'id' => 'staticweb-phpmyadmin',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="/phpmyadmin/" target="_blank">phpMyAdmin</a>'
+        );
+        $wp_admin_bar->add_node( $phpmyadmin );
     }
 
     public static function after_admin_bar_render() : void {
