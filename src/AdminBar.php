@@ -13,7 +13,8 @@ class AdminBar {
 
         $deployment_url = \WP2Static\CoreOptions::getValue( 'deploymentURL' );
 
-        $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px; link-color: #fff;"><a style="color: white" href="' . $deployment_url . '"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Checking status...</div></a></div>';
+        $title = '<div class="staticweb-deploy-status-container" style="border-radius: 5px; link-color: #fff;"><a style="color: white" href="' . $deployment_url . '" target="_blank"><div class="staticweb-deploy-status" style="margin: 0 5px">WP2Static: Checking status...</div></a></div>';
+
 
         $status = array(
             'id' => 'staticweb-status',
