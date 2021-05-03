@@ -33,6 +33,34 @@ class AdminBar {
             'title' => '<a href="/phpmyadmin/" target="_blank">phpMyAdmin</a>'
         );
         $wp_admin_bar->add_node( $phpmyadmin );
+
+        $community = array(
+            'id' => 'staticweb-community',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="https://staticword.press/c/staticweb-io-community/18" target="_blank">Community</a>'
+        );
+        $wp_admin_bar->add_node( $community );
+
+        $hosting = array(
+            'id' => 'staticweb-hosting',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="https://staticweb.io/static-cloud-hosting/" target="_blank">Hosting</a>'
+        );
+        $wp_admin_bar->add_node( $hosting );
+
+        $staticweb_io = array(
+            'id' => 'staticweb-staticweb-io',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="https://staticweb.io" target="_blank">StaticWeb.io</a>'
+        );
+        $wp_admin_bar->add_node( $staticweb_io );
+
+        $wp2static = array(
+            'id' => 'staticweb-wp2static',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="https://wp2static.com" target="_blank">WP2Static.com</a>'
+        );
+        $wp_admin_bar->add_node( $wp2static );
     }
 
     public static function after_admin_bar_render() : void {
@@ -88,75 +116,75 @@ class AdminBar {
      staticweb_update_status()
     </script>
 <?php
+}
+
+public static function ajax_staticweb_job_queue() : void {
+    $job_count = \WP2Static\JobQueue::getWaitingJobs();
+    $jobs = self::get_jobs_in_progress();
+    $invalidations = self::list_invalidations_in_progress();
+    if ($invalidations
+        && array_key_exists( 'Invalidations', $invalidations)
+        && 0 < count( $invalidations['Invalidations'] ) ) {
+        $in_progress = true;
+    } else {
+        $in_progress = false;
     }
+    $arr = ['invalidations' => $in_progress,
+            'job_count' => $job_count,
+            'jobs' => $jobs];
+    echo( json_encode ( $arr ) );
+    die();
+}
 
-    public static function ajax_staticweb_job_queue() : void {
-        $job_count = \WP2Static\JobQueue::getWaitingJobs();
-        $jobs = self::get_jobs_in_progress();
-        $invalidations = self::list_invalidations_in_progress();
-        if ($invalidations
-            && array_key_exists( 'Invalidations', $invalidations)
-            && 0 < count( $invalidations['Invalidations'] ) ) {
-            $in_progress = true;
-        } else {
-            $in_progress = false;
-        }
-        $arr = ['invalidations' => $in_progress,
-                'job_count' => $job_count,
-                'jobs' => $jobs];
-        echo( json_encode ( $arr ) );
-        die();
-    }
+public static function get_jobs_in_progress() : array {
+    global $wpdb;
+    $jobs = [];
 
-    public static function get_jobs_in_progress() : array {
-        global $wpdb;
-        $jobs = [];
+    $table_name = $wpdb->prefix . 'wp2static_jobs';
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
-
-        $jobs_in_progress = $wpdb->get_results(
-            "SELECT * FROM $table_name
+    $jobs_in_progress = $wpdb->get_results(
+        "SELECT * FROM $table_name
             WHERE status = 'processing'"
-        );
+    );
 
-        return $jobs_in_progress;
+    return $jobs_in_progress;
+}
+
+public static function list_invalidations( int $max_items = 5) {
+    $cloudfront = \WP2StaticS3\Deployer::cloudfrontClient();
+    $distribution_id = \WP2StaticS3\Controller::getValue( 'cfDistributionID' );
+
+    if ( ! $distribution_id ) {
+        return;
     }
 
-    public static function list_invalidations( int $max_items = 5) {
-        $cloudfront = \WP2StaticS3\Deployer::cloudfrontClient();
-        $distribution_id = \WP2StaticS3\Controller::getValue( 'cfDistributionID' );
-
-        if ( ! $distribution_id ) {
-            return;
-        }
-
-        try {
-            return $cloudfront->listInvalidations(
-                ['DistributionId' => $distribution_id,
-                 'MaxItems' => "$max_items"] );
-        } catch ( AwsException $e ) {
-            return $e;
-        }
+    try {
+        return $cloudfront->listInvalidations(
+            ['DistributionId' => $distribution_id,
+             'MaxItems' => "$max_items"] );
+    } catch ( AwsException $e ) {
+        return $e;
     }
+}
 
-    public static function list_invalidations_in_progress( int $max_items = 5) {
-        $invalidations = self::list_invalidations( $max_items );
+public static function list_invalidations_in_progress( int $max_items = 5) {
+    $invalidations = self::list_invalidations( $max_items );
 
-        if ( ! $invalidations ) {
-            return;
-        } else if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
-            return ['Exception' => $invalidations];
-        } else {
-            $inv_items = $invalidations['InvalidationList']['Items'];
+    if ( ! $invalidations ) {
+        return;
+    } else if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
+        return ['Exception' => $invalidations];
+    } else {
+        $inv_items = $invalidations['InvalidationList']['Items'];
 
-            $arr = [];
-            foreach( $inv_items as $inv) {
-                if ( "InProgress" === $inv['Status'] ) {
-                    array_push( $arr, $inv );
-                }
+        $arr = [];
+        foreach( $inv_items as $inv) {
+            if ( "InProgress" === $inv['Status'] ) {
+                array_push( $arr, $inv );
             }
-            return ['Invalidations' => $arr];
         }
+        return ['Invalidations' => $arr];
     }
+}
 
 }
