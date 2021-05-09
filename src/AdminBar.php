@@ -48,6 +48,13 @@ class AdminBar {
         );
         $wp_admin_bar->add_node( $hosting );
 
+        $news = array(
+            'id' => 'staticweb-news',
+            'parent' => 'staticweb-status',
+            'title' => '<a href="https://staticweb.io/news/" target="_blank">News</a>'
+        );
+        $wp_admin_bar->add_node( $news );
+
         $staticweb_io = array(
             'id' => 'staticweb-staticweb-io',
             'parent' => 'staticweb-status',
