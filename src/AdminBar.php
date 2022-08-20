@@ -82,7 +82,21 @@ class AdminBar {
          deploy: "Deploying"
      }
 
+     function staticweb_update_status_button(text, bgcolor) {
+         jQuery(".staticweb-deploy-status-container")
+           .css({"background-color": bgcolor, "border-radius": "5px"});
+         jQuery(".staticweb-deploy-status")
+           .text("WP2Static: " + text);
+     }
+
      function staticweb_update_status() {
+         if ( document.visibilityState != 'visible' ) {
+             staticweb_last_interval = 30000;
+             setTimeout(staticweb_update_status, 30000);
+             staticweb_update_status_button("Idle", "");
+             return;
+         }
+
          jQuery.ajax({
              url: staticweb_ajax_url,
              method: "GET",
@@ -92,7 +106,7 @@ class AdminBar {
              setTimeout(staticweb_update_status, 30000)
 
              var data = JSON.parse(msg)
-             var style = {"background-color": "", "border-radius": "5px"};
+             var bgcolor = "";
              var text;
 
              if (0 == data.jobs.length) {
@@ -100,7 +114,7 @@ class AdminBar {
                      if (data.invalidations) {
                          text = "Refreshing CDN cache"
                      } else {
-                         style["background-color"] = "green";
+                         bgcolor = "green";
                          text = "Deployed"
                      }
                  } else {
@@ -110,10 +124,7 @@ class AdminBar {
                  text = staticweb_job_type_labels[data.jobs[0].job_type]
              }
 
-             var container = jQuery(".staticweb-deploy-status-container")
-             container.css(style);
-             var status = jQuery(".staticweb-deploy-status")
-             status.text("WP2Static: " + text);
+             staticweb_update_status_button(text, bgcolor);
          }).fail(function(msg) {
              staticweb_last_interval = 2 * staticweb_last_interval
              setTimeout(staticweb_update_status, staticweb_last_interval)
