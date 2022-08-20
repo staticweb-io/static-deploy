@@ -81,6 +81,7 @@ class AdminBar {
          post_process: "Post-Processing",
          deploy: "Deploying"
      }
+     var staticweb_idle = false;
 
      function staticweb_update_status_button(text, bgcolor) {
          jQuery(".staticweb-deploy-status-container")
@@ -89,14 +90,24 @@ class AdminBar {
            .text("WP2Static: " + text);
      }
 
+     function staticweb_check_idle() {
+         if ( staticweb_idle && document.visibilityState == 'visible' ) {
+            staticweb_update_status_button('Checking status...', '');
+            staticweb_update_status();
+         }
+     }
+     setInterval(staticweb_check_idle, 1000);
+
      function staticweb_update_status() {
          if ( document.visibilityState != 'visible' ) {
+             staticweb_idle = true;
              staticweb_last_interval = 30000;
              setTimeout(staticweb_update_status, 30000);
              staticweb_update_status_button("Idle", "");
              return;
          }
 
+         staticweb_idle = false;
          jQuery.ajax({
              url: staticweb_ajax_url,
              method: "GET",
