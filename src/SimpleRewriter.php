@@ -57,6 +57,7 @@ class SimpleRewriter {
 
         $wordpress_site_url = untrailingslashit( $wordpress_site_url );
         $destination_url = untrailingslashit( $destination_url );
+        $destination_url_c = addcslashes( $destination_url, '/' );
         $destination_url_rel = URLHelper::getProtocolRelativeURL( $destination_url );
         $destination_url_rel_c = addcslashes( $destination_url_rel, '/' );
 
@@ -73,10 +74,13 @@ class SimpleRewriter {
         foreach ( $hosts as $host ) {
             if ( $host ) {
                 $host_rel = URLHelper::getProtocolRelativeURL( 'http://' . $host );
+                $host_rel_c = addcslashes( $host_rel, '/' );
 
                 $replacement_patterns[ 'http:' . $host_rel ] = $destination_url;
                 $replacement_patterns[ 'https:' . $host_rel ] = $destination_url;
                 $replacement_patterns[ $host_rel ] = $destination_url_rel;
+                $replacement_patterns[ 'http:' . $host_rel_c ] = $destination_url_c;
+                $replacement_patterns[ 'https:' . $host_rel_c ] = $destination_url_c;
                 $replacement_patterns[ addcslashes( $host_rel, '/' ) ] = $destination_url_rel_c;
             }
         }
