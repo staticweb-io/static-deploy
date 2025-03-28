@@ -84,10 +84,14 @@ class AdminBar {
      var staticweb_idle = false;
 
      function staticweb_update_status_button(text, bgcolor) {
-         jQuery(".staticweb-deploy-status-container")
-           .css({"background-color": bgcolor, "border-radius": "5px"});
-         jQuery(".staticweb-deploy-status")
-           .text("WP2Static: " + text);
+        document.querySelectorAll(".staticweb-deploy-status-container").forEach(el => {
+            el.style.backgroundColor = bgcolor;
+            el.style.borderRadius = "5px";
+        });
+
+        document.querySelectorAll(".staticweb-deploy-status").forEach(el => {
+            el.textContent = "WP2Static: " + text;
+        });
      }
 
      function staticweb_check_idle() {
