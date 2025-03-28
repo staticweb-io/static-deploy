@@ -107,38 +107,39 @@ class AdminBar {
          }
 
          staticweb_idle = false;
-         jQuery.ajax({
-             url: staticweb_ajax_url,
-             method: "GET",
-             data: {action: "staticweb_job_queue"}
-         }).done(function(msg) {
-             staticweb_last_interval = 30000
-             setTimeout(staticweb_update_status, 30000)
+         fetch(staticweb_ajax_url + "?action=staticweb_job_queue", {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(data => {
+            staticweb_last_interval = 30000;
+            setTimeout(staticweb_update_status, 30000);
 
-             var data = JSON.parse(msg)
-             var bgcolor = "";
-             var text;
+            let bgcolor = "";
+            let text;
 
-             if (0 == data.jobs.length) {
-                 if (0 == data.job_count) {
-                     if (data.invalidations) {
-                         text = "Refreshing CDN cache"
-                     } else {
-                         bgcolor = "green";
-                         text = "Deployed"
-                     }
-                 } else {
-                     text = "Queued"
-                 }
-             } else {
-                 text = staticweb_job_type_labels[data.jobs[0].job_type]
-             }
+            if (data.jobs.length === 0) {
+                if (data.job_count === 0) {
+                    if (data.invalidations) {
+                        text = "Refreshing CDN cache";
+                    } else {
+                        bgcolor = "green";
+                        text = "Deployed";
+                    }
+                } else {
+                    text = "Queued";
+                }
+            } else {
+                text = staticweb_job_type_labels[data.jobs[0].job_type];
+            }
 
-             staticweb_update_status_button(text, bgcolor);
-         }).fail(function(msg) {
-             staticweb_last_interval = 2 * staticweb_last_interval
-             setTimeout(staticweb_update_status, staticweb_last_interval)
-         })
+            staticweb_update_status_button(text, bgcolor);
+        })
+        .catch(error => {
+            console.error(error);
+            staticweb_last_interval *= 2;
+            setTimeout(staticweb_update_status, staticweb_last_interval);
+        });
      }
 
      window.onload = (event) => {
