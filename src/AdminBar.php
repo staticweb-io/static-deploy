@@ -96,7 +96,6 @@ class AdminBar {
             staticweb_update_status();
          }
      }
-     setInterval(staticweb_check_idle, 1000);
 
      function staticweb_update_status() {
          if ( document.visibilityState != 'visible' ) {
@@ -142,7 +141,10 @@ class AdminBar {
          })
      }
 
-     staticweb_update_status()
+     window.onload = (event) => {
+        setInterval(staticweb_check_idle, 1000);
+        setTimeout(staticweb_update_status, 100);
+     };
     </script>
 <?php
 }
