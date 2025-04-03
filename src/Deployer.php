@@ -14,11 +14,6 @@ class Deployer {
 
     const DEFAULT_NAMESPACE = 'wp2static-addon-s3/default';
 
-    // prepare deploy, if modifies URL structure, should be an action
-    // $this->prepareDeploy();
-
-    // options - load from addon's static methods
-
     public function __construct() {}
 
     public function uploadFiles( string $processed_site_path ) : void {
