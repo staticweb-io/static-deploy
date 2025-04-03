@@ -29,11 +29,18 @@ class Deployer {
      */
     private $namespace = self::DEFAULT_NAMESPACE;
 
+    /**
+     * @var S3Client
+     */
+    private $s3_client;
+
     public function __construct() {
         $cf_max_paths_str = Controller::getValue( 'cfMaxPathsToInvalidate' );
         if ( $cf_max_paths_str ) {
             $this->cf_max_paths = intval( $cf_max_paths_str );
         }
+
+        $this->s3_client = self::s3Client();
     }
 
     public function uploadFiles( string $processed_site_path ) : void {
@@ -41,9 +48,6 @@ class Deployer {
         if ( ! is_dir( $processed_site_path ) ) {
             return;
         }
-
-        // instantiate S3 client
-        $s3 = self::s3Client();
 
         // iterate each file in ProcessedSite
         $iterator = new RecursiveIteratorIterator(
@@ -120,7 +124,7 @@ class Deployer {
                 }
 
                 try {
-                    $result = $s3->putObject( $put_data );
+                    $result = $this->s3_client->putObject( $put_data );
 
                     if ( $result['@metadata']['statusCode'] === 200 ) {
                         \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
@@ -161,7 +165,7 @@ class Deployer {
             }
 
             try {
-                $result = $s3->putObject( $put_data );
+                $result = $this->s3_client->putObject( $put_data );
 
                 if ( $result['@metadata']['statusCode'] === 200 ) {
                     \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
