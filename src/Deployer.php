@@ -198,6 +198,16 @@ class Deployer {
                     $hash = md5( (string) json_encode( $put_data ) );
                     $put_data['SourceFile'] = $filename;
 
+                    $is_cached = \WP2Static\DeployCache::fileisCached(
+                        $cache_key,
+                        $this->namespace,
+                        $hash,
+                    );
+                    
+                    if ( $is_cached ) {
+                        continue;
+                    }
+
                     // Save data so we can retrieve it by iterKey
                     // in the fulfilled handler
                     $items_by_iterKey[$iterKey] = [
