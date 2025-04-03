@@ -4,10 +4,11 @@ namespace WP2StaticS3;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Aws\S3\S3Client;
 use Aws\CloudFront\CloudFrontClient;
-use Aws\Exception\AwsException;
+use Aws\CommandPool;
 use Aws\Credentials\Credentials;
+use Aws\Exception\AwsException;
+use Aws\S3\S3Client;
 use WP2Static\WsLog;
 
 class Deployer {
@@ -75,6 +76,8 @@ class Deployer {
 
         $already_cached = 0;
 
+        $commands = [];
+
         foreach ( $this->chunk as $obj ) {
             $cache_key = $obj['cache_key'];
             $hash = $obj['hash'];
@@ -91,16 +94,29 @@ class Deployer {
                 continue;
             }
 
-            try {
-                $result = $this->s3_client->putObject( $put_data );
+            array_push(
+                $commands,
+                $this->s3_client->getCommand( 'PutObject', $put_data )
+            );
+        }
 
-                if ( $result['@metadata']['statusCode'] === 200 ) {
-                    \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
-                    $this->addCfPath( $cache_key );
-                }
-            } catch ( AwsException $e ) {
-                WsLog::l( 'Error uploading file ' . $cache_key . ': ' . $e->getMessage() );
-            }
+        if ( ! empty( $commands ) ) {
+            $cmd_pool = new CommandPool(
+                $this->s3_client,
+                $commands,
+                [
+                    'fulfilled' => function ( $reason, $iterKey, $promise) {
+                        $item = $this->chunk[$iterKey];
+                        \WP2Static\DeployCache::addFile( $item['cache_key'], $this->namespace, $item['hash'] );
+                        $this->addCfPath( $item['cache_key'] );
+                    },
+                    'rejected' => function ( $reason, $iterKey, $promise) {
+                        WsLog::l( 'Error uploading file ' . $this->chunk[$iterKey]['cache_key'] . ': ' . $reason );
+                    }
+                ]
+            );
+
+            $cmd_pool->promise()->wait();
         }
 
         $uncached = count( $this->chunk ) - $already_cached;
