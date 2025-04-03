@@ -57,6 +57,9 @@ class Deployer {
         $cf_max_paths = $cf_max_paths ? intval( $cf_max_paths ) : 0;
         $cf_stale_paths = [];
 
+        $s3_remote_path = Controller::getValue( 's3RemotePath' );
+        $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
+
         foreach ( $iterator as $filename => $file_object ) {
             $base_name = basename( $filename );
             if ( $base_name != '.' && $base_name != '..' ) {
@@ -79,11 +82,7 @@ class Deployer {
                     continue;
                 }
 
-                $s3_key =
-                    Controller::getValue( 's3RemotePath' ) ?
-                    Controller::getValue( 's3RemotePath' ) . '/' .
-                    ltrim( $cache_key, '/' ) :
-                    ltrim( $cache_key, '/' );
+                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
 
                 $mime_type = MimeTypes::guessMimeType( $filename );
                 if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
@@ -140,11 +139,7 @@ class Deployer {
                 $cache_key = $cache_key . 'index.html';
             }
 
-            $s3_key =
-                Controller::getValue( 's3RemotePath' ) ?
-                Controller::getValue( 's3RemotePath' ) . '/' .
-                ltrim( $cache_key, '/' ) :
-                ltrim( $cache_key, '/' );
+            $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
 
             $put_data['Key'] = $s3_key;
             $put_data['WebsiteRedirectLocation'] = $redirect['redirect_to'];
