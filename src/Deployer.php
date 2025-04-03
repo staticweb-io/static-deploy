@@ -14,7 +14,22 @@ class Deployer {
 
     const DEFAULT_NAMESPACE = 'wp2static-addon-s3/default';
 
-    public function __construct() {}
+    /**
+     * @var integer
+     */
+    private $cf_max_paths = 0;
+
+    /**
+     * @var array
+     */
+    private $cf_stale_paths = [];
+
+    public function __construct() {
+        $cf_max_paths_str = Controller::getValue( 'cfMaxPathsToInvalidate' );
+        if ( $cf_max_paths_str ) {
+            $this->cf_max_paths = intval( $cf_max_paths_str );
+        }
+    }
 
     public function uploadFiles( string $processed_site_path ) : void {
         // check if dir exists
@@ -47,10 +62,6 @@ class Deployer {
         }
 
         $base_put_data = $put_data;
-
-        $cf_max_paths = Controller::getValue( 'cfMaxPathsToInvalidate' );
-        $cf_max_paths = $cf_max_paths ? intval( $cf_max_paths ) : 0;
-        $cf_stale_paths = [];
 
         $s3_remote_path = Controller::getValue( 's3RemotePath' );
         $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
@@ -111,13 +122,13 @@ class Deployer {
                     if ( $result['@metadata']['statusCode'] === 200 ) {
                         \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
 
-                        if ( $cf_max_paths >= count( $cf_stale_paths ) ) {
+                        if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
                             $cf_key = $cache_key;
                             if ( 0 === substr_compare( $cf_key, '/index.html', -11 ) ) {
                                 $cf_key = substr( $cf_key, 0, -10 );
                             }
                             $cf_key = str_replace( ' ', '%20', $cf_key );
-                            array_push( $cf_stale_paths, $cf_key );
+                            array_push( $this->cf_stale_paths, $cf_key );
                         }
                     }
                 } catch ( AwsException $e ) {
@@ -160,13 +171,13 @@ class Deployer {
                 if ( $result['@metadata']['statusCode'] === 200 ) {
                     \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
 
-                    if ( $cf_max_paths >= count( $cf_stale_paths ) ) {
+                    if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
                         $cf_key = $cache_key;
                         if ( 0 === substr_compare( $cf_key, '/index.html', -11 ) ) {
                             $cf_key = substr( $cf_key, 0, -10 );
                         }
                         $cf_key = str_replace( ' ', '%20', $cf_key );
-                        array_push( $cf_stale_paths, $cf_key );
+                        array_push( $this->cf_stale_paths, $cf_key );
                     }
                 }
             } catch ( AwsException $e ) {
@@ -177,15 +188,15 @@ class Deployer {
         }
 
         $distribution_id = Controller::getValue( 'cfDistributionID' );
-        $num_stale = count( $cf_stale_paths );
+        $num_stale = count( $this->cf_stale_paths );
         if ( $distribution_id && $num_stale > 0 ) {
-            if ( $num_stale > $cf_max_paths ) {
+            if ( $num_stale > $this->cf_max_paths ) {
                 WsLog::l( 'Invalidating all CloudFront paths' );
                 self::invalidateItems( $distribution_id, [ '/*' ] );
             } else {
                 $path_text = ( $num_stale === 1 ) ? 'path' : 'paths';
                 WsLog::l( "Invalidating $num_stale CloudFront $path_text" );
-                self::invalidateItems( $distribution_id, $cf_stale_paths );
+                self::invalidateItems( $distribution_id, $this->cf_stale_paths );
             }
         }
     }
