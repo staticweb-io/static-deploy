@@ -131,14 +131,6 @@ class Deployer {
             return;
         }
 
-        // iterate each file in ProcessedSite
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
-                $processed_site_path,
-                RecursiveDirectoryIterator::SKIP_DOTS
-            )
-        );
-
         $object_acl = Controller::getValue( 's3ObjectACL' );
         $put_data = [
             'Bucket' => Controller::getValue( 's3Bucket' ),
@@ -155,55 +147,103 @@ class Deployer {
         $s3_remote_path = Controller::getValue( 's3RemotePath' );
         $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
 
-        foreach ( $iterator as $filename => $file_object ) {
-            $base_name = basename( $filename );
-            if ( $base_name != '.' && $base_name != '..' ) {
-                $real_filepath = realpath( $filename );
+        $items_by_iterKey = [];
 
-                // TODO: do filepaths differ when running from WP-CLI (non-chroot)?
+        $command_generator = function (
+            $iterator
+        ) use (
+            &$items_by_iterKey,
+            $processed_site_path,
+            $put_data,
+            $s3_prefix
+        ) {
+            $iterKey = 0;
 
-                $cache_key = str_replace( $processed_site_path, '', $filename );
+            foreach ( $iterator as $filename => $file_object ) {
+                $base_name = basename( $filename );
+                if ( $base_name != '.' && $base_name != '..' ) {
+                    $real_filepath = realpath( $filename );
 
-                if ( ! $real_filepath ) {
-                    $err = 'Trying to deploy unknown file to S3: ' . $filename;
-                    \WP2Static\WsLog::l( $err );
-                    continue;
-                }
+                    // TODO: do filepaths differ when running from WP-CLI (non-chroot)?
 
-                // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
+                    $cache_key = str_replace( $processed_site_path, '', $filename );
 
-                if ( ! is_string( $filename ) ) {
-                    continue;
-                }
+                    if ( ! $real_filepath ) {
+                        $err = 'Trying to deploy unknown file to S3: ' . $filename;
+                        \WP2Static\WsLog::l( $err );
+                        continue;
+                    }
 
-                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+                    // Standardise all paths to use / (Windows support)
+                    $filename = str_replace( '\\', '/', $filename );
 
-                $mime_type = MimeTypes::guessMimeType( $filename );
-                if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
-                    $mime_type = $mime_type . '; charset=UTF-8';
-                }
+                    if ( ! is_string( $filename ) ) {
+                        continue;
+                    }
 
-                $put_data['Key'] = $s3_key;
-                $put_data['ContentType'] = $mime_type;
-                $put_data_hash = md5( (string) json_encode( $put_data ) );
-                $put_data['SourceFile'] = $filename;
-                $file_hash = md5_file( $filename );
-                if ( !$file_hash ) {
-                    WsLog::l( 'Failed to hash file ' . $filename );
-                    continue;
-                }
-                $hash = md5( $put_data_hash . $file_hash );
+                    $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
 
-                $this->addToChunk( $cache_key, $hash, $put_data );
+                    $mime_type = MimeTypes::guessMimeType( $filename );
+                    if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
+                        $mime_type = $mime_type . '; charset=UTF-8';
+                    }
 
-                if ( $this->chunk_size <= count( $this->chunk ) ) {
-                    $this->deployChunk();
+                    $file_hash = md5_file( $filename );
+                    $put_data['Key'] = $s3_key;
+                    $put_data['ContentType'] = $mime_type;
+                    $put_data_hash = md5( (string) json_encode( $put_data ) );
+                    $put_data['SourceFile'] = $filename;
+                    
+                    if ( !$file_hash ) {
+                        WsLog::l( 'Failed to hash file ' . $filename );
+                        continue;
+                    }
+                    $hash = md5( $put_data_hash . $file_hash );
+
+                    // Save data so we can retrieve it by iterKey
+                    // in the fulfilled handler
+                    $iterKey++;
+                    $items_by_iterKey[$iterKey] = [
+                        'cache_key' => $cache_key,
+                        'hash' => $hash
+                    ];
+
+                    yield $this->s3_client->getCommand('PutObject', $put_data);
                 }
             }
-        }
+        };
 
-        $this->deployChunk();
+        // iterate each file in ProcessedSite
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $processed_site_path,
+                RecursiveDirectoryIterator::SKIP_DOTS
+            )
+        );
+
+        $commands = $command_generator( $iterator );
+
+        $cmd_pool = new CommandPool(
+            $this->s3_client,
+            $commands,
+            [
+                'fulfilled' => function ($result, $iterKey, $promise)
+                    use (&$items_by_iterKey) {
+                    $item = $items_by_iterKey[$iterKey];
+                    \WP2Static\DeployCache::addFile( $item['cache_key'], $this->namespace, $item['hash'] );
+                    $this->addCfPath( $item['cache_key'] );
+                    unset($items_by_iterKey[$iterKey]);
+                },
+                'rejected' => function ( $reason, $iterKey, $promise)
+                    use ($items_by_iterKey) {
+                    $item = $items_by_iterKey[$iterKey];
+                    WsLog::l( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
+                    unset($items_by_iterKey[$iterKey]);
+                }
+            ]
+        );
+
+        $cmd_pool->promise()->wait();
 
         // Deploy 301 redirects.
 
