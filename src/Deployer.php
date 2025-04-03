@@ -164,8 +164,6 @@ class Deployer {
                 if ( $base_name != '.' && $base_name != '..' ) {
                     $real_filepath = realpath( $filename );
 
-                    // TODO: do filepaths differ when running from WP-CLI (non-chroot)?
-
                     $cache_key = str_replace( $processed_site_path, '', $filename );
 
                     if ( ! $real_filepath ) {
