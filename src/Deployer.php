@@ -25,6 +25,16 @@ class Deployer {
     private $cf_stale_paths = [];
 
     /**
+     * @var integer
+     */
+    private $chunk_size = 50;
+
+    /**
+     * @var array
+     */
+    private $chunk = [];
+
+    /**
      * @var string
      */
     private $namespace = self::DEFAULT_NAMESPACE;
@@ -41,6 +51,62 @@ class Deployer {
         }
 
         $this->s3_client = self::s3Client();
+    }
+
+    public function addToChunk(
+        string $cache_key,
+        string $hash,
+        array $put_data
+    ): void {
+        array_push(
+            $this->chunk,
+            [
+                'cache_key' => $cache_key,
+                'hash' => $hash,
+                'put_data' => $put_data
+            ]
+        );
+    }
+
+    public function deployChunk(): void {
+        if ( empty( $this->chunk ) ) {
+            return;
+        }
+
+        $already_cached = 0;
+
+        foreach ( $this->chunk as $obj ) {
+            $cache_key = $obj['cache_key'];
+            $hash = $obj['hash'];
+            $put_data = $obj['put_data'];
+
+            $is_cached = \WP2Static\DeployCache::fileisCached(
+                $cache_key,
+                $this->namespace,
+                $hash,
+            );
+
+            if ( $is_cached ) {
+                $already_cached++;
+                continue;
+            }
+
+            try {
+                $result = $this->s3_client->putObject( $put_data );
+
+                if ( $result['@metadata']['statusCode'] === 200 ) {
+                    \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
+                    $this->addCfPath( $cache_key );
+                }
+            } catch ( AwsException $e ) {
+                WsLog::l( 'Error uploading file ' . $cache_key . ': ' . $e->getMessage() );
+            }
+        }
+
+        $uncached = count( $this->chunk ) - $already_cached;
+        WsLog::l('Deployed chunk: ' . $uncached . ' uploaded, ' . $already_cached . ' cached from previous deploy.');
+
+        $this->chunk = [];
     }
 
     public function uploadFiles( string $processed_site_path ) : void {
@@ -113,28 +179,15 @@ class Deployer {
                 }
                 $hash = md5( $put_data_hash . $file_hash );
 
-                $is_cached = \WP2Static\DeployCache::fileisCached(
-                    $cache_key,
-                    $this->namespace,
-                    $hash,
-                );
+                $this->addToChunk( $cache_key, $hash, $put_data );
 
-                if ( $is_cached ) {
-                    continue;
-                }
-
-                try {
-                    $result = $this->s3_client->putObject( $put_data );
-
-                    if ( $result['@metadata']['statusCode'] === 200 ) {
-                        \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
-                        $this->addCfPath( $cache_key );
-                    }
-                } catch ( AwsException $e ) {
-                    WsLog::l( 'Error uploading file ' . $filename . ': ' . $e->getMessage() );
+                if ( $this->chunk_size <= count( $this->chunk ) ) {
+                    $this->deployChunk();
                 }
             }
         }
+
+        $this->deployChunk();
 
         // Deploy 301 redirects.
 
@@ -154,29 +207,14 @@ class Deployer {
             $put_data['WebsiteRedirectLocation'] = $redirect['redirect_to'];
             $hash = md5( (string) json_encode( $put_data ) );
 
-            $is_cached = \WP2Static\DeployCache::fileisCached(
-                $cache_key,
-                $this->namespace,
-                $hash,
-            );
+            $this->addToChunk( $cache_key, $hash, $put_data );
 
-            if ( $is_cached ) {
-                continue;
-            }
-
-            try {
-                $result = $this->s3_client->putObject( $put_data );
-
-                if ( $result['@metadata']['statusCode'] === 200 ) {
-                    \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
-                    $this->addCfPath( $cache_key );
-                }
-            } catch ( AwsException $e ) {
-                WsLog::l(
-                    'Error uploading redirect ' . $redirect['url'] . ': ' . $e->getMessage()
-                );
+            if ( $this->chunk_size <= count( $this->chunk ) ) {
+                $this->deployChunk();
             }
         }
+
+        $this->deployChunk();
 
         $distribution_id = Controller::getValue( 'cfDistributionID' );
         $num_stale = count( $this->cf_stale_paths );
