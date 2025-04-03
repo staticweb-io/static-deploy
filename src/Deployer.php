@@ -188,25 +188,25 @@ class Deployer {
                         $mime_type = $mime_type . '; charset=UTF-8';
                     }
 
-                    $file_hash = md5_file( $filename );
-                    $put_data['Key'] = $s3_key;
-                    $put_data['ContentType'] = $mime_type;
-                    $put_data_hash = md5( (string) json_encode( $put_data ) );
-                    $put_data['SourceFile'] = $filename;
-                    
+                    $file_hash = md5_file( $filename, true);
                     if ( !$file_hash ) {
                         WsLog::l( 'Failed to hash file ' . $filename );
                         continue;
                     }
-                    $hash = md5( $put_data_hash . $file_hash );
+
+                    $put_data['ContentMD5'] = base64_encode( $file_hash );
+                    $put_data['ContentType'] = $mime_type;
+                    $put_data['Key'] = $s3_key;
+                    $hash = md5( (string) json_encode( $put_data ) );
+                    $put_data['SourceFile'] = $filename;
 
                     // Save data so we can retrieve it by iterKey
                     // in the fulfilled handler
-                    $iterKey++;
                     $items_by_iterKey[$iterKey] = [
                         'cache_key' => $cache_key,
                         'hash' => $hash
                     ];
+                    $iterKey++;
 
                     yield $this->s3_client->getCommand('PutObject', $put_data);
                 }
