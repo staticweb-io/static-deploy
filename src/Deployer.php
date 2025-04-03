@@ -121,15 +121,7 @@ class Deployer {
 
                     if ( $result['@metadata']['statusCode'] === 200 ) {
                         \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
-
-                        if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
-                            $cf_key = $cache_key;
-                            if ( 0 === substr_compare( $cf_key, '/index.html', -11 ) ) {
-                                $cf_key = substr( $cf_key, 0, -10 );
-                            }
-                            $cf_key = str_replace( ' ', '%20', $cf_key );
-                            array_push( $this->cf_stale_paths, $cf_key );
-                        }
+                        $this->addCfPath( $cache_key );
                     }
                 } catch ( AwsException $e ) {
                     WsLog::l( 'Error uploading file ' . $filename . ': ' . $e->getMessage() );
@@ -170,15 +162,7 @@ class Deployer {
 
                 if ( $result['@metadata']['statusCode'] === 200 ) {
                     \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
-
-                    if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
-                        $cf_key = $cache_key;
-                        if ( 0 === substr_compare( $cf_key, '/index.html', -11 ) ) {
-                            $cf_key = substr( $cf_key, 0, -10 );
-                        }
-                        $cf_key = str_replace( ' ', '%20', $cf_key );
-                        array_push( $this->cf_stale_paths, $cf_key );
-                    }
+                    $this->addCfPath( $cache_key );
                 }
             } catch ( AwsException $e ) {
                 WsLog::l(
@@ -280,6 +264,16 @@ class Deployer {
         }
 
         return $client;
+    }
+
+    public function addCfPath(String $path) : void {
+        if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
+            if ( 0 === substr_compare( $path, '/index.html', -11 ) ) {
+                $path = substr( $path, 0, -10 );
+            }
+            $path = str_replace( ' ', '%20', $path );
+            array_push( $this->cf_stale_paths, $path );
+        }
     }
 
     /**
