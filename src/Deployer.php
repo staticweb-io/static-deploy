@@ -87,9 +87,13 @@ class Deployer {
                 $put_data['Key'] = $s3_key;
                 $put_data['ContentType'] = $mime_type;
                 $put_data_hash = md5( (string) json_encode( $put_data ) );
-                $put_data['Body'] = file_get_contents( $filename );
-                $body_hash = md5( (string) $put_data['Body'] );
-                $hash = md5( $put_data_hash . $body_hash );
+                $put_data['SourceFile'] = $filename;
+                $file_hash = md5_file( $filename );
+                if ( !$file_hash ) {
+                    WsLog::l( 'Failed to hash file ' . $filename );
+                    continue;
+                }
+                $hash = md5( $put_data_hash . $file_hash );
 
                 $is_cached = \WP2Static\DeployCache::fileisCached(
                     $cache_key,
