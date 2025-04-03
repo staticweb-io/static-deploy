@@ -24,6 +24,11 @@ class Deployer {
      */
     private $cf_stale_paths = [];
 
+    /**
+     * @var string
+     */
+    private $namespace = self::DEFAULT_NAMESPACE;
+
     public function __construct() {
         $cf_max_paths_str = Controller::getValue( 'cfMaxPathsToInvalidate' );
         if ( $cf_max_paths_str ) {
@@ -36,8 +41,6 @@ class Deployer {
         if ( ! is_dir( $processed_site_path ) ) {
             return;
         }
-
-        $namespace = self::DEFAULT_NAMESPACE;
 
         // instantiate S3 client
         $s3 = self::s3Client();
@@ -108,7 +111,7 @@ class Deployer {
 
                 $is_cached = \WP2Static\DeployCache::fileisCached(
                     $cache_key,
-                    $namespace,
+                    $this->namespace,
                     $hash,
                 );
 
@@ -120,7 +123,7 @@ class Deployer {
                     $result = $s3->putObject( $put_data );
 
                     if ( $result['@metadata']['statusCode'] === 200 ) {
-                        \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
+                        \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
                         $this->addCfPath( $cache_key );
                     }
                 } catch ( AwsException $e ) {
@@ -149,7 +152,7 @@ class Deployer {
 
             $is_cached = \WP2Static\DeployCache::fileisCached(
                 $cache_key,
-                $namespace,
+                $this->namespace,
                 $hash,
             );
 
@@ -161,7 +164,7 @@ class Deployer {
                 $result = $s3->putObject( $put_data );
 
                 if ( $result['@metadata']['statusCode'] === 200 ) {
-                    \WP2Static\DeployCache::addFile( $cache_key, $namespace, $hash );
+                    \WP2Static\DeployCache::addFile( $cache_key, $this->namespace, $hash );
                     $this->addCfPath( $cache_key );
                 }
             } catch ( AwsException $e ) {
