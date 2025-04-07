@@ -132,15 +132,17 @@ class Deployer {
         }
 
         // iterate each file in ProcessedSite
-        $iterator = new RecursiveIteratorIterator(
+        $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
                 $processed_site_path,
                 RecursiveDirectoryIterator::SKIP_DOTS
             )
         );
 
-        $file_arrays = function ( $iterator) use ( $processed_site_path ) {
-            foreach ( $iterator as $filename => $file_object ) {
+        $file_arrays = function ( $files, $redirects )
+            use ( $processed_site_path )
+            {
+            foreach ( $files as $filename => $file_object ) {
                 $base_name = basename( $filename );
                 if ( $base_name != '.' && $base_name != '..' ) {
                     yield [
@@ -149,9 +151,24 @@ class Deployer {
                     ];
                 }
             }
+
+            foreach ( $redirects as $redirect ) {
+                $path = $redirect['url'];
+    
+                if ( mb_substr( $path, -1 ) === '/' ) {
+                    $path = $path . 'index.html';
+                }
+
+                yield [
+                    'path' => $path,
+                    'redirect_to' => $redirect['redirect_to'],
+                ];
+            }
         };
 
-        self::uploadFilesIter( $file_arrays( $iterator ) );
+        $redirects = apply_filters( 'wp2static_list_redirects', []);
+
+        self::uploadFilesIter( $file_arrays( $files, $redirects ) );
     }
 
     public function uploadFilesIter( \Iterator $files ) : void {
@@ -165,8 +182,6 @@ class Deployer {
         if ( $cache_control ) {
             $put_data['CacheControl'] = $cache_control;
         }
-
-        $base_put_data = $put_data;
 
         $s3_remote_path = Controller::getValue( 's3RemotePath' );
         $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
@@ -285,33 +300,6 @@ class Deployer {
         );
 
         $cmd_pool->promise()->wait();
-
-        // Deploy 301 redirects.
-
-        $put_data = $base_put_data;
-        $redirects = apply_filters( 'wp2static_list_redirects', [] );
-
-        foreach ( $redirects as $redirect ) {
-            $cache_key = $redirect['url'];
-
-            if ( mb_substr( $cache_key, -1 ) === '/' ) {
-                $cache_key = $cache_key . 'index.html';
-            }
-
-            $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
-
-            $put_data['Key'] = $s3_key;
-            $put_data['WebsiteRedirectLocation'] = $redirect['redirect_to'];
-            $hash = md5( (string) json_encode( $put_data ) );
-
-            $this->addToChunk( $cache_key, $hash, $put_data );
-
-            if ( $this->chunk_size <= count( $this->chunk ) ) {
-                $this->deployChunk();
-            }
-        }
-
-        $this->deployChunk();
 
         $distribution_id = Controller::getValue( 'cfDistributionID' );
         $num_stale = count( $this->cf_stale_paths );
