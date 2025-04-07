@@ -192,6 +192,10 @@ class URLDetector {
         return $unique_urls;
     }
 
+    public static function detectURLsIter() : \Iterator {
+        return new \ArrayIterator( static::detectURLs() );
+    }
+
     public static function enqueueURLs() : string {
         $unique_urls = static::detectURLs();
 

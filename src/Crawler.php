@@ -258,6 +258,49 @@ class Crawler {
         do_action( 'wp2static_crawling_complete', $args );
     }
 
+    public function crawlIter( \Iterator $path_iter ) : \Iterator {
+        $site_host = parse_url( $this->site_path, PHP_URL_HOST );
+        $site_port = parse_url( $this->site_path, PHP_URL_PORT );
+        $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
+        $site_urls = [ "http://$site_host", "https://$site_host" ];
+
+        $responses = function ( $paths ) use ( $site_urls ) {
+            foreach ( $paths as $path ) {
+                $absolute_uri = new URL( $this->site_path . $path );
+                $request = new Request( 'GET', $absolute_uri->get() );
+
+                $response = $this->client->send( $request );
+                $status = $response->getStatusCode();
+
+                $body = null;
+                $redirect_to = null;
+                if ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
+                    $redirect_history =
+                        $response->getHeaderLine( 'X-Guzzle-Redirect-History' );
+
+                    if ( $redirect_history ) {
+                        $redirects = explode( ', ', $redirect_history );
+                        $effective_url = end( $redirects );
+                    }
+
+                    $redirect_to =
+                        (string) str_replace( $site_urls, '', $effective_url );
+                } else if ( $status !== 404 ) {
+                    $body = (string) $response->getBody();
+                }
+
+                yield [
+                    'body' => $body,
+                    'content_type' => $response->getHeaderLine( 'Content-Type' ),
+                    'redirect_to' => $redirect_to,
+                    'path' => $path,
+                ];
+            }
+        };
+
+        return $responses($path_iter);
+    }
+
     /**
      * Transform a root-relative path to a static site path.
      *

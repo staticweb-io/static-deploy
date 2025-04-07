@@ -69,5 +69,21 @@ class PostProcessor {
 
         do_action( 'wp2static_post_process_complete', ProcessedSite::getPath() );
     }
+
+    public function processIter(
+        \Iterator $crawl_responses
+    ) : \Iterator {
+        $rewriter = new SimpleRewriter();
+        $process = function ( $crawl_responses) use ( $rewriter ) {
+            foreach ( $crawl_responses as $crawled ) {
+                if ( $crawled['body'] ) {
+                    $crawled['body'] == $rewriter->rewriteFileContents( $crawled['body'] );
+                }
+                yield $crawled;
+            }
+        };
+
+        return $process( $crawl_responses );
+    }
 }
 

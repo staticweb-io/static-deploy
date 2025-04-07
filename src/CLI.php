@@ -515,6 +515,22 @@ class CLI {
         do_action( 'wp2static_post_deploy_trigger', $deployer );
     }
 
+    /*
+     * Crawls, processes and deploys files all in one pass.
+     */
+    public function direct_deploy(
+        array $args,
+        array $assoc_args
+    ) : void {
+        CoreOptions::init();
+        $deployer = new DirectDeployer();
+
+        WsLog::l( 'Starting direct deployment' );
+        $deployer->deploy();
+        WsLog::l( 'Starting post-direct deployment actions' );
+        do_action( 'wp2static_post_direct_deploy_trigger', $deployer );
+    }
+
     /**
      * Read / write plugin options
      *
