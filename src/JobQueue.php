@@ -17,6 +17,7 @@ class JobQueue {
             job_type VARCHAR(30) NOT NULL,
             status VARCHAR(30) NOT NULL,
             duration SMALLINT(6) UNSIGNED NULL,
+            triggering_post_id BIGINT(20) UNSIGNED NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
@@ -41,18 +42,27 @@ class JobQueue {
      * @param string $job_type Type of job
      * ie detect, crawl, post_process, deploy
      */
-    public static function addJob( string $job_type ) : void {
+    public static function addJob( string $job_type, ?int $post_id = null ) : void {
         WsLog::l( 'Adding job: ' . $job_type );
 
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_jobs';
 
+        // Add triggering_post_id column if it doesn't exist already
+        $triggering_post_id_row = $wpdb->get_row(
+            "SHOW COLUMNS FROM $table_name WHERE Field = 'triggering_post_id'"
+        );
+
+        if ( ! $triggering_post_id_row ) {
+            self::createTable();
+        }
+
         // TODO: squash any of same job_types with 'waiting' status
         // setting this one to be the one that runs next
 
-        $query_string = "INSERT INTO $table_name (job_type, status) VALUES (%s, 'waiting');";
-        $query = $wpdb->prepare( $query_string, $job_type );
+        $query_string = "INSERT INTO $table_name (job_type, status, triggering_post_id) VALUES (%s, 'waiting', %s);";
+        $query = $wpdb->prepare( $query_string, $job_type, $post_id );
 
         $wpdb->query( $query );
     }

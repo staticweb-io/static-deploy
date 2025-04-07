@@ -464,7 +464,7 @@ class Controller {
     public static function wp2staticSavePostHandler( int $post_id ) : void {
         if ( CoreOptions::getValue( 'queueJobOnPostSave' ) &&
              get_post_status( $post_id ) === 'publish' ) {
-            self::wp2staticEnqueueJobs();
+            self::wp2staticEnqueueJobs( $post_id );
         }
     }
 
@@ -485,7 +485,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticEnqueueJobs() : void {
+    public static function wp2staticEnqueueJobs( int $post_id = null ) : void {
         // check each of these in order we want to enqueue
         $job_types = [
             'autoJobQueueDetection' => 'detect',
@@ -497,7 +497,7 @@ class Controller {
 
         foreach ( $job_types as $key => $job_type ) {
             if ( (int) CoreOptions::getValue( $key ) === 1 ) {
-                JobQueue::addJob( $job_type );
+                JobQueue::addJob( $job_type, $post_id );
             }
         }
 
