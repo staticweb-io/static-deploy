@@ -26,16 +26,6 @@ class Deployer {
     private $cf_stale_paths = [];
 
     /**
-     * @var integer
-     */
-    private $chunk_size = 50;
-
-    /**
-     * @var array
-     */
-    private $chunk = [];
-
-    /**
      * @var string
      */
     private $namespace = self::DEFAULT_NAMESPACE;
@@ -52,77 +42,6 @@ class Deployer {
         }
 
         $this->s3_client = self::s3Client();
-    }
-
-    public function addToChunk(
-        string $cache_key,
-        string $hash,
-        array $put_data
-    ): void {
-        array_push(
-            $this->chunk,
-            [
-                'cache_key' => $cache_key,
-                'hash' => $hash,
-                'put_data' => $put_data
-            ]
-        );
-    }
-
-    public function deployChunk(): void {
-        if ( empty( $this->chunk ) ) {
-            return;
-        }
-
-        $already_cached = 0;
-
-        $commands = [];
-
-        foreach ( $this->chunk as $obj ) {
-            $cache_key = $obj['cache_key'];
-            $hash = $obj['hash'];
-            $put_data = $obj['put_data'];
-
-            $is_cached = \WP2Static\DeployCache::fileisCached(
-                $cache_key,
-                $this->namespace,
-                $hash,
-            );
-
-            if ( $is_cached ) {
-                $already_cached++;
-                continue;
-            }
-
-            array_push(
-                $commands,
-                $this->s3_client->getCommand( 'PutObject', $put_data )
-            );
-        }
-
-        if ( ! empty( $commands ) ) {
-            $cmd_pool = new CommandPool(
-                $this->s3_client,
-                $commands,
-                [
-                    'fulfilled' => function ( $reason, $iterKey, $promise) {
-                        $item = $this->chunk[$iterKey];
-                        \WP2Static\DeployCache::addFile( $item['cache_key'], $this->namespace, $item['hash'] );
-                        $this->addCfPath( $item['cache_key'] );
-                    },
-                    'rejected' => function ( $reason, $iterKey, $promise) {
-                        WsLog::l( 'Error uploading file ' . $this->chunk[$iterKey]['cache_key'] . ': ' . $reason );
-                    }
-                ]
-            );
-
-            $cmd_pool->promise()->wait();
-        }
-
-        $uncached = count( $this->chunk ) - $already_cached;
-        WsLog::l('Deployed chunk: ' . $uncached . ' uploaded, ' . $already_cached . ' cached from previous deploy.');
-
-        $this->chunk = [];
     }
 
     public function uploadFiles( string $processed_site_path ) : void {
