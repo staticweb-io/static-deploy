@@ -135,7 +135,7 @@ class DeployCache {
     }
 
     public static function truncate(
-        string $namespace = self::DEFAULT_NAMESPACE
+        string $namespace = ''
     ) : void {
         WsLog::l( 'Deleting DeployCache' );
 
@@ -143,8 +143,12 @@ class DeployCache {
 
         $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
 
-        $sql = "DELETE FROM $table_name WHERE namespace = %s";
-        $sql = $wpdb->prepare( $sql, $namespace );
+        if ( ! $namespace ) {
+            $sql = "TRUNCATE TABLE $table_name";
+        } else {
+            $sql = "DELETE FROM $table_name WHERE namespace = %s";
+            $sql = $wpdb->prepare( $sql, $namespace );
+        }
         $wpdb->query( $sql );
     }
 
