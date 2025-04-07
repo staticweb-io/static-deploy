@@ -154,6 +154,9 @@ class Deployer {
                 }
 
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+                if ( mb_substr( $s3_key, -1 ) === '/' ) {
+                    $s3_key = $s3_key . 'index.html';
+                }
 
                 if ( $redirect_to ) {
                     $put_data['WebsiteRedirectLocation'] = $redirect_to;
