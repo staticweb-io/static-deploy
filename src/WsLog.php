@@ -72,8 +72,6 @@ class WsLog {
 
         $table_name = $wpdb->prefix . 'wp2static_log';
 
-        $current_time = current_time( 'mysql' );
-
         $query = "INSERT INTO $table_name (log) VALUES " .
             implode(
                 ',',
