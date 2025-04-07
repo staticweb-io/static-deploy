@@ -29,11 +29,10 @@ $logs = $view['logs'];
                 </tr>
             <?php endif; ?>
 
-
             <?php foreach ( $logs as $log ) : ?>
                 <tr>
-                    <td><?php echo $log->time; ?></td>
-                    <td><?php echo $log->log; ?></td>
+                    <td><?php echo esc_html ( $log->time ); ?></td>
+                    <td><?php echo esc_html ( $log->log ); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
