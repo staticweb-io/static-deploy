@@ -131,6 +131,30 @@ class Deployer {
             return;
         }
 
+        // iterate each file in ProcessedSite
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $processed_site_path,
+                RecursiveDirectoryIterator::SKIP_DOTS
+            )
+        );
+
+        $file_arrays = function ( $iterator) use ( $processed_site_path ) {
+            foreach ( $iterator as $filename => $file_object ) {
+                $base_name = basename( $filename );
+                if ( $base_name != '.' && $base_name != '..' ) {
+                    yield [
+                        'filename' => $filename,
+                        'path' => str_replace( $processed_site_path, '', $filename ),
+                    ];
+                }
+            }
+        };
+
+        self::uploadFilesIter( $file_arrays( $iterator ) );
+    }
+
+    public function uploadFilesIter( \Iterator $files ) : void {
         $object_acl = Controller::getValue( 's3ObjectACL' );
         $put_data = [
             'Bucket' => Controller::getValue( 's3Bucket' ),
@@ -153,83 +177,71 @@ class Deployer {
             $iterator
         ) use (
             &$items_by_iterKey,
-            $processed_site_path,
             $put_data,
             $s3_prefix
         ) {
             $iterKey = 0;
 
-            foreach ( $iterator as $filename => $file_object ) {
-                $base_name = basename( $filename );
-                if ( $base_name != '.' && $base_name != '..' ) {
-                    $real_filepath = realpath( $filename );
+            foreach ( $iterator as $file ) {
+                $cache_key = $file['path'];
+                $filename = $file['filename'];
+                $real_filepath = realpath( $filename );
 
-                    $cache_key = str_replace( $processed_site_path, '', $filename );
-
-                    if ( ! $real_filepath ) {
-                        $err = 'Trying to deploy unknown file to S3: ' . $filename;
-                        \WP2Static\WsLog::l( $err );
-                        continue;
-                    }
-
-                    // Standardise all paths to use / (Windows support)
-                    $filename = str_replace( '\\', '/', $filename );
-
-                    if ( ! is_string( $filename ) ) {
-                        continue;
-                    }
-
-                    $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
-
-                    $mime_type = MimeTypes::guessMimeType( $filename );
-                    if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
-                        $mime_type = $mime_type . '; charset=UTF-8';
-                    }
-
-                    $file_hash = md5_file( $filename, true);
-                    if ( !$file_hash ) {
-                        WsLog::l( 'Failed to hash file ' . $filename );
-                        continue;
-                    }
-
-                    $put_data['ContentMD5'] = base64_encode( $file_hash );
-                    $put_data['ContentType'] = $mime_type;
-                    $put_data['Key'] = $s3_key;
-                    $hash = md5( (string) json_encode( $put_data ) );
-                    $put_data['SourceFile'] = $filename;
-
-                    $is_cached = \WP2Static\DeployCache::fileisCached(
-                        $cache_key,
-                        $this->namespace,
-                        $hash,
-                    );
-                    
-                    if ( $is_cached ) {
-                        continue;
-                    }
-
-                    // Save data so we can retrieve it by iterKey
-                    // in the fulfilled handler
-                    $items_by_iterKey[$iterKey] = [
-                        'cache_key' => $cache_key,
-                        'hash' => $hash
-                    ];
-                    $iterKey++;
-
-                    yield $this->s3_client->getCommand('PutObject', $put_data);
+                if ( ! $real_filepath ) {
+                    $err = 'Trying to deploy unknown file to S3: ' . $filename;
+                    \WP2Static\WsLog::l( $err );
+                    continue;
                 }
+
+                // Standardise all paths to use / (Windows support)
+                $filename = str_replace( '\\', '/', $filename );
+
+                if ( ! is_string( $filename ) ) {
+                    continue;
+                }
+
+                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+
+                $mime_type = MimeTypes::guessMimeType( $filename );
+                if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
+                    $mime_type = $mime_type . '; charset=UTF-8';
+                }
+
+                $file_hash = md5_file( $filename, true);
+                if ( !$file_hash ) {
+                    WsLog::l( 'Failed to hash file ' . $filename );
+                    continue;
+                }
+
+                $put_data['ContentMD5'] = base64_encode( $file_hash );
+                $put_data['ContentType'] = $mime_type;
+                $put_data['Key'] = $s3_key;
+                $hash = md5( (string) json_encode( $put_data ) );
+                $put_data['SourceFile'] = $filename;
+
+                $is_cached = \WP2Static\DeployCache::fileisCached(
+                    $cache_key,
+                    $this->namespace,
+                    $hash,
+                );
+                
+                if ( $is_cached ) {
+                    continue;
+                }
+
+                // Save data so we can retrieve it by iterKey
+                // in the fulfilled handler
+                $items_by_iterKey[$iterKey] = [
+                    'cache_key' => $cache_key,
+                    'hash' => $hash
+                ];
+                $iterKey++;
+
+                yield $this->s3_client->getCommand('PutObject', $put_data);
             }
         };
 
-        // iterate each file in ProcessedSite
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
-                $processed_site_path,
-                RecursiveDirectoryIterator::SKIP_DOTS
-            )
-        );
-
-        $commands = $command_generator( $iterator );
+        $commands = $command_generator( $files );
 
         $cmd_pool = new CommandPool(
             $this->s3_client,
