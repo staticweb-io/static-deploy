@@ -76,7 +76,7 @@ class SimpleRewriter {
             return '';
         }
 
-        if ( (int) CoreOptions::getValue( 'skipURLRewrite' ) === 1 ) {
+        if ( $this->skip_url_rewrite ) {
             return $file_contents;
         }
 
