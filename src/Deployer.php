@@ -183,41 +183,58 @@ class Deployer {
             $iterKey = 0;
 
             foreach ( $iterator as $file ) {
+                $body = $file['body'] ?? null;
                 $cache_key = $file['path'];
-                $filename = $file['filename'];
-                $real_filepath = realpath( $filename );
+                $content_type = $file['content_type'] ?? null;
+                $filename = $file['filename'] ?? null;
 
-                if ( ! $real_filepath ) {
-                    $err = 'Trying to deploy unknown file to S3: ' . $filename;
-                    \WP2Static\WsLog::l( $err );
-                    continue;
+                if ( ! $body ) {
+                    $real_filepath = realpath( $filename );
+
+                    if ( ! $real_filepath ) {
+                        $err = 'Trying to deploy unknown file to S3: ' . $filename;
+                        \WP2Static\WsLog::l( $err );
+                        continue;
+                    }
+
+                    // Standardise all paths to use / (Windows support)
+                    $filename = str_replace( '\\', '/', $filename );
+
+                    if ( ! is_string( $filename ) ) {
+                        continue;
+                    }
                 }
 
-                // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
-
-                if ( ! is_string( $filename ) ) {
-                    continue;
+                if ( ! $content_type && $filename ) {
+                    $content_type = MimeTypes::guessMimeType( $filename );
+                    if ( 'text/' === substr( $content_type, 0, 5 ) ) {
+                        $content_type = $content_type . '; charset=UTF-8';
+                    }
                 }
 
-                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
-
-                $mime_type = MimeTypes::guessMimeType( $filename );
-                if ( 'text/' === substr( $mime_type, 0, 5 ) ) {
-                    $mime_type = $mime_type . '; charset=UTF-8';
+                if ( $body ) {
+                    $file_hash = md5( $body, true );
+                } else {
+                    $file_hash = md5_file( $filename, true);
                 }
 
-                $file_hash = md5_file( $filename, true);
                 if ( !$file_hash ) {
                     WsLog::l( 'Failed to hash file ' . $filename );
                     continue;
                 }
 
+                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+
                 $put_data['ContentMD5'] = base64_encode( $file_hash );
-                $put_data['ContentType'] = $mime_type;
+                $put_data['ContentType'] = $content_type;
                 $put_data['Key'] = $s3_key;
                 $hash = md5( (string) json_encode( $put_data ) );
-                $put_data['SourceFile'] = $filename;
+
+                if ( $body ) {
+                    $put_data['Body'] = $body;
+                } else {
+                    $put_data['SourceFile'] = $filename;
+                }
 
                 $is_cached = \WP2Static\DeployCache::fileisCached(
                     $cache_key,
