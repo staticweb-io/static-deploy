@@ -187,8 +187,9 @@ class Deployer {
                 $cache_key = $file['path'];
                 $content_type = $file['content_type'] ?? null;
                 $filename = $file['filename'] ?? null;
+                $redirect_to = $file['redirect_to'] ?? null;
 
-                if ( ! $body ) {
+                if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
 
                     if ( ! $real_filepath ) {
@@ -214,25 +215,28 @@ class Deployer {
 
                 if ( $body ) {
                     $file_hash = md5( $body, true );
-                } else {
+                } else if ( $filename ) {
                     $file_hash = md5_file( $filename, true);
-                }
-
-                if ( !$file_hash ) {
-                    WsLog::l( 'Failed to hash file ' . $filename );
-                    continue;
                 }
 
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
 
-                $put_data['ContentMD5'] = base64_encode( $file_hash );
-                $put_data['ContentType'] = $content_type;
+                if ( $redirect_to ) {
+                    $put_data['WebsiteRedirectLocation'] = $redirect_to;
+                } else if ( ! $file_hash ) {
+                    WsLog::l( 'Failed to hash file ' . $filename );
+                    continue;
+                } else {
+                    $put_data['ContentMD5'] = base64_encode( $file_hash );
+                    $put_data['ContentType'] = $content_type;
+                }
+
                 $put_data['Key'] = $s3_key;
                 $hash = md5( (string) json_encode( $put_data ) );
 
                 if ( $body ) {
                     $put_data['Body'] = $body;
-                } else {
+                } else if ( $filename ) {
                     $put_data['SourceFile'] = $filename;
                 }
 
