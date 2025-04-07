@@ -155,6 +155,7 @@ class JobQueue {
             'crawl',
             'post_process',
             'deploy',
+            'direct_deploy',
         ];
 
         foreach ( $job_types as $job_type ) {
@@ -269,7 +270,7 @@ class JobQueue {
     public static function markFailedJobs() : void {
         global $wpdb;
 
-        $job_types = [ 'detect', 'crawl', 'post_process', 'deploy' ];
+        $job_types = [ 'detect', 'crawl', 'post_process', 'deploy', 'direct_deploy' ];
         $table_name = $wpdb->prefix . 'wp2static_jobs';
 
         $wpdb->query( 'START TRANSACTION' );

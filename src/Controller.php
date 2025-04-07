@@ -492,6 +492,7 @@ class Controller {
             'autoJobQueueCrawling' => 'crawl',
             'autoJobQueuePostProcessing' => 'post_process',
             'autoJobQueueDeployment' => 'deploy',
+            'autoJobQueueDirectDeploy' => 'direct_deploy',
         ];
 
         foreach ( $job_types as $key => $job_type ) {
@@ -634,6 +635,15 @@ class Controller {
                         }
                         WsLog::l( 'Starting post-deployment actions' );
                         do_action( 'wp2static_post_deploy_trigger', $deployer );
+
+                        break;
+                    case 'direct_deploy':
+                        $deployer = new DirectDeployer();
+
+                        WsLog::l( 'Starting direct deployment' );
+                        $deployer->deploy();
+                        WsLog::l( 'Starting post-direct deployment actions' );
+                        do_action( 'wp2static_post_direct_deploy_trigger', $deployer );
 
                         break;
                     default:

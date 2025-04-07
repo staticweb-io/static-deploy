@@ -182,6 +182,13 @@ class CoreOptions {
                 ''
             ),
             self::makeOptionSpec(
+                'boolean',
+                'autoJobQueueDirectDeploy',
+                '0',
+                'Direct Deploy',
+                ''
+            ),
+            self::makeOptionSpec(
                 'string',
                 'basicAuthUser',
                 '',
@@ -801,6 +808,12 @@ VALUES (%s, %s, %s);";
                     $table_name,
                     [ 'value' => isset( $_POST['autoJobQueueDeployment'] ) ? 1 : 0 ],
                     [ 'name' => 'autoJobQueueDeployment' ]
+                );
+
+                $wpdb->update(
+                    $table_name,
+                    [ 'value' => isset( $_POST['autoJobQueueDirectDeploy'] ) ? 1 : 0 ],
+                    [ 'name' => 'autoJobQueueDirectDeploy' ]
                 );
 
                 break;
