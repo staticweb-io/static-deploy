@@ -174,14 +174,6 @@ class JobQueue {
                 continue;
             }
 
-            // select all
-            $waiting_jobs = $wpdb->get_results(
-                "SELECT * FROM $table_name
-                WHERE job_type = '$job_type'
-                AND status = 'waiting'
-                ORDER BY created_at DESC"
-            );
-
             // remove latest one
             array_shift( $waiting_jobs );
 
