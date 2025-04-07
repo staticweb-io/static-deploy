@@ -9,6 +9,13 @@ class Controller {
             [ 'WP2StaticS3\Controller', 'addSubmenuPage' ]
         );
 
+        add_filter(
+            'wp2static_deployer_class',
+            [ $this, 'deployerClass' ],
+            10,
+            2
+        );
+
         add_action(
             'admin_post_wp2static_s3_save_options',
             [ $this, 'saveOptionsFromUI' ],
@@ -45,6 +52,13 @@ class Controller {
                 [ CLI::class, 's3' ]
             );
         }
+    }
+
+    public static function deployerClass( string $deployer_class, string $enabled_deployer ) : string {
+        if ( $enabled_deployer !== 'wp2static-addon-s3' ) {
+            return $deployer_class;
+        }
+        return Deployer::class;
     }
 
     /**
