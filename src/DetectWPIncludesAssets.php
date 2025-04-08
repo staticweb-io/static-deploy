@@ -56,7 +56,10 @@ class DetectWPIncludesAssets {
                 }
 
                 if ( $path_crawlable ) {
-                    yield '/' . $detected_filename;
+                    yield [
+                        'filename' => $filename,
+                        'url' => '/' . $detected_filename,
+                    ];
                 }
             }
         }

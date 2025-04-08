@@ -86,7 +86,10 @@ class DetectPluginAssets {
                     );
 
                 if ( is_string( $detected_filename ) ) {
-                    yield $detected_filename;
+                    yield [
+                        'filename' => $filename,
+                        'url' => $detected_filename,
+                    ];
                 }
             }
         }
