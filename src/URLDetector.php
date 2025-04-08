@@ -24,6 +24,10 @@ class URLDetector {
      * @return array<string>
      */
     public static function detectURLs( bool $quiet = false ) : array {
+        return iterator_to_array( static::detectURLsIter( $quiet ) );
+    }
+
+    public static function detectURLsIter( bool $quiet = false ) : \Iterator {
         if ( ! $quiet ) {
             WsLog::l( 'Starting to detect WordPress site URLs.' );
         }
@@ -41,6 +45,8 @@ class URLDetector {
             '/favicon.ico',
             '/sitemap.xml',
         ];
+
+        $iterators_to_merge = [];
 
         /*
             TODO: reimplement detection for URLs:
@@ -167,33 +173,37 @@ class URLDetector {
             $arrays_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ) );
         }
 
-        /**
-         * @var string[] $url_queue
-         */
-        $url_queue = call_user_func_array( 'array_merge', $arrays_to_merge );
+        $home_url = SiteInfo::getUrl( 'home' );
+        $unique_urls = [];
 
-        $url_queue = FilesHelper::cleanDetectedURLs( $url_queue );
+        foreach ( $arrays_to_merge as $array ) {
+            $iterators_to_merge[] = new \ArrayIterator( $array );
+        }
 
-        $url_queue = apply_filters(
-            'wp2static_modify_initial_crawl_list',
-            $url_queue
-        );
+        foreach ( $iterators_to_merge as $iter ) {
+            foreach ( $iter as $url ) {
+                $url = FilesHelper::cleanDetectedURL( $home_url, $url );
+                if ( $url && ! isset( $unique_urls[$url] ) ) {
+                    $unique_urls[$url] = true;
 
-        $unique_urls = array_unique( $url_queue );
+                    $detected = count( $unique_urls );
+                    if ( count($unique_urls) % 300 === 0 ) {
+                        $notice = "Detection progress: $detected unique URLs found";
+                        WsLog::l( $notice );
+                    }
 
-        $total_detected = (string) count( $unique_urls );
+                    yield $url;
+                }
+            }
+        }
+
+        $detected = count( $unique_urls );
 
         if ( ! $quiet ) {
             WsLog::l(
-                "Detection complete. $total_detected URLs added to Crawl Queue."
+                "Detection complete. $detected URLs found."
             );
         }
-
-        return $unique_urls;
-    }
-
-    public static function detectURLsIter() : \Iterator {
-        return new \ArrayIterator( static::detectURLs() );
     }
 
     public static function enqueueURLs() : string {
