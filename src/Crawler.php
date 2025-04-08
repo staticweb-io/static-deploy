@@ -315,7 +315,8 @@ class Crawler {
         $in_flight = [];
 
         $startNext = function() use ( &$in_flight, &$path_iter, &$site_urls ) {
-            $path = $path_iter->current();
+            $arr = $path_iter->current();
+            $path = $arr['path'];
             $in_flight[$path] = $this->crawlPath( $path, $site_urls );
             $path_iter->next();
         };

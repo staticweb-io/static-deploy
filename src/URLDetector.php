@@ -181,37 +181,43 @@ class URLDetector {
         }
 
         foreach ( $iterators_to_merge as $iter ) {
-            foreach ( $iter as $url ) {
-                $url = FilesHelper::cleanDetectedURL( $home_url, $url );
-                if ( $url && ! isset( $unique_urls[$url] ) ) {
-                    $unique_urls[$url] = true;
+            foreach ( $iter as $detected ) {
+                if ( ! is_array( $detected ) ) {
+                    $detected = [ 'url' => $detected ];
+                }
 
-                    $detected = count( $unique_urls );
+                $path = FilesHelper::cleanDetectedURL( $home_url, $detected['url'] );
+
+                if ( $path && ! isset( $unique_urls[$path] ) ) {
+                    $unique_urls[$path] = true;
+
+                    $detected_ct = count( $unique_urls );
                     if ( count($unique_urls) % 300 === 0 ) {
-                        $notice = "Detection progress: $detected unique URLs found";
+                        $notice = "Detection progress: $detected_ct unique URLs found";
                         WsLog::l( $notice );
                     }
 
-                    yield $url;
+                    $detected['path'] = $path;
+                    yield $detected;
                 }
             }
         }
 
-        $detected = count( $unique_urls );
+        $detected_ct = count( $unique_urls );
 
         if ( ! $quiet ) {
             WsLog::l(
-                "Detection complete. $detected URLs found."
+                "Detection complete. $detected_ct URLs found."
             );
         }
     }
 
     public static function enqueueURLs() : string {
-        $unique_urls = static::detectURLs();
+        $unique_urls = [];
 
-        // No longer truncate before adding
-        // addUrls is now doing INSERT IGNORE based on URL hash to be
-        // additive and not error on duplicate
+        foreach ( static::detectURLs() as $d ) {
+            $unique_urls[] = $d['path'];
+        }
 
         CrawlQueue::addUrls( $unique_urls );
 
