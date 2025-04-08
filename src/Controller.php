@@ -640,8 +640,17 @@ class Controller {
                     case 'direct_deploy':
                         $deployer = new DirectDeployer();
 
-                        WsLog::l( 'Starting direct deployment' );
-                        $deployer->deploy();
+                        $post_id = $job->triggering_post_id;
+                        if ( $post_id ) {
+                            $path = wp_make_link_relative(get_permalink($post_id));
+                            $paths = new \ArrayIterator( [ $path ] );
+                            WsLog::l( 'Starting direct deployment for path ' . $path );
+                            $deployer->deployPaths($paths);
+                        } else {
+                            WsLog::l( 'Starting direct deployment' );
+                            $deployer->deploy();
+                        }
+
                         WsLog::l( 'Starting post-direct deployment actions' );
                         do_action( 'wp2static_post_direct_deploy_trigger', $deployer );
 
