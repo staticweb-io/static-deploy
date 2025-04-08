@@ -25,8 +25,8 @@ class URL {
      * absolute URL from
      * @throws WP2StaticException
      */
-    public function __construct( string $url, string $parent_page_url = null ) {
-        $url = new \Wa72\Url\Url( $url );
+    public function __construct( string $urlstr, ?string $parent_page_url = null ) {
+        $url = new \Wa72\Url\Url( $urlstr );
 
         if ( $parent_page_url ) {
             $this->parent_page_url = new \Wa72\Url\Url( $parent_page_url );
@@ -35,7 +35,7 @@ class URL {
             // test absolute URL
             if ( ! $url->getHost() ) {
                 throw new WP2StaticException(
-                    'Trying to create unsupported URL'
+                    "Trying to create unsupported URL: $urlstr"
                 );
             }
 
