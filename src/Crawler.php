@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use WP2StaticGuzzleHttp\Exception\RequestException;
 use WP2StaticGuzzleHttp\Exception\TooManyRedirectsException;
 use WP2StaticGuzzleHttp\Pool;
+use WP2StaticGuzzleHttp\Promise\PromiseInterface;
 
 define( 'WP2STATIC_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
 
@@ -258,18 +259,12 @@ class Crawler {
         do_action( 'wp2static_crawling_complete', $args );
     }
 
-    public function crawlIter( \Iterator $path_iter ) : \Iterator {
-        $site_host = parse_url( $this->site_path, PHP_URL_HOST );
-        $site_port = parse_url( $this->site_path, PHP_URL_PORT );
-        $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
-        $site_urls = [ "http://$site_host", "https://$site_host" ];
+    public function crawlPath(string &$path, array &$site_urls) : PromiseInterface {
+        $absolute_uri = new URL( $this->site_path . $path );
+        $request = new Request( 'GET', $absolute_uri->get() );
 
-        $responses = function ( $paths ) use ( $site_urls ) {
-            foreach ( $paths as $path ) {
-                $absolute_uri = new URL( $this->site_path . $path );
-                $request = new Request( 'GET', $absolute_uri->get() );
-
-                $response = $this->client->send( $request );
+        $promise = $this->client->sendAsync( $request )->then(
+            function ( $response ) use ( &$path, &$site_urls ) {
                 $status = $response->getStatusCode();
 
                 $body = null;
@@ -289,12 +284,38 @@ class Crawler {
                     $body = (string) $response->getBody();
                 }
 
-                yield [
+                return [
                     'body' => $body,
                     'content_type' => $response->getHeaderLine( 'Content-Type' ),
                     'redirect_to' => $redirect_to,
                     'path' => $path,
                 ];
+            },
+            function () use ( &$path ) {
+                return [
+                    'error' => 'Error crawling ' . $path,
+                    'path' => $path
+                ];
+            }
+        );
+
+        return $promise;
+    }
+
+    public function crawlIter( \Iterator $path_iter ) : \Iterator {
+        $site_host = parse_url( $this->site_path, PHP_URL_HOST );
+        $site_port = parse_url( $this->site_path, PHP_URL_PORT );
+        $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
+        $site_urls = [ "http://$site_host", "https://$site_host" ];
+
+        $responses = function ( $paths ) use ( $site_urls ) {
+            foreach ( $paths as $path ) {
+                $response = $this->crawlPath( $path, $site_urls )->wait();
+                if ( $response['error'] ) {
+                    WsLog::l( $response['error'] );
+                } else {
+                    yield $response;
+                }
             }
         };
 
