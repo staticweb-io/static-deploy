@@ -325,7 +325,7 @@ class Crawler {
             $startNext();
         }
 
-        $responses = function ( $paths ) use ( &$in_flight, &$path_iter, &$site_urls, $startNext ) {
+        $responses = function ( &$path_iter ) use ( &$in_flight, $startNext ) {
             while ( ! empty( $in_flight ) ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
                 unset( $in_flight[ $response['path'] ] );
@@ -354,7 +354,7 @@ class Crawler {
             );
         };
 
-        return $responses($path_iter);
+        return $responses( $path_iter );
     }
 
     /**
