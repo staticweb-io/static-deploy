@@ -215,6 +215,16 @@ class Controller {
 
         $query = $wpdb->prepare(
             $query_string,
+            's3Concurrency',
+            '4',
+            'Maximum number of files that will be uploaded at the same time',
+            ''
+        );
+
+        $wpdb->query( $query );
+
+        $query = $wpdb->prepare(
+            $query_string,
             's3ObjectACL',
             'public-read',
             'Object ACL',
@@ -471,6 +481,12 @@ class Controller {
             $table_name,
             [ 'value' => sanitize_text_field( $_POST['s3CacheControl'] ) ],
             [ 'name' => 's3CacheControl' ]
+        );
+
+        $wpdb->update(
+            $table_name,
+            [ 'value' => sanitize_text_field( $_POST['s3Concurency'] ) ],
+            [ 'name' => 's3Concurency' ]
         );
 
         $wpdb->update(

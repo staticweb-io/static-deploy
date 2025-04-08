@@ -201,6 +201,11 @@ class Deployer {
 
         $commands = $command_generator( $files );
 
+        $concurrency = intval ( Controller::getValue( 's3Concurrency' ) || '4' );
+        $config = [
+            'concurrency' => $concurrency,
+        ];
+
         $cmd_pool = new CommandPool(
             $this->s3_client,
             $commands,
@@ -218,7 +223,8 @@ class Deployer {
                     WsLog::l( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
                     unset($items_by_iterKey[$iterKey]);
                 }
-            ]
+            ],
+            $config
         );
 
         $cmd_pool->promise()->wait();
