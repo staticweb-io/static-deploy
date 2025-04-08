@@ -202,6 +202,11 @@ class Deployer {
                     $put_data['SourceFile'] = $filename;
                 }
 
+                if ( ! isset( $put_data['Body'] ) && ! isset ( $put_data['SourceFile'] ) && ! isset ( $put_data['WebsiteRedirectLocation'] ) ) {
+                    WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
+                    continue;
+                }
+
                 $is_cached = \WP2Static\DeployCache::fileisCached(
                     $cache_key,
                     $this->namespace,
