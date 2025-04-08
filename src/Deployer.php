@@ -170,7 +170,7 @@ class Deployer {
                     }
                 }
 
-                if ( $body ) {
+                if ( $body !== null ) {
                     $file_hash = md5( $body, true );
                 } else if ( $filename ) {
                     $file_hash = md5_file( $filename, true);
@@ -196,13 +196,13 @@ class Deployer {
                 $put_data['Key'] = $s3_key;
                 $hash = md5( (string) json_encode( $put_data ) );
 
-                if ( $body ) {
+                if ( $body !== null ) {
                     $put_data['Body'] = $body;
                 } else if ( $filename ) {
                     $put_data['SourceFile'] = $filename;
                 }
 
-                if ( ! isset( $put_data['Body'] ) && ! isset ( $put_data['SourceFile'] ) && ! isset ( $put_data['WebsiteRedirectLocation'] ) ) {
+                if ( ! isset( $put_data['Body'] ) && ! $put_data['SourceFile'] && ! $put_data['WebsiteRedirectLocation'] ) {
                     WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
                     continue;
                 }
