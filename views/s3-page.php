@@ -159,6 +159,22 @@
             </td>
         </tr>
 
+        <tr>
+            <td style="width:50%;">
+                <label
+                    for="<?php echo $view['options']['s3Concurrency']->name; ?>"
+                ><?php echo $view['options']['s3Concurrency']->label; ?></label>
+            </td>
+            <td>
+                <input
+                    id="<?php echo $view['options']['s3Concurrency']->name; ?>"
+                    name="<?php echo $view['options']['s3Concurrency']->name; ?>"
+                    type="text"
+                    value="<?php echo $view['options']['s3Concurrency']->value !== '' ? $view['options']['s3Concurrency']->value : ''; ?>"
+                />
+            </td>
+        </tr>
+
     </tbody>
 </table>
 
