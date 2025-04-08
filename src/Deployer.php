@@ -26,6 +26,21 @@ class Deployer {
     private $cf_stale_paths = [];
 
     /**
+     * @var integer
+     */
+    private $deployed_ct = 0;
+
+    /**
+     * @var integer
+     */
+    private $deploy_cache_ct = 0;
+
+    /**
+     * @var integer
+     */
+    private $deploy_error_ct = 0;
+
+    /**
      * @var string
      */
     private $namespace = self::DEFAULT_NAMESPACE;
@@ -117,6 +132,14 @@ class Deployer {
             $iterKey = 0;
 
             foreach ( $iterator as $file ) {
+                $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
+                if ( $total % 300 === 0 ) {
+                    $notice = "Deploy progress: $this->deployed_ct deployed," .
+                              " $this->deploy_error_ct failed," .
+                              " $this->deploy_cache_ct skipped (cached).";
+                    WsLog::l( $notice );
+                }
+
                 $body = $file['body'] ?? null;
                 $cache_key = $file['path'];
                 $content_type = $file['content_type'] ?? null;
@@ -184,6 +207,7 @@ class Deployer {
                 );
                 
                 if ( $is_cached ) {
+                    $this->deploy_cache_ct++;
                     continue;
                 }
 
@@ -211,23 +235,33 @@ class Deployer {
             $commands,
             [
                 'fulfilled' => function ($result, $iterKey, $promise)
-                    use (&$items_by_iterKey) {
+                    use ( &$items_by_iterKey ) {
                     $item = $items_by_iterKey[$iterKey];
                     \WP2Static\DeployCache::addFile( $item['cache_key'], $this->namespace, $item['hash'] );
                     $this->addCfPath( $item['cache_key'] );
                     unset($items_by_iterKey[$iterKey]);
+                    $this->deployed_ct++;
                 },
                 'rejected' => function ( $reason, $iterKey, $promise)
-                    use ($items_by_iterKey) {
+                    use ( &$items_by_iterKey ) {
                     $item = $items_by_iterKey[$iterKey];
                     WsLog::l( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
                     unset($items_by_iterKey[$iterKey]);
+                    $this->deploy_error_ct++;
                 }
             ],
             $config
         );
 
         $cmd_pool->promise()->wait();
+
+        $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
+        if ( $total % 300 === 0 ) {
+            $notice = "Deploy progress: $this->deployed_ct deployed," .
+                      " $this->deploy_error_ct failed," .
+                      " $this->deploy_cache_ct skipped (cached).";
+            WsLog::l( $notice );
+        }
 
         $distribution_id = Controller::getValue( 'cfDistributionID' );
         $num_stale = count( $this->cf_stale_paths );
