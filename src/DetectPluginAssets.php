@@ -8,13 +8,11 @@ use RecursiveDirectoryIterator;
 class DetectPluginAssets {
 
     /**
-     * Detect Plugin asset URLs
+     * Detect Plugin assets
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array>
      */
-    public static function detect() : array {
-        $files = [];
-
+    public static function detect() : \Iterator {
         $plugins_path = SiteInfo::getPath( 'plugins' );
         $plugins_url = SiteInfo::getUrl( 'plugins' );
 
@@ -88,14 +86,9 @@ class DetectPluginAssets {
                     );
 
                 if ( is_string( $detected_filename ) ) {
-                    array_push(
-                        $files,
-                        $detected_filename
-                    );
+                    yield $detected_filename;
                 }
             }
         }
-
-        return $files;
     }
 }

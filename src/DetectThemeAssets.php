@@ -10,9 +10,9 @@ class DetectThemeAssets {
     /**
      * Detect theme public URLs from filesystem
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array>
      */
-    public static function detect( string $theme_type ) : array {
+    public static function detect( string $theme_type ) : \Iterator {
         $files = [];
         $template_path = '';
         $template_url = '';
@@ -54,15 +54,10 @@ class DetectThemeAssets {
 
                 if ( $path_crawlable ) {
                     if ( is_string( $detected_filename ) ) {
-                        array_push(
-                            $files,
-                            $detected_filename
-                        );
+                        yield $detected_filename;
                     }
                 }
             }
         }
-
-        return $files;
     }
 }

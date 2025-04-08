@@ -10,12 +10,10 @@ class DetectWPIncludesAssets {
     /**
      * Detect assets within wp-includes path
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array>
      * @throw WP2StaticException
      */
-    public static function detect() : array {
-        $files = [];
-
+    public static function detect() : \Iterator {
         $includes_path = SiteInfo::getPath( 'includes' );
         $includes_url = SiteInfo::getUrl( 'includes' );
         $home_url = SiteInfo::getUrl( 'home' );
@@ -58,14 +56,9 @@ class DetectWPIncludesAssets {
                 }
 
                 if ( $path_crawlable ) {
-                    array_push(
-                        $files,
-                        '/' . $detected_filename
-                    );
+                    yield '/' . $detected_filename;
                 }
             }
         }
-
-        return $files;
     }
 }

@@ -110,25 +110,25 @@ class URLDetector {
         $detect_parent_theme = apply_filters( 'wp2static_detect_parent_theme', 1 );
 
         if ( $detect_parent_theme ) {
-            $arrays_to_merge[] = DetectThemeAssets::detect( 'parent' );
+            $iterators_to_merge[] = DetectThemeAssets::detect( 'parent' );
         }
 
         $detect_child_theme = apply_filters( 'wp2static_detect_child_theme', 1 );
 
         if ( $detect_child_theme ) {
-            $arrays_to_merge[] = DetectThemeAssets::detect( 'child' );
+            $iterators_to_merge[] = DetectThemeAssets::detect( 'child' );
         }
 
         $detect_plugin_assets = apply_filters( 'wp2static_detect_plugin_assets', 1 );
 
         if ( $detect_plugin_assets ) {
-            $arrays_to_merge[] = DetectPluginAssets::detect();
+            $iterators_to_merge[] = DetectPluginAssets::detect();
         }
 
         $detect_wpinc_assets = apply_filters( 'wp2static_detect_wpinc_assets', 1 );
 
         if ( $detect_wpinc_assets ) {
-            $arrays_to_merge[] = DetectWPIncludesAssets::detect();
+            $iterators_to_merge[] = DetectWPIncludesAssets::detect();
         }
 
         $detect_vendor_cache = apply_filters( 'wp2static_detect_vendor_cache', 1 );
