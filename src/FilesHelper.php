@@ -160,6 +160,52 @@ class FilesHelper {
     }
 
     /**
+     * Cleans detected URL before use. Accepts relative and absolute URLs
+     * both with and without starting or trailing slashes.
+     *
+     * @param string $urls list of absolute or relative URLs
+     * @return string|null list of relative URLs
+     * @throws WP2StaticException
+     */
+    public static function cleanDetectedURL( string &$home_url, string &$url ) : ?string {
+        if ( ! $url ) {
+            return null;
+        }
+
+        // NOTE: 2 x str_replace's significantly faster than
+        // 1 x str_replace with search/replace arrays of 2 length
+        $url = str_replace(
+            $home_url,
+            '/',
+            $url
+        );
+
+        $url = str_replace(
+            '//',
+            '/',
+            $url
+        );
+
+        if ( ! is_string( $url ) ) {
+            return null;
+        }
+
+        $url = strtok( $url, '#' );
+
+        if ( ! $url ) {
+            return null;
+        }
+
+        $url = strtok( $url, '?' );
+
+        if ( ! $url ) {
+            return null;
+        }
+
+        return $url;
+    }
+
+    /**
      * Clean all detected URLs before use. Accepts relative and absolute URLs
      * both with and without starting or trailing slashes.
      *
@@ -176,47 +222,14 @@ class FilesHelper {
             throw new WP2StaticException( $err );
         }
 
-        $cleaned_urls = array_map(
-            // trim hashes/query strings
-            function ( $url ) use ( $home_url ) {
-                if ( ! $url ) {
-                    return;
-                }
+        $cleaned_urls = [];
 
-                // NOTE: 2 x str_replace's significantly faster than
-                // 1 x str_replace with search/replace arrays of 2 length
-                $url = str_replace(
-                    $home_url,
-                    '/',
-                    $url
-                );
-
-                $url = str_replace(
-                    '//',
-                    '/',
-                    $url
-                );
-
-                if ( ! is_string( $url ) ) {
-                    return;
-                }
-
-                $url = strtok( $url, '#' );
-
-                if ( ! $url ) {
-                    return;
-                }
-
-                $url = strtok( $url, '?' );
-
-                if ( ! $url ) {
-                    return;
-                }
-
-                return $url;
-            },
-            $urls
-        );
+        foreach ( $urls as $url ) {
+            $url = self::cleanDetectedURL( $home_url, $url );
+            if ( $url ) {
+                $cleaned_urls[] = $url;
+            }
+        }
 
         if ( empty( $cleaned_urls ) ) {
             $err = 'No valid URLs left after cleaning';
