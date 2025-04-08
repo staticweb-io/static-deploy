@@ -107,14 +107,14 @@ class Deployer {
 
     public function uploadFilesIter( \Iterator $files ) : void {
         $object_acl = Controller::getValue( 's3ObjectACL' );
-        $put_data = [
+        $base_put_data = [
             'Bucket' => Controller::getValue( 's3Bucket' ),
             'ACL'    => $object_acl === '' ? 'public-read' : $object_acl,
         ];
 
         $cache_control = Controller::getValue( 's3CacheControl' );
         if ( $cache_control ) {
-            $put_data['CacheControl'] = $cache_control;
+            $base_put_data['CacheControl'] = $cache_control;
         }
 
         $s3_remote_path = Controller::getValue( 's3RemotePath' );
@@ -126,8 +126,8 @@ class Deployer {
             $iterator
         ) use (
             &$items_by_iterKey,
-            $put_data,
-            $s3_prefix
+            $base_put_data,
+            $s3_prefix,
         ) {
             $iterKey = 0;
 
@@ -181,6 +181,8 @@ class Deployer {
                     $s3_key = $s3_key . 'index.html';
                 }
 
+                $put_data = array_merge( [], $base_put_data );
+
                 if ( $redirect_to ) {
                     $put_data['WebsiteRedirectLocation'] = $redirect_to;
                 } else if ( ! $file_hash ) {
@@ -219,7 +221,7 @@ class Deployer {
                 ];
                 $iterKey++;
 
-                yield $this->s3_client->getCommand('PutObject', $put_data);
+                yield $this->s3_client->getCommand('PutObject', array_merge( [], $put_data ) );
             }
         };
 
