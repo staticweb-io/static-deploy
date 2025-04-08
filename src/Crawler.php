@@ -304,6 +304,8 @@ class Crawler {
     }
 
     public function crawlIter( \Iterator $path_iter ) : \Iterator {
+        WsLog::l( 'Starting crawl.' );
+
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
@@ -326,8 +328,15 @@ class Crawler {
         $responses = function ( $paths ) use ( &$in_flight, &$path_iter, &$site_urls, $startNext ) {
             while ( ! empty( $in_flight ) ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
-                
                 unset( $in_flight[ $response['path'] ] );
+                
+                $this->crawled++;
+                // incrementally log crawl progress
+                if ( $this->crawled % 300 === 0 ) {
+                    $notice = "Crawling progress: $this->crawled crawled," .
+                                " $this->cache_hits skipped (cached).";
+                    WsLog::l( $notice );
+                }
 
                 if ( $response['error'] ?? false ) {
                     WsLog::l( $response['error'] );
@@ -339,6 +348,10 @@ class Crawler {
                     $startNext();
                 }
             }
+
+            WsLog::l(
+                "Crawling complete. $this->crawled crawled, $this->cache_hits skipped (cached)."
+            );
         };
 
         return $responses($path_iter);
