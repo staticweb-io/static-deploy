@@ -77,7 +77,7 @@ class PostProcessor {
         $process = function ( $crawl_responses) use ( $rewriter ) {
             foreach ( $crawl_responses as $crawled ) {
                 if ( $crawled['body'] ) {
-                    $crawled['body'] == $rewriter->rewriteFileContents( $crawled['body'] );
+                    $crawled['body'] = $rewriter->rewriteFileContents( $crawled['body'] );
                 }
                 yield $crawled;
             }
