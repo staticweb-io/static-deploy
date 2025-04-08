@@ -244,7 +244,7 @@ class CoreOptions {
             self::makeOptionSpec(
                 'integer',
                 'crawlConcurrency',
-                '1',
+                '4',
                 'Crawl Concurrency',
                 'The maximum number of files that will be crawled at the same time.'
             ),
