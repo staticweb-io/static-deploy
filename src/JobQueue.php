@@ -170,12 +170,24 @@ class JobQueue {
 
         foreach ( $job_types as $job_type ) {
             // get all jobs for a type where status is 'waiting'
-            $waiting_jobs = $wpdb->get_results(
-                "SELECT * FROM $table_name
-                WHERE job_type = '$job_type'
-                AND status = 'waiting'
-                ORDER BY created_at DESC"
-            );
+            if ( $job_type === 'direct_deploy' ) {
+                // Don't collapse direct_deploys that target a specific
+                // single post
+                $waiting_jobs = $wpdb->get_results(
+                    "SELECT * FROM $table_name
+                    WHERE job_type = '$job_type'
+                    AND status = 'waiting'
+                    AND triggering_post_id IS NULL
+                    ORDER BY created_at DESC"
+                );
+            } else {
+                $waiting_jobs = $wpdb->get_results(
+                    "SELECT * FROM $table_name
+                    WHERE job_type = '$job_type'
+                    AND status = 'waiting'
+                    ORDER BY created_at DESC"
+                );
+            }
 
             // abort if less than 2 jobs of same type in waiting status
             if ( $waiting_jobs < 2 ) {
