@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use WP2StaticGuzzleHttp\Exception\RequestException;
 use WP2StaticGuzzleHttp\Exception\TooManyRedirectsException;
 use WP2StaticGuzzleHttp\Pool;
+use WP2StaticGuzzleHttp\Promise;
 use WP2StaticGuzzleHttp\Promise\PromiseInterface;
 
 define( 'WP2STATIC_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
@@ -308,13 +309,34 @@ class Crawler {
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
         $site_urls = [ "http://$site_host", "https://$site_host" ];
 
-        $responses = function ( $paths ) use ( $site_urls ) {
-            foreach ( $paths as $path ) {
-                $response = $this->crawlPath( $path, $site_urls )->wait();
-                if ( $response['error'] ) {
+        $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
+        $in_flight = [];
+
+        $startNext = function() use ( &$in_flight, &$path_iter, &$site_urls ) {
+            $path = $path_iter->current();
+            $in_flight[$path] = $this->crawlPath( $path, $site_urls );
+            $path_iter->next();
+        };
+
+        $i = 0;
+        while ( $i++ < $concurrency && $path_iter->valid() ) {
+            $startNext();
+        }
+
+        $responses = function ( $paths ) use ( &$in_flight, &$path_iter, &$site_urls, $startNext ) {
+            while ( ! empty( $in_flight ) ) {
+                $response = Promise\Utils::any( $in_flight )->wait( true );
+                
+                unset( $in_flight[ $response['path'] ] );
+
+                if ( $response['error'] ?? false ) {
                     WsLog::l( $response['error'] );
                 } else {
                     yield $response;
+                }
+                
+                if ( $path_iter->valid() ) {
+                    $startNext();
                 }
             }
         };
