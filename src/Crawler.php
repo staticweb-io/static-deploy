@@ -260,12 +260,19 @@ class Crawler {
         do_action( 'wp2static_crawling_complete', $args );
     }
 
-    public function crawlPath(string &$path, array &$site_urls) : PromiseInterface {
-        $absolute_uri = new URL( $this->site_path . $path );
-        $request = new Request( 'GET', $absolute_uri->get() );
+    public function crawlPath(array $detected, array $site_urls) : PromiseInterface {
+        $filename = $detected['filename'] ?? null;
+        $path = $detected['path'];
+
+        $absolute_uri = (new URL( $this->site_path . $path ))->get();
+        if ( $filename ) {
+            $request = new Request( 'HEAD', $absolute_uri );
+        } else {
+            $request = new Request( 'GET', $absolute_uri );
+        }
 
         $promise = $this->client->sendAsync( $request )->then(
-            function ( $response ) use ( &$path, &$site_urls ) {
+            function ( $response ) use ( &$filename, &$path, &$site_urls ) {
                 $status = $response->getStatusCode();
 
                 $body = null;
@@ -281,13 +288,14 @@ class Crawler {
 
                     $redirect_to =
                         (string) str_replace( $site_urls, '', $effective_url );
-                } else if ( $status !== 404 ) {
+                } else if ( ! $filename && $status !== 404 ) {
                     $body = (string) $response->getBody();
                 }
 
                 return [
                     'body' => $body,
                     'content_type' => $response->getHeaderLine( 'Content-Type' ),
+                    'filename' => $filename,
                     'redirect_to' => $redirect_to,
                     'path' => $path,
                 ];
@@ -315,9 +323,9 @@ class Crawler {
         $in_flight = [];
 
         $startNext = function() use ( &$in_flight, &$path_iter, &$site_urls ) {
-            $arr = $path_iter->current();
-            $path = $arr['path'];
-            $in_flight[$path] = $this->crawlPath( $path, $site_urls );
+            $detected = $path_iter->current();
+            $path = $detected['path'];
+            $in_flight[$path] = $this->crawlPath( $detected, $site_urls );
             $path_iter->next();
         };
 
