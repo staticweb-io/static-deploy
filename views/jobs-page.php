@@ -146,7 +146,28 @@ $row = function( $name ) use ( $options ) {
                     </select>
                 </td>
             </tr>
-            <?php echo $row( 'processQueueImmediately' ); ?>
+            <tr>
+                <td style="width: 50%">
+                    <?php echo $label( 'processQueueImmediately', true ); ?>
+                </td>
+                <td>
+                    <select
+                        id="<?php echo $options['processQueueImmediately']->name; ?>"
+                        name="<?php echo $options['processQueueImmediately']->name; ?>"
+                        value="<?php echo (int) $options['processQueueImmediately']->value; ?>"
+                    >
+                    <option
+                        <?php echo (int) $options['processQueueImmediately']->value === 0 ? 'selected' : ''; ?>
+                        value="0">disabled</option>
+                    <option
+                        <?php echo (int) $options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
+                        value="1">Using wp-admin.php</option>
+                    <option
+                        <?php echo (int) $options['processQueueImmediately']->value === 2 ? 'selected' : ''; ?>
+                        value="2">Using wordpress CLI</option>
+                    </select>
+                </td>
+            </tr>
         </tbody>
     </table>
 

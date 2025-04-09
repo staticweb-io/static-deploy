@@ -501,8 +501,13 @@ class Controller {
             }
         }
 
-        if ( CoreOptions::getValue( 'processQueueImmediately' ) ) {
+        $immediate_mode = intval ( CoreOptions::getValue( 'processQueueImmediately' ) );
+        if ( $immediate_mode === 1 ) {
             self::wp2staticProcessQueueAdminPost();
+        }
+        else if ( $immediate_mode === 2 ) {
+            shell_exec('wp wp2static process_queue > /dev/null 2>&1 &');
+            usleep(100000); // 100,000 microseconds = 0.1 seconds
         }
     }
 

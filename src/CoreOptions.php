@@ -758,7 +758,7 @@ VALUES (%s, %s, %s);";
             case 'jobs':
                 $queue_on_post_save = isset( $_POST['queueJobOnPostSave'] ) ? 1 : 0;
                 $queue_on_post_delete = isset( $_POST['queueJobOnPostDelete'] ) ? 1 : 0;
-                $process_queue_immediately = isset( $_POST['processQueueImmediately'] ) ? 1 : 0;
+                $process_queue_immediately = isset( $_POST['processQueueImmediately'] ) ? intval ( $_POST['processQueueImmediately'] ) : 0;
 
                 $wpdb->update(
                     $table_name,
