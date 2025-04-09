@@ -517,6 +517,12 @@ class CLI {
 
     /*
      * Crawls, processes and deploys files all in one pass.
+     * 
+     * ## OPTIONS
+     * 
+     * <post-id>
+     * Post ID to deploy. Deploys all files if omitted.
+     * 
      */
     public function direct_deploy(
         array $args,
@@ -526,8 +532,18 @@ class CLI {
         WsLog::deleteOldLogs();
 
         $deployer = new DirectDeployer();
-        WsLog::l( 'Starting direct deployment' );
-        $deployer->deploy();
+
+        if ( isset( $args[0] ) ) {
+            $post_id = intval( $args[0] );
+            $path = wp_make_link_relative(get_permalink($post_id));
+            $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
+            WsLog::l( 'Starting direct deployment for path ' . $path );
+            $deployer->deployPaths($paths);
+        } else {
+            WsLog::l( 'Starting direct deployment' );
+            $deployer->deploy();
+        }
+
         WsLog::l( 'Starting post-direct deployment actions' );
         do_action( 'wp2static_post_direct_deploy_trigger', $deployer );
     }
