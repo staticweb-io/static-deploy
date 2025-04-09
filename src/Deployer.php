@@ -145,6 +145,7 @@ class Deployer {
                 $content_type = $file['content_type'] ?? null;
                 $filename = $file['filename'] ?? null;
                 $redirect_to = $file['redirect_to'] ?? null;
+                $status = $file['status'] ?? null;
 
                 if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
@@ -181,30 +182,40 @@ class Deployer {
                     $s3_key = $s3_key . 'index.html';
                 }
 
-                $put_data = array_merge( [], $base_put_data );
-
-                if ( $redirect_to ) {
-                    $put_data['WebsiteRedirectLocation'] = $redirect_to;
-                } else if ( ! $file_hash ) {
-                    WsLog::l( 'Failed to hash file ' . $filename );
-                    continue;
+                if ( $status === 404 ) {
+                    $cmd_name = 'DeleteObject';
+                    $cmd_data = [
+                        'Bucket' => $base_put_data['Bucket'],
+                        'Key' => $s3_key,
+                    ];
+                    $hash = md5( $cmd_name . (string) json_encode( $cmd_data ) );
                 } else {
-                    $put_data['ContentMD5'] = base64_encode( $file_hash );
-                    $put_data['ContentType'] = $content_type;
-                }
+                    $cmd_name = 'PutObject';
+                    $cmd_data = array_merge( [], $base_put_data );
 
-                $put_data['Key'] = $s3_key;
-                $hash = md5( (string) json_encode( $put_data ) );
-
-                if ( $body !== null ) {
-                    $put_data['Body'] = $body;
-                } else if ( $filename ) {
-                    $put_data['SourceFile'] = $filename;
-                }
-
-                if ( ! isset( $put_data['Body'] ) && ! $put_data['SourceFile'] && ! $put_data['WebsiteRedirectLocation'] ) {
-                    WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
-                    continue;
+                    if ( $redirect_to ) {
+                        $cmd_data['WebsiteRedirectLocation'] = $redirect_to;
+                    } else if ( ! $file_hash ) {
+                        WsLog::l( 'Failed to hash file ' . $filename );
+                        continue;
+                    } else {
+                        $cmd_data['ContentMD5'] = base64_encode( $file_hash );
+                        $cmd_data['ContentType'] = $content_type;
+                    }
+    
+                    $cmd_data['Key'] = $s3_key;
+                    $hash = md5( $cmd_name . (string) json_encode( $cmd_data ) );
+    
+                    if ( $body !== null ) {
+                        $cmd_data['Body'] = $body;
+                    } else if ( $filename ) {
+                        $cmd_data['SourceFile'] = $filename;
+                    }
+    
+                    if ( ! isset( $cmd_data['Body'] ) && ! $cmd_data['SourceFile'] && ! $cmd_data['WebsiteRedirectLocation'] ) {
+                        WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
+                        continue;
+                    }
                 }
 
                 $is_cached = \WP2Static\DeployCache::fileisCached(
@@ -212,7 +223,7 @@ class Deployer {
                     $this->namespace,
                     $hash,
                 );
-                
+
                 if ( $is_cached ) {
                     $this->deploy_cache_ct++;
                     continue;
@@ -226,7 +237,7 @@ class Deployer {
                 ];
                 $iterKey++;
 
-                yield $this->s3_client->getCommand('PutObject', array_merge( [], $put_data ) );
+                yield $this->s3_client->getCommand($cmd_name, array_merge( [], $cmd_data ) );
             }
         };
 
