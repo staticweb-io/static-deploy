@@ -133,7 +133,7 @@ class Deployer {
 
             foreach ( $iterator as $file ) {
                 $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
-                if ( $total % 300 === 0 ) {
+                if ( $total % 300 === 0 && $total > 0 ) {
                     $notice = "Deploy progress: $this->deployed_ct deployed," .
                               " $this->deploy_error_ct failed," .
                               " $this->deploy_cache_ct skipped (cached).";
