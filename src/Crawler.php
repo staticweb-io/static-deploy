@@ -298,6 +298,7 @@ class Crawler {
                     'filename' => $filename,
                     'redirect_to' => $redirect_to,
                     'path' => $path,
+                    'status' => $status,
                 ];
             },
             function () use ( &$path ) {
