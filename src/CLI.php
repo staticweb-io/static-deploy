@@ -523,8 +523,9 @@ class CLI {
         array $assoc_args
     ) : void {
         CoreOptions::init();
-        $deployer = new DirectDeployer();
+        WsLog::deleteOldLogs();
 
+        $deployer = new DirectDeployer();
         WsLog::l( 'Starting direct deployment' );
         $deployer->deploy();
         WsLog::l( 'Starting post-direct deployment actions' );
@@ -1037,6 +1038,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function full_workflow( array $args, array $assoc_args ) : void {
+        WsLog::deleteOldLogs();
         $this->detect();
         $this->crawl( [], [] );
         $this->post_process();

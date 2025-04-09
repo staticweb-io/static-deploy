@@ -575,6 +575,8 @@ class Controller {
     public static function wp2staticProcessQueue() : void {
         global $wpdb;
 
+        WsLog::deleteOldLogs();
+
         JobQueue::markFailedJobs();
         // skip any earlier jobs of same type still in 'waiting' status
         JobQueue::squashQueue();

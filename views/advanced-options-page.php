@@ -44,6 +44,7 @@ $row = function( $name ) use ( $options ) {
     <table class="widefat striped">
         <tbody>
             <?php echo $row( 'crawlConcurrency' ); ?>
+            <?php echo $row( 'maxLogRows' ); ?>
             <?php echo $row( 'skipURLRewrite' ); ?>
             <?php echo $row( 'hostsToRewrite' ); ?>
         </tbody>

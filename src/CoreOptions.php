@@ -346,6 +346,13 @@ class CoreOptions {
                 'localhost'
             ),
             self::makeOptionSpec(
+                'integer',
+                'maxLogRows',
+                '500',
+                'Max Log Rows',
+                'The maximum number of log rows to retain. 0 means there is no limit.',
+            ),
+            self::makeOptionSpec(
                 'boolean',
                 'skipURLRewrite',
                 '0',
@@ -856,6 +863,13 @@ VALUES (%s, %s, %s);";
                     $table_name,
                     [ 'blob_value' => $hosts_to_rewrite ],
                     [ 'name' => 'hostsToRewrite' ]
+                );
+
+                $max_log_rows = intval( $_POST['maxLogRows'] );
+                $wpdb->update(
+                    $table_name,
+                    [ 'value' => $max_log_rows < 0 ? 0 : $max_log_rows ],
+                    [ 'name' => 'maxLogRows' ]
                 );
 
                 $wpdb->update(

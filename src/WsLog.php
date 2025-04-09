@@ -82,11 +82,45 @@ class WsLog {
     }
 
     /**
+     * Delete oldest logs
+     *
+     * @return int Number of rows deleted
+     */
+    public static function deleteOldLogs() : int {
+        $max_log_rows = intval( CoreOptions::getValue('maxLogRows') );
+
+        if ( $max_log_rows < 1 ) {
+            return 0;
+        }
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'wp2static_log';
+
+        $total_logs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+
+        if ( $total_logs > $max_log_rows ) {
+            $wpdb->query( "
+                DELETE FROM $table_name
+                WHERE id NOT IN (
+                    SELECT id FROM (
+                        SELECT id FROM $table_name ORDER BY id DESC LIMIT $max_log_rows
+                    ) AS sub
+                )
+            " );
+        }
+
+        return $total_logs;
+    }
+
+    /**
      * Get all log lines
      *
      * @return mixed[] array of Log items
      */
     public static function getAll() : array {
+        self::deleteOldLogs();
+
         global $wpdb;
         $logs = [];
 
@@ -101,6 +135,8 @@ class WsLog {
      * Poll latest log lines
      */
     public static function poll() : string {
+        self::deleteOldLogs();
+        
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_log';
