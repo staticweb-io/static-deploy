@@ -79,7 +79,8 @@ class AdminBar {
          detect: "Detecting URLs",
          crawl: "Crawling Site",
          post_process: "Post-Processing",
-         deploy: "Deploying"
+         deploy: "Deploying",
+         direct_deploy: "Deploying"
      }
      var staticweb_idle = false;
 
