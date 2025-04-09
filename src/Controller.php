@@ -485,7 +485,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticEnqueueJobs( int $post_id = null ) : void {
+    public static function wp2staticEnqueueJobs( ?int $post_id = null ) : void {
         // check each of these in order we want to enqueue
         $job_types = [
             'autoJobQueueDetection' => 'detect',
