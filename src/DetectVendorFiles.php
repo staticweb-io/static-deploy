@@ -19,9 +19,7 @@ class DetectVendorFiles {
     public static function detect(
             FileFiltering $filtering,
             string $wp_site_url,
-        ) : array {
-        $vendor_files = [];
-
+        ) : \Iterator {
         $content_path = SiteInfo::getPath( 'content' );
         $site_url = SiteInfo::getUrl( 'site' );
         $content_url = SiteInfo::getUrl( 'content' );
@@ -47,7 +45,9 @@ class DetectVendorFiles {
                     $prefix
                 );
 
-                $vendor_files = array_merge( $vendor_files, $vendor_cache_urls );
+                foreach ( $vendor_cache_urls as $arr ) {
+                    yield $arr;
+                }
             }
         }
 
@@ -60,8 +60,6 @@ class DetectVendorFiles {
                 WHERE meta_key = '%s'
                 ";
 
-            $custom_permalinks = [];
-
             $posts = $wpdb->get_results(
                 sprintf(
                     $query,
@@ -72,16 +70,9 @@ class DetectVendorFiles {
 
             if ( $posts ) {
                 foreach ( $posts as $post ) {
-                    $custom_permalinks[] = $wp_site_url . $post->meta_value;
+                    yield [ 'url' => $wp_site_url . $post->meta_value ];
                 }
-
-                $vendor_files = array_merge(
-                    $vendor_files,
-                    $custom_permalinks
-                );
             }
         }
-
-        return $vendor_files;
     }
 }

@@ -118,7 +118,7 @@ class URLDetector {
         $detect_vendor_cache = apply_filters( 'wp2static_detect_vendor_cache', 1 );
 
         if ( $detect_vendor_cache ) {
-            $arrays_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ) );
+            $iterators_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ) );
         }
 
         $detect_posts_pagination = apply_filters( 'wp2static_detect_posts_pagination', 1 );

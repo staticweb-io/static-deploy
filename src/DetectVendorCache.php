@@ -21,9 +21,7 @@ class DetectVendorCache {
         string $cache_dir,
         string $path_to_trim,
         string $prefix
-        ) : array {
-
-        $files = [];
+        ) : \Iterator {
 
         $directory = $cache_dir;
 
@@ -34,18 +32,18 @@ class DetectVendorCache {
                 // Standardise all paths to use / (Windows support)
                 $filename = str_replace( '\\', '/', $filename );
 
-                if ( ! is_string( $filename ) ) {
-                    continue;
-                }
+                $detected_filename =
+                    str_replace(
+                        $path_to_trim,
+                        '',
+                        $filename
+                    );
 
-                array_push(
-                    $files,
-                    $prefix .
-                    home_url( str_replace( $path_to_trim, '', $filename ) )
-                );
+                yield [
+                    'filename' => $filename,
+                    'url' => $prefix . home_url( $detected_filename ),
+                ];
             }
         }
-
-        return $files;
     }
 }
