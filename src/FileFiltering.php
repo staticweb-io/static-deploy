@@ -40,6 +40,59 @@ class FileFiltering {
     }
 
     /**
+     * Returns crawlable files in a given directory, recursively.
+     *
+     * @param string $directory
+     * @return \Iterator
+     * 
+     */
+    public function crawlableFiles(
+        string $directory,
+    ) : \Iterator {
+        $dir_iter = new \RecursiveDirectoryIterator(
+            $directory,
+            \RecursiveDirectoryIterator::SKIP_DOTS,
+        );
+
+        // Using a callback filter is more efficient than
+        // filtering later because we avoid recursing into
+        // blocked directories.
+        $filter_iter = new \RecursiveCallbackFilterIterator(
+            $dir_iter,
+            function ( $current, $key, $iterator ) {
+                $filename = $current->getFilename();
+
+                // Filter out both directories and files
+                foreach ( $this->filenames_to_ignore as $filename_to_ignore ) {
+                    if ( $filename === $filename_to_ignore ) {
+                        return false;
+                    }
+                }
+
+                // Filter only files
+                if ( $current->isFile() ) {
+                    /*
+                      Prepare the file extension list for regex:
+                      - Add prepending (escaped) \ for a literal . at the start of
+                        the file extension
+                      - Add $ at the end to match end of string
+                      - Add i modifier for case insensitivity
+                    */
+                    foreach ( $this->file_extensions_to_ignore as $extension ) {
+                        if ( preg_match( "/\\{$extension}$/i", $filename ) ) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        );
+
+        return new \RecursiveIteratorIterator( $filter_iter );
+    }
+
+    /**
      * Get public URLs for all files in a local directory.
      *
      * @param string $dir
@@ -57,24 +110,13 @@ class FileFiltering {
         $files = [];
 
         if ( is_dir( $dir ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $dir,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $iterator = $this->crawlableFiles( $dir );
 
             foreach ( $iterator as $filename => $file_object ) {
-                $path_crawlable = $this->pathLooksCrawlable(
-                    $filename,
-                );
+                $url = str_replace( $site_path, '/', $filename );
 
-                if ( $path_crawlable ) {
-                    $url = str_replace( $site_path, '/', $filename );
-
-                    if ( is_string( $url ) ) {
-                        $files[] = $url;
-                    }
+                if ( is_string( $url ) ) {
+                    $files[] = $url;
                 }
             }
         }
