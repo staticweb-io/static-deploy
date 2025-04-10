@@ -2,9 +2,7 @@
 
 namespace WP2Static;
 
-use RecursiveIteratorIterator;
-use RecursiveArrayIterator;
-use RecursiveDirectoryIterator;
+use WP2Static\FileFiltering;
 
 class FilesHelper {
 
@@ -36,127 +34,14 @@ class FilesHelper {
     }
 
     /**
-     * Get public URLs for all files in a local directory.
-     *
-     * @param string $dir
-     * @param array<string> $filenames_to_ignore
-     * @param array<string> $file_extensions_to_ignore
-     * @return string[] list of relative, urlencoded URLs
-     */
-    public static function getListOfLocalFilesByDir(
-        string $dir,
-        array $filenames_to_ignore,
-        array $file_extensions_to_ignore
-    ) : array {
-        $site_path = SiteInfo::getPath( 'site' );
-
-        if ( ! is_string( $site_path ) ) {
-            return [];
-        }
-
-        $files = [];
-
-        if ( is_dir( $dir ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $dir,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
-
-            foreach ( $iterator as $filename => $file_object ) {
-                /**
-                 * @var string $filename
-                 */
-
-                $path_crawlable = self::pathLooksCrawlable(
-                    $filename,
-                    $filenames_to_ignore,
-                    $file_extensions_to_ignore
-                );
-
-                if ( $path_crawlable ) {
-                    $url = str_replace( $site_path, '/', $filename );
-
-                    if ( is_string( $url ) ) {
-                        $files[] = $url;
-                    }
-                }
-            }
-        }
-
-        return $files;
-    }
-
-    /**
-     * Ensure a given filepath has an allowed filename and extension.
-     *
-     * @param string $file_name
-     * @param array<string> $filenames_to_ignore
-     * @param array<string> $file_extensions_to_ignore
-     * @return bool  True if the given file does not have a disallowed filename
-     *               or extension.
-     */
-    public static function pathLooksCrawlable(
-        string $file_name,
-        array $filenames_to_ignore,
-        array $file_extensions_to_ignore
-    ) : bool {
-        $filename_matches = 0;
-
-        str_ireplace( $filenames_to_ignore, '', $file_name, $filename_matches );
-
-        // If we found matches we don't need to go any further
-        if ( $filename_matches ) {
-            return false;
-        }
-
-        /*
-          Prepare the file extension list for regex:
-          - Add prepending (escaped) \ for a literal . at the start of
-            the file extension
-          - Add $ at the end to match end of string
-          - Add i modifier for case insensitivity
-        */
-        foreach ( $file_extensions_to_ignore as $extension ) {
-            if ( preg_match( "/\\{$extension}$/i", $file_name ) ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Ensure a given filepath has an allowed filename and extension.
      *
      * @return bool  True if the given file does not have a disallowed filename
      *               or extension.
      */
     public static function filePathLooksCrawlable( string $file_name ) : bool {
-        $filenames_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'filenamesToIgnore' );
-
-        $filenames_to_ignore =
-            apply_filters(
-                'wp2static_filenames_to_ignore',
-                $filenames_to_ignore
-            );
-
-        $file_extensions_to_ignore = CoreOptions::getLineDelimitedBlobValue(
-            'fileExtensionsToIgnore'
-        );
-
-        $file_extensions_to_ignore =
-            apply_filters(
-                'wp2static_file_extensions_to_ignore',
-                $file_extensions_to_ignore
-            );
-
-        return self::pathLooksCrawlable(
-            $file_name,
-            $filenames_to_ignore,
-            $file_extensions_to_ignore
-        );
+        $filtering = new FileFiltering();
+        return $filtering->pathLooksCrawlable( $file_name );
     }
 
     /**

@@ -75,29 +75,10 @@ class URLDetector {
         }
 
         if ( CoreOptions::getValue( 'detectUploads' ) ) {
-            $filenames_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'filenamesToIgnore' );
-
-            $filenames_to_ignore =
-                apply_filters(
-                    'wp2static_filenames_to_ignore',
-                    $filenames_to_ignore
-                );
-
-            $file_extensions_to_ignore = CoreOptions::getLineDelimitedBlobValue(
-                'fileExtensionsToIgnore'
-            );
-
-            $file_extensions_to_ignore =
-                apply_filters(
-                    'wp2static_file_extensions_to_ignore',
-                    $file_extensions_to_ignore
-                );
-
+            $filtering = new FileFiltering();
             $arrays_to_merge[] =
-                FilesHelper::getListOfLocalFilesByDir(
+                $filtering->getListOfLocalFilesByDir(
                     SiteInfo::getPath( 'uploads' ),
-                    $filenames_to_ignore,
-                    $file_extensions_to_ignore
                 );
         }
 
