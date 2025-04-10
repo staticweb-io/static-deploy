@@ -96,32 +96,25 @@ class FileFiltering {
      * Get public URLs for all files in a local directory.
      *
      * @param string $dir
-     * @return string[] list of relative, urlencoded URLs
+     * @return \Iterator
      */
     public function getListOfLocalFilesByDir(
         string $dir,
-    ) : array {
+    ) : \Iterator {
         $site_path = SiteInfo::getPath( 'site' );
 
-        if ( ! is_string( $site_path ) ) {
-            return [];
-        }
-
-        $files = [];
-
-        if ( is_dir( $dir ) ) {
+        if ( is_string( $site_path ) &&is_dir( $dir ) ) {
             $iterator = $this->crawlableFiles( $dir );
 
             foreach ( $iterator as $filename => $file_object ) {
                 $url = str_replace( $site_path, '/', $filename );
 
-                if ( is_string( $url ) ) {
-                    $files[] = $url;
-                }
+                yield [
+                    'filename' => $filename,
+                    'url' => $url,
+                ];
             }
         }
-
-        return $files;
     }
 
     /**
