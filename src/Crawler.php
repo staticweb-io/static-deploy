@@ -140,6 +140,7 @@ class Crawler {
         };
 
         $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
+        $last_log_time = microtime( true );
 
         $pool = new Pool(
             $this->client,
@@ -147,7 +148,7 @@ class Crawler {
             [
                 'concurrency' => $concurrency,
                 'fulfilled' => function ( Response $response, $index ) use (
-                    $urls, $use_crawl_cache, $site_urls
+                    $last_log_time, &$urls, $use_crawl_cache, $site_urls
                 ) {
                     $root_relative_path = $urls[ $index ]['path'];
                     $crawled_contents = (string) $response->getBody();
@@ -227,12 +228,14 @@ class Crawler {
                         );
                     }
 
-                    // incrementally log crawl progress
-                    if ( $this->crawled % 300 === 0 ) {
+                    $now = microtime( true );
+
+                    if ( $now - $last_log_time >= 60 ) {
                         WsLog::l( 'Crawling ' . $root_relative_path );
                         $notice = "Crawling progress: $this->crawled crawled," .
                                   " $this->cache_hits skipped (cached).";
                         WsLog::l( $notice );
+                        $last_log_time = microtime( true );
                     }
                 },
                 'rejected' => function ( RequestException $reason, $index ) use ( $urls ) {
@@ -336,18 +339,23 @@ class Crawler {
             $startNext();
         }
 
-        $responses = function ( &$path_iter ) use ( &$in_flight, $startNext ) {
+        $last_log_time = microtime( true );
+
+        $responses = function ( &$path_iter ) use ( &$in_flight, $last_log_time, $startNext ) {
             while ( ! empty( $in_flight ) ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
                 unset( $in_flight[ $response['path'] ] );
                 
                 $this->crawled++;
-                // incrementally log crawl progress
-                if ( $this->crawled % 300 === 0 ) {
+
+                $now = microtime( true );
+
+                if ( $now - $last_log_time >= 60 ) {
                     WsLog::l( 'Crawling ' . $response['path'] );
                     $notice = "Crawling progress: $this->crawled crawled," .
                                 " $this->cache_hits skipped (cached).";
                     WsLog::l( $notice );
+                    $last_log_time = microtime( true );
                 }
 
                 if ( $response['error'] ?? false ) {

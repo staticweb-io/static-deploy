@@ -164,6 +164,8 @@ class URLDetector {
             $iterators_to_merge[] = new \ArrayIterator( $array );
         }
 
+        $last_log_time = microtime( true );
+
         foreach ( $iterators_to_merge as $iter ) {
             foreach ( $iter as $detected ) {
                 if ( ! is_array( $detected ) ) {
@@ -176,10 +178,13 @@ class URLDetector {
                     $unique_urls[$path] = true;
 
                     $detected_ct = count( $unique_urls );
-                    if ( count($unique_urls) % 300 === 0 ) {
+                    $now = microtime( true );
+
+                    if ( $now - $last_log_time >= 60 ) {
                         WsLog::l( 'Detecting ' . $path );
                         $notice = "Detection progress: $detected_ct unique URLs found";
                         WsLog::l( $notice );
+                        $last_log_time = microtime( true );
                     }
 
                     $detected['path'] = $path;
