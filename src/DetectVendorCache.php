@@ -2,8 +2,7 @@
 
 namespace WP2Static;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
+use WP2Static\FileFiltering;
 
 class DetectVendorCache {
     /**
@@ -18,6 +17,7 @@ class DetectVendorCache {
      * @return string[] list of URLs
      */
     public static function detect(
+        FileFiltering $filtering,
         string $cache_dir,
         string $path_to_trim,
         string $prefix
@@ -28,21 +28,9 @@ class DetectVendorCache {
         $directory = $cache_dir;
 
         if ( is_dir( $directory ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $directory,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $iterator = $filtering->crawlableFiles( $directory );
 
             foreach ( $iterator as $filename => $file_object ) {
-                /**
-                 * @var string $filename
-                 */
-
-                $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
-
                 // Standardise all paths to use / (Windows support)
                 $filename = str_replace( '\\', '/', $filename );
 
@@ -50,13 +38,11 @@ class DetectVendorCache {
                     continue;
                 }
 
-                if ( $path_crawlable ) {
-                    array_push(
-                        $files,
-                        $prefix .
-                        home_url( str_replace( $path_to_trim, '', $filename ) )
-                    );
-                }
+                array_push(
+                    $files,
+                    $prefix .
+                    home_url( str_replace( $path_to_trim, '', $filename ) )
+                );
             }
         }
 

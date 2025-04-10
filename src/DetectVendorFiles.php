@@ -2,6 +2,8 @@
 
 namespace WP2Static;
 
+use WP2Static\FileFiltering;
+
 /**
  * Class DetectVendorFiles
  *
@@ -14,7 +16,10 @@ class DetectVendorFiles {
      *
      * @return string[] list of URLs
      */
-    public static function detect( string $wp_site_url ) : array {
+    public static function detect(
+            FileFiltering $filtering,
+            string $wp_site_url,
+        ) : array {
         $vendor_files = [];
 
         $content_path = SiteInfo::getPath( 'content' );
@@ -36,6 +41,7 @@ class DetectVendorFiles {
                 );
 
                 $vendor_cache_urls = DetectVendorCache::detect(
+                    $filtering,
                     $vendor_cache_dir,
                     $content_path,
                     $prefix
