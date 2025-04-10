@@ -177,6 +177,7 @@ class URLDetector {
 
                     $detected_ct = count( $unique_urls );
                     if ( count($unique_urls) % 300 === 0 ) {
+                        WsLog::l( 'Detecting ' . $path );
                         $notice = "Detection progress: $detected_ct unique URLs found";
                         WsLog::l( $notice );
                     }

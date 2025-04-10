@@ -229,6 +229,7 @@ class Crawler {
 
                     // incrementally log crawl progress
                     if ( $this->crawled % 300 === 0 ) {
+                        WsLog::l( 'Crawling ' . $root_relative_path );
                         $notice = "Crawling progress: $this->crawled crawled," .
                                   " $this->cache_hits skipped (cached).";
                         WsLog::l( $notice );
@@ -343,6 +344,7 @@ class Crawler {
                 $this->crawled++;
                 // incrementally log crawl progress
                 if ( $this->crawled % 300 === 0 ) {
+                    WsLog::l( 'Crawling ' . $response['path'] );
                     $notice = "Crawling progress: $this->crawled crawled," .
                                 " $this->cache_hits skipped (cached).";
                     WsLog::l( $notice );
