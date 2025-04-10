@@ -130,15 +130,18 @@ class Deployer {
             $s3_prefix,
         ) {
             $iterKey = 0;
+            $last_log_time = microtime( true );
 
             foreach ( $iterator as $file ) {
+                $now = microtime( true );
                 $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
-                if ( $total % 300 === 0 && $total > 0 ) {
+                if ( $total > 0 && $now - $last_log_time >= 60 ) {
                     WsLog::l( 'Deploying ' . $file['path'] );
                     $notice = "Deploy progress: $this->deployed_ct deployed," .
                               " $this->deploy_error_ct failed," .
                               " $this->deploy_cache_ct skipped (cached).";
                     WsLog::l( $notice );
+                    $last_log_time = microtime( true );
                 }
 
                 $body = $file['body'] ?? null;
