@@ -181,7 +181,7 @@ class URLDetector {
                     $now = microtime( true );
 
                     if ( $now - $last_log_time >= 60 ) {
-                        WsLog::l( 'Detecting ' . $path );
+                        WsLog::l( 'Detected ' . $path );
                         $notice = "Detection progress: $detected_ct unique URLs found";
                         WsLog::l( $notice );
                         $last_log_time = microtime( true );

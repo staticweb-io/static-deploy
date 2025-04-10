@@ -231,7 +231,7 @@ class Crawler {
                     $now = microtime( true );
 
                     if ( $now - $last_log_time >= 60 ) {
-                        WsLog::l( 'Crawling ' . $root_relative_path );
+                        WsLog::l( 'Crawled ' . $root_relative_path );
                         $notice = "Crawling progress: $this->crawled crawled," .
                                   " $this->cache_hits skipped (cached).";
                         WsLog::l( $notice );
@@ -347,11 +347,10 @@ class Crawler {
                 unset( $in_flight[ $response['path'] ] );
                 
                 $this->crawled++;
-
                 $now = microtime( true );
-
+                
                 if ( $now - $last_log_time >= 60 ) {
-                    WsLog::l( 'Crawling ' . $response['path'] );
+                    WsLog::l( 'Crawled ' . $response['path'] );
                     $notice = "Crawling progress: $this->crawled crawled," .
                                 " $this->cache_hits skipped (cached).";
                     WsLog::l( $notice );
