@@ -34,17 +34,6 @@ class FilesHelper {
     }
 
     /**
-     * Ensure a given filepath has an allowed filename and extension.
-     *
-     * @return bool  True if the given file does not have a disallowed filename
-     *               or extension.
-     */
-    public static function filePathLooksCrawlable( string $file_name ) : bool {
-        $filtering = new FileFiltering();
-        return $filtering->pathLooksCrawlable( $file_name );
-    }
-
-    /**
      * Cleans detected URL before use. Accepts relative and absolute URLs
      * both with and without starting or trailing slashes.
      *
