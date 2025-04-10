@@ -79,7 +79,6 @@ class URLDetector {
         }
 
         if ( CoreOptions::getValue( 'detectUploads' ) ) {
-            $filtering = new FileFiltering();
             $arrays_to_merge[] =
                 $filtering->getListOfLocalFilesByDir(
                     SiteInfo::getPath( 'uploads' ),
