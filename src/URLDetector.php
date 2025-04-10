@@ -42,7 +42,6 @@ class URLDetector {
 
         $arrays_to_merge = [];
 
-        // TODO: detect robots.txt, etc before adding
         $arrays_to_merge[] = [
             '/',
             '/robots.txt',
@@ -51,45 +50,6 @@ class URLDetector {
         ];
 
         $iterators_to_merge = [];
-
-        /*
-            TODO: reimplement detection for URLs:
-                'detectCommentPagination',
-                'detectComments',
-                'detectFeedURLs',
-
-        // other options:
-
-         - robots
-         - favicon
-         - sitemaps
-
-        */
-
-        if ( CoreOptions::getValue( 'detectPosts' ) ) {
-            $arrays_to_merge[] = DetectPostURLs::detect();
-        }
-
-        if ( CoreOptions::getValue( 'detectPages' ) ) {
-            $arrays_to_merge[] = DetectPageURLs::detect();
-        }
-
-        if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
-            $arrays_to_merge[] = DetectCustomPostTypeURLs::detect();
-        }
-
-        if ( CoreOptions::getValue( 'detectUploads' ) ) {
-            $iterators_to_merge[] =
-                $filtering->getListOfLocalFilesByDir(
-                    SiteInfo::getPath( 'uploads' ),
-                );
-        }
-
-        $detect_sitemaps = apply_filters( 'wp2static_detect_sitemaps', 1 );
-
-        if ( $detect_sitemaps ) {
-            $arrays_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ) );
-        }
 
         $detect_parent_theme = apply_filters( 'wp2static_detect_parent_theme', 1 );
 
@@ -115,10 +75,35 @@ class URLDetector {
             $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering );
         }
 
+        if ( CoreOptions::getValue( 'detectUploads' ) ) {
+            $iterators_to_merge[] =
+                $filtering->getListOfLocalFilesByDir(
+                    SiteInfo::getPath( 'uploads' ),
+                );
+        }
+
         $detect_vendor_cache = apply_filters( 'wp2static_detect_vendor_cache', 1 );
 
         if ( $detect_vendor_cache ) {
             $iterators_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ) );
+        }
+
+        $detect_sitemaps = apply_filters( 'wp2static_detect_sitemaps', 1 );
+
+        if ( $detect_sitemaps ) {
+            $arrays_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ) );
+        }
+
+        if ( CoreOptions::getValue( 'detectPosts' ) ) {
+            $arrays_to_merge[] = DetectPostURLs::detect();
+        }
+
+        if ( CoreOptions::getValue( 'detectPages' ) ) {
+            $arrays_to_merge[] = DetectPageURLs::detect();
+        }
+
+        if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
+            $arrays_to_merge[] = DetectCustomPostTypeURLs::detect();
         }
 
         $detect_posts_pagination = apply_filters( 'wp2static_detect_posts_pagination', 1 );
