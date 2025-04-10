@@ -2,8 +2,7 @@
 
 namespace WP2Static;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
+use WP2Static\FileFiltering;
 
 class DetectPluginAssets {
 
@@ -12,17 +11,14 @@ class DetectPluginAssets {
      *
      * @return \Iterator<array>
      */
-    public static function detect() : \Iterator {
+    public static function detect(
+        FileFiltering $filtering,
+    ) : \Iterator {
         $plugins_path = SiteInfo::getPath( 'plugins' );
         $plugins_url = SiteInfo::getUrl( 'plugins' );
 
         if ( is_dir( $plugins_path ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $plugins_path,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $iterator = $filtering->crawlableFiles( $plugins_path );
 
             /**
              * @var string[] $active_plugins
@@ -50,17 +46,6 @@ class DetectPluginAssets {
             );
 
             foreach ( $iterator as $filename => $file_object ) {
-                /**
-                 * @var string $filename
-                 */
-
-                $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
-
-                if ( ! $path_crawlable ) {
-                    continue;
-                }
-
                 $matches_active_plugin_dir =
                     ( str_replace( $active_plugin_dirs, '', $filename ) !== $filename );
 

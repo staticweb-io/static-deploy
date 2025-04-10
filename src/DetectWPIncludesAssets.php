@@ -2,8 +2,7 @@
 
 namespace WP2Static;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
+use WP2Static\FileFiltering;
 
 class DetectWPIncludesAssets {
 
@@ -13,27 +12,17 @@ class DetectWPIncludesAssets {
      * @return \Iterator<array>
      * @throw WP2StaticException
      */
-    public static function detect() : \Iterator {
+    public static function detect(
+        FileFiltering $filtering,
+    ) : \Iterator {
         $includes_path = SiteInfo::getPath( 'includes' );
         $includes_url = SiteInfo::getUrl( 'includes' );
         $home_url = SiteInfo::getUrl( 'home' );
 
         if ( is_dir( $includes_path ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $includes_path,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $iterator = $filtering->crawlableFiles( $includes_path );
 
             foreach ( $iterator as $filename => $file_object ) {
-                /**
-                 * @var string $filename
-                 */
-
-                $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
-
                 // Standardise all paths to use / (Windows support)
                 $filename = str_replace( '\\', '/', $filename );
 
@@ -55,12 +44,10 @@ class DetectWPIncludesAssets {
                     continue;
                 }
 
-                if ( $path_crawlable ) {
-                    yield [
-                        'filename' => $filename,
-                        'url' => '/' . $detected_filename,
-                    ];
-                }
+                yield [
+                    'filename' => $filename,
+                    'url' => '/' . $detected_filename,
+                ];
             }
         }
     }

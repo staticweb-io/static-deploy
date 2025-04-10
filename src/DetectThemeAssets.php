@@ -2,8 +2,7 @@
 
 namespace WP2Static;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
+use WP2Static\FileFiltering;
 
 class DetectThemeAssets {
 
@@ -12,7 +11,10 @@ class DetectThemeAssets {
      *
      * @return \Iterator<array>
      */
-    public static function detect( string $theme_type ) : \Iterator {
+    public static function detect(
+            FileFiltering $filtering,
+            string $theme_type
+        ) : \Iterator {
         $template_path = '';
         $site_path = SiteInfo::getPath( 'site' );
 
@@ -23,21 +25,9 @@ class DetectThemeAssets {
         }
 
         if ( is_dir( $template_path ) ) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $template_path,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $iterator = $filtering->crawlableFiles( $site_path );
 
             foreach ( $iterator as $filename => $file_object ) {
-                /**
-                 * @var string $filename
-                 */
-
-                $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
-
                 // Standardise all paths to use / (Windows support)
                 $filename = str_replace( '\\', '/', $filename );
 
@@ -48,13 +38,11 @@ class DetectThemeAssets {
                         $filename
                     );
 
-                if ( $path_crawlable ) {
-                    if ( is_string( $detected_filename ) ) {
-                        yield [
-                            'filename' => $filename,
-                            'url' => $detected_filename,
-                        ];
-                    }
+                if ( is_string( $detected_filename ) ) {
+                    yield [
+                        'filename' => $filename,
+                        'url' => $detected_filename,
+                    ];
                 }
             }
         }
