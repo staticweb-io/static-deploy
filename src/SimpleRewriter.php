@@ -56,9 +56,9 @@ class SimpleRewriter {
 
         if ( $file_contents === false ) {
             $file_contents = '';
+        } else {
+            $rewritten_contents = $rewriter->rewriteFileContents( $file_contents );
         }
-
-        $rewritten_contents = $rewriter->rewriteFileContents( $file_contents );
 
         file_put_contents( $filename, $rewritten_contents );
     }
