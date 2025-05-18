@@ -31,7 +31,7 @@ jobs:
 
       - name: Build plugin zip
         run: |
-          nix develop -c bash tools/build_release.sh wp2static
+          nix develop -c bash tools/build_release.sh plugin
 
       - name: Upload artifact
         if: startsWith(github.ref, 'refs/tags/v')
