@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    name: Build
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Build plugin zip
+        run: |
+          nix develop -c bash tools/build_release.sh wp2static
