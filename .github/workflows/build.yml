@@ -7,12 +7,15 @@ on:
       - develop
     paths-ignore:
       - '**.md'
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - master
       - develop
     paths-ignore:
       - '**.md'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,3 +32,30 @@ jobs:
       - name: Build plugin zip
         run: |
           nix develop -c bash tools/build_release.sh wp2static
+
+      - name: Upload artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: Plugin
+          path: plugin.zip
+
+  release:
+    name: Create Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Plugin
+          path: .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: plugin.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
