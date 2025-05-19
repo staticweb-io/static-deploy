@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache Clojure dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           key: clj-wp2static-integration-tests-${{ hashFiles('**/deps.edn') }}
           restore-keys: clj-wp2static-integration-tests-
