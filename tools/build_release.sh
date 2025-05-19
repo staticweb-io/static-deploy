@@ -18,7 +18,7 @@ fi
 # run script from project root
 EXEC_DIR=$(pwd)
 
-TMP_DIR="$HOME/plugintmp"
+TMP_DIR=$(mktemp)
 rm -Rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 
@@ -47,6 +47,7 @@ zip --quiet -r -9 "./$1.zip" ./wp2static
 cd - || exit
 
 mv "$TMP_DIR/$1.zip" .
+rm -rf "$TMP_DIR"
 
 # reset dev dependencies
 cd "$EXEC_DIR" || exit
