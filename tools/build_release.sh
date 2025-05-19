@@ -6,8 +6,6 @@
 ##
 ## script archive_name dont_minify
 ##
-## places archive in $HOME/Downloads
-##
 ######################################
 
 # check for dependencies
@@ -48,9 +46,7 @@ zip --quiet -r -9 "./$1.zip" ./wp2static
 
 cd - || exit
 
-mkdir -p "$HOME/Downloads/"
-
-cp "$TMP_DIR/$1.zip" "$HOME/Downloads/"
+mv "$TMP_DIR/$1.zip" .
 
 # reset dev dependencies
 cd "$EXEC_DIR" || exit
