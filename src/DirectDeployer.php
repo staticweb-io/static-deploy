@@ -36,11 +36,16 @@ class DirectDeployer {
         $this->deployPaths( URLDetector::detectURLsIter() );
     }
 
+    public function deployComplete() : void {
+        $this->crawler->crawlComplete();
+
+        WsLog::l( 'Starting post-direct deployment actions' );
+        do_action( 'wp2static_post_direct_deploy_trigger', $this );
+    }
+
     public function deployPaths( \Iterator $paths ) : void {
         $crawled = $this->crawler->crawlIter( $paths );
         $processed = $this->processor->processIter( $crawled );
         $this->deployer->uploadFilesIter( $processed );
-
-        $this->crawler->crawlComplete();
     }
 }

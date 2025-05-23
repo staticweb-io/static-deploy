@@ -659,8 +659,7 @@ class Controller {
                             $deployer->deploy();
                         }
 
-                        WsLog::l( 'Starting post-direct deployment actions' );
-                        do_action( 'wp2static_post_direct_deploy_trigger', $deployer );
+                        $deployer->deployComplete();
 
                         break;
                     default:
