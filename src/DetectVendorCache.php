@@ -20,8 +20,12 @@ class DetectVendorCache {
         FileFiltering $filtering,
         string $cache_dir,
         string $path_to_trim,
-        string $prefix
+        string $prefix,
+        bool $log = false,
         ) : \Iterator {
+        if ( $log ) {
+            WsLog::l( 'Detecting vendor cache' );
+        }
 
         $directory = $cache_dir;
 

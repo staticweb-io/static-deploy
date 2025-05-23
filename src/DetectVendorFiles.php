@@ -19,7 +19,12 @@ class DetectVendorFiles {
     public static function detect(
             FileFiltering $filtering,
             string $wp_site_url,
+            bool $log = false,
         ) : \Iterator {
+        if ( $log ) {
+            WsLog::l( 'Detecting vendor files' );
+        }
+
         $content_path = SiteInfo::getPath( 'content' );
         $site_url = SiteInfo::getUrl( 'site' );
         $content_url = SiteInfo::getUrl( 'content' );

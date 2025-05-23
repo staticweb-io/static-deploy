@@ -9,7 +9,11 @@ class DetectAuthorPaginationURLs {
      *
      * @return string[] list of URLs
      */
-    public static function detect( string $wp_site_url ) : array {
+    public static function detect( string $wp_site_url, bool $log = false ) : array {
+        if ( $log ) {
+            WsLog::l( 'Detecting author pagination URLs' );
+        }
+
         global $wp_rewrite, $wpdb;
 
         $public = true;

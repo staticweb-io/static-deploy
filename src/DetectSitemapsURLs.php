@@ -14,7 +14,11 @@ class DetectSitemapsURLs {
      * @return string[] list of URLs
      * @throws WP2StaticException
      */
-    public static function detect( string $wp_site_url ) : array {
+    public static function detect( string $wp_site_url, bool $log = false ) : array {
+        if ( $log ) {
+            WsLog::l( 'Detecting sitemap URLs' );
+        }
+
         $sitemaps_urls = [];
 
         $opts = [

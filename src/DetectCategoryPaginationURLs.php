@@ -9,7 +9,11 @@ class DetectCategoryPaginationURLs {
      *
      * @return string[] list of URLs
      */
-    public static function detect() : array {
+    public static function detect( bool $log = false ) : array {
+        if ( $log ) {
+            WsLog::l( 'Detecting category pagination URLs' );
+        }
+
         global $wp_rewrite, $wpdb;
 
         // first we get each category with total posts as an array

@@ -13,8 +13,13 @@ class DetectThemeAssets {
      */
     public static function detect(
             FileFiltering $filtering,
-            string $theme_type
+            string $theme_type,
+            bool $log = false,
         ) : \Iterator {
+        if ( $log ) {
+            WsLog::l( 'Detecting theme assets' );
+        }
+
         $template_path = '';
         $site_path = SiteInfo::getPath( 'site' );
 

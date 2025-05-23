@@ -15,7 +15,11 @@ class DetectArchiveURLs {
      *
      * @return string[] list of archive URLs
      */
-    public static function detect() : array {
+    public static function detect( bool $log = false ) : array {
+        if ( $log ) {
+            WsLog::l( 'Detecting archive URLs' );
+        }
+
         global $wpdb;
 
         $archive_urls = [];

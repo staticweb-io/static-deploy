@@ -30,6 +30,8 @@ class URLDetector {
     }
 
     public static function detectURLsIter( bool $quiet = false ) : \Iterator {
+        $log_steps = false;
+
         if ( ! $quiet ) {
             WsLog::l( 'Starting to detect WordPress site URLs.' );
         }
@@ -54,25 +56,25 @@ class URLDetector {
         $detect_parent_theme = apply_filters( 'wp2static_detect_parent_theme', 1 );
 
         if ( $detect_parent_theme ) {
-            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'parent' );
+            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'parent', log: $log_steps );
         }
 
         $detect_child_theme = apply_filters( 'wp2static_detect_child_theme', 1 );
 
         if ( $detect_child_theme ) {
-            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'child' );
+            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'child', log: $log_steps );
         }
 
         $detect_plugin_assets = apply_filters( 'wp2static_detect_plugin_assets', 1 );
 
         if ( $detect_plugin_assets ) {
-            $iterators_to_merge[] = DetectPluginAssets::detect( $filtering );
+            $iterators_to_merge[] = DetectPluginAssets::detect( $filtering, log: $log_steps );
         }
 
         $detect_wpinc_assets = apply_filters( 'wp2static_detect_wpinc_assets', 1 );
 
         if ( $detect_wpinc_assets ) {
-            $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering );
+            $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering, log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectUploads' ) ) {
@@ -85,61 +87,61 @@ class URLDetector {
         $detect_vendor_cache = apply_filters( 'wp2static_detect_vendor_cache', 1 );
 
         if ( $detect_vendor_cache ) {
-            $iterators_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ) );
+            $iterators_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ), log: $log_steps );
         }
 
         $detect_sitemaps = apply_filters( 'wp2static_detect_sitemaps', 1 );
 
         if ( $detect_sitemaps ) {
-            $arrays_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ) );
+            $arrays_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectPosts' ) ) {
-            $arrays_to_merge[] = DetectPostURLs::detect();
+            $arrays_to_merge[] = DetectPostURLs::detect( log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectPages' ) ) {
-            $arrays_to_merge[] = DetectPageURLs::detect();
+            $arrays_to_merge[] = DetectPageURLs::detect( log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
-            $arrays_to_merge[] = DetectCustomPostTypeURLs::detect();
+            $arrays_to_merge[] = DetectCustomPostTypeURLs::detect( log: $log_steps );
         }
 
         $detect_posts_pagination = apply_filters( 'wp2static_detect_posts_pagination', 1 );
 
         if ( $detect_posts_pagination ) {
-            $arrays_to_merge[] = DetectPostsPaginationURLs::detect( SiteInfo::getURL( 'site' ) );
+            $arrays_to_merge[] = DetectPostsPaginationURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
         }
 
         $detect_archives = apply_filters( 'wp2static_detect_archives', 1 );
 
         if ( $detect_archives ) {
-            $arrays_to_merge[] = DetectArchiveURLs::detect();
+            $arrays_to_merge[] = DetectArchiveURLs::detect( log: $log_steps );
         }
 
         $detect_categories = apply_filters( 'wp2static_detect_categories', 1 );
 
         if ( $detect_categories ) {
-            $arrays_to_merge[] = DetectCategoryURLs::detect();
+            $arrays_to_merge[] = DetectCategoryURLs::detect( log: $log_steps );
         }
 
         $detect_category_pagination = apply_filters( 'wp2static_detect_category_pagination', 1 );
 
         if ( $detect_category_pagination ) {
-            $arrays_to_merge[] = DetectCategoryPaginationURLs::detect();
+            $arrays_to_merge[] = DetectCategoryPaginationURLs::detect( log: $log_steps );
         }
 
         $detect_authors = apply_filters( 'wp2static_detect_authors', 1 );
 
         if ( $detect_authors ) {
-            $arrays_to_merge[] = DetectAuthorsURLs::detect();
+            $arrays_to_merge[] = DetectAuthorsURLs::detect( log: $log_steps );
         }
 
         $detect_authors_pagination = apply_filters( 'wp2static_detect_authors_pagination', 1 );
 
         if ( $detect_authors_pagination ) {
-            $arrays_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ) );
+            $arrays_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ), log: $log_steps );
         }
 
         $home_url = SiteInfo::getUrl( 'home' );
