@@ -55,8 +55,8 @@ class CrawlQueue {
         $url_count = count( $urls );
 
         while ( $url_count ) {
-            $chunk = array_slice( $urls, 0, 100 );
-            $urls = array_slice( $urls, 100 );
+            $chunk = array_slice( $urls, 0, 1000 );
+            $urls = array_slice( $urls, 1000 );
             $url_count = count( $urls );
             $placeholders = array_fill( 0, count( $chunk ), '(%s, %s)' );
             $values = [];
