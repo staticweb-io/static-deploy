@@ -87,15 +87,26 @@ class WsLog {
      * @return int Number of rows deleted
      */
     public static function deleteOldLogs() : int {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'wp2static_log';
+
+        $max_id = $wpdb->get_var( "SELECT MAX(id) FROM $table_name" );
+
+        // When near the max range of MEDIUMINT SIGNED, we need to
+        // truncate the table and reset the id sequence.
+        if ( $max_id > 8300000 ) {
+            $wpdb->query( "TRUNCATE TABLE $table_name" );
+            $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 1" );
+            WsLog::l( 'Truncated log table to avoid AUTO_INCREMENT overflow' );
+            return 0;
+        }
+
         $max_log_rows = intval( CoreOptions::getValue('maxLogRows') );
 
         if ( $max_log_rows < 1 ) {
             return 0;
         }
-
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'wp2static_log';
 
         $total_logs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
