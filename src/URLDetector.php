@@ -188,13 +188,22 @@ class URLDetector {
     }
 
     public static function enqueueURLs() : string {
+        $new_urls = [];
         $unique_urls = [];
 
-        foreach ( static::detectURLs() as $d ) {
-            $unique_urls[] = $d['path'];
-        }
+        foreach ( static::detectURLsIter() as $d ) {
+            $path = $d['path'];
 
-        CrawlQueue::addUrls( $unique_urls );
+            if ( ! isset( $unique_urls[$path] ) ) {
+                $unique_urls[$path] = true;
+                $new_urls[] = $path;
+
+                if ( count( $new_urls ) == 1000 ) {
+                    CrawlQueue::addUrls( $new_urls );
+                    $new_urls = [];
+                }
+            }
+        }
 
         return (string) count( $unique_urls );
     }
