@@ -100,6 +100,19 @@ class Crawler {
         }
     }
 
+    public function crawlComplete() : void {
+        WsLog::l(
+            "Crawling complete. $this->crawled crawled, $this->cache_hits skipped (cached)."
+        );
+
+        $args = [
+            'crawled' => $this->crawled,
+            'cache_hits' => $this->cache_hits,
+        ];
+
+        do_action( 'wp2static_crawling_complete', $args );
+    }
+
     /**
      * Crawls URLs in WordPressSite, saving them to StaticSite
      */
@@ -251,16 +264,7 @@ class Crawler {
         // Force the pool of requests to complete.
         $promise->wait();
 
-        WsLog::l(
-            "Crawling complete. $this->crawled crawled, $this->cache_hits skipped (cached)."
-        );
-
-        $args = [
-            'crawled' => $this->crawled,
-            'cache_hits' => $this->cache_hits,
-        ];
-
-        do_action( 'wp2static_crawling_complete', $args );
+        $this->crawlComplete();
     }
 
     public function crawlPath(array $detected, array $site_urls) : PromiseInterface {
@@ -365,9 +369,7 @@ class Crawler {
                 }
             }
 
-            WsLog::l(
-                "Crawling complete. $this->crawled crawled, $this->cache_hits skipped (cached)."
-            );
+            $this->crawlComplete();
         };
 
         return $responses( $path_iter );
