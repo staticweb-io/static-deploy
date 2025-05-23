@@ -652,6 +652,7 @@ class Controller {
                         if ( $post_id ) {
                             $path = wp_make_link_relative(get_permalink($post_id));
                             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
+                            CrawlQueue::addUrls( [ $path ] );
                             WsLog::l( 'Starting direct deployment for path ' . $path );
                             $deployer->deployPaths($paths);
                         } else {
