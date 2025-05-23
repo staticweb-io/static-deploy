@@ -15,6 +15,7 @@ class CrawlQueue {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             url VARCHAR(2083) NOT NULL,
             hashed_url CHAR(32) NOT NULL,
+            filename VARCHAR(2083),
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
@@ -29,17 +30,37 @@ class CrawlQueue {
     }
 
     public static function addPathsIter( \Iterator $paths ) : \Iterator {
-        $urls = [];
+        global $wpdb;
 
-        foreach ( $paths as $path ) {
-            $urls[] = $path['url'];
+        $table_name = $wpdb->prefix . 'wp2static_urls';
 
-            if ( count( $urls ) == 1000 ) {
-                CrawlQueue::addUrls( $urls );
-                $urls = [];
+        foreach ( Utils::chunkIterator( $paths, 200 ) as $chunk ) {
+            $paths = [];
+            $values = [];
+            foreach ( $chunk as $path ) {
+                $paths[] = $path;
+                array_push(
+                    $values,
+                    rawurldecode( $path['path'] ),
+                    md5( $path['path'] ),
+                    $path['filename'] ?? null,
+                );
             }
 
-            yield $path;
+            $placeholders = array_fill( 0, count( $chunk ), '(%s,%s,%s)' );
+
+            $query_string =
+                "INSERT INTO $table_name (url, hashed_url, filename) " .
+                ' VALUES ' . implode( ',', $placeholders ) .
+                ' ON DUPLICATE KEY UPDATE' .
+                ' url = VALUES(url),' .
+                ' filename = VALUES(filename)';
+            $query = $wpdb->prepare( $query_string, $values );
+            $wpdb->query( $query );
+
+            foreach ( $paths as $path ) {
+                yield $path;
+            }
         }
     }
 

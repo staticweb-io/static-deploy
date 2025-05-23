@@ -5,6 +5,23 @@ namespace WP2Static;
 use Exception;
 
 class Utils {
+    public static function chunkIterator( iterable $iterator, int $chunk_size ): \Iterator {
+        $chunk = [];
+
+        foreach ( $iterator as $item ) {
+            $chunk[] = $item;
+
+            if ( count( $chunk ) === $chunk_size ) {
+                yield $chunk;
+                $chunk = [];
+            }
+        }
+
+        if ( !empty( $chunk )) {
+            yield $chunk;
+        }
+    }
+
     /*
      * Takes either an http or https URL and returns a // protocol-relative URL
      *
