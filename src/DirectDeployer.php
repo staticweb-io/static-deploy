@@ -8,11 +8,11 @@
 namespace WP2Static;
 
 class DirectDeployer {
-    public function deploy() : void {
-        $this->deployPaths( URLDetector::detectURLsIter() );
-    }
+    private $crawler;
+    private $deployer;
+    private $processor;
 
-    public function deployPaths( \Iterator $paths ) : void {
+    public function __construct() {
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
@@ -27,13 +27,18 @@ class DirectDeployer {
             return;
         }
 
-        $deployer = new $deployer_class();
+        $this->deployer = new $deployer_class();
+        $this->crawler = new Crawler();
+        $this->processor = new PostProcessor();
+    }
 
-        $crawler = new Crawler();
-        $processor = new PostProcessor();
+    public function deploy() : void {
+        $this->deployPaths( URLDetector::detectURLsIter() );
+    }
 
-        $crawled = $crawler->crawlIter( $paths );
-        $processed = $processor->processIter( $crawled );
-        $deployer->uploadFilesIter( $processed );
+    public function deployPaths( \Iterator $paths ) : void {
+        $crawled = $this->crawler->crawlIter( $paths );
+        $processed = $this->processor->processIter( $crawled );
+        $this->deployer->uploadFilesIter( $processed );
     }
 }
