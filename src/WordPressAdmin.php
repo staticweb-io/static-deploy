@@ -9,6 +9,8 @@
 
 namespace WP2Static;
 
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
 class WordPressAdmin {
 
     /**
@@ -16,6 +18,19 @@ class WordPressAdmin {
      */
     public function __construct() {
 
+    }
+
+    /**
+     * Build update checker
+     *
+     * @param string $bootstrap_file main plugin filepath
+     */
+    public static function buildUpdateChecker( string $bootstrap_file ) : void {
+        PucFactory::buildUpdateChecker(
+            'https://raw.githubusercontent.com/staticweb-io/wp2static/refs/heads/develop/update.json',
+            $bootstrap_file,
+            'wp2static'
+        );
     }
 
     /**

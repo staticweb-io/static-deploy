@@ -39,6 +39,7 @@ class Controller {
         $plugin_instance = self::getInstance();
 
         WordPressAdmin::registerHooks( $bootstrap_file );
+        WordPressAdmin::buildUpdateChecker( $bootstrap_file );
         WordPressAdmin::addAdminUIElements();
 
         Utils::set_max_execution_time();
