@@ -28,6 +28,21 @@ class CrawlQueue {
         );
     }
 
+    public static function addPathsIter( \Iterator $paths ) : \Iterator {
+        $urls = [];
+
+        foreach ( $paths as $path ) {
+            $urls[] = $path['url'];
+
+            if ( count( $urls ) == 1000 ) {
+                CrawlQueue::addUrls( $urls );
+                $urls = [];
+            }
+
+            yield $path;
+        }
+    }
+
     /**
      * Add all Urls to queue
      *
