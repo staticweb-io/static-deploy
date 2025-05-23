@@ -97,6 +97,7 @@ class Crawler {
         if ( 'wp2static' === $crawler_slug ) {
             $crawler = new Crawler();
             $crawler->crawlSite();
+            $crawler->crawlComplete();
         }
     }
 
@@ -263,8 +264,6 @@ class Crawler {
 
         // Force the pool of requests to complete.
         $promise->wait();
-
-        $this->crawlComplete();
     }
 
     public function crawlPath(array $detected, array $site_urls) : PromiseInterface {
@@ -368,8 +367,6 @@ class Crawler {
                     $startNext();
                 }
             }
-
-            $this->crawlComplete();
         };
 
         return $responses( $path_iter );

@@ -40,5 +40,7 @@ class DirectDeployer {
         $crawled = $this->crawler->crawlIter( $paths );
         $processed = $this->processor->processIter( $crawled );
         $this->deployer->uploadFilesIter( $processed );
+
+        $this->crawler->crawlComplete();
     }
 }
