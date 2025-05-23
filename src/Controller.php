@@ -836,7 +836,6 @@ class Controller {
         $crawler_slug = empty( $crawlers ) ? 'wp2static' : $crawlers[0]->slug;
         do_action(
             'wp2static_crawl',
-            StaticSite::getPath(),
             $crawler_slug
         );
         WsLog::l( 'Crawling completed' );

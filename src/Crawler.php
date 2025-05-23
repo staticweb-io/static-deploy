@@ -91,17 +91,17 @@ class Crawler {
         $this->client = new Client( $opts );
     }
 
-    public static function wp2staticCrawl( string $static_site_path, string $crawler_slug ) : void {
+    public static function wp2staticCrawl( string $crawler_slug ) : void {
         if ( 'wp2static' === $crawler_slug ) {
             $crawler = new Crawler();
-            $crawler->crawlSite( $static_site_path );
+            $crawler->crawlSite();
         }
     }
 
     /**
      * Crawls URLs in WordPressSite, saving them to StaticSite
      */
-    public function crawlSite( string $static_site_path ) : void {
+    public function crawlSite() : void {
         WsLog::l( 'Starting to crawl detected URLs.' );
 
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
@@ -256,7 +256,6 @@ class Crawler {
         );
 
         $args = [
-            'staticSitePath' => $static_site_path,
             'crawled' => $this->crawled,
             'cache_hits' => $this->cache_hits,
         ];
