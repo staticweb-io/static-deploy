@@ -89,6 +89,8 @@ class Crawler {
         }
 
         $this->client = new Client( $opts );
+
+        WsLog::l( 'Starting crawl.' );
     }
 
     public static function wp2staticCrawl( string $crawler_slug ) : void {
@@ -102,8 +104,6 @@ class Crawler {
      * Crawls URLs in WordPressSite, saving them to StaticSite
      */
     public function crawlSite() : void {
-        WsLog::l( 'Starting to crawl detected URLs.' );
-
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
@@ -316,8 +316,6 @@ class Crawler {
     }
 
     public function crawlIter( \Iterator $path_iter ) : \Iterator {
-        WsLog::l( 'Starting crawl.' );
-
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;

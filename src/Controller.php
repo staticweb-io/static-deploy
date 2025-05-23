@@ -831,7 +831,6 @@ class Controller {
     }
 
     public static function wp2staticCrawl() : void {
-        WsLog::l( 'Starting crawling' );
         $crawlers = Addons::getType( 'crawl' );
         $crawler_slug = empty( $crawlers ) ? 'wp2static' : $crawlers[0]->slug;
         do_action(
