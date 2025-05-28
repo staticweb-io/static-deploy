@@ -14,8 +14,8 @@ class CrawlQueue {
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             url VARCHAR(2083) NOT NULL,
-            hashed_url CHAR(32) NOT NULL,
             filename VARCHAR(2083),
+            hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
@@ -42,15 +42,14 @@ class CrawlQueue {
                 array_push(
                     $values,
                     rawurldecode( $path['path'] ),
-                    md5( $path['path'] ),
                     $path['filename'] ?? null,
                 );
             }
 
-            $placeholders = array_fill( 0, count( $chunk ), '(%s,%s,%s)' );
+            $placeholders = array_fill( 0, count( $chunk ), '(%s,%s)' );
 
             $query_string =
-                "INSERT INTO $table_name (url, hashed_url, filename) " .
+                "INSERT INTO $table_name (url,filename) " .
                 ' VALUES ' . implode( ',', $placeholders ) .
                 ' ON DUPLICATE KEY UPDATE' .
                 ' url = VALUES(url),' .
@@ -79,15 +78,15 @@ class CrawlQueue {
             $chunk = array_slice( $urls, 0, 1000 );
             $urls = array_slice( $urls, 1000 );
             $url_count = count( $urls );
-            $placeholders = array_fill( 0, count( $chunk ), '(%s, %s)' );
+            $placeholders = array_fill( 0, count( $chunk ), '(%s)' );
             $values = [];
 
             foreach ( $chunk as $url ) {
-                array_push( $values, md5( $url ), rawurldecode( $url ) );
+                array_push( $values, rawurldecode( $url ) );
             }
 
             $query_string =
-                'INSERT IGNORE INTO ' . $table_name . ' (hashed_url, url) VALUES ' .
+                'INSERT IGNORE INTO ' . $table_name . ' (url) VALUES ' .
                 implode( ', ', $placeholders );
             $query = $wpdb->prepare( $query_string, $values );
 
