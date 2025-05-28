@@ -24,11 +24,14 @@
           };
           vendorHash = "sha256-lN/24P9LbuRuU/bc3DNPR0kZGtIhZfWcNqeL5puXj2w=";
         });
-        wp2static = runCommand "wp2static" { } ''
-          cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" $TMPDIR
-          cp -r ${self}/src ${self}/views ${self}/*.php $TMPDIR
+        wp2static = runCommand "wp2static" {} ''
+          export PLUGIN_DIR="$TMPDIR/${name}"
+          mkdir -p "$PLUGIN_DIR"
+          cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" "$PLUGIN_DIR"
+          cp -r ${self}/src ${self}/views ${self}/*.php "$PLUGIN_DIR"
           mkdir -p $out
-          ${zip}/bin/zip -r -9 $out/wp2static.zip $TMPDIR
+          cd "$PLUGIN_DIR"/..
+          ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
         '';
         phpVersions = {
           php81 = php81;
