@@ -34,6 +34,12 @@ jobs:
           nix build .#wp2static
           cp result/wp2static.zip plugin.zip
 
+      - name: Upload plugin as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin.zip
+          path: plugin.zip
+
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
