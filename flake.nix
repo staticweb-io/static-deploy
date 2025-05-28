@@ -11,6 +11,25 @@
       with import nixpkgs { inherit system; };
       with pkgs;
       let
+        name = "wp2static";
+        version = "7.4.0";
+        composerDeps = php.buildComposerProject (finalAttrs: {
+          pname = "${name}-composer-deps";
+          version = version;
+          src = pkgs.lib.cleanSourceWith {
+            src = self;
+            filter = path: type:
+              let rel = baseNameOf path;
+              in rel == "composer.json" || rel == "composer.lock";
+          };
+          vendorHash = "sha256-lN/24P9LbuRuU/bc3DNPR0kZGtIhZfWcNqeL5puXj2w=";
+        });
+        wp2static = runCommand "wp2static" { } ''
+          cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" $TMPDIR
+          cp -r ${self}/src ${self}/views ${self}/*.php $TMPDIR
+          mkdir -p $out
+          ${zip}/bin/zip -r -9 $out/wp2static.zip $TMPDIR
+        '';
         phpVersions = {
           php81 = php81;
           php82 = php82;
@@ -21,7 +40,8 @@
           pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'') phpVersions;
       in {
         devShells.default = mkShell {
-          buildInputs = [ php phpPackages.composer shellcheck zip ] ++ phpBins;
+          buildInputs = [ php phpPackages.composer shellcheck ] ++ phpBins;
         };
+        packages = { inherit wp2static; };
       });
 }
