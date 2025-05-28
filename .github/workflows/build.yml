@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v14
+        uses: DeterminateSystems/determinate-nix-action@v3
 
       - name: Build plugin zip
         run: |
@@ -37,7 +37,7 @@ jobs:
       - name: Upload plugin as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin.zip
+          name: plugin
           path: plugin.zip
 
       - name: Create GitHub Release
