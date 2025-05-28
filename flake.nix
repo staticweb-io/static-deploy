@@ -29,6 +29,11 @@
           mkdir -p "$PLUGIN_DIR"
           cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" "$PLUGIN_DIR"
           cp -r ${self}/src ${self}/views ${self}/*.php "$PLUGIN_DIR"
+          cd "$PLUGIN_DIR"
+          cp ${self}/composer.json ${self}/composer.lock .
+          chmod 600 vendor/composer/autoload_*.php
+          ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
+          rm composer.json composer.lock
           mkdir -p $out
           cd "$PLUGIN_DIR"/..
           ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
