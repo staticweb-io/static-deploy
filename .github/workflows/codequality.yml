@@ -20,11 +20,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        php: ["8.1", "8.2", "8.3", "8.4"]
-
-    name: PHP-${{ matrix.php }} 
+    name: PHP tests and coding standards
 
     steps:
     - name: Checkout code
@@ -35,13 +31,6 @@ jobs:
       with:
         path: vendor
         key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
-        coverage: none
 
     - name: Validate Composer setup
       run: composer validate --strict
@@ -55,14 +44,17 @@ jobs:
     - name: Test PHP Coding Standards
       run: composer run-script phpcs
 
-    - name: Test code against PHP 7.4 standard
-      run: composer run-script php74
-
-    - name: Test code against PHP 8.0 standard
-      run: composer run-script php80
-
     - name: Test code against PHP 8.1 standard
       run: composer run-script php81
+
+    - name: Test code against PHP 8.2 standard
+      run: composer run-script php82
+
+    - name: Test code against PHP 8.3 standard
+      run: composer run-script php83
+
+    - name: Test code against PHP 8.4 standard
+      run: composer run-script php84
 
     - name: Run PHPStan static analyser
       run: composer run-script phpstan
