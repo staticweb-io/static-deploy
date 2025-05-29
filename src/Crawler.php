@@ -42,6 +42,11 @@ class Crawler {
     private $cache_hits = 0;
 
     /**
+     * @var bool
+     */
+    private $use_crawl_cache = false;
+
+    /**
      * Crawler constructor
      */
     public function __construct() {
@@ -91,6 +96,10 @@ class Crawler {
         $this->client = new Client( $opts );
 
         WsLog::l( 'Starting crawl.' );
+
+        $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
+
+        WsLog::l( ( $this->use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
     }
 
     public static function wp2staticCrawl( string $crawler_slug ) : void {
@@ -122,10 +131,6 @@ class Crawler {
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
         $site_urls = [ "http://$site_host", "https://$site_host" ];
-
-        $use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
-
-        WsLog::l( ( $use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
 
         // TODO: use some Iterable or other performance optimisation here
         // to help reduce resources for large URL sites
@@ -162,7 +167,7 @@ class Crawler {
             [
                 'concurrency' => $concurrency,
                 'fulfilled' => function ( Response $response, $index ) use (
-                    $last_log_time, &$urls, $use_crawl_cache, $site_urls
+                    $last_log_time, &$urls, $site_urls
                 ) {
                     $root_relative_path = $urls[ $index ]['path'];
                     $crawled_contents = (string) $response->getBody();
@@ -218,7 +223,7 @@ class Crawler {
 
                     $write_contents = true;
 
-                    if ( $use_crawl_cache ) {
+                    if ( $this->use_crawl_cache ) {
                         // if not already cached
                         if ( CrawlCache::getUrl( $root_relative_path, $page_hash ) ) {
                             $this->cache_hits++;
