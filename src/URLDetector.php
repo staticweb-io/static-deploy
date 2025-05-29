@@ -105,7 +105,7 @@ class URLDetector {
         }
 
         if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
-            $arrays_to_merge[] = DetectCustomPostTypeURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCustomPostTypeURLs::detect( log: $log_steps );
         }
 
         $detect_posts_pagination = apply_filters( 'wp2static_detect_posts_pagination', 1 );

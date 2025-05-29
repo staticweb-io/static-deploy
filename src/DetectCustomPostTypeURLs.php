@@ -7,16 +7,14 @@ class DetectCustomPostTypeURLs {
     /**
      * Detect Custom Post Type URLs
      *
-     * @return string[] list of URLs
+     * @return Iterator<array>
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting custom post type URLs' );
         }
 
         global $wpdb;
-
-        $post_urls = [];
 
         $post_ids = $wpdb->get_col(
             "SELECT ID
@@ -36,9 +34,7 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            $post_urls[] = $permalink;
+            yield [ 'url' => $permalink ];
         }
-
-        return $post_urls;
     }
 }
