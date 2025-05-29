@@ -93,14 +93,19 @@ class PostProcessor {
                 $content_type = $crawled['content_type'] ?? null;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
                     if ( $crawled['body'] ?? null ) {
-                        $crawled['body'] = $rewriter->rewriteFileContents( $crawled['body'] );
+                        $rewritten = $rewriter->rewriteFileContents( $crawled['body'] );
+                        if ( $rewritten !== $file_contents ) {
+                            $crawled['body'] = $rewritten;
+                            unset( $crawled['content_hash'] );
+                        }
                         $this->processed++;
                     } else if ( $crawled['filename'] ?? null ) {
                         $file_contents = file_get_contents( $crawled['filename'] );
                         $rewritten = $rewriter->rewriteFileContents( $file_contents );
                         if ( $rewritten !== $file_contents ) {
                             $crawled['body'] = $rewritten;
-                          }
+                            unset( $crawled['content_hash'] );
+                        }
                         $this->processed++;
                     }
                 } else {
