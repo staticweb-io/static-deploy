@@ -88,7 +88,7 @@ class CrawlCache {
                 $paths[] = $path;
             }
 
-            $placeholders = implode(',', array_fill(0, count($paths), '(%s,%s,%s,%s,%s,NULL,NOW())'));
+            $placeholders = implode(',', array_fill(0, count($paths), '(%s,%s,%s,%s,%s,%s,NOW())'));
             $sql = "INSERT INTO $table_name (hashed_url,url,content_type,redirect_to,status,page_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE url = VALUES(url), content_type = VALUES(content_type), redirect_to = VALUES(redirect_to), status = VALUES(status), page_hash = VALUES(page_hash), time = VALUES(time)";
@@ -102,6 +102,7 @@ class CrawlCache {
                     $path['content_type'],
                     $path['redirect_to'],
                     $path['status'],
+                    $path['content_hash'] ?? null,
                 );
             }
 
