@@ -33,12 +33,6 @@ class CrawlQueue {
             'hashed_url',
             "CREATE UNIQUE INDEX hashed_url ON $table_name (hashed_url)"
         );
-
-        Controller::ensureIndex(
-            $table_name,
-            'crawled_at',
-            "CREATE INDEX crawled_at ON $table_name (crawled_at)"
-        );
     }
 
     public static function getTableName() : string {
