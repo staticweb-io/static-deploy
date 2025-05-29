@@ -16,6 +16,12 @@ class CrawlQueue {
             url VARCHAR(2083) NOT NULL,
             hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
             filename VARCHAR(2083) DEFAULT '' NOT NULL,
+            detected_at datetime DEFAULT NOW() NOT NULL,
+            content_hash CHAR(32),
+            content_type VARCHAR(2083) DEFAULT '' NOT NULL,
+            redirect_to VARCHAR(2083) DEFAULT '' NOT NULL,
+            status smallint(6),
+            crawled_at datetime,
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
@@ -26,6 +32,12 @@ class CrawlQueue {
             $table_name,
             'hashed_url',
             "CREATE UNIQUE INDEX hashed_url ON $table_name (hashed_url)"
+        );
+
+        Controller::ensureIndex(
+            $table_name,
+            'crawled_at',
+            "CREATE INDEX crawled_at ON $table_name (crawled_at)"
         );
     }
 
