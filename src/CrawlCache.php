@@ -148,6 +148,44 @@ class CrawlCache {
         }
     }
 
+    /**
+     * Write path contents to the crawled site dir,
+     * returning an Iterator of the same paths.
+     *
+     * @param \Iterator $paths
+     * @return \Iterator
+     */
+    public static function writeFilesIter( \Iterator $paths ) : \Iterator {
+        $cache_hits = 0;
+        foreach ( $paths as $path ) {
+            $body = $path['body'] ?? null;
+            $is_cacheable = true;
+            $status = $path['status'];
+
+            if ( $status === 404 ) {
+                $is_cacheable = false;
+            }
+            elseif ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
+                $is_cacheable = false;
+            }
+
+            $content_hash = null;
+            if ( $is_cacheable && $body ) {
+                $content_hash = md5( $body );
+                $path['content_hash'] = $content_hash;
+            }
+
+            if ( $is_cacheable && $content_hash && CrawlCache::getUrl( $path['path'], $content_hash ) ) {
+                $cache_hits++;
+            } elseif ( $body ) {
+                $static_path = StaticSite::transformPath( $path['path'] );
+                StaticSite::add( $static_path, $body );
+            }
+
+            yield $path;
+        }
+    }
+
     public static function addUrl( string $url, string $page_hash, int $status,
                                    ?string $redirect_to ) : void {
         global $wpdb;
