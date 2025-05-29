@@ -43,6 +43,7 @@ class DirectDeployer {
 
     public function deployComplete() : void {
         $this->crawler->crawlComplete();
+        $this->processor->complete();
 
         WsLog::l( 'Starting post-direct deployment actions' );
         do_action( 'wp2static_post_direct_deploy_trigger', $this );

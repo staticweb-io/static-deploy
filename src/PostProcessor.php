@@ -11,6 +11,8 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
 class PostProcessor {
+    private int $processed = 0;
+    private int $skipped = 0;
 
     /**
      * PostProcessor constructor
@@ -63,9 +65,10 @@ class PostProcessor {
             $file_processor = new FileProcessor();
 
             $file_processor->processFile( ProcessedSite::getPath() . $save_path );
+            $this->processed++;
         }
 
-        WsLog::l( 'Finished processing crawled site.' );
+        $this->complete();
 
         do_action( 'wp2static_post_process_complete', ProcessedSite::getPath() );
     }
@@ -78,6 +81,9 @@ class PostProcessor {
             foreach ( $crawl_responses as $crawled ) {
                 if ( $crawled['body'] ) {
                     $crawled['body'] = $rewriter->rewriteFileContents( $crawled['body'] );
+                    $this->processed++;
+                } else {
+                    $this->skipped++;
                 }
                 yield $crawled;
             }
@@ -85,5 +91,10 @@ class PostProcessor {
 
         return $process( $crawl_responses );
     }
-}
 
+    public function complete() : void {
+        WsLog::l(
+            "Post processing complete. $this->processed processed, $this->skipped skipped."
+        );
+    }
+}
