@@ -165,33 +165,40 @@ class CrawlQueue {
     }
 
     /**
+     * Yields all paths in the table.
+     *
+     */
+    public static function getPathsIter() : \Iterator {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+        $batch_size = 1000;
+        $last_id = 0;
+        while ( true ) {
+            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d ORDER BY id ASC LIMIT %d";
+            $q = $wpdb->prepare( $qs, $last_id, $batch_size );
+            $rows = $wpdb->get_results( $q, ARRAY_A );
+
+            foreach ( $rows as $row ) {
+                yield $row;
+                $last_id = $row['id'];
+            }
+
+            if ( count( $rows ) < $batch_size ) {
+                break;
+            }
+        }
+    }
+
+    /**
      *  Get all crawlable URLs
      *
      *  @return \Iterator<string> All crawlable URLs
      */
     public static function getCrawlablePaths() : \Iterator {
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
-        $last_id = 0;
-        $limit = 1000;
-
-        do {
-            $rows = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT id, url FROM $table_name WHERE id > %d ORDER BY id ASC LIMIT %d",
-                    $last_id,
-                    $limit
-                )
-            );
-
-            foreach ( $rows as $row ) {
-                yield $row->url;
-                $last_id = $row->id;
-            }
-
-        } while ( count( $rows ) === $limit );
+        foreach ( self::getPathsIter() as $path ) {
+            yield $path['path'];
+        }
     }
 
     /**
