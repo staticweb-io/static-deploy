@@ -259,6 +259,7 @@ class CoreOptions {
                     [
                         '.bat',
                         '.crt',
+                        '.data', // et-cache puts these in wp-content/et-cache
                         '.DS_Store',
                         '.git',
                         '.idea',
