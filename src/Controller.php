@@ -472,6 +472,7 @@ class Controller {
     public static function wp2staticEnqueueJobs( ?int $post_id = null ) : void {
         // check each of these in order we want to enqueue
         $job_types = [
+            'autoJobQueueDirectDeployPost' => 'direct_deploy_post',
             'autoJobQueueDetection' => 'detect',
             'autoJobQueueCrawling' => 'crawl',
             'autoJobQueuePostProcessing' => 'post_process',
@@ -630,7 +631,12 @@ class Controller {
                         break;
                     case 'direct_deploy':
                         $deployer = new DirectDeployer();
-
+                        WsLog::l( 'Starting direct deployment' );
+                        $deployer->deploy();
+                        $deployer->deployComplete();
+                        break;
+                    case 'direct_deploy_post':
+                        $deployer = new DirectDeployer();
                         $post_id = $job->triggering_post_id;
                         if ( $post_id ) {
                             $path = wp_make_link_relative(get_permalink($post_id));
@@ -639,12 +645,9 @@ class Controller {
                             WsLog::l( 'Starting direct deployment for path ' . $path );
                             $deployer->deployPaths( $detected );
                         } else {
-                            WsLog::l( 'Starting direct deployment' );
-                            $deployer->deploy();
+                            WsLog::w( 'No post ID found for direct deployment post' );
                         }
-
                         $deployer->deployComplete();
-
                         break;
                     default:
                         WsLog::l( 'Trying to process unknown job type' );

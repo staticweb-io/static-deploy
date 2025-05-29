@@ -263,6 +263,7 @@ class ViewRenderer {
             'autoJobQueuePostProcessing' => CoreOptions::get( 'autoJobQueuePostProcessing' ),
             'autoJobQueueDeployment' => CoreOptions::get( 'autoJobQueueDeployment' ),
             'autoJobQueueDirectDeploy' => CoreOptions::get( 'autoJobQueueDirectDeploy' ),
+            'autoJobQueueDirectDeployPost' => CoreOptions::get( 'autoJobQueueDirectDeployPost' ),
         ];
 
         $view = apply_filters( 'wp2static_render_jobs_page_vars', $view );

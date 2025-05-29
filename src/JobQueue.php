@@ -166,12 +166,13 @@ class JobQueue {
             'post_process',
             'deploy',
             'direct_deploy',
+            'direct_deploy_post',
         ];
 
         foreach ( $job_types as $job_type ) {
             // get all jobs for a type where status is 'waiting'
-            if ( $job_type === 'direct_deploy' ) {
-                // Don't collapse direct_deploys that target a specific
+            if ( $job_type === 'direct_deploy_post' ) {
+                // Don't collapse direct_deploy_post jobs that target a specific
                 // single post
                 $waiting_jobs = $wpdb->get_results(
                     "SELECT * FROM $table_name

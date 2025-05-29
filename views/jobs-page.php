@@ -103,6 +103,9 @@ $row = function( $name ) use ( $options ) {
                 <td style="text-align:center;">
                     <?php echo $label( 'autoJobQueueDirectDeploy' ); ?>
                 </td>
+                <td style="text-align:center;">
+                    <?php echo $label( 'autoJobQueueDirectDeployPost' ); ?>
+                </td>
             </tr>
         </thead>
         <tbody>
@@ -112,6 +115,7 @@ $row = function( $name ) use ( $options ) {
                 <td><?php echo $input( 'autoJobQueuePostProcessing' ); ?></td>
                 <td><?php echo $input( 'autoJobQueueDeployment' ); ?></td>
                 <td><?php echo $input( 'autoJobQueueDirectDeploy' ); ?></td>
+                <td><?php echo $input( 'autoJobQueueDirectDeployPost' ); ?></td>
             </tr>
         </tbody>
     </table>
