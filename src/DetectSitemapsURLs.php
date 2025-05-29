@@ -88,11 +88,13 @@ class DetectSitemapsURLs {
             }
         }
 
-        $request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
+        $robots_exists = false;
+        // Disable due to a bug in parsing
+        /*$request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
 
         $response = $client->send( $request );
 
-        $robots_exists = $response->getStatusCode() === 200;
+        $robots_exists = $response->getStatusCode() === 200;*/
 
         try {
             $sitemaps = [];
