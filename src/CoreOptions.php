@@ -253,7 +253,7 @@ class CoreOptions {
                 'fileExtensionsToIgnore',
                 '1',
                 'File Extensions to Ignore',
-                'Files with these extensions will be ignored while crawling.',
+                'Files with these extensions will be ignored.',
                 implode(
                     "\n",
                     [
@@ -290,7 +290,7 @@ class CoreOptions {
                 'filenamesToIgnore',
                 '1',
                 'Directory and File Names to Ignore',
-                'Directories and files with these names will be ignored while crawling.',
+                'Directories and files with these names will be ignored.',
                 implode(
                     "\n",
                     [
