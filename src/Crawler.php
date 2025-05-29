@@ -16,6 +16,7 @@ use WP2StaticGuzzleHttp\Exception\RequestException;
 use WP2StaticGuzzleHttp\Exception\TooManyRedirectsException;
 use WP2StaticGuzzleHttp\Pool;
 use WP2StaticGuzzleHttp\Promise;
+use WP2StaticGuzzleHttp\Promise\FulfilledPromise;
 use WP2StaticGuzzleHttp\Promise\PromiseInterface;
 
 define( 'WP2STATIC_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
@@ -135,10 +136,14 @@ class Crawler {
         $path = $detected['path'];
 
         $absolute_uri = (new URL( $this->site_path . $path ))->get();
-        if ( $filename ) {
-            $request = new Request( 'HEAD', $absolute_uri );
-        } else {
-            $request = new Request( 'GET', $absolute_uri );
+        try {
+            if ( $filename ) {
+                $request = new Request( 'HEAD', $absolute_uri );
+            } else {
+                $request = new Request( 'GET', $absolute_uri );
+            }
+        } catch ( \InvalidArgumentException $e ) {
+            return new FulfilledPromise( $e );
         }
 
         $promise = $this->client->sendAsync( $request )->then(
@@ -208,6 +213,12 @@ class Crawler {
         $responses = function ( &$path_iter ) use ( &$in_flight, $last_log_time, $startNext ) {
             while ( ! empty( $in_flight ) ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
+
+                if ( $response instanceof \Throwable ) {
+                    WsLog::l( 'Error crawling: ' . $response->getMessage() );
+                    return;
+                }
+
                 unset( $in_flight[ $response['path'] ] );
                 
                 $this->crawled++;
