@@ -21,6 +21,17 @@ class PostProcessor {
 
     }
 
+    public function processContentType( string $content_type ) : bool {
+        if ( str_starts_with( $content_type, 'text/html' ) ||
+            str_starts_with( $content_type, 'text/css' ) ||
+            str_starts_with( $content_type, 'application/xml' ) ||
+            str_starts_with( $content_type, 'text/plain' ) ||
+            str_starts_with( $content_type, 'application/javascript' ) ) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Process StaticSite
      *
@@ -79,9 +90,19 @@ class PostProcessor {
         $rewriter = new SimpleRewriter();
         $process = function ( $crawl_responses) use ( $rewriter ) {
             foreach ( $crawl_responses as $crawled ) {
-                if ( $crawled['body'] ) {
-                    $crawled['body'] = $rewriter->rewriteFileContents( $crawled['body'] );
-                    $this->processed++;
+                $content_type = $crawled['content_type'] ?? null;
+                if ( $content_type && $this->processContentType( $content_type ) ) {
+                    if ( $crawled['body'] ?? null ) {
+                        $crawled['body'] = $rewriter->rewriteFileContents( $crawled['body'] );
+                        $this->processed++;
+                    } else if ( $crawled['filename'] ?? null ) {
+                        $file_contents = file_get_contents( $crawled['filename'] );
+                        $rewritten = $rewriter->rewriteFileContents( $file_contents );
+                        if ( $rewritten !== $file_contents ) {
+                            $crawled['body'] = $rewritten;
+                          }
+                        $this->processed++;
+                    }
                 } else {
                     $this->skipped++;
                 }
