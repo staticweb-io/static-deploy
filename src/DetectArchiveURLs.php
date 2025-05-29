@@ -13,16 +13,14 @@ class DetectArchiveURLs {
      *      https://foo.com/2020/05/
      *      https://foo.com/2020/
      *
-     * @return string[] list of archive URLs
+     * @return \Iterator<array>
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting archive URLs' );
         }
 
         global $wpdb;
-
-        $archive_urls = [];
 
         $archive_urls_with_markup = '';
 
@@ -59,6 +57,8 @@ class DetectArchiveURLs {
         $url_matching_regex = '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#';
         preg_match_all( $url_matching_regex, $archive_urls_with_markup, $matches );
 
-        return $matches[0];
+        foreach ( $matches[0] as $url ) {
+            yield [ 'url' => $url ];
+        }
     }
 }

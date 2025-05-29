@@ -42,16 +42,14 @@ class URLDetector {
 
         $filtering = new FileFiltering();
 
-        $arrays_to_merge = [];
-
-        $arrays_to_merge[] = [
-            '/',
-            '/robots.txt',
-            '/favicon.ico',
-            '/sitemap.xml',
-        ];
-
         $iterators_to_merge = [];
+
+        $iterators_to_merge[] = new \ArrayIterator( [
+            [ 'url' => '/' ],
+            [ 'url' => '/robots.txt' ],
+            [ 'url' => '/favicon.ico' ],
+            [ 'url' => '/sitemap.xml' ],
+        ] );
 
         $detect_parent_theme = apply_filters( 'wp2static_detect_parent_theme', 1 );
 
@@ -97,11 +95,11 @@ class URLDetector {
         }
 
         if ( CoreOptions::getValue( 'detectPosts' ) ) {
-            $arrays_to_merge[] = DetectPostURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectPostURLs::detect( log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectPages' ) ) {
-            $arrays_to_merge[] = DetectPageURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectPageURLs::detect( log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
@@ -111,45 +109,41 @@ class URLDetector {
         $detect_posts_pagination = apply_filters( 'wp2static_detect_posts_pagination', 1 );
 
         if ( $detect_posts_pagination ) {
-            $arrays_to_merge[] = DetectPostsPaginationURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectPostsPaginationURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
         }
 
         $detect_archives = apply_filters( 'wp2static_detect_archives', 1 );
 
         if ( $detect_archives ) {
-            $arrays_to_merge[] = DetectArchiveURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectArchiveURLs::detect( log: $log_steps );
         }
 
         $detect_categories = apply_filters( 'wp2static_detect_categories', 1 );
 
         if ( $detect_categories ) {
-            $arrays_to_merge[] = DetectCategoryURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCategoryURLs::detect( log: $log_steps );
         }
 
         $detect_category_pagination = apply_filters( 'wp2static_detect_category_pagination', 1 );
 
         if ( $detect_category_pagination ) {
-            $arrays_to_merge[] = DetectCategoryPaginationURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCategoryPaginationURLs::detect( log: $log_steps );
         }
 
         $detect_authors = apply_filters( 'wp2static_detect_authors', 1 );
 
         if ( $detect_authors ) {
-            $arrays_to_merge[] = DetectAuthorsURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectAuthorsURLs::detect( log: $log_steps );
         }
 
         $detect_authors_pagination = apply_filters( 'wp2static_detect_authors_pagination', 1 );
 
         if ( $detect_authors_pagination ) {
-            $arrays_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ), log: $log_steps );
         }
 
         $home_url = SiteInfo::getUrl( 'home' );
         $unique_urls = [];
-
-        foreach ( $arrays_to_merge as $array ) {
-            $iterators_to_merge[] = new \ArrayIterator( $array );
-        }
 
         $last_log_time = microtime( true );
 

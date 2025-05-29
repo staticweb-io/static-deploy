@@ -7,9 +7,9 @@ class DetectCategoryURLs {
     /**
      * Detect Category URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting category URLs' );
         }
@@ -19,8 +19,6 @@ class DetectCategoryURLs {
         $args = [ 'public' => true ];
 
         $taxonomies = get_taxonomies( $args, 'objects' );
-
-        $category_urls = [];
 
         foreach ( $taxonomies as $taxonomy ) {
             /** @var list<\WP_Term> $terms */
@@ -39,10 +37,8 @@ class DetectCategoryURLs {
 
                 $permalink = trim( $term_link );
 
-                $category_urls[] = $permalink;
+                yield [ 'url' => $permalink ];
             }
         }
-
-        return $category_urls;
     }
 }

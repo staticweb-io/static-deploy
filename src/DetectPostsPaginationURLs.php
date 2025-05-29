@@ -7,9 +7,9 @@ class DetectPostsPaginationURLs {
     /**
      * Detect Post pagination URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( string $wp_site_url, bool $log = false ) : array {
+    public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting post pagination URLs' );
         }
@@ -44,8 +44,6 @@ class DetectPostsPaginationURLs {
         $post_types = array_unique( $unique_post_types );
         $pagination_base = $wp_rewrite->pagination_base;
         $default_posts_per_page = get_option( 'posts_per_page' );
-
-        $urls_to_include = [];
 
         foreach ( $post_types as $post_type ) {
             $query = "SELECT COUNT(*) FROM %s WHERE post_status = '%s'" .
@@ -106,14 +104,11 @@ class DetectPostsPaginationURLs {
                         }
                     }
 
-                    $urls_to_include[] = "/{$post_archive_slug}{$pagination_base}/{$page}/";
+                    yield [ 'url' => "/{$post_archive_slug}{$pagination_base}/{$page}/" ];
                 } else {
-                    $urls_to_include[] =
-                        "/{$plural_form}/{$pagination_base}/{$page}/";
+                    yield [ 'url' => "/{$plural_form}/{$pagination_base}/{$page}/" ];
                 }
             }
         }
-
-        return $urls_to_include;
     }
 }

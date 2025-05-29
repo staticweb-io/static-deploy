@@ -7,9 +7,9 @@ class DetectAuthorPaginationURLs {
     /**
      * Detect Author Pagination URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( string $wp_site_url, bool $log = false ) : array {
+    public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting author pagination URLs' );
         }
@@ -18,7 +18,6 @@ class DetectAuthorPaginationURLs {
 
         $public = true;
         $authors_urls = [];
-        $urls_to_include = [];
         $users = get_users();
         $pagination_base = $wp_rewrite->pagination_base;
 
@@ -55,11 +54,8 @@ class DetectAuthorPaginationURLs {
             $total_pages = ceil( $total_posts / $default_posts_per_page );
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
-                $urls_to_include[] =
-                    "/{$author}{$pagination_base}/{$page}/";
+                yield [ 'url' => "/{$author}{$pagination_base}/{$page}/" ];
             }
         }
-
-        return $urls_to_include;
     }
 }

@@ -7,9 +7,9 @@ class DetectCategoryPaginationURLs {
     /**
      * Detect Category Pagination URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting category pagination URLs' );
         }
@@ -22,7 +22,6 @@ class DetectCategoryPaginationURLs {
         $args = [ 'public' => true ];
 
         $category_links = [];
-        $urls_to_include = [];
         $taxonomies = get_taxonomies( $args, 'objects' );
         $pagination_base = $wp_rewrite->pagination_base;
         $default_posts_per_page = get_option( 'posts_per_page' );
@@ -55,11 +54,8 @@ class DetectCategoryPaginationURLs {
             $total_pages = ceil( $total_posts / $default_posts_per_page );
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
-                $urls_to_include[] =
-                    "{$term}{$pagination_base}/{$page}/";
+                yield [ 'url' => "{$term}{$pagination_base}/{$page}/" ];
             }
         }
-
-        return $urls_to_include;
     }
 }

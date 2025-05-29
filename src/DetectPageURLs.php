@@ -7,16 +7,14 @@ class DetectPageURLs {
     /**
      * Detect Page URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting page URLs' );
         }
 
         global $wpdb;
-
-        $page_urls = [];
 
         $page_ids = $wpdb->get_col(
             "SELECT ID
@@ -32,9 +30,7 @@ class DetectPageURLs {
                 continue;
             }
 
-            $page_urls[] = $permalink;
+            yield [ 'url' => $permalink ];
         }
-
-        return $page_urls;
     }
 }

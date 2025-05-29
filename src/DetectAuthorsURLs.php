@@ -7,16 +7,15 @@ class DetectAuthorsURLs {
     /**
      * Detect Authors URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ) : array {
+    public static function detect( bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting author URLs' );
         }
 
         global $wp_rewrite, $wpdb;
 
-        $authors_urls = [];
         $users = get_users();
 
         foreach ( $users as $author ) {
@@ -28,9 +27,7 @@ class DetectAuthorsURLs {
 
             $permalink = trim( $author_link );
 
-            $authors_urls[] = $permalink;
+            yield [ 'url' => $permalink ];
         }
-
-        return $authors_urls;
     }
 }
