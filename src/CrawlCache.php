@@ -7,7 +7,7 @@ class CrawlCache {
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -58,18 +58,22 @@ class CrawlCache {
         global $wpdb;
         $urls = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $urls = $wpdb->get_col( "SELECT hashed_url FROM $table_name" );
 
         return $urls;
     }
 
+    public static function getTableName() : string {
+        return Controller::getTableName( 'crawl_cache' );
+    }
+
     public static function addUrl( string $url, string $page_hash, int $status,
                                    ?string $redirect_to ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
         $sql = "insert into {$table_name} (time, hashed_url, url, page_hash, status, redirect_to)
                 VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY
                 UPDATE time = %s, page_hash = %s, status = %s, redirect_to = %s";
@@ -96,7 +100,7 @@ class CrawlCache {
 
         $hashed_url = md5( $url );
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT hashed_url FROM $table_name WHERE" .
@@ -125,7 +129,7 @@ class CrawlCache {
         global $wpdb;
         $urls = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
             "
@@ -145,7 +149,7 @@ class CrawlCache {
     public static function rmUrl( string $url ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $wpdb->delete(
             $table_name,
@@ -166,7 +170,7 @@ class CrawlCache {
 
         $ids = implode( ',', array_map( 'absint', $ids ) );
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $wpdb->query( "DELETE FROM $table_name WHERE ID IN($ids)" );
     }
@@ -179,7 +183,7 @@ class CrawlCache {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 
@@ -196,7 +200,7 @@ class CrawlCache {
     public static function getTotal() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $total = $wpdb->get_var( "SELECT count(*) FROM $table_name" );
 
@@ -210,7 +214,7 @@ class CrawlCache {
     public static function wp2static_list_redirects( array $redirs ) : array {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
+        $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
             "SELECT url, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
