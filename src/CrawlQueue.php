@@ -14,8 +14,8 @@ class CrawlQueue {
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             url VARCHAR(2083) NOT NULL,
-            filename VARCHAR(2083),
             hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
+            filename VARCHAR(2083) DEFAULT '' NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
