@@ -70,6 +70,53 @@ class CrawlCache {
         return Controller::getTableName( 'crawl_cache' );
     }
 
+    /**
+     * Add an Iterator of paths to the DB,
+     * returning an Iterator of the same paths.
+     *
+     * @param \Iterator $paths
+     * @return \Iterator
+     */
+    public static function addPathsIter( \Iterator $paths ) : \Iterator {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        foreach ( Utils::chunkIterator( $paths, 200 ) as $chunk ) {
+            $paths = [];
+            foreach ( $chunk as $path ) {
+                $paths[] = $path;
+            }
+
+            $placeholders = implode(',', array_fill(0, count($paths), '(%s,%s,%s,%s,%s,NULL,NOW())'));
+            $sql = "INSERT INTO $table_name (hashed_url,url,content_type,redirect_to,status,page_hash,time)
+                    VALUES $placeholders ON DUPLICATE KEY
+                    UPDATE url = VALUES(url), content_type = VALUES(content_type), redirect_to = VALUES(redirect_to), status = VALUES(status), page_hash = VALUES(page_hash), time = VALUES(time)";
+
+            $values = [];
+            foreach ( $paths as $path ) {
+                array_push(
+                    $values,
+                    md5( $path['path'] ),
+                    $path['path'],
+                    $path['content_type'],
+                    $path['redirect_to'],
+                    $path['status'],
+                );
+            }
+
+            $result = $wpdb->query( $wpdb->prepare( $sql, ...$values ) );
+
+            if ( false === $result ) {
+                WsLog::w( 'Error inserting into crawl cache: ' . $wpdb->last_error );
+            }
+
+            foreach ( $paths as $path ) {
+                yield $path;
+            }
+        }
+    }
+
     public static function addUrl( string $url, string $page_hash, int $status,
                                    ?string $redirect_to ) : void {
         global $wpdb;

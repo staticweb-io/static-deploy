@@ -11,6 +11,7 @@ class DirectDeployer {
     private $crawler;
     private $deployer;
     private $processor;
+    private $use_crawl_cache;
 
     public function __construct() {
         $deployer = Addons::getDeployer();
@@ -30,6 +31,10 @@ class DirectDeployer {
         $this->deployer = new $deployer_class();
         $this->crawler = new Crawler();
         $this->processor = new PostProcessor();
+
+        $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
+
+        WsLog::l( ( $this->use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
     }
 
     public function deploy() : void {
@@ -47,6 +52,11 @@ class DirectDeployer {
 
     public function deployPaths( \Iterator $paths ) : void {
         $crawled = $this->crawler->crawlIter( $paths );
+
+        if ( $this->use_crawl_cache ) {
+            $crawled = CrawlCache::addPathsIter( $crawled );
+        }
+
         $processed = $this->processor->processIter( $crawled );
         $this->deployer->uploadFilesIter( $processed );
     }
