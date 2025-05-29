@@ -34,6 +34,7 @@ $row = function( $name ) use ( $options ) {
         <tbody>
             <?php echo $row( 'filenamesToIgnore' ); ?>
             <?php echo $row( 'fileExtensionsToIgnore' ); ?>
+            <?php echo $row( 'logDetectionSteps' ); ?>
         </tbody>
     </table>
 

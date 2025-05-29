@@ -354,6 +354,13 @@ class CoreOptions {
                 'localhost'
             ),
             self::makeOptionSpec(
+                'boolean',
+                'logDetectionSteps',
+                '0',
+                'Log Detection Steps',
+                'Log each step of the detection process.',
+            ),
+            self::makeOptionSpec(
                 'integer',
                 'maxLogRows',
                 '500',
@@ -877,6 +884,13 @@ VALUES (%s, %s, %s);";
                     $table_name,
                     [ 'blob_value' => $hosts_to_rewrite ],
                     [ 'name' => 'hostsToRewrite' ]
+                );
+
+                $log_detection_steps = intval( $_POST['logDetectionSteps'] );
+                $wpdb->update(
+                    $table_name,
+                    [ 'value' => $log_detection_steps < 0 ? 0 : $log_detection_steps ],
+                    [ 'name' => 'logDetectionSteps' ]
                 );
 
                 $max_log_rows = intval( $_POST['maxLogRows'] );
