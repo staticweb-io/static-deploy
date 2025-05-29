@@ -119,37 +119,6 @@ class CrawlQueue {
     }
 
     /**
-     * Add all Urls to queue
-     *
-     * @param string[] $urls List of URLs to crawl
-     */
-    public static function addUrls( array $urls ) : void {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'wp2static_urls';
-        $url_count = count( $urls );
-
-        while ( $url_count ) {
-            $chunk = array_slice( $urls, 0, 1000 );
-            $urls = array_slice( $urls, 1000 );
-            $url_count = count( $urls );
-            $placeholders = array_fill( 0, count( $chunk ), '(%s)' );
-            $values = [];
-
-            foreach ( $chunk as $url ) {
-                array_push( $values, rawurldecode( $url ) );
-            }
-
-            $query_string =
-                'INSERT IGNORE INTO ' . $table_name . ' (url) VALUES ' .
-                implode( ', ', $placeholders );
-            $query = $wpdb->prepare( $query_string, $values );
-
-            $wpdb->query( $query );
-        }
-    }
-
-    /**
      *  Get all crawlable URLs
      *
      *  @return \Iterator<string> All crawlable URLs
