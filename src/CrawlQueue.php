@@ -7,7 +7,7 @@ class CrawlQueue {
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -41,6 +41,10 @@ class CrawlQueue {
         );
     }
 
+    public static function getTableName() : string {
+        return Controller::getTableName( 'urls' );
+    }
+
     /**
      * Add an Iterator of paths, returning an Iterator of the same
      * paths once they have been added.
@@ -49,7 +53,7 @@ class CrawlQueue {
     public static function addPathsIter( \Iterator $paths ) : \Iterator {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         foreach ( Utils::chunkIterator( $paths, 200 ) as $chunk ) {
             $hashes = [];
@@ -126,7 +130,7 @@ class CrawlQueue {
     public static function getCrawlablePaths() : \Iterator {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $last_id = 0;
         $limit = 1000;
@@ -159,7 +163,7 @@ class CrawlQueue {
 
         $ids = implode( ',', array_map( 'absint', $ids ) );
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $wpdb->query( "DELETE FROM $table_name WHERE ID IN($ids)" );
     }
@@ -167,7 +171,7 @@ class CrawlQueue {
     public static function rmUrl( string $url ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $wpdb->delete(
             $table_name,
@@ -185,7 +189,7 @@ class CrawlQueue {
     public static function getTotalCrawlableURLs() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $total_urls = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
@@ -200,7 +204,7 @@ class CrawlQueue {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 
@@ -217,7 +221,7 @@ class CrawlQueue {
     public static function getTotal() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_urls';
+        $table_name = self::getTableName();
 
         $total = $wpdb->get_var( "SELECT count(*) FROM $table_name" );
 

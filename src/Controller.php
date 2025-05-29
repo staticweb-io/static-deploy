@@ -172,6 +172,12 @@ class Controller {
         }
     }
 
+    public static function getTableName(string $table_slug) : string {
+        global $wpdb;
+
+        return $wpdb->prefix . 'wp2static_' . $table_slug;
+    }
+
     public static function registerOptionsPage() : void {
         add_menu_page(
             'WP2Static',
