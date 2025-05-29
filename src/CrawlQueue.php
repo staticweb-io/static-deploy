@@ -41,33 +41,76 @@ class CrawlQueue {
         );
     }
 
+    /**
+     * Add an Iterator of paths, returning an Iterator of the same
+     * paths once they have been added.
+     *
+     */
     public static function addPathsIter( \Iterator $paths ) : \Iterator {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_urls';
 
         foreach ( Utils::chunkIterator( $paths, 200 ) as $chunk ) {
+            $hashes = [];
             $paths = [];
-            $values = [];
             foreach ( $chunk as $path ) {
+                $hashes[] = md5( $path['path'] );
                 $paths[] = $path;
-                array_push(
-                    $values,
-                    rawurldecode( $path['path'] ),
-                    $path['filename'] ?? null,
-                );
             }
 
-            $placeholders = array_fill( 0, count( $chunk ), '(%s,%s)' );
+            $placeholders = implode(',', array_fill(0, count($hashes), '%s'));
+            $sql = "SELECT url, filename FROM $table_name WHERE hashed_url IN ($placeholders)";
+            $existing_urls = $wpdb->get_results(
+                $wpdb->prepare($sql, ...$hashes),
+                OBJECT_K
+            );
 
-            $query_string =
-                "INSERT INTO $table_name (url,filename) " .
-                ' VALUES ' . implode( ',', $placeholders ) .
-                ' ON DUPLICATE KEY UPDATE' .
-                ' url = VALUES(url),' .
-                ' filename = VALUES(filename)';
-            $query = $wpdb->prepare( $query_string, $values );
-            $wpdb->query( $query );
+            $insert_values = [];
+            $update_values = [];
+            foreach ( $paths as $path ) {
+                $filename = $path['filename'] ?? '';
+                $p = $path['path'];
+                $url = rawurldecode( $p );
+                $hash = md5( $url );
+                if ( ! isset( $existing_urls[ $p ] ) ) {
+                    array_push(
+                        $insert_values,
+                        $url,
+                        $filename
+                    );
+                } elseif ( $filename !== $existing_urls[ $p ]->filename ) {
+                    array_push(
+                        $update_values,
+                        $filename,
+                        $hash
+                    );
+                }
+            }
+
+            // INSERT IGNORE new URLs
+            if ( count( $insert_values ) > 0 ) {
+                $insert_rows = count( $insert_values ) / 2;
+                $placeholders = array_fill( 0, $insert_rows, '(%s,%s)' );
+                $query_string =
+                    "INSERT IGNORE INTO $table_name (url, filename) " .
+                    ' VALUES ' . implode( ',', $placeholders );
+                $query = $wpdb->prepare( $query_string, ...$insert_values );
+                $wpdb->query( $query );
+            }
+
+            // UPDATE changed filenames
+            if ( count( $update_values ) > 0 ) {
+                $update_rows = count( $update_values ) / 2;
+                for ( $i = 0; $i < $update_rows; $i++ ) {
+                    $filename = $update_values[ $i * 2 ];
+                    $hash = $update_values[ $i * 2 + 1 ];
+                    $query_string =
+                        "UPDATE $table_name SET filename = %s, detected_at = NOW(), crawled_at = NULL WHERE hashed_url = %s";
+                    $query = $wpdb->prepare( $query_string, $filename, $hash );
+                    $wpdb->query( $query );
+                }
+            }
 
             foreach ( $paths as $path ) {
                 yield $path;
