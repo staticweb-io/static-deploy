@@ -14,12 +14,10 @@ class DetectSitemapsURLs {
      * @return string[] list of URLs
      * @throws WP2StaticException
      */
-    public static function detect( string $wp_site_url, bool $log = false ) : array {
+    public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting sitemap URLs' );
         }
-
-        $sitemaps_urls = [];
 
         $opts = [
             'http_errors' => false,
@@ -126,6 +124,10 @@ class DetectSitemapsURLs {
                     $sitemap
                 );
 
+                if ( $log ) {
+                    WsLog::l( 'Detecting URLs from sitemap: ' . $sitemap );
+                }
+
                 $request = new Request( 'GET', $base_uri . $sitemap, $headers );
 
                 $response = $client->send( $request );
@@ -133,18 +135,19 @@ class DetectSitemapsURLs {
                 $status_code = $response->getStatusCode();
 
                 if ( $status_code === 200 ) {
-                    $sitemap_urls[] = $sitemap;
+                    yield [ 'url' => $sitemap ];
 
                     $parser->parse( $wp_site_url . $sitemap );
 
                     $extract_sitemaps = $parser->getSitemaps();
 
                     foreach ( $extract_sitemaps as $url => $tags ) {
-                        $sitemaps_urls[] = '/' . str_replace(
+                        $url = '/' . str_replace(
                             $wp_site_url,
                             '',
                             $url
                         );
+                        yield [ 'url' => $url ];
                     }
                 }
             }
@@ -152,7 +155,5 @@ class DetectSitemapsURLs {
             WsLog::l( $e->getMessage() );
             throw new WP2StaticException( $e->getMessage(), 0, $e );
         }
-
-        return $sitemaps_urls;
     }
 }

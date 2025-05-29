@@ -93,7 +93,7 @@ class URLDetector {
         $detect_sitemaps = apply_filters( 'wp2static_detect_sitemaps', 1 );
 
         if ( $detect_sitemaps ) {
-            $arrays_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
         }
 
         if ( CoreOptions::getValue( 'detectPosts' ) ) {
