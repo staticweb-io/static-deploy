@@ -376,38 +376,4 @@ class Crawler {
 
         return $responses( $path_iter );
     }
-
-    /**
-     * @deprecated
-     *
-     * Crawls a string of full URL within WordPressSite
-     *
-     * @return ResponseInterface|null response object
-     */
-    public function crawlURL( string $url ) : ?ResponseInterface {
-        WsLog::w( 'WP2Static Crawler::crawlURL is deprecated.' );
-
-        $headers = [];
-        $response = null;
-
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
-
-        if ( $auth_user ) {
-            $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
-
-            if ( $auth_password ) {
-                $headers['auth'] = [ $auth_user, $auth_password ];
-            }
-        }
-
-        $request = new Request( 'GET', $url, $headers );
-
-        try {
-            $response = $this->client->send( $request );
-        } catch ( TooManyRedirectsException $e ) {
-            WsLog::l( "Too many redirects from $url" );
-        }
-
-        return $response;
-    }
 }
