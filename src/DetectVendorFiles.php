@@ -14,7 +14,7 @@ class DetectVendorFiles {
     /**
      * Detect vendor URLs from filesystem
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
     public static function detect(
             FileFiltering $filtering,

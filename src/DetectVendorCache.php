@@ -14,7 +14,7 @@ class DetectVendorCache {
      *   So, we grab all the files from the its actual cache dir
      *   then strip the site path and any subdir path (no extra logic needed?)
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      */
     public static function detect(
         FileFiltering $filtering,

@@ -11,7 +11,7 @@ class DetectSitemapsURLs {
     /**
      * Detect Authors URLs
      *
-     * @return string[] list of URLs
+     * @return \Iterator<array> list of URLs
      * @throws WP2StaticException
      */
     public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
