@@ -99,12 +99,21 @@ class DetectSitemapsURLs {
 
             // if robots exists, parse for possible sitemaps
             if ( $robots_exists ) {
+                if ( $log ) {
+                    WsLog::l( 'Parsing robots.txt for sitemaps' );
+                }
                 $parser->parseRecursive( $wp_site_url . 'robots.txt' );
                 $sitemaps = $parser->getSitemaps();
+                if ( $log && count( $sitemaps ) > 0 ) {
+                    WsLog::l( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
+                }
             }
 
             // if no sitemaps add known sitemaps
             if ( $sitemaps === [] ) {
+                if ( $log ) {
+                    WsLog::l( 'No sitemaps found in robots.txt. Using default sitemaps.' );
+                }
                 $sitemaps = [
                     // we're assigning empty arrays to match sitemaps library
                     'sitemap.xml' => [], // normal sitemap
