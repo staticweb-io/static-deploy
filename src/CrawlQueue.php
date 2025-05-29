@@ -49,8 +49,16 @@ class CrawlQueue {
      * Add an Iterator of paths, returning an Iterator of the same
      * paths once they have been added.
      *
+     * @param \Iterator $paths
+     * @param bool $omit_unchanged_paths
+     *  If true, will not yield paths that already exist in the DB
+     *  unless they were updated, e.g., the filename changed.
+     * @return \Iterator
      */
-    public static function addPathsIter( \Iterator $paths ) : \Iterator {
+    public static function addPathsIter( 
+        \Iterator $paths,
+        bool $omit_unchanged_paths = false
+    ) : \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -72,23 +80,28 @@ class CrawlQueue {
 
             $insert_values = [];
             $update_values = [];
+            $yield_paths = [];
             foreach ( $paths as $path ) {
                 $filename = $path['filename'] ?? '';
                 $p = $path['path'];
                 $url = rawurldecode( $p );
                 $hash = md5( $url );
                 if ( ! isset( $existing_urls[ $p ] ) ) {
+                    $yield_paths[] = $path;
                     array_push(
                         $insert_values,
                         $url,
                         $filename
                     );
                 } elseif ( $filename !== $existing_urls[ $p ]->filename ) {
+                    $yield_paths[] = $path;
                     array_push(
                         $update_values,
                         $filename,
                         $hash
                     );
+                } elseif ( ! $omit_unchanged_paths ) {
+                    $yield_paths[] = $path;
                 }
             }
 
@@ -116,7 +129,7 @@ class CrawlQueue {
                 }
             }
 
-            foreach ( $paths as $path ) {
+            foreach ( $yield_paths as $path ) {
                 yield $path;
             }
         }
