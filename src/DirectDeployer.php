@@ -33,8 +33,6 @@ class DirectDeployer {
         $this->processor = new PostProcessor();
 
         $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
-
-        WsLog::l( ( $this->use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
     }
 
     public function deploy() : void {
