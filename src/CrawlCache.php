@@ -37,7 +37,7 @@ class CrawlCache {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             hashed_url CHAR(32) NOT NULL,
             url VARCHAR(2083) NOT NULL,
-            page_hash CHAR(32) NOT NULL,
+            page_hash CHAR(32) NULL,
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             status SMALLINT DEFAULT 200 NOT NULL,
             redirect_to VARCHAR(2083) NULL,
