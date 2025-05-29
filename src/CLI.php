@@ -332,7 +332,7 @@ class CLI {
 
     private function crawledSiteStatus() : void {
         $crawlable_urls = array_map(
-            '\WP2Static\Crawler::transformPath',
+            '\WP2Static\StaticSite::transformPath',
             CrawlQueue::getCrawlablePaths(),
         );
         $crawled_urls = StaticSite::getPaths();

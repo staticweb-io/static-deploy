@@ -183,7 +183,7 @@ class Crawler {
                         // both the crawled and the processed.
                         array_map(
                             function( $dir ) use ( $root_relative_path ) {
-                                $transformed_path = self::transformPath( $root_relative_path );
+                                $transformed_path = StaticSite::transformPath( $root_relative_path );
                                 $suffix = ltrim( $transformed_path, '/' );
                                 $full_path = trailingslashit( $dir ) . $suffix;
                                 if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
@@ -234,7 +234,7 @@ class Crawler {
                     $this->crawled++;
 
                     if ( $crawled_contents && $write_contents ) {
-                        $static_path = static::transformPath( $root_relative_path );
+                        $static_path = StaticSite::transformPath( $root_relative_path );
                         StaticSite::add( $static_path, $crawled_contents );
                     }
 
@@ -375,24 +375,6 @@ class Crawler {
         };
 
         return $responses( $path_iter );
-    }
-
-    /**
-     * Transform a root-relative path to a static site path.
-     *
-     * This lets us encapsulate the logic for path transformation in a single
-     * place and use it in multiple places.
-     *
-     * TODO Should this actually be in `StaticSite`?
-     */
-    public static function transformPath( string $root_relative_path ) : string {
-        // do some magic here - naive: if URL ends in /, save to /index.html
-        // TODO: will need love for example, XML files
-        // check content type, serve .xml/rss, etc instead
-        if ( mb_substr( $root_relative_path, -1 ) === '/' ) {
-            return $root_relative_path . 'index.html';
-        }
-        return $root_relative_path;
     }
 
     /**
