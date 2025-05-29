@@ -88,13 +88,11 @@ class DetectSitemapsURLs {
             }
         }
 
-        $robots_exists = false;
-        // Disable due to a bug in parsing
-        /*$request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
+        $request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
 
         $response = $client->send( $request );
 
-        $robots_exists = $response->getStatusCode() === 200;*/
+        $robots_exists = $response->getStatusCode() === 200;
 
         try {
             $sitemaps = [];
@@ -104,8 +102,10 @@ class DetectSitemapsURLs {
                 if ( $log ) {
                     WsLog::l( 'Parsing robots.txt for sitemaps' );
                 }
-                $parser->parseRecursive( $wp_site_url . 'robots.txt' );
-                $sitemaps = $parser->getSitemaps();
+                $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
+                foreach ( $robotsmaps as $map ) {
+                    $sitemaps[$map] = [];
+                }
                 if ( $log && count( $sitemaps ) > 0 ) {
                     WsLog::l( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
                 }

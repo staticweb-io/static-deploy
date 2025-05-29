@@ -186,10 +186,6 @@ class SitemapParser {
             return;
         }
 
-        if ( parse_url( $this->current_url, PHP_URL_PATH ) === self::ROBOTSTXT_PATH ) {
-            $this->parseRobotstxt( $response );
-            return;
-        }
         // Check if content is an gzip file
         if ( strpos( $response, "\x1f\x8b\x08", 0 ) === 0 ) {
             $response = gzdecode( $response );
@@ -265,9 +261,9 @@ class SitemapParser {
      * Search for sitemaps in the robots.txt content
      *
      * @param string $robotstxt
-     * @return bool
+     * @return \Iterator<string>
      */
-    protected function parseRobotstxt( $robotstxt ) {
+    public function parseRobotstxt( string $robotstxt ) : \Iterator {
         // Split lines into array
         $lines = array_filter(
             array_map(
@@ -302,7 +298,7 @@ class SitemapParser {
             }
             $url = $this->urlEncode( $pair[1] );
             if ( $this->urlValidate( $url ) ) {
-                $this->addArray( self::XML_TAG_SITEMAP, [ 'loc' => $url ] );
+                yield $url;
             } else {
                 WsLog::l(
                     "Invalid sitemap URL in robots.txt: $url"
@@ -310,7 +306,6 @@ class SitemapParser {
                 );
             }
         }
-        return true;
     }
 
     /**
