@@ -104,8 +104,15 @@ class Crawler {
 
     public static function wp2staticCrawl( string $crawler_slug ) : void {
         if ( 'wp2static' === $crawler_slug ) {
+            $paths = CrawlQueue::getPathsIter();
             $crawler = new Crawler();
-            $crawler->crawlSite();
+            $crawled = $crawler->crawlIter( $paths );
+            $crawled = CrawlCache::remove404s( $crawled );
+            $crawled = CrawlCache::writeFilesIter( $crawled );
+            if ( $crawler->use_crawl_cache ) {
+                $crawled = CrawlCache::addPathsIter( $crawled );
+            }
+            foreach ( $crawled as $crawled ) {}
             $crawler->crawlComplete();
         }
     }
@@ -121,154 +128,6 @@ class Crawler {
         ];
 
         do_action( 'wp2static_crawling_complete', $args );
-    }
-
-    /**
-     * Crawls URLs in WordPressSite, saving them to StaticSite
-     */
-    public function crawlSite() : void {
-        $site_host = parse_url( $this->site_path, PHP_URL_HOST );
-        $site_port = parse_url( $this->site_path, PHP_URL_PORT );
-        $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
-        $site_urls = [ "http://$site_host", "https://$site_host" ];
-
-        // TODO: use some Iterable or other performance optimisation here
-        // to help reduce resources for large URL sites
-
-        /**
-         * When you call method that executes database query in for loop
-         * you are calling method and querying database for every loop iteration.
-         * To avoid that you need to assing the result to a variable.
-         */
-
-        $crawlable_paths = CrawlQueue::getCrawlablePaths();
-        $urls = [];
-
-        foreach ( $crawlable_paths as $root_relative_path ) {
-            $absolute_uri = new URL( $this->site_path . $root_relative_path );
-            $urls[] = [
-                'url' => $absolute_uri->get(),
-                'path' => $root_relative_path,
-            ];
-        }
-
-        $requests = function ( $urls ) {
-            foreach ( $urls as $url ) {
-                yield new Request( 'GET', $url['url'] );
-            }
-        };
-
-        $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
-        $last_log_time = microtime( true );
-
-        $pool = new Pool(
-            $this->client,
-            $requests( $urls ),
-            [
-                'concurrency' => $concurrency,
-                'fulfilled' => function ( Response $response, $index ) use (
-                    $last_log_time, &$urls, $site_urls
-                ) {
-                    $root_relative_path = $urls[ $index ]['path'];
-                    $crawled_contents = (string) $response->getBody();
-                    $status_code = $response->getStatusCode();
-
-                    $is_cacheable = true;
-                    if ( $status_code === 404 ) {
-                        WsLog::l( '404 for URL ' . $root_relative_path );
-                        CrawlCache::rmUrl( $root_relative_path );
-                        // Delete crawl queue to prevent crawling not found urls forever.
-                        CrawlQueue::rmUrl( $root_relative_path );
-                        // Delete previously generated files under the directories,
-                        // both the crawled and the processed.
-                        array_map(
-                            function( $dir ) use ( $root_relative_path ) {
-                                $transformed_path = StaticSite::transformPath( $root_relative_path );
-                                $suffix = ltrim( $transformed_path, '/' );
-                                $full_path = trailingslashit( $dir ) . $suffix;
-                                if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
-                                    unlink( $full_path );
-                                }
-                            },
-                            [ StaticSite::getPath(), ProcessedSite::getPath() ]
-                        );
-                        $crawled_contents = null;
-                        $is_cacheable = false;
-                    } elseif ( in_array( $status_code, WP2STATIC_REDIRECT_CODES ) ) {
-                        $crawled_contents = null;
-                    }
-
-                    $redirect_to = null;
-
-                    if ( in_array( $status_code, WP2STATIC_REDIRECT_CODES ) ) {
-                        $effective_url = $urls[ $index ]['url'];
-
-                        // returns as string
-                        $redirect_history =
-                            $response->getHeaderLine( 'X-Guzzle-Redirect-History' );
-
-                        if ( $redirect_history ) {
-                            $redirects = explode( ', ', $redirect_history );
-                            $effective_url = end( $redirects );
-                        }
-
-                        $redirect_to =
-                            (string) str_replace( $site_urls, '', $effective_url );
-                        $page_hash = md5( $status_code . $redirect_to );
-                    } elseif ( ! is_null( $crawled_contents ) ) {
-                        $page_hash = md5( $crawled_contents );
-                    } else {
-                        $page_hash = md5( (string) $status_code );
-                    }
-
-                    $write_contents = true;
-
-                    if ( $this->use_crawl_cache ) {
-                        // if not already cached
-                        if ( CrawlCache::getUrl( $root_relative_path, $page_hash ) ) {
-                            $this->cache_hits++;
-                            $write_contents = false;
-                        }
-                    }
-
-                    $this->crawled++;
-
-                    if ( $crawled_contents && $write_contents ) {
-                        $static_path = StaticSite::transformPath( $root_relative_path );
-                        StaticSite::add( $static_path, $crawled_contents );
-                    }
-
-                    if ( $is_cacheable ) {
-                        CrawlCache::addUrl(
-                            $root_relative_path,
-                            $page_hash,
-                            $status_code,
-                            $redirect_to
-                        );
-                    }
-
-                    $now = microtime( true );
-
-                    if ( $now - $last_log_time >= 60 ) {
-                        WsLog::l( 'Crawled ' . $root_relative_path );
-                        $notice = "Crawling progress: $this->crawled crawled," .
-                                  " $this->cache_hits skipped (cached).";
-                        WsLog::l( $notice );
-                        $last_log_time = microtime( true );
-                    }
-                },
-                'rejected' => function ( RequestException $reason, $index ) use ( $urls ) {
-                    $root_relative_path = $urls[ $index ]['path'];
-                    WsLog::l( 'Failed ' . $root_relative_path );
-                },
-            ]
-        );
-
-        // Initiate the transfers and create a promise
-        $promise = $pool->promise();
-
-        // Force the pool of requests to complete.
-        $promise->wait();
     }
 
     public function crawlPath(array $detected, array $site_urls) : PromiseInterface {
