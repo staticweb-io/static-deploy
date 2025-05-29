@@ -41,6 +41,7 @@ class CrawlCache {
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             status SMALLINT DEFAULT 200 NOT NULL,
             redirect_to VARCHAR(2083) NULL,
+            content_type VARCHAR(255) DEFAULT '' NOT NULL,
             PRIMARY KEY  (id),
             UNIQUE KEY hashed_url_idx (hashed_url)
         ) $charset_collate;";
