@@ -136,6 +136,41 @@ class CrawlQueue {
     }
 
     /**
+     * Add an Iterator of paths, returning an Iterator
+     * of all paths in the DB.
+     * Includes the newly added paths and pre-existing paths.
+     *
+     */
+    public static function withPathsIter( \Iterator $paths ) : \Iterator {
+        global $wpdb;
+
+        $db_now = $wpdb->get_var( "SELECT NOW()" );
+
+        $table_name = self::getTableName();
+
+        foreach ( self::addPathsIter( $paths, true ) as $path ) {
+            yield $path;
+        }
+
+        $batch_size = 1000;
+        $last_id = 0;
+        while ( true ) {
+            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d AND detected_at < %s AND (crawled_at IS NULL OR crawled_at < %s) ORDER BY id ASC LIMIT %d";
+            $q = $wpdb->prepare( $qs, $last_id, $db_now, $db_now, $batch_size );
+            $rows = $wpdb->get_results( $q, ARRAY_A );
+
+            foreach ( $rows as $row ) {
+                yield $row;
+                $last_id = $row['id'];
+            }
+
+            if ( count( $rows ) < $batch_size ) {
+                break;
+            }
+        }
+    }
+
+    /**
      *  Get all crawlable URLs
      *
      *  @return \Iterator<string> All crawlable URLs

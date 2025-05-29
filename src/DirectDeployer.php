@@ -34,7 +34,7 @@ class DirectDeployer {
 
     public function deploy() : void {
         $detected = URLDetector::detectURLsIter();
-        $added = CrawlQueue::addPathsIter( $detected );
+        $added = CrawlQueue::withPathsIter( $detected );
         $this->deployPaths( $added );
     }
 
