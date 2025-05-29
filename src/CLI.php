@@ -537,9 +537,9 @@ class CLI {
             $post_id = intval( $args[0] );
             $path = wp_make_link_relative(get_permalink($post_id));
             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
-            CrawlQueue::addUrls( [ $path ] );
+            $detected = CrawlQueue::addPathsIter(  $paths );
             WsLog::l( 'Starting direct deployment for path ' . $path );
-            $deployer->deployPaths($paths);
+            $deployer->deployPaths( $detected );
         } else {
             WsLog::l( 'Starting direct deployment' );
             $deployer->deploy();
