@@ -50,6 +50,7 @@ class DirectDeployer {
 
     public function deployPaths( \Iterator $paths ) : void {
         $crawled = $this->crawler->crawlIter( $paths );
+        $crawled = CrawlCache::remove404s( $crawled );
 
         if ( $this->use_crawl_cache ) {
             $crawled = CrawlCache::addPathsIter( $crawled );

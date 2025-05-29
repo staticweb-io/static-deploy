@@ -117,6 +117,36 @@ class CrawlCache {
         }
     }
 
+    /**
+     * Remove 404 URLs from the crawl queue, crawl cache, and
+     * files written to disk.
+     */
+    public static function remove404s( \Iterator $paths ) : \Iterator {
+        foreach ( $paths as $path ) {
+            if ( isset( $path['status'] ) && $path['status'] === 404 ) {
+                WsLog::l( '404 for URL ' . $path['path'] );
+                CrawlCache::rmUrl( $path['path'] );
+                // Delete crawl queue to prevent crawling not found urls forever.
+                CrawlQueue::rmUrl( $path['path'] );
+                // Delete previously generated files under the directories,
+                // both the crawled and the processed.
+                array_map(
+                    function( $dir ) use ( $path ) {
+                        $transformed_path = StaticSite::transformPath( $path['path'] );
+                        $suffix = ltrim( $transformed_path, '/' );
+                        $full_path = trailingslashit( $dir ) . $suffix;
+                        if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
+                            unlink( $full_path );
+                        }
+                    },
+                    [ StaticSite::getPath(), ProcessedSite::getPath() ]
+                );
+            } else {
+                yield $path;
+            }
+        }
+    }
+
     public static function addUrl( string $url, string $page_hash, int $status,
                                    ?string $redirect_to ) : void {
         global $wpdb;
