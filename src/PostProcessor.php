@@ -55,28 +55,23 @@ class PostProcessor {
             return;
         }
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
-                $static_site_path,
-                RecursiveDirectoryIterator::SKIP_DOTS
-            )
-        );
+        $crawled = CrawlCache::getPathsIter();
+        $processed = $this->processIter( $crawled );
 
-        foreach ( $iterator as $filename => $file_object ) {
-            /**
-             * @var string $filename
-             */
-
-            $save_path = str_replace( $static_site_path, '', $filename );
-
-            // copy file to ProcessedSite dir, then process it
-            // this allows external processors to have their way with it
-            ProcessedSite::add( $filename, $save_path );
-
-            $file_processor = new FileProcessor();
-
-            $file_processor->processFile( ProcessedSite::getPath() . $save_path );
-            $this->processed++;
+        foreach ( $processed as $path ) {
+            $save_path = StaticSite::transformPath( $path['path'] );
+            if ( $path['body'] ?? null ) {
+                ProcessedSite::add( $save_path, $path['body'] );
+                $this->processed++;
+            } else if ( $path['filename'] ?? null ) {
+                ProcessedSite::copy( $save_path, $path['filename'] );
+                $this->skipped++;
+            } else {
+                WsLog::w(
+                    'No contents found for crawled path: ' . json_encode( $path )
+                );
+                $this->skipped++;
+            }
         }
 
         $this->complete();

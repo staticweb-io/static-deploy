@@ -21,10 +21,10 @@ class ProcessedSite {
     }
 
     /**
-     * Add static file to ProcessedSite
+     * Add file contents to ProcessedSite
      */
-    public static function add( string $static_file, string $save_path ) : void {
-        $full_path = self::getPath() . "/$save_path";
+    public static function add( string $path, string $contents ) : void {
+        $full_path = self::getPath() . "/$path";
 
         $directory = dirname( $full_path );
 
@@ -34,7 +34,24 @@ class ProcessedSite {
             }
         }
 
-        copy( $static_file, $full_path );
+        file_put_contents( $full_path, $contents );
+    }
+
+    /**
+     * Copy a file to ProcessedSite
+     */
+    public static function copy( string $path, string $source_file ) : void {
+        $full_path = self::getPath() . "/$path";
+
+        $directory = dirname( $full_path );
+
+        if ( ! is_dir( $directory ) ) {
+            if ( ! wp_mkdir_p( $directory ) ) {
+                WsLog::l( 'Couldn\'t make directory: ' . $directory );
+            }
+        }
+
+        copy( $source_file, $full_path );
     }
 
     /**

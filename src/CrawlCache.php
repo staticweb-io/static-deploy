@@ -119,6 +119,47 @@ class CrawlCache {
     }
 
     /**
+     * Yields all paths in the table.
+     *
+     */
+    public static function getPathsIter() : \Iterator {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+        $queue_table_name = CrawlQueue::getTableName();
+        $batch_size = 1000;
+        $last_id = 0;
+        $static_site_path = StaticSite::getPath();
+        while ( true ) {
+            $qs = "SELECT cc.id, cc.url AS path, cc.page_hash AS content_hash, cc.status, cc.redirect_to, cc.content_type, cq.filename
+              FROM $table_name AS cc
+              JOIN $queue_table_name AS cq
+              ON cc.hashed_url = cq.hashed_url
+              WHERE cc.id > %d
+              ORDER BY cc.id ASC
+              LIMIT %d";
+            $q = $wpdb->prepare( $qs, $last_id, $batch_size );
+            $rows = $wpdb->get_results( $q, ARRAY_A );
+
+            foreach ( $rows as $row ) {
+                if ( ! $row['filename'] ) {
+                    $xform = StaticSite::transformPath( $row['path'] );
+                    $cc_path = $static_site_path . $xform;
+                    if ( $xform && file_exists( $cc_path ) ) {
+                        $row['filename'] = $cc_path;
+                    }
+                }
+                yield $row;
+                $last_id = $row['id'];
+            }
+
+            if ( count( $rows ) < $batch_size ) {
+                break;
+            }
+        }
+    }
+
+    /**
      * Remove 404 URLs from the crawl queue, crawl cache, and
      * files written to disk.
      */
