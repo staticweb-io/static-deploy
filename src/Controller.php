@@ -262,29 +262,6 @@ class Controller {
         );
     }
 
-    // TODO: why is this here? Move to CrawlQueue if still needed
-    public function deleteCrawlCache() : void {
-        // we now have modified file list in DB
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'wp2static_crawl_cache';
-
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
-
-        $sql =
-            "SELECT count(*) FROM $table_name";
-
-        $count = $wpdb->get_var( $sql );
-
-        if ( $count === '0' ) {
-            http_response_code( 200 );
-
-            echo 'SUCCESS';
-        } else {
-            http_response_code( 500 );
-        }
-    }
-
     public function userIsAllowed() : bool {
         if ( defined( 'WP_CLI' ) ) {
             return true;
