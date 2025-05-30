@@ -1,7 +1,7 @@
 {
   "name": "WP2Static",
-  "version": "8.1.0",
-  "download_url": "https://github.com/staticweb-io/wp2static/releases/download/v8.1.0/plugin.zip",
+  "version": "8.2.0",
+  "download_url": "https://github.com/staticweb-io/wp2static/releases/download/v8.2.0/plugin.zip",
   "requires": "6.4",
   "tested": "6.4"
 }
