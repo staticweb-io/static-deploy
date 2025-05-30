@@ -38,9 +38,27 @@ class DirectDeployer {
     }
 
     public function deploy() : void {
+        global $wpdb;
+
+        $queue_table = CrawlQueue::getTableName();
+        $last_now = $wpdb->get_var( 'SELECT NOW()' );
+
         $detected = URLDetector::detectURLsIter();
         $added = CrawlQueue::withPathsIter( $detected );
         $this->deployPaths( $added );
+
+        while ( true ) {
+            $sql = $wpdb->prepare( "SELECT COUNT(*) FROM $queue_table WHERE detected_at > %s", $last_now );
+            $new_ct = intval( $wpdb->get_var( $sql ) );
+            if ( 0 === $new_ct ) {
+                break;
+            }
+            WsLog::l ( "Found $new_ct new URLs during crawling." );
+            $detected = CrawlQueue::getPathsIter( $last_now );
+            $last_now = $wpdb->get_var( 'SELECT NOW()' );
+            $added = CrawlQueue::withPathsIter( $detected );
+            $this->deployPaths( $added, false );
+        }
     }
 
     public function deployComplete() : void {
@@ -51,9 +69,11 @@ class DirectDeployer {
         do_action( 'wp2static_post_direct_deploy_trigger', $this );
     }
 
-    public function deployPaths( \Iterator $paths ) : void {
+    public function deployPaths( \Iterator $paths, bool $remove_404s = true ) : void {
         $crawled = $this->crawler->crawlIter( $paths );
-        $crawled = CrawlCache::remove404s( $crawled );
+        if ( $remove_404s ) {
+            $crawled = CrawlCache::remove404s( $crawled );
+        }
 
         if ( $this->use_crawl_cache ) {
             $crawled = CrawlCache::addPathsIter( $crawled );
