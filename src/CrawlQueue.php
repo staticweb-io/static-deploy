@@ -168,16 +168,17 @@ class CrawlQueue {
     /**
      * Yields all paths in the table.
      *
+     * @param string $detected_since default to '0000-00-00 00:00:00'
      */
-    public static function getPathsIter() : \Iterator {
+    public static function getPathsIter( string $detected_since = '0000-00-00 00:00:00' ) : \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d ORDER BY id ASC LIMIT %d";
-            $q = $wpdb->prepare( $qs, $last_id, $batch_size );
+            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d AND detected_at >= %s ORDER BY id ASC LIMIT %d";
+            $q = $wpdb->prepare( $qs, $last_id, $detected_since, $batch_size );
             $rows = $wpdb->get_results( $q, ARRAY_A );
 
             foreach ( $rows as $row ) {
