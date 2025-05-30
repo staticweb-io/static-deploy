@@ -81,7 +81,7 @@ class URLDiscovery {
         $body = null;
         if ( isset( $arr['body'] ) ) {
             $body = $arr['body'];
-        } else if ( isset( $arr['filename'] ) ) {
+        } else if ( $arr['filename'] ?? null ) {
             $body = file_get_contents( $arr['filename'] );
         }
 
