@@ -11,6 +11,7 @@ class DirectDeployer {
     private $crawler;
     private $deployer;
     private $processor;
+    private $url_discovery;
     private $use_crawl_cache;
 
     public function __construct() {
@@ -30,6 +31,7 @@ class DirectDeployer {
 
         $this->deployer = new $deployer_class();
         $this->crawler = new Crawler();
+        $this->url_discovery = new URLDiscovery();
         $this->processor = new PostProcessor();
 
         $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
@@ -56,6 +58,8 @@ class DirectDeployer {
         if ( $this->use_crawl_cache ) {
             $crawled = CrawlCache::addPathsIter( $crawled );
         }
+
+        $crawled = $this->url_discovery->discoverURLs( $crawled );
 
         $processed = $this->processor->processIter( $crawled );
         $this->deployer->uploadFilesIter( $processed );

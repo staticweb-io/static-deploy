@@ -107,12 +107,14 @@ class Crawler {
         if ( 'wp2static' === $crawler_slug ) {
             $paths = CrawlQueue::getPathsIter();
             $crawler = new Crawler();
+            $url_discovery = new URLDiscovery();
             $crawled = $crawler->crawlIter( $paths );
             $crawled = CrawlCache::remove404s( $crawled );
             $crawled = CrawlCache::writeFilesIter( $crawled );
             if ( $crawler->use_crawl_cache ) {
                 $crawled = CrawlCache::addPathsIter( $crawled );
             }
+            $crawled = $url_discovery->discoverURLs( $crawled );
             foreach ( $crawled as $crawled ) {}
             $crawler->crawlComplete();
         }
