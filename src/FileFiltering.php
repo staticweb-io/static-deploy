@@ -2,41 +2,50 @@
 
 namespace WP2Static;
 
+use PHLAK\Splat\Anchors;
+use PHLAK\Splat\Pattern;
 use WP2Static\CoreOptions;
+use WP2Static\FileIgnorePattern;
 use WP2Static\SiteInfo;
 
 class FileFiltering {
 
     /**
-     * @var array<string>
-     * File and directory names to ignore
+     * @var array<FileIgnorePattern>
+     * Files and directories to ignore
      */
-    private $filenames_to_ignore;
-
-    /**
-     * @var array<string>
-     * File extensions to ignore
-     */
-    private $file_extensions_to_ignore;
+    private $patterns_to_ignore;
 
     public function __construct() {
+        $this->patterns_to_ignore = [];
+
         $filenames_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'filenamesToIgnore' );
 
-        $this->filenames_to_ignore =
+        $filenames_to_ignore =
             apply_filters(
                 'wp2static_filenames_to_ignore',
                 $filenames_to_ignore
             );
 
+        foreach ( $filenames_to_ignore as $filename ) {
+            $this->patterns_to_ignore[] = new FileIgnorePattern( $filename );
+        }
+
         $file_extensions_to_ignore = CoreOptions::getLineDelimitedBlobValue(
             'fileExtensionsToIgnore'
         );
 
-        $this->file_extensions_to_ignore =
+        $file_extensions_to_ignore =
             apply_filters(
                 'wp2static_file_extensions_to_ignore',
                 $file_extensions_to_ignore
             );
+
+        foreach ( $file_extensions_to_ignore as $extension ) {
+            $this->patterns_to_ignore[] = new FileIgnorePattern(
+                "**$extension"
+            );
+        }
     }
 
     /**
@@ -49,6 +58,8 @@ class FileFiltering {
     public function crawlableFiles(
         string $directory,
     ) : \Iterator {
+        $abs_base_dir = ( new \SplFileInfo( $directory ) )->getPathname();
+
         $dir_iter = new \RecursiveDirectoryIterator(
             $directory,
             \RecursiveDirectoryIterator::SKIP_DOTS,
@@ -59,29 +70,11 @@ class FileFiltering {
         // blocked directories.
         $filter_iter = new \RecursiveCallbackFilterIterator(
             $dir_iter,
-            function ( $current, $key, $iterator ) {
-                $filename = $current->getFilename();
-
+            function ( $current, $key, $iterator ) use ( $abs_base_dir ) {
                 // Filter out both directories and files
-                foreach ( $this->filenames_to_ignore as $filename_to_ignore ) {
-                    if ( $filename === $filename_to_ignore ) {
+                foreach ( $this->patterns_to_ignore as $pattern ) {
+                    if ( $pattern->matches( $abs_base_dir, $current ) ) {
                         return false;
-                    }
-                }
-
-                // Filter only files
-                if ( $current->isFile() ) {
-                    /*
-                      Prepare the file extension list for regex:
-                      - Add prepending (escaped) \ for a literal . at the start of
-                        the file extension
-                      - Add $ at the end to match end of string
-                      - Add i modifier for case insensitivity
-                    */
-                    foreach ( $this->file_extensions_to_ignore as $extension ) {
-                        if ( preg_match( "/\\{$extension}$/i", $filename ) ) {
-                            return false;
-                        }
                     }
                 }
 
@@ -118,33 +111,14 @@ class FileFiltering {
     }
 
     /**
-     * Ensure a given filepath has an allowed filename and extension.
-     *
-     * @param string $file_name
-     * @return bool  True if the given file does not have a disallowed filename
-     *               or extension.
+     * @param string $path
+     * @return bool  True if the given path does not match an ignore pattern
      */
     public function pathLooksCrawlable(
-        string $file_name,
+        string $path,
     ) : bool {
-        $filename_matches = 0;
-
-        str_ireplace( $this->filenames_to_ignore, '', $file_name, $filename_matches );
-
-        // If we found matches we don't need to go any further
-        if ( $filename_matches ) {
-            return false;
-        }
-
-        /*
-          Prepare the file extension list for regex:
-          - Add prepending (escaped) \ for a literal . at the start of
-            the file extension
-          - Add $ at the end to match end of string
-          - Add i modifier for case insensitivity
-        */
-        foreach ( $this->file_extensions_to_ignore as $extension ) {
-            if ( preg_match( "/\\{$extension}$/i", $file_name ) ) {
+        foreach ( $this->patterns_to_ignore as $pattern ) {
+            if ( $pattern->matchesPath( $path ) ) {
                 return false;
             }
         }

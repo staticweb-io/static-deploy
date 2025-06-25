@@ -22,7 +22,7 @@
               let rel = baseNameOf path;
               in rel == "composer.json" || rel == "composer.lock";
           };
-          vendorHash = "sha256-4DTiW/rykJGZAnWCRSqlAaBtDthXKkZshPNe3yYCfA4=";
+          vendorHash = "sha256-dIGRVRFG7Rc1HhN0gCiYm1DgHsZAmc1KP490A26Gj2A=";
         });
         wp2static = runCommand "wp2static" {} ''
           export PLUGIN_DIR="$TMPDIR/${name}"

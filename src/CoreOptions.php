@@ -297,7 +297,7 @@ class CoreOptions {
                 'filenamesToIgnore',
                 '1',
                 'Directory and File Names to Ignore',
-                'Directories and files with these names will be ignored.',
+                'Directories and files with these names will be ignored. Glob syntax is supported via <a href="https://github.com/PHLAK/Splat">Splat</a>.',
                 implode(
                     "\n",
                     [

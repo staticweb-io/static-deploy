@@ -68,4 +68,14 @@ class Utils {
             set_time_limit( 0 );
         }
     }
+
+    public static function str_replace_first(
+        string $search,
+        string $replace,
+        string $subject,
+    ): string {
+        $pos = strpos( $subject, $search );
+        if ( $pos === false ) return $subject;
+        return substr_replace( $subject, $replace, $pos, strlen( $search ) );
+    }
 }
