@@ -3,6 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.test :refer [is]]
             [cognitect.test-runner.api :as test-api]
+            [hashp.core]
             [wp2static-test.core :as core]
             [wp2static-test.main :as main]))
 
