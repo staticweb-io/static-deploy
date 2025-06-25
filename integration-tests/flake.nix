@@ -17,16 +17,14 @@
           else
             builtins.getEnv name);
         composerPackages = {
-          "7.4" = php74Packages.composer;
           "8.0" = php80Packages.composer;
           "8.1" = php81Packages.composer;
         };
         phpPackages = {
-          "7.4" = pkgs.php74;
           "8.0" = pkgs.php80;
           "8.1" = pkgs.php81;
         };
-        phpVersion = getEnv "PHP_VERSION" "7.4";
+        phpVersion = getEnv "PHP_VERSION" "8.0";
         composer = lib.getAttr phpVersion composerPackages;
         php = lib.getAttr phpVersion phpPackages;
         wordpress = (pkgs.wordpress.overrideAttrs (oldAttrs: rec {
