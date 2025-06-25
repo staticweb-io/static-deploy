@@ -4,9 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
     flake-utils.url = "github:numtide/flake-utils";
+    wp2static.url = "..";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }:
+  outputs = { self, nixpkgs, flake-utils, wp2static, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       with import nixpkgs { inherit system; };
       with pkgs;
@@ -51,6 +52,7 @@
             zip
           ];
           WORDPRESS_PATH = wordpress;
+          WP2STATIC_PATH = wp2static.packages.${system}.plugin;
         };
       });
 }

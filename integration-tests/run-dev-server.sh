@@ -2,4 +2,4 @@
 
 set -e
 
-WP2STATIC_SYMLINK=t nix develop -c clojure -M:dev-server
+nix develop -c clojure -M:dev-server

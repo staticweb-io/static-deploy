@@ -22,28 +22,21 @@
   (let [fname (str "wp2static-" (System/currentTimeMillis))
         zip-name (str fname ".zip")
         wp2static-path (->> (or (System/getenv "WP2STATIC_PATH")
-                              (str (System/getenv "PWD") "/.."))
-                         (sh! "readlink" "-f")
-                         :out
-                         str/trim)]
+                                (str (System/getenv "PWD") "/.."))
+                            (sh! "readlink" "-f")
+                            :out
+                            str/trim)]
     (if (System/getenv "WP2STATIC_SYMLINK")
       (do
         (sh! "composer" "install" "--no-dev" "--optimize-autoloader"
-          :dir wp2static-path)
+             :dir wp2static-path)
         (doseq [plugins-dir plugins-dirs]
           (sh! "ln" "-s" wp2static-path :dir plugins-dir)))
-      (try
-        (sh! "bash" "./tools/build_release.sh" fname :dir wp2static-path)
-        (doseq [plugins-dir plugins-dirs]
-          (try
-            (sh! "cp" (str (System/getenv "HOME") "/Downloads/" zip-name) "."
-              :dir plugins-dir)
-            (sh! "rm" "-rf" "wp2static" :dir plugins-dir)
-            (sh! "unzip" zip-name :dir plugins-dir)
-            (finally
-              (sh! "rm" "-f" zip-name :dir plugins-dir))))
-        (finally
-          (sh! "rm" "-f" zip-name :dir (str (System/getenv "HOME") "/Downloads/")))))
+      (doseq [plugins-dir plugins-dirs]
+        (sh! "rm" "-rf" "wp2static" :dir plugins-dir)
+        (sh! "unzip" (str (System/getenv "WP2STATIC_PATH") "/wp2static.zip")
+             "-d" "."
+             :dir plugins-dir)))
     ;(bedrock-cli! "plugin" "activate" "wp2static")
     (wp-cli! "plugin" "activate" "wp2static")))
 
