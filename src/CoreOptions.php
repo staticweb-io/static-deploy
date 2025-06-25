@@ -325,6 +325,7 @@ class CoreOptions {
                         'node_modules',
                         'package.json',
                         'pb_backupbuddy',
+                        'plugins/*/vendor',
                         'plugins/wp2static',
                         'previous-export',
                         'README',
@@ -335,6 +336,8 @@ class CoreOptions {
                         'wc-logs',
                         'wpallexport',
                         'wpallimport',
+                        'wp-admin',
+                        'wp-content/plugins/*/vendor',
                         'wp-static-html-output', // exclude earlier version exports
                         'wp2static-addon',
                         'wp2static-crawled-site',
