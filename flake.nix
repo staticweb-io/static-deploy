@@ -24,7 +24,7 @@
           };
           vendorHash = "sha256-dIGRVRFG7Rc1HhN0gCiYm1DgHsZAmc1KP490A26Gj2A=";
         });
-        wp2static = runCommand "wp2static" {} ''
+        wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
           cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" "$PLUGIN_DIR"
@@ -50,6 +50,9 @@
         devShells.default = mkShell {
           buildInputs = [ php phpPackages.composer shellcheck ] ++ phpBins;
         };
-        packages = { inherit wp2static; };
+        packages = {
+          inherit wp2static;
+          plugin = wp2static;
+        };
       });
 }
