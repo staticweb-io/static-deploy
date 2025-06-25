@@ -31,7 +31,7 @@ class SiteInfo {
 
         // properties which should not change during plugin execution
         self::$info = apply_filters(
-            'wp2static_siteinfo',
+            Controller::getHookName( 'siteinfo' ),
             [
                 // Core
                 'site_path' => ABSPATH,

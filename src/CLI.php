@@ -509,10 +509,17 @@ class CLI {
             WP_CLI::line( 'No deployment add-ons are enabled, skipping deployment.' );
         } else {
             WsLog::l( 'Starting deployment' );
-            do_action( 'wp2static_deploy', ProcessedSite::getPath(), $deployer );
+            do_action(
+                Controller::getHookName( 'deploy' ),
+                ProcessedSite::getPath(),
+                $deployer
+            );
         }
         WsLog::l( 'Starting post-deployment actions' );
-        do_action( 'wp2static_post_deploy_trigger', $deployer );
+        do_action(
+            Controller::getHookName( 'post_deploy_trigger' ),
+            $deployer
+        );
     }
 
     /*

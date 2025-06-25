@@ -25,22 +25,40 @@ class FileProcessor {
      */
     public function processFile( string $filename ) : void {
         if ( $filename === ProcessedSite::getPath() . '/robots.txt' ) {
-            do_action( 'wp2static_process_robots_txt', $filename );
+            do_action(
+                Controller::getHookName( 'process_robots_txt' ),
+                $filename
+            );
             return;
         }
         switch ( pathinfo( $filename, PATHINFO_EXTENSION ) ) {
             case 'html':
-                do_action( 'wp2static_process_html', $filename );
-                do_action( 'wp2static_process_html_complete', $filename );
+                do_action(
+                    Controller::getHookName( 'process_html' ),
+                    $filename
+                );
+                do_action(
+                    Controller::getHookName( 'process_html_complete' ),
+                    $filename
+                );
                 break;
             case 'css':
-                do_action( 'wp2static_process_css', $filename );
+                do_action(
+                    Controller::getHookName( 'process_css' ),
+                    $filename
+                );
                 break;
             case 'js':
-                do_action( 'wp2static_process_js', $filename );
+                do_action(
+                    Controller::getHookName( 'process_js' ),
+                    $filename
+                );
                 break;
             case 'xml':
-                do_action( 'wp2static_process_xml', $filename );
+                do_action(
+                    Controller::getHookName( 'process_xml' ),
+                    $filename
+                );
                 break;
         }
     }

@@ -22,7 +22,11 @@ class DirectDeployer {
             return;
         }
 
-        $deployer_class = apply_filters( 'wp2static_deployer_class', '', $deployer );
+        $deployer_class = apply_filters(
+            Controller::getHookName( 'deployer_class' ),
+            '',
+            $deployer
+        );
         
         if ( empty( $deployer_class ) ) {
             WsLog::l( 'No deployer class found, skipping direct deployment.' );
@@ -66,7 +70,10 @@ class DirectDeployer {
         $this->processor->complete();
 
         WsLog::l( 'Starting post-direct deployment actions' );
-        do_action( 'wp2static_post_direct_deploy_trigger', $this );
+        do_action(
+            Controller::getHookName( 'post_direct_deploy_trigger' ),
+            $this
+        );
     }
 
     public function deployPaths( \Iterator $paths, bool $remove_404s = true ) : void {

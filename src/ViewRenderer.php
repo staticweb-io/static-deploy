@@ -266,7 +266,10 @@ class ViewRenderer {
             'autoJobQueueDirectDeployPost' => CoreOptions::get( 'autoJobQueueDirectDeployPost' ),
         ];
 
-        $view = apply_filters( 'wp2static_render_jobs_page_vars', $view );
+        $view = apply_filters(
+            Controller::getHookName( 'render_jobs_page_vars' ),
+            $view
+        );
 
         require_once WP2STATIC_PATH . 'views/jobs-page.php';
     }

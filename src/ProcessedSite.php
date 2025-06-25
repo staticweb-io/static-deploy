@@ -15,7 +15,7 @@ class ProcessedSite {
 
     public static function getPath() : string {
         return apply_filters(
-            'wp2static_processed_site_path',
+            Controller::getHookName( 'processed_site_path' ),
             SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site'
         );
     }

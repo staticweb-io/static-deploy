@@ -15,7 +15,7 @@ class URLDiscovery {
     public function __construct( ) {
         $this->destination_url = untrailingslashit(
             apply_filters(
-                'wp2static_set_destination_url',
+                Controller::getHookName( 'set_destination_url' ),
                 CoreOptions::getValue( 'deploymentURL' )
             )
         );

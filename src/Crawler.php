@@ -54,7 +54,7 @@ class Crawler {
         $this->site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
 
         $port_override = apply_filters(
-            'wp2static_curl_port',
+            Controller::getHookName( 'curl_port' ),
             null
         );
 

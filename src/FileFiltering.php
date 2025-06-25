@@ -23,7 +23,7 @@ class FileFiltering {
 
         $filenames_to_ignore =
             apply_filters(
-                'wp2static_filenames_to_ignore',
+                Controller::getHookName( 'filenames_to_ignore' ),
                 $filenames_to_ignore
             );
 
@@ -37,7 +37,7 @@ class FileFiltering {
 
         $file_extensions_to_ignore =
             apply_filters(
-                'wp2static_file_extensions_to_ignore',
+                Controller::getHookName( 'file_extensions_to_ignore' ),
                 $file_extensions_to_ignore
             );
 

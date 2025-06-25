@@ -46,7 +46,7 @@ class DetectSitemapsURLs {
         $site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
 
         $port_override = apply_filters(
-            'wp2static_curl_port',
+            Controller::getHookName( 'curl_port' ),
             null
         );
 
@@ -69,7 +69,7 @@ class DetectSitemapsURLs {
                 'timeout' => 600,
                 'headers' => [
                     'User-Agent' => apply_filters(
-                        'wp2static_curl_user_agent',
+                        Controller::getHookName( 'curl_user_agent' ),
                         'WP2Static.com',
                     ),
                 ],

@@ -172,6 +172,10 @@ class Controller {
         }
     }
 
+    public static function getHookName(string $hook_slug) : string {
+        return 'wp2static_' . $hook_slug;
+    }
+
     public static function getTableName(string $table_slug) : string {
         global $wpdb;
 
@@ -284,7 +288,9 @@ class Controller {
     public static function wp2staticUISaveOptions() : void {
         CoreOptions::savePosted( 'core' );
 
-        do_action( 'wp2static_addon_ui_save_options' );
+        do_action(
+            Controller::getHookName( 'addon_ui_save_options' )
+        );
 
         check_admin_referer( 'wp2static-ui-options' );
 
@@ -437,7 +443,9 @@ class Controller {
     public static function wp2staticUISaveJobOptions() : void {
         CoreOptions::savePosted( 'jobs' );
 
-        do_action( 'wp2static_addon_ui_save_job_options' );
+        do_action(
+            Controller::getHookName( 'addon_ui_save_job_options' )
+        );
 
         check_admin_referer( 'wp2static-ui-job-options' );
 
@@ -461,7 +469,9 @@ class Controller {
     public static function wp2staticUISaveAdvancedOptions() : void {
         CoreOptions::savePosted( 'advanced' );
 
-        do_action( 'wp2static_addon_ui_save_advanced_options' );
+        do_action(
+            Controller::getHookName( 'addon_ui_save_advanced_options' )
+        );
 
         check_admin_referer( 'wp2static-ui-advanced-options' );
 
@@ -620,13 +630,16 @@ class Controller {
                         } else {
                             WsLog::l( 'Starting deployment' );
                             do_action(
-                                'wp2static_deploy',
+                                Controller::getHookName( 'deploy' ),
                                 ProcessedSite::getPath(),
                                 $deployer
                             );
                         }
                         WsLog::l( 'Starting post-deployment actions' );
-                        do_action( 'wp2static_post_deploy_trigger', $deployer );
+                        do_action(
+                            Controller::getHookName( 'post_deploy_trigger' ),
+                            $deployer
+                        );
 
                         break;
                     case 'direct_deploy':
@@ -675,8 +688,8 @@ class Controller {
      *  Make a non-blocking POST request to run wp2staticProcessQueue.
      */
     public static function wp2staticProcessQueueAdminPost() : void {
-        $url = admin_url( 'admin-post.php' ) . '?action=wp2static_process_queue';
-        $nonce = wp_create_nonce( 'wp2static_process_queue' );
+        $url = admin_url( 'admin-post.php' ) . '?action=' . self::getHookName( 'process_queue' );
+        $nonce = wp_create_nonce( self::getHookName( 'process_queue' ) );
         $result = wp_remote_post(
             $url,
             [
@@ -719,13 +732,16 @@ class Controller {
         } else {
             WsLog::l( 'Starting deployment' );
             do_action(
-                'wp2static_deploy',
+                Controller::getHookName( 'deploy' ),
                 ProcessedSite::getPath(),
                 $deployer
             );
         }
         WsLog::l( 'Starting post-deployment actions' );
-        do_action( 'wp2static_post_deploy_trigger', $deployer );
+        do_action(
+            Controller::getHookName( 'post_deploy_trigger' ),
+            $deployer
+        );
     }
 
     public static function invalidateSingleURLCache(
@@ -795,9 +811,18 @@ class Controller {
                 'method' => CoreOptions::getValue( 'completionWebhookMethod' ),
                 'timeout' => 30,
                 'user-agent' =>
-                    apply_filters( 'wp2static_deploy_webhook_user_agent', 'WP2Static.com' ),
-                'body' => apply_filters( 'wp2static_deploy_webhook_body', $body ),
-                'headers' => apply_filters( 'wp2static_deploy_webhook_headers', [] ),
+                    apply_filters(
+                        Controller::getHookName( 'deploy_webhook_user_agent' ),
+                        'WP2Static.com'
+                    ),
+                'body' => apply_filters(
+                    Controller::getHookName( 'deploy_webhook_body' ),
+                    $body
+                ),
+                'headers' => apply_filters(
+                    Controller::getHookName( 'deploy_webhook_headers' ),
+                    []
+                ),
             ]
         );
 
@@ -807,7 +832,7 @@ class Controller {
     }
 
     public static function wp2staticRun() : void {
-        check_ajax_referer( 'wp2static-run-page', 'security' );
+        check_ajax_referer( Controller::getHookName( 'run_page' ), 'security' );
 
         WsLog::l( 'Running full workflow from UI' );
 
@@ -820,7 +845,7 @@ class Controller {
         $crawlers = Addons::getType( 'crawl' );
         $crawler_slug = empty( $crawlers ) ? 'wp2static' : $crawlers[0]->slug;
         do_action(
-            'wp2static_crawl',
+            Controller::getHookName( 'crawl' ),
             $crawler_slug
         );
         WsLog::l( 'Crawling completed' );
@@ -830,7 +855,7 @@ class Controller {
      * Give logs to UI
      */
     public static function wp2staticPollLog() : void {
-        check_ajax_referer( 'wp2static-run-page', 'security' );
+        check_ajax_referer( Controller::getHookName( 'run_page' ), 'security' );
 
         $logs = WsLog::poll();
 

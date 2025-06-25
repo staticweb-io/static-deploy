@@ -56,7 +56,7 @@ class WordPressAdmin {
         );
 
         add_filter(
-            'wp2static_list_redirects',
+            Controller::getHookName( 'list_redirects' ),
             [ CrawlCache::class, 'wp2static_list_redirects' ]
         );
 
@@ -87,21 +87,21 @@ class WordPressAdmin {
         );
 
         add_action(
-            'wp2static_register_addon',
+            Controller::getHookName( 'register_addon' ),
             [ Addons::class, 'registerAddon' ],
             10,
             5
         );
 
         add_action(
-            'wp2static_post_deploy_trigger',
+            Controller::getHookName( 'post_deploy_trigger' ),
             [ Controller::class, 'emailDeployNotification' ],
             10,
             0
         );
 
         add_action(
-            'wp2static_post_deploy_trigger',
+            Controller::getHookName( 'post_deploy_trigger' ),
             [ Controller::class, 'webhookDeployNotification' ],
             10,
             0
@@ -241,56 +241,56 @@ class WordPressAdmin {
         );
 
         add_action(
-            'wp2static_process_queue',
+            Controller::getHookName( 'process_queue' ),
             [ Controller::class, 'wp2staticProcessQueue' ],
             10,
             0
         );
 
         add_action(
-            'wp2static_headless_hook',
+            Controller::getHookName( 'headless_hook' ),
             [ Controller::class, 'wp2staticHeadless' ],
             10,
             0
         );
 
         add_action(
-            'wp2static_crawl',
+            Controller::getHookName( 'crawl' ),
             [ Crawler::class, 'wp2staticCrawl' ],
             10,
             2
         );
 
         add_action(
-            'wp2static_process_html',
+            Controller::getHookName( 'process_html' ),
             [ SimpleRewriter::class, 'rewrite' ],
             10,
             1
         );
 
         add_action(
-            'wp2static_process_css',
+            Controller::getHookName( 'process_css' ),
             [ SimpleRewriter::class, 'rewrite' ],
             10,
             1
         );
 
         add_action(
-            'wp2static_process_js',
+            Controller::getHookName( 'process_js' ),
             [ SimpleRewriter::class, 'rewrite' ],
             10,
             1
         );
 
         add_action(
-            'wp2static_process_robots_txt',
+            Controller::getHookName( 'process_robots_txt' ),
             [ SimpleRewriter::class, 'rewrite' ],
             10,
             1
         );
 
         add_action(
-            'wp2static_process_xml',
+            Controller::getHookName( 'process_xml' ),
             [ SimpleRewriter::class, 'rewrite' ],
             10,
             1
@@ -358,7 +358,7 @@ class WordPressAdmin {
             $msg = "Invalid method in request to admin-post.php (wp2static_process_queue): $method";
         }
         $nonce = filter_input( INPUT_POST, '_wpnonce' );
-        $nonce_valid = $nonce && wp_verify_nonce( strval( $nonce ), 'wp2static_process_queue' );
+        $nonce_valid = $nonce && wp_verify_nonce( strval( $nonce ), Controller::getHookName( 'process_queue' ) );
         if ( ! $nonce_valid ) {
             $msg = 'Invalid nonce in request to admin-post.php (wpstatic_process_queue)';
         }
@@ -371,4 +371,3 @@ class WordPressAdmin {
         Controller::wp2staticProcessQueue();
     }
 }
-

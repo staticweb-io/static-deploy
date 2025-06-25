@@ -76,7 +76,10 @@ class PostProcessor {
 
         $this->complete();
 
-        do_action( 'wp2static_post_process_complete', ProcessedSite::getPath() );
+        do_action(
+            Controller::getHookName( 'post_process_complete' ),
+            ProcessedSite::getPath()
+        );
     }
 
     public function processIter(

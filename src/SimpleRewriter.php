@@ -32,12 +32,12 @@ class SimpleRewriter {
 
     public function __construct() {
         $this->destination_url = apply_filters(
-            'wp2static_set_destination_url',
+            Controller::getHookName( 'set_destination_url' ),
             CoreOptions::getValue( 'deploymentURL' )
         );
         $this->hosts_to_rewrite = CoreOptions::getLineDelimitedBlobValue( 'hostsToRewrite' );
         $this->site_url = apply_filters(
-            'wp2static_set_wordpress_site_url',
+            Controller::getHookName( 'set_wordpress_site_url' ),
             untrailingslashit( SiteInfo::getUrl( 'site' ) )
         );
         $this->skip_url_rewrite = (int) CoreOptions::getValue( 'skipURLRewrite' ) === 1 ? true : false;

@@ -35,7 +35,7 @@ class StaticSite {
 
     public static function getPath() : string {
         return apply_filters(
-            'wp2static_crawled_site_path',
+            Controller::getHookName( 'crawled_site_path' ),
             SiteInfo::getPath( 'uploads' ) . 'wp2static-crawled-site'
         );
     }
