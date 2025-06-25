@@ -12,7 +12,7 @@
       with pkgs;
       let
         name = "wp2static";
-        version = "8.2.0";
+        version = "8.3.0";
         composerDeps = php.buildComposerProject (finalAttrs: {
           pname = "${name}-composer-deps";
           version = version;
