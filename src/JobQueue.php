@@ -4,10 +4,14 @@ namespace WP2Static;
 
 class JobQueue {
 
+    public static function getTableName() : string {
+        return Controller::getTableName( 'jobs' );
+    }
+
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -47,7 +51,7 @@ class JobQueue {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         // Add triggering_post_id column if it doesn't exist already
         $triggering_post_id_row = $wpdb->get_row(
@@ -76,7 +80,7 @@ class JobQueue {
         global $wpdb;
         $urls = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $rows = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY id DESC" );
 
@@ -96,7 +100,7 @@ class JobQueue {
         global $wpdb;
         $jobs = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $jobs_in_progress = $wpdb->get_var(
             "SELECT COUNT(*) FROM $table_name
@@ -115,7 +119,7 @@ class JobQueue {
         global $wpdb;
         $jobs = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
             "SELECT * FROM $table_name
@@ -139,7 +143,7 @@ class JobQueue {
         global $wpdb;
         $jobs = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
         $query = "SELECT job_type, count(*) FROM $table_name GROUP BY job_type";
 
         $rows = $wpdb->get_results( $query, 'ARRAY_N' );
@@ -157,7 +161,7 @@ class JobQueue {
     public static function squashQueue() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         // TODO: loop for each job_type
         $job_types = [
@@ -215,7 +219,7 @@ class JobQueue {
     public static function setStatus( int $id, string $status ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $wpdb->update(
             $table_name,
@@ -232,7 +236,7 @@ class JobQueue {
     public static function getTotalJobs() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $total_jobs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
@@ -251,7 +255,7 @@ class JobQueue {
     public static function getWaitingJobsCount() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $total_jobs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name WHERE status = 'waiting'" );
 
@@ -266,7 +270,7 @@ class JobQueue {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 
@@ -286,13 +290,13 @@ class JobQueue {
         global $wpdb;
 
         $job_types = [ 'detect', 'crawl', 'post_process', 'deploy', 'direct_deploy' ];
-        $table_name = $wpdb->prefix . 'wp2static_jobs';
+        $table_name = self::getTableName();
 
         $wpdb->query( 'START TRANSACTION' );
 
         foreach ( $job_types as $type ) {
             try {
-                $lock = "{$wpdb->prefix}.wp2static_jobs.$type";
+                $lock = self::getTableName() . '.' . $type;
                 $query = "SELECT IS_FREE_LOCK('$lock') AS free";
                 $free = intval( $wpdb->get_row( $query )->free );
 

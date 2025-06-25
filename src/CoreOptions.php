@@ -3,7 +3,7 @@
 namespace WP2Static;
 
 /*
-    Simple interface to wp2static_core_options DB table
+    Simple interface to the core options DB table
 
 
 */
@@ -14,20 +14,19 @@ class CoreOptions {
      */
     private static $cached_option_specs = null;
 
-    /**
-     * @var string
-     */
-    private static $table_name = 'wp2static_core_options';
-
     public static function init() : void {
         self::createTable();
         self::seedOptions();
     }
 
+    public static function getTableName() : string {
+        return Controller::getTableName( 'core_options' );
+    }
+
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -394,7 +393,7 @@ class CoreOptions {
     public static function seedOptions() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $query_string =
             "INSERT IGNORE INTO $table_name (name, value, blob_value)
@@ -427,7 +426,7 @@ VALUES (%s, %s, %s);";
             return '';
         }
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT value FROM $table_name WHERE" . ' name = %s LIMIT 1',
@@ -465,7 +464,7 @@ VALUES (%s, %s, %s);";
     public static function getBlobValue( string $name ) : string {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT blob_value FROM $table_name WHERE" . ' name = %s LIMIT 1',
@@ -536,7 +535,7 @@ VALUES (%s, %s, %s);";
     public static function get( string $name ) {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT name, value, blob_value
@@ -583,7 +582,7 @@ VALUES (%s, %s, %s);";
     public static function getAll() {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         $sql = "SELECT name, value, blob_value FROM $table_name";
 
@@ -673,7 +672,7 @@ VALUES (%s, %s, %s);";
     public static function savePosted( string $screen = 'core' ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         switch ( $screen ) {
             case 'core':
@@ -920,7 +919,7 @@ VALUES (%s, %s, %s);";
     public static function save( string $name, $value ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . self::$table_name;
+        $table_name = self::getTableName();
 
         // TODO: some validation on save types
         $wpdb->update(

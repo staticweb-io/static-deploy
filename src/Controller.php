@@ -513,7 +513,7 @@ class Controller {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = Addons::getTableName();
 
         // get target addon's current state
         $addon =
@@ -584,7 +584,7 @@ class Controller {
         $jobs = JobQueue::getProcessableJobs();
 
         foreach ( $jobs as $job ) {
-            $lock = $wpdb->prefix . '.wp2static_jobs.' . $job->job_type;
+            $lock = JobQueue::getTableName() . '.' . $job->job_type;
             $query = "SELECT GET_LOCK('$lock', 30) AS lck";
             $locked = intval( $wpdb->get_row( $query )->lck );
             if ( ! $locked ) {
@@ -658,7 +658,7 @@ class Controller {
                 JobQueue::setStatus( $job->id, 'failed' );
                 // We don't want to crawl and deploy if the detect step fails.
                 // Skip all waiting jobs when one fails.
-                $table_name = $wpdb->prefix . 'wp2static_jobs';
+                $table_name = JobQueue::getTableName();
                 $wpdb->query(
                     "UPDATE $table_name
                      SET status = 'skipped'

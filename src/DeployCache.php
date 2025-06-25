@@ -6,10 +6,15 @@ class DeployCache {
 
     const DEFAULT_NAMESPACE = 'default';
 
+
+    public static function getTableName() : string {
+        return Controller::getTableName( 'deploy_cache' );
+    }
+
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -56,7 +61,7 @@ class DeployCache {
     ) : void {
         global $wpdb;
 
-        $deploy_cache_table = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $post_processed_dir = ProcessedSite::getPath();
 
@@ -74,7 +79,7 @@ class DeployCache {
             $file_hash = md5( $file_contents );
         }
 
-        $sql = "INSERT INTO {$deploy_cache_table} (path_hash,path,file_hash,namespace)" .
+        $sql = "INSERT INTO {$table_name} (path_hash,path,file_hash,namespace)" .
             ' VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE file_hash = %s, namespace = %s';
 
         $sql = $wpdb->prepare(
@@ -119,7 +124,7 @@ class DeployCache {
             $file_hash = md5( $file_contents );
         }
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT path_hash FROM $table_name WHERE" .
@@ -141,7 +146,7 @@ class DeployCache {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         if ( ! $namespace ) {
             $sql = "TRUNCATE TABLE $table_name";
@@ -160,7 +165,7 @@ class DeployCache {
     ) : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $sql = "SELECT count(*) FROM $table_name WHERE namespace = %s";
         $sql = $wpdb->prepare( $sql, $namespace );
@@ -178,7 +183,7 @@ class DeployCache {
         global $wpdb;
         $counts = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $sql = "SELECT namespace, COUNT(*) AS count FROM $table_name GROUP BY namespace";
         $rows = $wpdb->get_results( $sql );
@@ -202,7 +207,7 @@ class DeployCache {
         global $wpdb;
         $urls = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_deploy_cache';
+        $table_name = self::getTableName();
 
         $sql = "SELECT path FROM $table_name WHERE namespace = %s ORDER BY path";
         $sql = $wpdb->prepare( $sql, $namespace );

@@ -3,10 +3,14 @@
 namespace WP2Static;
 
 class Addons {
+    public static function getTableName() : string {
+        return Controller::getTableName( 'addons' );
+    }
+
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -35,7 +39,7 @@ class Addons {
 
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = self::getTableName();
 
         $sql = "INSERT IGNORE INTO {$table_name} (slug,type,name,docs_url,description)" .
             ' VALUES (%s,%s,%s,%s,%s)';
@@ -54,7 +58,7 @@ class Addons {
         global $wpdb;
         $addons = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = self::getTableName();
 
         $query_string = "SELECT * FROM $table_name";
         $query_params = [];
@@ -78,7 +82,7 @@ class Addons {
     public static function getType( string $type ) : array {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = self::getTableName();
 
         $query = $wpdb->prepare(
             "SELECT * FROM $table_name WHERE type = %s AND enabled = 1 ORDER BY slug",
@@ -95,7 +99,7 @@ class Addons {
     public static function truncate() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addons';
+        $table_name = self::getTableName();
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 

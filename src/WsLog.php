@@ -4,10 +4,14 @@ namespace WP2Static;
 
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {
+    public static function getTableName() : string {
+        return Controller::getTableName( 'log' );
+    }
+    
     public static function createTable() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -25,7 +29,7 @@ class WsLog {
     public static function l( string $text ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $wpdb->insert(
             $table_name,
@@ -45,7 +49,7 @@ class WsLog {
     public static function w( string $text ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $wpdb->insert(
             $table_name,
@@ -70,7 +74,7 @@ class WsLog {
     public static function lines( array $lines ) : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $query = "INSERT INTO $table_name (log) VALUES " .
             implode(
@@ -89,7 +93,7 @@ class WsLog {
     public static function deleteOldLogs() : int {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $max_id = $wpdb->get_var( "SELECT MAX(id) FROM $table_name" );
 
@@ -135,7 +139,7 @@ class WsLog {
         global $wpdb;
         $logs = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $logs = $wpdb->get_results( "SELECT time, log FROM $table_name ORDER BY id DESC" );
 
@@ -150,7 +154,7 @@ class WsLog {
         
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $logs = $wpdb->get_col(
             "SELECT CONCAT_WS(': ', time, log)
@@ -169,7 +173,7 @@ class WsLog {
     public static function truncate() : void {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_log';
+        $table_name = self::getTableName();
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 
