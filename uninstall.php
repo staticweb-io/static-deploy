@@ -7,7 +7,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-WP2Static\Controller::init( __FILE__ );
+WP2Static\Controller::init( __DIR__ . '/wp2static.php' );
 
 $tables_to_drop = [
     'core_options',
