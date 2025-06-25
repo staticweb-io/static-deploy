@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
+TMPDIR=$(mktemp -d)
+rsync -a --copy-links --no-perms --no-owner --no-group "$WORDPRESS_PATH"/share/wordpress "$TMPDIR"
+chown -R "$USER:$USER" "$TMPDIR"
+chattr -R -i -a "$TMPDIR"
+chmod ugo+w -R "$TMPDIR"
 rm -rf wordpress
-cp -r "$WORDPRESS_PATH"/share/wordpress .
-chmod +w -R wordpress
+mv -f "$TMPDIR"/wordpress .
+rmdir "$TMPDIR"
 
 while ! test -S "mariadb/data/mysql.sock"; do
   sleep 1
