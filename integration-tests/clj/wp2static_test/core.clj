@@ -19,9 +19,7 @@
   (apply sh! "wp" (concat args ["--path=wordpress"])))
 
 (defn build-wp2static! [plugins-dirs]
-  (let [fname (str "wp2static-" (System/currentTimeMillis))
-        zip-name (str fname ".zip")
-        wp2static-path (->> (or (System/getenv "WP2STATIC_PATH")
+  (let [wp2static-path (->> (or (System/getenv "WP2STATIC_PATH")
                                 (str (System/getenv "PWD") "/.."))
                             (sh! "readlink" "-f")
                             :out
@@ -33,10 +31,14 @@
         (doseq [plugins-dir plugins-dirs]
           (sh! "ln" "-s" wp2static-path :dir plugins-dir)))
       (doseq [plugins-dir plugins-dirs]
-        (sh! "rm" "-rf" "wp2static" :dir plugins-dir)
-        (sh! "unzip" (str (System/getenv "WP2STATIC_PATH") "/wp2static.zip")
-             "-d" "."
-             :dir plugins-dir)))
+        (try
+          (sh! "rm" "-rf" "wp2static" :dir plugins-dir)
+          (sh! "unzip" (str (System/getenv "WP2STATIC_PATH") "/wp2static.zip")
+               "-d" "."
+               :dir plugins-dir)
+          (finally
+            (sh! "chmod" "-R" "ugo+w" "wp2static"
+                 :dir plugins-dir)))))
     ;(bedrock-cli! "plugin" "activate" "wp2static")
     (wp-cli! "plugin" "activate" "wp2static")))
 
