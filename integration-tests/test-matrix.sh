@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
-set -ouex
+set -ue
 
 cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+# shellcheck disable=SC2043
 for PHP_VERSION in "8.1"; do
-    # shellcheck disable=SC2043
-    for WP in "6.0.1=f678596804aa89d7cdc9280862938464eab25aeaebfefa91ae175e15aa3ef054"; do
-        WORDPRESS_VERSION="${WP%=*}"
-        WORDPRESS_SHA256="${WP#*=}"
-        echo "PHP Version $PHP_VERSION, Wordpress Version $WORDPRESS_VERSION"
-        PHP_VERSION=$PHP_VERSION WORDPRESS_SHA256=$WORDPRESS_SHA256 WORDPRESS_VERSION=$WORDPRESS_VERSION nix develop -c clojure -X:test
-    done
+    echo "PHP Version $PHP_VERSION"
+    PHP_VERSION=$PHP_VERSION nix develop -c clojure -X:test
 done

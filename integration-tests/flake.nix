@@ -4,10 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
+    wordpress-flake.url = "github:staticweb-io/wordpress-flake";
     wp2static.url = "..";
   };
 
-  outputs = { self, nixpkgs, flake-utils, wp2static, ... }:
+  outputs = { self, nixpkgs, flake-utils, wordpress-flake, wp2static, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       with import nixpkgs { inherit system; };
       with pkgs;
@@ -44,14 +45,7 @@
         phpVersion = getEnv "PHP_VERSION" "8.1";
         composer = lib.getAttr phpVersion composerPackages;
         php = lib.getAttr phpVersion phpPackages;
-        wordpress = (pkgs.wordpress.overrideAttrs (oldAttrs: rec {
-          version = getEnv "WORDPRESS_VERSION" "6.0.1";
-          src = fetchurl {
-            url = "https://wordpress.org/wordpress-${version}.tar.gz";
-            sha256 = getEnv "WORDPRESS_SHA256"
-              "f678596804aa89d7cdc9280862938464eab25aeaebfefa91ae175e15aa3ef054";
-          };
-        }));
+        wordpress = wordpress-flake.packages.${system}.default;
       in {
         devShells.default = mkShell {
           buildInputs = [
