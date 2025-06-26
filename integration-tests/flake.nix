@@ -17,7 +17,27 @@
             default
           else
             builtins.getEnv name);
+        local-mariadb-install = replaceVarsWith {
+          dir = "bin";
+          isExecutable = true;
+          meta.mainProgram = "local-mariadb-install";
+          name = "local-mariadb-install";
+          replacements = {
+            inherit bash mariadb;
+            cnf-file = self + "/mariadb/my.cnf";
+          };
+          src = self + "/src/local-mariadb-install.sh";
         };
+        local-mariadb-run = replaceVarsWith {
+          dir = "bin";
+          isExecutable = true;
+          meta.mainProgram = "local-mariadb-run";
+          name = "local-mariadb-run";
+          replacements = {
+            inherit bash mariadb;
+            cnf-file = self + "/mariadb/my.cnf";
+          };
+          src = self + "/src/local-mariadb-run.sh";
         };
         composerPackages = { "8.1" = php81Packages.composer; };
         phpPackages = { "8.1" = pkgs.php81; };
@@ -38,6 +58,8 @@
             (clojure.override { jdk = jdk_headless; })
             composer
             git
+            local-mariadb-install
+            local-mariadb-run
             mariadb
             nginx
             php
