@@ -7,7 +7,14 @@ DATA_DIR="$1"
 @mariadb@/bin/mysqld --defaults-file="@cnf-file@" -h "${DATA_DIR:?}" &
 MYSQLD_PID=$!
 
+shutdown_called=0
+
 shutdown() {
+  if [ "$shutdown_called" -eq 1 ]; then
+    return
+  fi
+  shutdown_called=1
+
   echo "Shutting down mysqld..."
   @mariadb@/bin/mysqladmin --socket="${DATA_DIR:?}/mysql.sock" shutdown
 }
