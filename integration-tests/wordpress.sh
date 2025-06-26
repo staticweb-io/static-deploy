@@ -6,7 +6,7 @@ TMPDIR=$(mktemp -d)
 rsync -a --copy-links --no-perms --no-owner --no-group "$WORDPRESS_PATH"/share/wordpress "$TMPDIR"
 chown -R "$USER:$USER" "$TMPDIR"
 chattr -R -i -a "$TMPDIR"
-chmod ugo+w -R "$TMPDIR"
+chmod ug+w -R "$TMPDIR"
 rm -rf wordpress
 mv -f "$TMPDIR"/wordpress .
 rmdir "$TMPDIR"
