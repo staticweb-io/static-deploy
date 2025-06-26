@@ -2,7 +2,7 @@
   description = "integration tests";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     wp2static.url = "..";
   };
@@ -17,15 +17,11 @@
             default
           else
             builtins.getEnv name);
-        composerPackages = {
-          "8.0" = php80Packages.composer;
-          "8.1" = php81Packages.composer;
         };
-        phpPackages = {
-          "8.0" = pkgs.php80;
-          "8.1" = pkgs.php81;
         };
-        phpVersion = getEnv "PHP_VERSION" "8.0";
+        composerPackages = { "8.1" = php81Packages.composer; };
+        phpPackages = { "8.1" = pkgs.php81; };
+        phpVersion = getEnv "PHP_VERSION" "8.1";
         composer = lib.getAttr phpVersion composerPackages;
         php = lib.getAttr phpVersion phpPackages;
         wordpress = (pkgs.wordpress.overrideAttrs (oldAttrs: rec {
@@ -39,7 +35,7 @@
       in {
         devShells.default = mkShell {
           buildInputs = [
-            (clojure.override { jdk = jdk17_headless; })
+            (clojure.override { jdk = jdk_headless; })
             composer
             git
             mariadb
