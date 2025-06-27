@@ -11,6 +11,7 @@
 /vendor_prefixed/
 node_modules/
 coverage/
+data
 admin/*.js*
 *.pid
 result
