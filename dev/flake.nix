@@ -42,6 +42,39 @@
                 };
               };
             };
+            services.nginx."nginx1" = {
+              enable = true;
+              httpConfig = ''
+                server {
+                  listen 8888 default_server;
+
+                  server_name _;
+
+                  root ${config.services.phpfpm."phpfpm1".dataDir}/www;
+
+                  index index.php index.html index.htm;
+
+                  location / {
+                      try_files $uri $uri/ =404;
+
+                      if (!-e $request_filename) {
+                          rewrite ^(.+)$ /index.php?q=$1 last;
+                      }
+                  }
+
+                  location ~ \.php$ {
+                    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                    fastcgi_pass unix:${config.services.phpfpm."phpfpm1".dataDir}/phpfpm.sock;
+                    include ${pkgs.nginx}/conf/fastcgi.conf;
+                  }
+
+                  location ~ /\.ht {
+                    deny all;
+                  }
+                }
+              '';
+              package = pkgs.nginx;
+            };
             services.phpfpm."phpfpm1" = {
               enable = true;
               listen = "phpfpm.sock";
@@ -52,6 +85,8 @@
               };
               package = php;
             };
+            settings.processes."nginx1".depends_on."phpfpm1".condition =
+              "process_healthy";
             settings.processes.test = {
               command = pkgs.writeShellApplication {
                 name = "test";
