@@ -34,6 +34,7 @@
                 ensurePermissions = { "${dbName}.*" = "ALL PRIVILEGES"; };
               }];
               initialDatabases = [{ name = dbName; }];
+              package = pkgs.mariadb;
               settings = {
                 mysqld = {
                   bind-address = "127.0.0.1";
