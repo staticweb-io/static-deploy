@@ -20,6 +20,10 @@
             dbPort = 3306;
             dbUserName = "wordpress";
             dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
+            php = pkgs.php84.buildEnv {
+              extensions = { enabled, all }:
+                enabled ++ (with all; [ imagick memcached ]);
+            };
           in {
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.mysql."mysql1" = {
@@ -45,6 +49,7 @@
                 "pm" = "ondemand";
                 "pm.max_children" = "5";
               };
+              package = php;
             };
             settings.processes.test = {
               command = pkgs.writeShellApplication {
