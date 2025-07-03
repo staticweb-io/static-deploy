@@ -20,6 +20,7 @@
             dbPort = 3306;
             dbUserName = "wordpress";
             dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
+            serverPort = 8888;
             php = pkgs.php84.buildEnv {
               extensions = { enabled, all }:
                 enabled ++ (with all; [ imagick memcached ]);
@@ -46,11 +47,11 @@
               enable = true;
               httpConfig = ''
                 server {
-                  listen 8888 default_server;
+                  listen ${toString serverPort} default_server;
 
                   server_name _;
 
-                  root ${config.services.phpfpm."phpfpm1".dataDir}/www;
+                  root ./data/wordpress1;
 
                   index index.php index.html index.htm;
 
@@ -64,7 +65,9 @@
 
                   location ~ \.php$ {
                     fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                    fastcgi_pass unix:${config.services.phpfpm."phpfpm1".dataDir}/phpfpm.sock;
+                    fastcgi_pass unix:${
+                      config.services.phpfpm."phpfpm1".dataDir
+                    }/phpfpm.sock;
                     include ${pkgs.nginx}/conf/fastcgi.conf;
                   }
 
@@ -99,9 +102,30 @@
               };
               depends_on."mysql1-configure".condition = "process_completed";
             };
+            settings.processes."wordpress1" = let
+              wpConfig = pkgs.writeTextFile {
+                name = "wp-config.php";
+                text = builtins.readFile
+                  (pkgs.replaceVars ./wp-config-template.php {
+                    inherit dbName dbUserName dbUserPass;
+                    dbHost = "127.0.0.1:${toString dbPort}";
+                    serverPort = toString serverPort;
+                  });
+              };
+            in {
+              command = ''
+                mkdir -p ./data/wordpress1
+                chmod ug+w -R ./data/wordpress1
+                cp -r ${pkgs.wordpress}/share/wordpress "./data/wordpress1/"
+                cp "${wpConfig}" "./data/wordpress1/wp-config.php"
+                chmod ug+w -R ./data/wordpress1
+              '';
+              depends_on."mysql1-configure".condition = "process_completed";
+            };
           };
 
         devShells.default = pkgs.mkShell {
+          buildInputs = [ pkgs.wp-cli ];
           inputsFrom =
             [ config.process-compose."default".services.outputs.devShell ];
         };
