@@ -5,12 +5,13 @@
     systems.url = "github:nix-systems/default";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
+    wordpress-flake.url = "github:staticweb-io/wordpress-flake";
   };
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [ inputs.process-compose-flake.flakeModule ];
-      perSystem = { self', pkgs, config, lib, ... }: {
+      perSystem = { self', pkgs, config, lib, system, ... }: {
         # `process-compose.foo` will add a flake package output called "foo".
         # Therefore, this will add a default package that you can build using
         # `nix build` and run using `nix run`.
@@ -113,6 +114,7 @@
               depends_on."mysql1-configure".condition = "process_completed";
             };
             settings.processes."wordpress1" = let
+              wordpress = inputs.wordpress-flake.packages.${system}.default;
               wpConfig = pkgs.writeTextFile {
                 name = "wp-config.php";
                 text = builtins.readFile
@@ -126,7 +128,7 @@
               command = ''
                 mkdir -p ./data/wordpress1
                 chmod ug+w -R ./data/wordpress1
-                cp -r ${pkgs.wordpress}/share/wordpress "./data/wordpress1/"
+                cp -r "${wordpress}/share/wordpress/*" "./data/wordpress1/"
                 cp "${wpConfig}" "./data/wordpress1/wp-config.php"
                 chmod ug+w -R ./data/wordpress1
               '';

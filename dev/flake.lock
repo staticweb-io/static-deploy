@@ -18,13 +18,31 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1750838302,
-        "narHash": "sha256-aVkL3/yu50oQzi2YuKo0ceiCypVZpZXYd2P2p1FMJM4=",
+        "lastModified": 1751211869,
+        "narHash": "sha256-1Cu92i1KSPbhPCKxoiVG5qnoRiKTgR5CcGSRyLpOd7Y=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "7284e2decc982b81a296ab35aa46e804baaa1cfe",
+        "rev": "b43c397f6c213918d6cfe6e3550abfe79b5d1c51",
         "type": "github"
       },
       "original": {
@@ -49,6 +67,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1748162331,
+        "narHash": "sha256-rqc2RKYTxP3tbjA+PB3VMRQNnjesrT0pEofXQTrMsS8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7c43f080a7f28b2774f3b3f43234ca11661bf334",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-25.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "process-compose-flake": {
       "locked": {
         "lastModified": 1749418557,
@@ -70,16 +104,17 @@
         "nixpkgs": "nixpkgs",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",
-        "systems": "systems"
+        "systems": "systems",
+        "wordpress-flake": "wordpress-flake"
       }
     },
     "services-flake": {
       "locked": {
-        "lastModified": 1750553018,
-        "narHash": "sha256-lRrQK08ZrBRRx/SGEgMoqeUx41rqkjGRNDmX1uOoXlo=",
+        "lastModified": 1751762497,
+        "narHash": "sha256-GD9n0vKsepwk93i3k6qDskIsaL7Cg5YYgHwdsMfmb2E=",
         "owner": "juspay",
         "repo": "services-flake",
-        "rev": "b7b0ce658d11a8a6cce00f42ccad20ee39b0d46f",
+        "rev": "0577b791952b95184770628aae38ce82e2a89223",
         "type": "github"
       },
       "original": {
@@ -100,6 +135,40 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "wordpress-flake": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1751575681,
+        "narHash": "sha256-sbY5gqpEVYw9r/5uEwm4sDi8dP6tG9mw+yM0tvFuWBc=",
+        "owner": "staticweb-io",
+        "repo": "wordpress-flake",
+        "rev": "b90be54ec185f8ab021480a8c22c77aadb615b7e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "staticweb-io",
+        "repo": "wordpress-flake",
         "type": "github"
       }
     }
