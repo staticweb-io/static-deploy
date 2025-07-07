@@ -90,6 +90,16 @@
             };
             settings.processes."nginx1".depends_on."phpfpm1".condition =
               "process_healthy";
+            settings.processes."phpfpm1".readiness_probe = lib.mkForce {
+              exec.command = "env -i ${pkgs.fcgi}/bin/cgi-fcgi -bind -connect ${
+                  config.services.phpfpm."phpfpm1".dataDir
+                }/phpfpm.sock";
+              initial_delay_seconds = 2;
+              period_seconds = 10;
+              timeout_seconds = 4;
+              success_threshold = 1;
+              failure_threshold = 5;
+            };
             settings.processes.test = {
               command = pkgs.writeShellApplication {
                 name = "test";
