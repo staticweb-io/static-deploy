@@ -13,16 +13,24 @@
       let
         name = "wp2static";
         version = "8.3.0";
+        composerSrc = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
+            let rel = baseNameOf path;
+            in rel == "composer.json" || rel == "composer.lock";
+        };
         composerVendor = php.mkComposerVendor (finalAttrs: {
           pname = "${name}-composer-deps";
           version = version;
-          src = pkgs.lib.cleanSourceWith {
-            src = self;
-            filter = path: type:
-              let rel = baseNameOf path;
-              in rel == "composer.json" || rel == "composer.lock";
-          };
+          src = composerSrc;
           vendorHash = "sha256-VTTzR2ImcO67uUOiMAO5b4GYIQHdf5eKraQLOpxCXv0=";
+        });
+        composerVendorDev = php.mkComposerVendor (finalAttrs: {
+          composerNoDev = false;
+          pname = "${name}-composer-deps-dev";
+          version = version;
+          src = composerSrc;
+          vendorHash = "sha256-TeUqf4Gu6ZiEXw+03/vNEEc2Lzf/bQ3oYK4XpvF/GI0=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -59,7 +67,7 @@
           buildInputs = [ omnix php phpPackages.composer shellcheck ] ++ phpBins;
         };
         packages = {
-          inherit wp2static;
+          inherit composerVendorDev composerVendor wp2static;
           plugin = wp2static;
         };
       });
