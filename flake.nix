@@ -24,14 +24,14 @@
           };
           vendorHash = "sha256-dIGRVRFG7Rc1HhN0gCiYm1DgHsZAmc1KP490A26Gj2A=";
         });
-        wp2staticSrc = builtins.path {
-          path = self;
-          filter = (path: type:
+        wp2staticSrc = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
             && base == "views" || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock");
+            == "composer.lock";
         };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
