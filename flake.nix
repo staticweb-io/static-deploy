@@ -46,9 +46,10 @@
           filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
-            && base == "tests" || type == "directory" && base == "views" || type
-            == "regular" && pkgs.lib.hasSuffix ".php" base || base
-            == "composer.json" || base == "composer.lock";
+            && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
+            == "directory" && base == "views" || type == "regular"
+            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
+            == "composer.lock";
         };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
