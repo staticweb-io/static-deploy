@@ -74,7 +74,7 @@
           pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'') phpVersions;
       in {
         devShells.default = mkShell {
-          buildInputs = [ omnix php phpPackages.composer shellcheck ]
+          buildInputs = [ omnix php phpunit phpPackages.composer shellcheck ]
             ++ phpBins;
         };
         packages = {
