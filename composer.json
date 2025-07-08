@@ -43,7 +43,7 @@
         "wp-coding-standards/wpcs": "*",
         "phpcompatibility/php-compatibility": "*",
         "php-parallel-lint/php-parallel-lint": "*",
-        "10up/wp_mock": "^0.5",
+        "10up/wp_mock": "*",
         "mikey179/vfsstream": "^1.6"
     },
     "autoload": {

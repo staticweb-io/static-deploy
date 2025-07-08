@@ -14,23 +14,24 @@
         name = "wp2static";
         version = "8.3.0";
         composerSrc = pkgs.lib.cleanSourceWith {
-          src = wp2staticSrc;
+          src = self;
           filter = path: type:
             let rel = baseNameOf path;
             in rel == "composer.json" || rel == "composer.lock";
         };
+        composerHash = "sha256-9sgyD5KnMCUvxelE4RT35gRnxb0Jd+I5oQSrgdmhO84=";
         composerVendor = php.mkComposerVendor (finalAttrs: {
           pname = "${name}-composer-deps";
           version = version;
           src = composerSrc;
-          vendorHash = "sha256-VTTzR2ImcO67uUOiMAO5b4GYIQHdf5eKraQLOpxCXv0=";
+          vendorHash = composerHash;
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = version;
           src = composerSrc;
-          vendorHash = "sha256-TeUqf4Gu6ZiEXw+03/vNEEc2Lzf/bQ3oYK4XpvF/GI0=";
+          vendorHash = composerHash;
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
           src = wp2staticSrcDev;
