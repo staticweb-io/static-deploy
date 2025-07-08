@@ -179,6 +179,9 @@
                 chmod ug+w ./data/wordpress1/wp-config.php
                 cp "${wpConfig}" "./data/wordpress1/wp-config.php"
                 ${update-wordpress}/bin/update-wordpress ./data/wordpress1
+                cd ./data/wordpress1
+                ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
+                ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
               '';
               depends_on."mysql1-configure".condition = "process_completed";
             };
