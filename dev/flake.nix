@@ -6,6 +6,7 @@
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake.url = "github:staticweb-io/wordpress-flake";
+    wp2static.url = ./..;
   };
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
@@ -26,6 +27,7 @@
               extensions = { enabled, all }:
                 enabled ++ (with all; [ imagick memcached ]);
             };
+            wp2static = inputs.wp2static.packages.${system}.plugin;
           in {
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.mysql."mysql1" = {
@@ -182,6 +184,7 @@
                 cd ./data/wordpress1
                 ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
                 ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
+                ${pkgs.wp-cli}/bin/wp plugin install --activate ${wp2static}/wp2static.zip
               '';
               depends_on."mysql1-configure".condition = "process_completed";
             };
