@@ -41,6 +41,15 @@
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock";
         };
+        wp2staticSrcDev = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
+            let base = baseNameOf path;
+            in type == "directory" && base == "src" || type == "directory"
+            && base == "tests" || type == "directory" && base == "views" || type
+            == "regular" && pkgs.lib.hasSuffix ".php" base || base
+            == "composer.json" || base == "composer.lock";
+        };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
@@ -64,10 +73,12 @@
           pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'') phpVersions;
       in {
         devShells.default = mkShell {
-          buildInputs = [ omnix php phpPackages.composer shellcheck ] ++ phpBins;
+          buildInputs = [ omnix php phpPackages.composer shellcheck ]
+            ++ phpBins;
         };
         packages = {
-          inherit composerVendorDev composerVendor wp2static;
+          inherit composerVendorDev composerVendor wp2static wp2staticSrcDev
+            wp2staticSrc;
           plugin = wp2static;
         };
       });
