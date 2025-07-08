@@ -24,13 +24,21 @@
           };
           vendorHash = "sha256-dIGRVRFG7Rc1HhN0gCiYm1DgHsZAmc1KP490A26Gj2A=";
         });
+        wp2staticSrc = builtins.path {
+          path = self;
+          filter = (path: type:
+            let base = baseNameOf path;
+            in type == "directory" && base == "src" || type == "directory"
+            && base == "views" || type == "regular"
+            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
+            == "composer.lock");
+        };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
           cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" "$PLUGIN_DIR"
-          cp -r ${self}/src ${self}/views ${self}/*.php "$PLUGIN_DIR"
+          cp -r "${wp2staticSrc}"/* "$PLUGIN_DIR"
           cd "$PLUGIN_DIR"
-          cp ${self}/composer.json ${self}/composer.lock .
           chmod 600 vendor/composer/autoload_*.php
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
           rm composer.json composer.lock
