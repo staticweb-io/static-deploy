@@ -173,9 +173,10 @@
               };
             in {
               command = ''
+                set -eu
                 mkdir -p ./data/wordpress1
                 chmod ug+w -R ./data/wordpress1
-                cp -r "${wordpress}/share/wordpress/*" "./data/wordpress1/"
+                cp -r "${wordpress}/share/wordpress"/* "./data/wordpress1/"
                 cp "${wpConfig}" "./data/wordpress1/wp-config.php"
                 chmod ug+w -R ./data/wordpress1
               '';
