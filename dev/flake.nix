@@ -114,15 +114,62 @@
               depends_on."mysql1-configure".condition = "process_completed";
             };
             settings.processes."wordpress1" = let
+              WPConfigFormat =
+                (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
+                  inherit pkgs lib;
+                }).format { };
               wordpress = inputs.wordpress-flake.packages.${system}.default;
-              wpConfig = pkgs.writeTextFile {
+              wpConfig = inputs.wordpress-flake.lib.${system}.mkWPConfig {
+                inherit pkgs lib;
                 name = "wp-config.php";
-                text = builtins.readFile
-                  (pkgs.replaceVars ./wp-config-template.php {
-                    inherit dbName dbUserName dbUserPass;
-                    dbHost = "127.0.0.1:${toString dbPort}";
-                    serverPort = toString serverPort;
-                  });
+                settings = {
+                  DB_HOST = "127.0.0.1:${toString dbPort}";
+                  DB_NAME = dbName;
+                  DB_USER = dbUserName;
+                  DB_PASSWORD = dbUserPass;
+                  WP_AUTO_UPDATE_CORE = false;
+
+                  AUTH_KEY =
+                    "A6tr^0=N<QP++W-%/hv1yOZ4]f<3m`/}0(A/UFi6pmy|ZLT)=>e+raWRmgYCs>aK";
+                  SECURE_AUTH_KEY =
+                    "Vj>>M=2uvzzWw-tqT?]H3RWsG%jTA9EhJKn~F6:8B<So+<A_},Y<RW-U)}/w-0Y+";
+                  LOGGED_IN_KEY =
+                    "jJCaP}~YG-Se+<WK5g9.@K*^g7*v=_yLyX7+i?{Mc%CcJ|L54u=+*+rW_Uxa{95L";
+                  NONCE_KEY =
+                    "98.DYg|E,*CV]Rz&#Q{j]?n[!sQji*X9%`Ic_n>NExS<7Sn[SG:`P8)*CqC[G2NF";
+                  AUTH_SALT =
+                    "*KON9~cuX+lG,Kx6`^5d#kyu5oFt{^~O:[]pB]F745S<B2U*L0aHb;(pEn:kPggf";
+                  SECURE_AUTH_SALT =
+                    "MV6l72,Yi+y8X`0wm5-T)6T#ZY~Sp;G+e3. ^CHdZ1W_*WY?;9>c}^|:[<j0FkpV";
+                  LOGGED_IN_SALT =
+                    "Don!4M=(5=Y=*@.NI:bn$V[FZ*a~wyJ:s9p&l@XD{7WzqBDO.3+-#[H>79,rG)Q~";
+                  NONCE_SALT =
+                    "t={*XeC6q4LZ5:%wo*C3f-sr6g3#Wa}_EMf}Jh$8*P/%4SdK4=0hjjnVa&8yY#-F";
+                  WP_CACHE_KEY_SALT =
+                    ")O~B@EKC(tfdgDg6R8@6;ePxJJkXMpZ&.u?X{j##:@7-,/*YKvvl-l4}r^@2=Ha-";
+
+                  HTTP_HOST = WPConfigFormat.lib.mkInline ''
+                    if ( defined( 'WP_CLI' ) ) {
+                        $_SERVER['HTTP_HOST'] = isset( $_ENV['HTTP_HOST'] ) ? $_ENV['HTTP_HOST'] : 'localhost:${
+                          toString serverPort
+                        }';
+                    }
+                  '';
+                  WP_HOME = WPConfigFormat.lib.mkInline ''
+                    if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                        define( 'WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                    } else {
+                        define( 'WP_HOME', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                    }
+                  '';
+                  WP_SITEURL = WPConfigFormat.lib.mkInline ''
+                    if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                        define( 'WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                    } else {
+                        define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                    }
+                  '';
+                };
               };
             in {
               command = ''

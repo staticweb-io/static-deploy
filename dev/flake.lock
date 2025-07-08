@@ -159,11 +159,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1751575681,
-        "narHash": "sha256-sbY5gqpEVYw9r/5uEwm4sDi8dP6tG9mw+yM0tvFuWBc=",
+        "lastModified": 1751998516,
+        "narHash": "sha256-cmo1/rfmIyP2I+T0cMCpfuny1Vu/YBII1qmKVDZZek4=",
         "owner": "staticweb-io",
         "repo": "wordpress-flake",
-        "rev": "b90be54ec185f8ab021480a8c22c77aadb615b7e",
+        "rev": "a046c6d31058043f55c02bc26d5b4147847efd50",
         "type": "github"
       },
       "original": {
