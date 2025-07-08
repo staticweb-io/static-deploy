@@ -111,9 +111,11 @@
                   echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${
                     toString dbPort
                   }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
+                  ${pkgs.wp-cli}/bin/wp --path=data/wordpress1 wp2static detect
                 '';
               };
-              depends_on."mysql1-configure".condition = "process_completed";
+              depends_on."mysql1-configure".condition = "process_completed_successfully";
+              depends_on."wordpress1".condition = "process_completed_successfully";
             };
             settings.processes."wordpress1" = let
               WPConfigFormat =
