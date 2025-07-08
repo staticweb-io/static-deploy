@@ -56,7 +56,7 @@
           pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'') phpVersions;
       in {
         devShells.default = mkShell {
-          buildInputs = [ php phpPackages.composer shellcheck ] ++ phpBins;
+          buildInputs = [ omnix php phpPackages.composer shellcheck ] ++ phpBins;
         };
         packages = {
           inherit wp2static;
