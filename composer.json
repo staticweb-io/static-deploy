@@ -83,6 +83,6 @@
             "@phpunit"
         ],
         "test-integration": "nix flake check ./dev",
-        "build": "/bin/sh tools/build_release.sh"
+        "build": "nix build .#plugin"
     }
 }
