@@ -14,7 +14,7 @@
         name = "wp2static";
         version = "8.3.0";
         composerSrc = pkgs.lib.cleanSourceWith {
-          src = self;
+          src = wp2staticSrc;
           filter = path: type:
             let rel = baseNameOf path;
             in rel == "composer.json" || rel == "composer.lock";
@@ -33,7 +33,7 @@
           vendorHash = "sha256-TeUqf4Gu6ZiEXw+03/vNEEc2Lzf/bQ3oYK4XpvF/GI0=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
-          src = self;
+          src = wp2staticSrcDev;
           filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
