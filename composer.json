@@ -82,7 +82,7 @@
             "@phpstan",
             "@phpunit"
         ],
-        "test-integration": "integration-tests/test-matrix.sh",
+        "test-integration": "nix flake check ./dev",
         "build": "/bin/sh tools/build_release.sh"
     }
 }
