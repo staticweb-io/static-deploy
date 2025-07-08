@@ -13,7 +13,7 @@
       let
         name = "wp2static";
         version = "8.3.0";
-        composerDeps = php.buildComposerProject (finalAttrs: {
+        composerVendor = php.mkComposerVendor (finalAttrs: {
           pname = "${name}-composer-deps";
           version = version;
           src = pkgs.lib.cleanSourceWith {
@@ -22,7 +22,7 @@
               let rel = baseNameOf path;
               in rel == "composer.json" || rel == "composer.lock";
           };
-          vendorHash = "sha256-dIGRVRFG7Rc1HhN0gCiYm1DgHsZAmc1KP490A26Gj2A=";
+          vendorHash = "sha256-VTTzR2ImcO67uUOiMAO5b4GYIQHdf5eKraQLOpxCXv0=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -36,7 +36,7 @@
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
-          cp -r "${composerDeps}/share/php/${name}-composer-deps/vendor" "$PLUGIN_DIR"
+          cp -r "${composerVendor}/vendor" "$PLUGIN_DIR"
           cp -r "${wp2staticSrc}"/* "$PLUGIN_DIR"
           cd "$PLUGIN_DIR"
           chmod 600 vendor/composer/autoload_*.php
