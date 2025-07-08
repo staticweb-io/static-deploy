@@ -118,7 +118,8 @@
                 (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
                   inherit pkgs lib;
                 }).format { };
-              wordpress = inputs.wordpress-flake.packages.${system}.default;
+              update-wordpress =
+                inputs.wordpress-flake.packages.${system}.update-wordpress;
               wpConfig = inputs.wordpress-flake.lib.${system}.mkWPConfig {
                 inherit pkgs lib;
                 name = "wp-config.php";
@@ -175,10 +176,8 @@
               command = ''
                 set -eu
                 mkdir -p ./data/wordpress1
-                chmod ug+w -R ./data/wordpress1
-                cp -r "${wordpress}/share/wordpress"/* "./data/wordpress1/"
                 cp "${wpConfig}" "./data/wordpress1/wp-config.php"
-                chmod ug+w -R ./data/wordpress1
+                ${update-wordpress}/bin/update-wordpress ./data/wordpress1
               '';
               depends_on."mysql1-configure".condition = "process_completed";
             };
