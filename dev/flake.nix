@@ -176,6 +176,7 @@
               command = ''
                 set -eu
                 mkdir -p ./data/wordpress1
+                chmod ug+w ./data/wordpress1/wp-config.php
                 cp "${wpConfig}" "./data/wordpress1/wp-config.php"
                 ${update-wordpress}/bin/update-wordpress ./data/wordpress1
               '';
