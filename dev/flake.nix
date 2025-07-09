@@ -27,7 +27,8 @@
               extensions = { enabled, all }:
                 enabled ++ (with all; [ imagick memcached ]);
             };
-            wp2static = inputs.wp2static.packages.${system}.plugin;
+            wp2staticPkgs = inputs.wp2static.packages.${system};
+            wp2static = wp2staticPkgs.plugin;
           in {
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.mysql."mysql1" = {
@@ -104,20 +105,31 @@
               success_threshold = 1;
               failure_threshold = 5;
             };
-            settings.processes.test = {
-              command = pkgs.writeShellApplication {
-                name = "test";
-                runtimeInputs = [ config.services.mysql.mysql1.package ];
-                text = ''
-                  echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${
-                    toString dbPort
-                  }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
-                  ${pkgs.wp-cli}/bin/wp --path=data/wordpress1 wp2static detect
-                '';
+            settings.processes.test =
+              let php = config.services.phpfpm."phpfpm1".package;
+              in {
+                command = pkgs.writeShellApplication {
+                  name = "test";
+                  runtimeInputs =
+                    [ config.services.mysql."mysql1".package php pkgs.wp-cli ];
+                  text = ''
+                    TMPDIR="$(realpath ./tmp)"
+                    mkdir -p "$TMPDIR"
+                    echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${
+                      toString dbPort
+                    }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
+                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.composerVendorDev}/. .
+                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.wp2staticSrcDev}/. .
+                    WORDPRESS_DIR="$(realpath ./data/wordpress1)"
+                    export WORDPRESS_DIR
+                    ${php}/bin/php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result ./tests/integration/
+                  '';
+                };
+                depends_on."mysql1-configure".condition =
+                  "process_completed_successfully";
+                depends_on."wordpress1".condition =
+                  "process_completed_successfully";
               };
-              depends_on."mysql1-configure".condition = "process_completed_successfully";
-              depends_on."wordpress1".condition = "process_completed_successfully";
-            };
             settings.processes."wordpress1" = let
               WPConfigFormat =
                 (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
