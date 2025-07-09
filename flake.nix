@@ -50,7 +50,7 @@
             && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
             == "directory" && base == "views" || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock";
+            == "composer.lock" || base == "phpunit.xml";
         };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
