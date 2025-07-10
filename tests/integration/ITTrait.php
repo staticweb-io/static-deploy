@@ -50,6 +50,15 @@ trait ITTrait {
         return $content;
     }
 
+    public function getProcessedFileContents( string $path ): string
+    {
+        $wordpress_dir = ITEnv::getWordPressDir();
+        $processed_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-processed-site';
+        $content = file_get_contents( "{$processed_site_dir}/$path" );
+        $this->assertNotFalse( $content, "Failed to read file: {$processed_site_dir}/$path" );
+        return $content;
+    }
+
     public function getOptionValue( string $option_name ): string {
         $lines = $this->wpCli( [ 'wp2static', 'options', 'get', $option_name ] )['output'];
         // Ignore extra lines from things like deprecation warnings
