@@ -31,7 +31,7 @@ jobs:
 
       - name: Build all checks and outputs
         run: |
-          nix develop -c om ci
+          nix develop ./dev -c om ci
           cd dev
           nix develop -c om ci
 
