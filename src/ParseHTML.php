@@ -15,7 +15,7 @@ class ParseHTML {
             if ( $child instanceof \DOMElement ) {
                 // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
                 $tag_name = strtolower( $child->tagName );
-            } {
+            }
             switch ( $tag_name ) {
                 case 'a':
                 case 'link':
@@ -29,7 +29,6 @@ class ParseHTML {
             }
             foreach ( self::parseURLsDOMNode( $child ) as $url ) {
                 yield $url;
-            }
             }
         }
     }
