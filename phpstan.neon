@@ -12,8 +12,11 @@ parameters:
         - %currentWorkingDirectory%/wp2static.php
     scanFiles:
         - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
-        # TODO Use https://github.com/php-stubs/wp-cli-stubs
-        - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
+        - %currentWorkingDirectory%/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - %currentWorkingDirectory%/vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - %currentWorkingDirectory%/vendor/php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
+        - %currentWorkingDirectory%/vendor/php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
+        - %currentWorkingDirectory%/vendor/php-stubs/wp-cli-stubs/wp-cli-tools-stubs.php
     ignoreErrors:
         # TODO I should really develop a tiny Request Handler.
         # https://gist.github.com/nicolas-grekas/1028251#improving-native-php-interface

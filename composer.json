@@ -44,7 +44,8 @@
         "phpcompatibility/php-compatibility": "*",
         "php-parallel-lint/php-parallel-lint": "*",
         "10up/wp_mock": "*",
-        "mikey179/vfsstream": "*"
+        "mikey179/vfsstream": "*",
+        "php-stubs/wp-cli-stubs": "^2.12"
     },
     "autoload": {
         "psr-4": {
