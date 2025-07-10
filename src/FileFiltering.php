@@ -69,6 +69,7 @@ class FileFiltering {
         // blocked directories.
         $filter_iter = new \RecursiveCallbackFilterIterator(
             $dir_iter,
+            // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
             function ( $current, $key, $iterator ) use ( $abs_base_dir ) {
                 // Filter out both directories and files
                 foreach ( $this->patterns_to_ignore as $pattern ) {
