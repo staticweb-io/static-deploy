@@ -19,19 +19,19 @@
             let rel = baseNameOf path;
             in rel == "composer.json" || rel == "composer.lock";
         };
-        composerHash = "sha256-1zMEsGjPsV+40BzmixwDS1FsjZgzjbV/Dmgsqik74LU=";
         composerVendor = php.mkComposerVendor (finalAttrs: {
+          composerNoDev = true;
           pname = "${name}-composer-deps";
           version = version;
           src = composerSrc;
-          vendorHash = composerHash;
+          vendorHash = "sha256-JSt4PG1AVZGA1SjDsigp1O3VRMUArlylpVcizlhspD8=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = version;
           src = composerSrc;
-          vendorHash = composerHash;
+          vendorHash = "sha256-1zMEsGjPsV+40BzmixwDS1FsjZgzjbV/Dmgsqik74LU=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
           src = wp2staticSrcDev;
