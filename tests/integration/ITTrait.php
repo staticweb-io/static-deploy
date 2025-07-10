@@ -41,7 +41,7 @@ trait ITTrait {
         ];
     }
 
-    public function getCrawledFile( string $path ): string
+    public function getCrawledFileContents( string $path ): string
     {
         $wordpress_dir = ITEnv::getWordPressDir();
         $crawled_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-crawled-site';
