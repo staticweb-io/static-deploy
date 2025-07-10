@@ -73,8 +73,11 @@
 
           nativeBuildInputs = [ bash php ];
 
-          doBuild = false;
           doCheck = true;
+
+          buildPhase = ''
+            mkdir -p $out
+          '';
 
           checkPhase = ''
             TMPDIR="$(realpath ./tmp)"
