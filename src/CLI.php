@@ -501,6 +501,11 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
+        // We don't accept any arguments or parameters for this command
+        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
+        }
+
         CoreOptions::init();
         $deployer = Addons::getDeployer();
 
@@ -534,6 +539,10 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
+        // We don't accept any parameters for this command
+        if ( ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No parameters are accepted for this command.' );
+        }
         CoreOptions::init();
         WsLog::deleteOldLogs();
 
@@ -598,6 +607,10 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
+        // We don't accept any parameters for this command
+        if ( ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No parameters are accepted for this command.' );
+        }
         $action = isset( $args[0] ) ? $args[0] : null;
         $option_name = isset( $args[1] ) ? $args[1] : null;
         $value = isset( $args[2] ) ? $args[2] : null;
@@ -767,6 +780,10 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function crawl( array $args, array $assoc_args ): void {
+        // We don't accept any arguments or parameters for this command
+        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
+        }
         CoreOptions::init();
         Controller::wp2staticCrawl();
     }
@@ -1060,6 +1077,10 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function full_workflow( array $args, array $assoc_args ): void {
+        // We don't accept any arguments or parameters for this command
+        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
+        }
         WsLog::deleteOldLogs();
         $this->detect();
         $this->crawl( [], [] );
@@ -1104,6 +1125,10 @@ class CLI {
      * @throws WP2StaticException
      */
     public function addons( array $args, array $assoc_args ): void {
+        // We don't accept any parameters for this command
+        if ( ! empty( $assoc_args ) ) {
+            WP_CLI::error( 'No parameters are accepted for this command.' );
+        }
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
