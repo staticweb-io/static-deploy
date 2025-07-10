@@ -84,6 +84,9 @@
     <exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
     <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
     <exclude name="WordPress.PHP.YodaConditions.NotYoda" />
+    <!-- Forcing exceptions to be escaped is bad practice.
+     See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2374 -->
+    <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
     <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
     <exclude name="WordPress.Security.NonceVerification" />
     <exclude name="WordPress.Security.ValidatedSanitizedInput" />

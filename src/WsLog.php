@@ -33,7 +33,7 @@ class WsLog {
     ): WP2StaticException {
         self::l( $message );
         return new WP2StaticException(
-            esc_html( $message ),
+            $message,
             $code,
             $previous
         );
