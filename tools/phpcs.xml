@@ -46,6 +46,7 @@
     <exclude name="Squiz.Commenting.FileComment.Missing" />
     <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
     <exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop" />
+    <exclude name="Squiz.Commenting.FunctionCommentThrowTag" />
     <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
     <exclude name="Squiz.Commenting.LongConditionClosingComment.SpacingBefore" />
     <exclude name="Squiz.Commenting.PostStatementComment.Found" />
