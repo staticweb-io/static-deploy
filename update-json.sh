@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FLAKE_REF="github:staticweb-io/wordpress-flake"
+SYSTEM=$(nix eval --impure --expr builtins.currentSystem --raw)
+
+echo "Getting wordpress_* packages from $FLAKE_REF for system $SYSTEM..."
+
+# Sort wordpress packages by version descending
+wordpress_packages=$(nix eval --json --impure \
+  --expr "builtins.attrNames (builtins.getFlake \"$FLAKE_REF\").packages.\"$SYSTEM\"" \
+  | jq -r '.[]' | grep '^wordpress_' \
+  | sort -t_ -k2,2nr -k3,3nr -k4,4nr)
+
+if [[ -z "$wordpress_packages" ]]; then
+  echo "No wordpress_* packages found."
+  exit 1
+fi
+last_success=""
+first_pkg=""
+for pkg in $wordpress_packages; do
+  [[ -z "$first_pkg" ]] && first_pkg="$pkg"
+
+  echo -e "\n➡️  Running check for WORDPRESS_PACKAGE=$pkg"
+  if WORDPRESS_PACKAGE="$pkg" nix flake check --impure ./dev; then
+    last_success="$pkg"
+  else
+    echo "❌ Check failed for $pkg"
+    break
+  fi
+done
+
+if [[ -n "$last_success" ]]; then
+  echo -e "\n✅ Last successful version: $last_success"
+
+  last_updated=$(git log -1 --format="%ci")
+
+  # Extract version from first_pkg (e.g., wordpress_6_8_1 → 6.8.1)
+  requires="${last_success#wordpress_}"
+  requires="${requires//_/.}"
+  requires="${requires%.*}"  # Remove the patch version
+  tested="${first_pkg#wordpress_}"
+  tested="${tested//_/.}"
+  tested="${tested%.*}"
+
+  # Update using jq
+  TMPUPDATE=$(mktemp)
+  jq --arg requires "$requires" --arg tested "$tested" --arg last_updated "$last_updated" \
+  '.requires = $requires | .tested = $tested | .last_updated = $last_updated' \
+  update.json > "$TMPUPDATE" && mv "$TMPUPDATE" update.json
+else
+  echo -e "\n❌ No successful checks."
+fi
