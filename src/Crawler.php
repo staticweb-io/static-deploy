@@ -120,6 +120,8 @@ class Crawler {
             }
             $crawled = $url_discovery->discoverURLs( $crawled );
             foreach ( $crawled as $_ ) {
+                // Intentionally empty to consume the iterator
+                continue;
             }
 
             $has_new = true;
