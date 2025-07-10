@@ -10,8 +10,8 @@ final class CrawlTest extends TestCase {
 
     public function testIndexCrawl(): void
     {
-        $this->runWpCli( [ 'wp2static', 'detect' ] );
-        $this->runWpCli( [ 'wp2static', 'crawl' ] );
+        $this->wpCli( [ 'wp2static', 'detect' ] );
+        $this->wpCli( [ 'wp2static', 'crawl' ] );
 
         $content = $this->getCrawledFile( 'index.html' );
 

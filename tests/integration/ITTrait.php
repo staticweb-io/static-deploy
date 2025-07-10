@@ -6,7 +6,7 @@ namespace WP2Static;
  * Integration test helper trait
  */
 trait ITTrait {
-    public function runWpCli( array $args, array $expect_warnings = [] ): array
+    public function wpCli( array $args, array $expect_warnings = [] ): array
     {
         $wordpress_dir = ITEnv::getwordpress_dir();
         $cmd = implode(
