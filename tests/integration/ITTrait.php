@@ -19,9 +19,7 @@ trait ITTrait {
             $this->assertCount($expectedCount, $matches, "Expected $expectedCount matches for pattern: $pattern");
         }
 
-        if ($exitCode !== 0) {
-            throw new \Exception("WP CLI command failed: $cmd\nOutput: " . implode("\n", $output));
-        }
+        $this->assertSame(0, $exitCode, "WP CLI command failed: $cmd\nOutput: " . implode("\n", $output));
 
         return ['exit' => $exitCode, 'output' => $output];
     }
@@ -31,9 +29,7 @@ trait ITTrait {
         $wordpressDir = ITEnv::getWordPressDir();
         $crawledSiteDir = $wordpressDir . '/wp-content/uploads/wp2static-crawled-site';
         $content = file_get_contents("{$crawledSiteDir}/$path");
-        if ($content === false) {
-            throw new \Exception("Failed to read file: {$crawledSiteDir}/$path");
-        }
+        $this->assertNotFalse($content, "Failed to read file: {$crawledSiteDir}/$path");
         return $content;
     }
 }
