@@ -15,20 +15,20 @@ class ParseHTML {
             if ( $child instanceof \DOMElement ) {
                 // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
                 $tag_name = strtolower( $child->tagName );
-            }
-            switch ( $tag_name ) {
-                case 'a':
-                case 'link':
-                    yield $child->getAttribute( 'href' );
-                    break;
-                case 'img':
-                case 'script':
-                case 'source':
-                    yield $child->getAttribute( 'src' );
-                    break;
-            }
-            foreach ( self::parseURLsDOMNode( $child ) as $url ) {
-                yield $url;
+                switch ( $tag_name ) {
+                    case 'a':
+                    case 'link':
+                        yield $child->getAttribute( 'href' );
+                        break;
+                    case 'img':
+                    case 'script':
+                    case 'source':
+                        yield $child->getAttribute( 'src' );
+                        break;
+                }
+                foreach ( self::parseURLsDOMNode( $child ) as $url ) {
+                    yield $url;
+                }
             }
         }
     }
