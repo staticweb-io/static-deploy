@@ -26,6 +26,14 @@ class WsLog {
         dbDelta( $sql );
     }
 
+    /**
+     * Log an error message and return a throwable exception
+     *
+     * @param string $message
+     * @param int $code (default 0)
+     * @param \Throwable $previous (default null)
+     * @return \WP2Static\WP2StaticException
+     */
     public static function ex(
         string $message,
         int $code = 0,
