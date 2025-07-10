@@ -41,7 +41,7 @@ class FileIgnorePattern {
 
         if ( strpos( $pattern, '/' ) === false ) {
             $pattern = '**/' . $pattern;
-        } else if ( substr( $pattern, 0, 1 ) !== '/' ) {
+        } elseif ( substr( $pattern, 0, 1 ) !== '/' ) {
             $pattern = '/' . $pattern;
         }
 
@@ -49,14 +49,14 @@ class FileIgnorePattern {
         // Make it case-insensitive
         $this->regex = $regex . 'i';
 
-        //WsLog::l("Created regex $this->regex for pattern $pattern");
+        // WsLog::l("Created regex $this->regex for pattern $pattern");
     }
 
     public function matches(
-         string $abs_base_dir,
-         \SplFileInfo $file,
-    ) : bool {
-        if ( $this->only_directories && !$file->isDir() ) {
+        string $abs_base_dir,
+        \SplFileInfo $file,
+    ): bool {
+        if ( $this->only_directories && ! $file->isDir() ) {
             return false;
         }
 
@@ -68,14 +68,14 @@ class FileIgnorePattern {
 
     public function matchesPath(
         string $path,
-   ) : bool {
-       if ( preg_match( $this->regex, $path ) ) {
-           //WsLog::l(
-           //    "Ignoring $path with regex $this->regex"
-           //);
-           return true;
-       }
+    ): bool {
+        if ( preg_match( $this->regex, $path ) ) {
+            // WsLog::l(
+            // "Ignoring $path with regex $this->regex"
+            // );
+            return true;
+        }
 
-       return false;
-   }
+        return false;
+    }
 }

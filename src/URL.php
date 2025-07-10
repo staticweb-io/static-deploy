@@ -46,7 +46,7 @@ class URL {
     /**
      * Return the URL as a string
      */
-    public function get() : string {
+    public function get(): string {
         return $this->url;
     }
 
@@ -56,11 +56,10 @@ class URL {
      *
      * @param string $destination_url URL rewrite rules
      */
-    public function rewriteHostAndProtocol( string $destination_url ) : void {
+    public function rewriteHostAndProtocol( string $destination_url ): void {
         $destination_url = new \Wa72\Url\Url( $destination_url );
 
         $this->url->setHost( $destination_url->getHost() );
         $this->url->setScheme( $destination_url->getScheme() );
     }
 }
-

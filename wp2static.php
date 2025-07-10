@@ -62,7 +62,7 @@ add_filter(
  * Prevent WP scripts from loading which aren't useful
  * on a statically exported site
  */
-function wp2static_deregister_scripts() : void {
+function wp2static_deregister_scripts(): void {
     wp_dequeue_script( 'wp-embed' );
     wp_deregister_script( 'wp-embed' );
     wp_dequeue_script( 'comment-reply' );
@@ -79,4 +79,3 @@ remove_action( 'wp_print_styles', 'print_emoji_styles' );
 if ( defined( 'WP_CLI' ) ) {
     WP_CLI::add_command( 'wp2static', WP2Static\CLI::class );
 }
-

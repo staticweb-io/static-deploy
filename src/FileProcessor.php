@@ -13,7 +13,6 @@ class FileProcessor {
      * FileProcessor constructor
      */
     public function __construct() {
-
     }
 
     /**
@@ -23,7 +22,7 @@ class FileProcessor {
      *
      * @param string $filename File in StaticSite
      */
-    public function processFile( string $filename ) : void {
+    public function processFile( string $filename ): void {
         if ( $filename === ProcessedSite::getPath() . '/robots.txt' ) {
             do_action(
                 Controller::getHookName( 'process_robots_txt' ),
@@ -63,4 +62,3 @@ class FileProcessor {
         }
     }
 }
-

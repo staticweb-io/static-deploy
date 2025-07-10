@@ -31,8 +31,8 @@ $logs = $view['logs'];
 
             <?php foreach ( $logs as $log ) : ?>
                 <tr>
-                    <td><?php echo esc_html ( $log->time ); ?></td>
-                    <td><?php echo esc_html ( $log->log ); ?></td>
+                    <td><?php echo esc_html( $log->time ); ?></td>
+                    <td><?php echo esc_html( $log->log ); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

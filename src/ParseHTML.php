@@ -9,7 +9,7 @@ class ParseHTML {
      * @param \DOMNode $node
      * @return \Iterator<string>
      */
-    public static function parseURLsDOMNode( \DOMNode $node ) : \Iterator {
+    public static function parseURLsDOMNode( \DOMNode $node ): \Iterator {
         foreach ( $node->childNodes as $child ) {
             if ( $child instanceof \DOMElement ) {
                 $tag_name = strtolower( $child->tagName );
@@ -37,7 +37,7 @@ class ParseHTML {
      * @param string $html
      * @return \Iterator<string>
      */
-    public static function parseURLsString( string $html ) : \Iterator {
+    public static function parseURLsString( string $html ): \Iterator {
         $html5 = new \Masterminds\HTML5();
         $dom = $html5->loadHTML( $html );
         return self::parseURLsDOMNode( $dom );

@@ -27,7 +27,7 @@ class DirectDeployer {
             '',
             $deployer
         );
-        
+
         if ( empty( $deployer_class ) ) {
             WsLog::l( 'No deployer class found, skipping direct deployment.' );
             return;
@@ -41,7 +41,7 @@ class DirectDeployer {
         $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
     }
 
-    public function deploy() : void {
+    public function deploy(): void {
         global $wpdb;
 
         $queue_table = CrawlQueue::getTableName();
@@ -57,7 +57,7 @@ class DirectDeployer {
             if ( 0 === $new_ct ) {
                 break;
             }
-            WsLog::l ( "Found $new_ct new URLs during crawling." );
+            WsLog::l( "Found $new_ct new URLs during crawling." );
             $detected = CrawlQueue::getPathsIter( $last_now );
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
             $added = CrawlQueue::withPathsIter( $detected );
@@ -65,7 +65,7 @@ class DirectDeployer {
         }
     }
 
-    public function deployComplete() : void {
+    public function deployComplete(): void {
         $this->crawler->crawlComplete();
         $this->processor->complete();
 
@@ -76,7 +76,7 @@ class DirectDeployer {
         );
     }
 
-    public function deployPaths( \Iterator $paths, bool $remove_404s = true ) : void {
+    public function deployPaths( \Iterator $paths, bool $remove_404s = true ): void {
         $crawled = $this->crawler->crawlIter( $paths );
         if ( $remove_404s ) {
             $crawled = CrawlCache::remove404s( $crawled );

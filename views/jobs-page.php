@@ -18,15 +18,15 @@ $jobs = $view['jobs'];
  */
 $options = $view['jobOptions'];
 
-$input = function( $name ) use ( $options ) {
+$input = function ( $name ) use ( $options ) {
     return OptionRenderer::optionInput( (array) $options[ $name ] );
 };
 
-$label = function( $name, $description = false ) use ( $options ) {
+$label = function ( $name, $description = false ) use ( $options ) {
     return OptionRenderer::optionLabel( (array) $options[ $name ], $description );
 };
 
-$row = function( $name ) use ( $options ) {
+$row = function ( $name ) use ( $options ) {
     $opt = (array) $options[ $name ];
     return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
             '</td><td>' . optionrenderer::optionInput( $opt ) . '</td></tr>';
@@ -168,7 +168,7 @@ $row = function( $name ) use ( $options ) {
                         value="1">Using wp-admin.php</option>
                     <option
                         <?php echo (int) $options['processQueueImmediately']->value === 2 ? 'selected' : ''; ?>
-                        value="2">Using wordpress CLI</option>
+                        value="2">Using WordPress CLI</option>
                     </select>
                 </td>
             </tr>
