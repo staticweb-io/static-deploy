@@ -16,7 +16,7 @@ class CLI {
     /**
      * Display system information and health check
      */
-    public function diagnostics() : void {
+    public function diagnostics(): void {
         WP_CLI::line(
             PHP_EOL . 'WP2Static' . PHP_EOL
         );
@@ -83,13 +83,12 @@ class CLI {
             'There are a total of ' . count( $active_plugins ) .
             ' active plugins on this site.' . PHP_EOL
         );
-
     }
 
     public function microtime_diff(
         string $start,
         string $end = null
-    ) : float {
+    ): float {
         if ( ! $end ) {
             $end = microtime();
         }
@@ -141,9 +140,9 @@ class CLI {
      * @param string[] $assoc_args  Parameters after command
      */
     public function status(
-      array $args,
-      array $assoc_args
-    ) : void {
+        array $args,
+        array $assoc_args
+    ): void {
         list($action) = $this->parseArgs( $args );
         $this->assoc_args = $assoc_args;
 
@@ -166,7 +165,7 @@ class CLI {
     /**
      * Output default status
      */
-    protected function defaultStatus() : void {
+    protected function defaultStatus(): void {
         // TODO handle when count doesn't change but different URLs are present
         // - maybe that's an edge case that it's not worth caring about...
         $detected_url_count = URLDetector::countURLs();
@@ -222,7 +221,7 @@ class CLI {
                         )
                     );
                 }
-                  $this->hintCrawlNext();
+                    $this->hintCrawlNext();
             }
         } else {
             WP_CLI::line( 'No URLs crawled.' );
@@ -280,11 +279,11 @@ class CLI {
         }
     }
 
-    private function deployersStatus() : void {
+    private function deployersStatus(): void {
         $deployers = Addons::getAll( 'deploy' );
 
         $data = array_map(
-            function( $_ ) {
+            function ( $_ ) {
                 return [
                     'name'        => $_->name,
                     'slug'        => $_->slug,
@@ -308,7 +307,7 @@ class CLI {
         }
     }
 
-    private function hintEnableDeployer() : void {
+    private function hintEnableDeployer(): void {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize(
@@ -319,7 +318,7 @@ class CLI {
         }
     }
 
-    private function hintDeployNext() : void {
+    private function hintDeployNext(): void {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize(
@@ -330,7 +329,7 @@ class CLI {
         }
     }
 
-    private function crawledSiteStatus() : void {
+    private function crawledSiteStatus(): void {
         $crawlable_urls = array_map(
             '\WP2Static\StaticSite::transformPath',
             CrawlQueue::getCrawlablePaths(),
@@ -359,7 +358,7 @@ class CLI {
         }
     }
 
-    private function processedSiteStatus() : void {
+    private function processedSiteStatus(): void {
         $crawled_urls = StaticSite::getPaths();
         $processed_site_urls = ProcessedSite::getPaths();
 
@@ -395,15 +394,15 @@ class CLI {
      * @param array<string> $urls List of URLs
      * @return array<array<string>>
      */
-    private function urlsToTableData( array $urls ) : array {
+    private function urlsToTableData( array $urls ): array {
         return array_map(
-            function( $url ) {
+            function ( $url ) {
                 return [ 'url' => $url ]; },
             $urls
         );
     }
 
-    private function hintProcessNext() : void {
+    private function hintProcessNext(): void {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize( "\n\tYou should run `%gwp wp2static post_process%n`" )
@@ -416,7 +415,7 @@ class CLI {
      *
      * @uses should_show_next() to know if should show next or not
      */
-    private function hintDetectNext() : void {
+    private function hintDetectNext(): void {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize(
@@ -432,7 +431,7 @@ class CLI {
      *
      * @uses should_show_next() to know if should show next or not
      */
-    private function hintCrawlNext() : void {
+    private function hintCrawlNext(): void {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize( "\n\tYou should run `%gwp wp2static crawl%n`\n" )
@@ -443,12 +442,12 @@ class CLI {
     /**
      * Check to see if display of next is enabled
      */
-    private function should_show_next() : bool {
+    private function should_show_next(): bool {
         if ( ! isset( $this->assoc_args['next'] ) ) {
             return true;
         }
 
-        return ! ! $this->assoc_args['next'];
+        return (bool) $this->assoc_args['next'];
     }
 
     /**
@@ -469,7 +468,7 @@ class CLI {
     /**
      * Output job status details.
      */
-    protected function jobStatus() : void {
+    protected function jobStatus(): void {
         $job_count = JobQueue::getWaitingJobsCount();
         WP_CLI::line( sprintf( 'Waiting job count: %d', $job_count ) );
         WP_CLI::line(
@@ -501,7 +500,7 @@ class CLI {
     public function deploy(
         array $args,
         array $assoc_args
-    ) : void {
+    ): void {
         CoreOptions::init();
         $deployer = Addons::getDeployer();
 
@@ -524,17 +523,17 @@ class CLI {
 
     /*
      * Crawls, processes and deploys files all in one pass.
-     * 
+     *
      * ## OPTIONS
-     * 
+     *
      * <post-id>
      * Post ID to deploy. Deploys all files if omitted.
-     * 
+     *
      */
     public function direct_deploy(
         array $args,
         array $assoc_args
-    ) : void {
+    ): void {
         CoreOptions::init();
         WsLog::deleteOldLogs();
 
@@ -542,9 +541,9 @@ class CLI {
 
         if ( isset( $args[0] ) ) {
             $post_id = intval( $args[0] );
-            $path = wp_make_link_relative(get_permalink($post_id));
+            $path = wp_make_link_relative( get_permalink( $post_id ) );
             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
-            $detected = CrawlQueue::addPathsIter(  $paths );
+            $detected = CrawlQueue::addPathsIter( $paths );
             WsLog::l( 'Starting direct deployment for path ' . $path );
             $deployer->deployPaths( $detected );
         } else {
@@ -598,7 +597,7 @@ class CLI {
     public function options(
         array $args,
         array $assoc_args
-    ) : void {
+    ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
         $option_name = isset( $args[1] ) ? $args[1] : null;
         $value = isset( $args[2] ) ? $args[2] : null;
@@ -661,7 +660,7 @@ class CLI {
         }
     }
 
-    public function wp2static_cli_options_set_detect_common() : void {
+    public function wp2static_cli_options_set_detect_common(): void {
         WP_CLI::line( PHP_EOL . '### Setting Common URL detection  ###' . PHP_EOL );
 
         $plugin = Controller::getInstance();
@@ -686,7 +685,7 @@ class CLI {
         WP_CLI::line( PHP_EOL . 'Common URL detection set!' . PHP_EOL );
     }
 
-    public function wp2static_cli_options_set_detect_homepage_only() : void {
+    public function wp2static_cli_options_set_detect_homepage_only(): void {
         WP_CLI::line( PHP_EOL . '### Setting Homepage only URL detection  ###' . PHP_EOL );
 
         $plugin = Controller::getInstance();
@@ -719,7 +718,7 @@ class CLI {
         WP_CLI::line( PHP_EOL . 'Homepage only URL detection set!' . PHP_EOL );
     }
 
-    public function wp2static_cli_options_set_detect_maximum() : void {
+    public function wp2static_cli_options_set_detect_maximum(): void {
         WP_CLI::line( PHP_EOL . '### Setting maximum URL detection  ###' . PHP_EOL );
 
         $plugin = Controller::getInstance();
@@ -753,7 +752,7 @@ class CLI {
     /**
      * Print multilines of input text via WP-CLI
      */
-    public function multilinePrint( string $string ) : void {
+    public function multilinePrint( string $string ): void {
         $msg = trim( str_replace( [ "\r", "\n" ], '', $string ) );
 
         $msg = preg_replace( '!\s+!', ' ', $msg );
@@ -767,7 +766,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function crawl( array $args, array $assoc_args ) : void {
+    public function crawl( array $args, array $assoc_args ): void {
         CoreOptions::init();
         Controller::wp2staticCrawl();
     }
@@ -775,7 +774,7 @@ class CLI {
     /**
      * Detect WordPress URLs to crawl, based on saved options
      */
-    public function detect() : void {
+    public function detect(): void {
         CoreOptions::init();
         $detected_count = URLDetector::enqueueURLs();
     }
@@ -783,7 +782,7 @@ class CLI {
     /**
      * Makes a copy of crawled static site with processing applied
      */
-    public function post_process() : void {
+    public function post_process(): void {
         CoreOptions::init();
         $post_processor = new PostProcessor();
         $post_processor->processStaticSite( StaticSite::getPath() );
@@ -792,7 +791,7 @@ class CLI {
     /**
      * Process any jobs in the queue.
      */
-    public function process_queue() : void {
+    public function process_queue(): void {
         $job_count = JobQueue::getWaitingJobsCount();
 
         if ( $job_count === 0 ) {
@@ -824,7 +823,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function crawl_cache( array $args, array $assoc_args ) : void {
+    public function crawl_cache( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
@@ -880,7 +879,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function crawl_queue( array $args, array $assoc_args ) : void {
+    public function crawl_queue( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
@@ -928,7 +927,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function processed_site( array $args, array $assoc_args ) : void {
+    public function processed_site( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         // also validate expected $action vs any
@@ -969,7 +968,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function static_site( array $args, array $assoc_args ) : void {
+    public function static_site( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         // also validate expected $action vs any
@@ -1016,7 +1015,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function deploy_cache( array $args, array $assoc_args ) : void {
+    public function deploy_cache( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
@@ -1060,7 +1059,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function full_workflow( array $args, array $assoc_args ) : void {
+    public function full_workflow( array $args, array $assoc_args ): void {
         WsLog::deleteOldLogs();
         $this->detect();
         $this->crawl( [], [] );
@@ -1076,7 +1075,7 @@ class CLI {
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function delete_all_cache( array $args, array $assoc_args ) : void {
+    public function delete_all_cache( array $args, array $assoc_args ): void {
         if ( ! isset( $assoc_args['force'] ) ) {
             $this->multilinePrint(
                 "no --force given. Please type 'yes' to confirm
@@ -1104,7 +1103,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      * @throws WP2StaticException
      */
-    public function addons( array $args, array $assoc_args ) : void {
+    public function addons( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
@@ -1144,4 +1143,3 @@ class CLI {
         }
     }
 }
-

@@ -17,7 +17,7 @@ class StaticSite {
     /**
      * Add crawled resource to static site
      */
-    public static function add( string $path, string $contents ) : void {
+    public static function add( string $path, string $contents ): void {
         // simple file save, Crawler holds logic for what/where to save
         // Crawler has already processed links, etc
         $full_path = self::getPath() . "$path";
@@ -33,7 +33,7 @@ class StaticSite {
         file_put_contents( $full_path, $contents );
     }
 
-    public static function getPath() : string {
+    public static function getPath(): string {
         return apply_filters(
             Controller::getHookName( 'crawled_site_path' ),
             SiteInfo::getPath( 'uploads' ) . 'wp2static-crawled-site'
@@ -43,7 +43,7 @@ class StaticSite {
     /**
      * Delete StaticSite files
      */
-    public static function delete() : void {
+    public static function delete(): void {
         WsLog::l( 'Deleting StaticSite files' );
 
         if ( is_dir( self::getPath() ) ) {
@@ -59,7 +59,7 @@ class StaticSite {
      *
      *  @return string[] StaticSite paths
      */
-    public static function getPaths() : array {
+    public static function getPaths(): array {
         $static_site_dir = self::getPath();
 
         if ( ! is_dir( $static_site_dir ) ) {
@@ -100,7 +100,7 @@ class StaticSite {
      * This lets us encapsulate the logic for path transformation in a single
      * place and use it in multiple places.
      */
-    public static function transformPath( string $root_relative_path ) : string {
+    public static function transformPath( string $root_relative_path ): string {
         // do some magic here - naive: if URL ends in /, save to /index.html
         // TODO: will need love for example, XML files
         // check content type, serve .xml/rss, etc instead
@@ -110,4 +110,3 @@ class StaticSite {
         return $root_relative_path;
     }
 }
-

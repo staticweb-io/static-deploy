@@ -17,10 +17,10 @@ class DetectVendorFiles {
      * @return \Iterator<array> list of URLs
      */
     public static function detect(
-            FileFiltering $filtering,
-            string $wp_site_url,
-            bool $log = false,
-        ) : \Iterator {
+        FileFiltering $filtering,
+        string $wp_site_url,
+        bool $log = false,
+    ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting vendor files' );
         }

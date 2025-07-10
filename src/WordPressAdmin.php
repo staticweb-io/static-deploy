@@ -17,7 +17,6 @@ class WordPressAdmin {
      * WordPressAdmin constructor
      */
     public function __construct() {
-
     }
 
     /**
@@ -25,7 +24,7 @@ class WordPressAdmin {
      *
      * @param string $bootstrap_file main plugin filepath
      */
-    public static function buildUpdateChecker( string $bootstrap_file ) : void {
+    public static function buildUpdateChecker( string $bootstrap_file ): void {
         PucFactory::buildUpdateChecker(
             'https://raw.githubusercontent.com/staticweb-io/wp2static/refs/heads/develop/update.json',
             $bootstrap_file,
@@ -38,7 +37,7 @@ class WordPressAdmin {
      *
      * @param string $bootstrap_file main plugin filepath
      */
-    public static function registerHooks( string $bootstrap_file ) : void {
+    public static function registerHooks( string $bootstrap_file ): void {
         register_activation_hook(
             $bootstrap_file,
             [ Controller::class, 'activate' ]
@@ -335,7 +334,7 @@ class WordPressAdmin {
     /**
      * Add WP2Static elements to WordPress Admin UI
      */
-    public static function addAdminUIElements() : void {
+    public static function addAdminUIElements(): void {
         if ( is_admin() ) {
             add_action(
                 'admin_menu',
@@ -349,7 +348,7 @@ class WordPressAdmin {
     /*
      * Do security checks before calling Controller::wp2staticProcessQueue
      */
-    public static function adminPostProcessQueue() : void {
+    public static function adminPostProcessQueue(): void {
         $method = filter_input( INPUT_SERVER, 'REQUEST_METHOD' );
         if ( ! $method ) {
             $msg = 'Empty method in request to admin-post.php (wp2static_process_queue)';

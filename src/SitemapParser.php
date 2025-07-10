@@ -139,7 +139,7 @@ class SitemapParser {
      *
      * @param mixed[] $url_array
      */
-    public function addToQueue( array $url_array ) : void {
+    public function addToQueue( array $url_array ): void {
         foreach ( $url_array as $url ) {
             $url = $this->urlEncode( strval( $url ) );
             if ( $this->urlValidate( $url ) ) {
@@ -263,7 +263,7 @@ class SitemapParser {
      * @param string $robotstxt
      * @return \Iterator<string>
      */
-    public function parseRobotstxt( string $robotstxt ) : \Iterator {
+    public function parseRobotstxt( string $robotstxt ): \Iterator {
         // Split lines into array
         $lines = array_filter(
             array_map(

@@ -36,7 +36,8 @@ http://www.example.com/sitemap3.xml.gz
 http://www.example.com/page1/
 http://www.example.com/page2/
 http://www.example.com/page3/file.gz
-TEXT,
+TEXT
+                ,
             ],
         ];
     }

@@ -9,7 +9,7 @@ class DetectAuthorsURLs {
      *
      * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ) : \Iterator {
+    public static function detect( bool $log = false ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting author URLs' );
         }

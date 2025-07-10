@@ -4,11 +4,11 @@ namespace WP2Static;
 
 class JobQueue {
 
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'jobs' );
     }
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -46,7 +46,7 @@ class JobQueue {
      * @param string $job_type Type of job
      * ie detect, crawl, post_process, deploy
      */
-    public static function addJob( string $job_type, ?int $post_id = null ) : void {
+    public static function addJob( string $job_type, ?int $post_id = null ): void {
         WsLog::l( 'Adding job: ' . $job_type );
 
         global $wpdb;
@@ -76,7 +76,7 @@ class JobQueue {
      *
      *  @return string[] All jobs
      */
-    public static function getJobs() : array {
+    public static function getJobs(): array {
         global $wpdb;
         $urls = [];
 
@@ -96,7 +96,7 @@ class JobQueue {
      *
      *  @return bool All waiting jobs
      */
-    public static function jobsInProgress() : bool {
+    public static function jobsInProgress(): bool {
         global $wpdb;
         $jobs = [];
 
@@ -115,7 +115,7 @@ class JobQueue {
      *
      *  @return mixed[] All waiting jobs
      */
-    public static function getProcessableJobs() : array {
+    public static function getProcessableJobs(): array {
         global $wpdb;
         $jobs = [];
 
@@ -139,7 +139,7 @@ class JobQueue {
      *
      * @return int[] keys are job type and values are count
      */
-    public static function getJobCountByType() : array {
+    public static function getJobCountByType(): array {
         global $wpdb;
         $jobs = [];
 
@@ -158,7 +158,7 @@ class JobQueue {
         Skip processing jobs where a more recent job of same type exists
 
     */
-    public static function squashQueue() : void {
+    public static function squashQueue(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -216,7 +216,7 @@ class JobQueue {
         }
     }
 
-    public static function setStatus( int $id, string $status ) : void {
+    public static function setStatus( int $id, string $status ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -233,7 +233,7 @@ class JobQueue {
      *
      *  @return int Total jobs
      */
-    public static function getTotalJobs() : int {
+    public static function getTotalJobs(): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -243,7 +243,7 @@ class JobQueue {
         return $total_jobs;
     }
 
-    public static function getWaitingJobs() : int {
+    public static function getWaitingJobs(): int {
         return static::getWaitingJobsCount();
     }
 
@@ -252,7 +252,7 @@ class JobQueue {
      *
      *  @return int Waiting jobs
      */
-    public static function getWaitingJobsCount() : int {
+    public static function getWaitingJobsCount(): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -265,7 +265,7 @@ class JobQueue {
     /**
      *  Clear JobQueue via truncate or deletion
      */
-    public static function truncate() : void {
+    public static function truncate(): void {
         WsLog::l( 'Deleting all jobs from JobQueue' );
 
         global $wpdb;
@@ -286,7 +286,7 @@ class JobQueue {
      *
      *  @throws \Throwable
      */
-    public static function markFailedJobs() : void {
+    public static function markFailedJobs(): void {
         global $wpdb;
 
         $job_types = [ 'detect', 'crawl', 'post_process', 'deploy', 'direct_deploy' ];

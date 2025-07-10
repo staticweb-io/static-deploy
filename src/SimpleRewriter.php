@@ -49,7 +49,7 @@ class SimpleRewriter {
      * @param string $filename file to rewrite URLs in
      * @throws WP2StaticException
      */
-    public static function rewrite( string $filename ) : void {
+    public static function rewrite( string $filename ): void {
         $rewriter = new SimpleRewriter();
 
         $file_contents = file_get_contents( $filename );
@@ -69,7 +69,7 @@ class SimpleRewriter {
      * @param string $file_contents
      * @return string
      */
-    public function rewriteFileContents( string $file_contents ) : string
+    public function rewriteFileContents( string $file_contents ): string
     {
         // TODO: allow empty file saving here? Exception for style.css
         if ( ! $file_contents ) {
@@ -116,4 +116,3 @@ class SimpleRewriter {
         return $rewritten_contents;
     }
 }
-

@@ -8,7 +8,7 @@ namespace WP2Static;
 */
 class WPCron {
 
-    public static function setRecurringEvent( int $interval ) : void {
+    public static function setRecurringEvent( int $interval ): void {
         $next_timestamp = wp_next_scheduled( Controller::getHookName( 'process_queue' ) );
 
         if ( $interval === 0 ) {
@@ -37,7 +37,7 @@ class WPCron {
         }
     }
 
-    public static function clearRecurringEvent() : void {
+    public static function clearRecurringEvent(): void {
         $next_timestamp = wp_next_scheduled( Controller::getHookName( 'process_queue' ) );
 
         if ( ! $next_timestamp ) {
@@ -53,7 +53,7 @@ class WPCron {
      * @param mixed[] $schedules array of CRON schedules
      * @return mixed[] array of CRON schedules
      */
-    public static function wp2static_custom_cron_schedules( array $schedules ) : array {
+    public static function wp2static_custom_cron_schedules( array $schedules ): array {
         $schedules['1min'] = [
             'interval' => 1 * MINUTE_IN_SECONDS,
             'display' => 'Every minute',
@@ -78,7 +78,7 @@ class WPCron {
      * @param mixed[] $cron_request WP-Cron request
      * @return mixed[] WP-Cron request
      */
-    public static function wp2static_cron_with_http_basic_auth( array $cron_request ) : array {
+    public static function wp2static_cron_with_http_basic_auth( array $cron_request ): array {
         $auth_user = CoreOptions::getValue( 'basicAuthUser' );
         $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
 

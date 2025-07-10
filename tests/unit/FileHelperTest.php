@@ -13,12 +13,12 @@ use WP_Mock\Tools\TestCase;
  */
 final class FileHelperTest extends TestCase {
 
-    public function setUp() : void
+    public function setUp(): void
     {
         WP_Mock::setUp();
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         WP_Mock::tearDown();
         Mockery::close();
@@ -193,7 +193,7 @@ final class FileHelperTest extends TestCase {
             'fileExtensionsToIgnore'
         );
 
-        $looks_crawlable = function( $file_name ) use (
+        $looks_crawlable = function ( $file_name ) use (
             &$filenames_to_ignore,
             &$file_extensions_to_ignore
         ) {
@@ -253,7 +253,7 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testPathLooksCrawlableExtension() {
-        $looks_crawlable = function( $file_name ) {
+        $looks_crawlable = function ( $file_name ) {
             return FilesHelper::pathLooksCrawlable(
                 $file_name,
                 [],
@@ -279,7 +279,7 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testPathLooksCrawlableFilenames() {
-        $looks_crawlable = function( $file_name ) {
+        $looks_crawlable = function ( $file_name ) {
             return FilesHelper::pathLooksCrawlable(
                 $file_name,
                 [ 'yarn.lock' ],

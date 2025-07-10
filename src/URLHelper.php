@@ -5,7 +5,7 @@ namespace WP2Static;
 use Exception;
 
 class URLHelper {
-    public static function isSecure() : bool {
+    public static function isSecure(): bool {
         return ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ||
             $_SERVER['SERVER_PORT'] == 443;
     }
@@ -15,7 +15,7 @@ class URLHelper {
      *
      * @return string
      */
-    public static function getCurrent() : string {
+    public static function getCurrent(): string {
         $scheme = self::isSecure() ? 'https' : 'http';
         $url = $scheme . '://' . $_SERVER['HTTP_HOST'];
 
@@ -37,7 +37,7 @@ class URLHelper {
      * @return string                 The new URL
      * @throws WP2StaticException
      */
-    public static function modifyUrl( array $changes, string $url = '' ) : string {
+    public static function modifyUrl( array $changes, string $url = '' ): string {
         // If $url wasn't passed in, use the current url
         if ( $url === '' ) {
             $url = self::getCurrent();
@@ -76,7 +76,7 @@ class URLHelper {
      * @param string URL either http or https
      * @return string URL protocol-relative
      */
-    public static function getProtocolRelativeURL( string $url ) : string {
+    public static function getProtocolRelativeURL( string $url ): string {
         $protocol_relative_url = str_replace(
             [
                 'https:',
@@ -92,7 +92,7 @@ class URLHelper {
         return $protocol_relative_url;
     }
 
-    public static function startsWithHash( string $url ) : bool {
+    public static function startsWithHash( string $url ): bool {
         // TODO: this won't fire for absolute URLs unless strip site_url first?
         // quickly abort for invalid URLs
         if ( $url[0] === '#' ) {
@@ -102,7 +102,7 @@ class URLHelper {
         return false;
     }
 
-    public static function isMailto( string $url ) : bool {
+    public static function isMailto( string $url ): bool {
         if ( substr( $url, 0, 7 ) == 'mailto:' ) {
             return true;
         }
@@ -110,7 +110,7 @@ class URLHelper {
         return false;
     }
 
-    public static function isProtocolRelative( string $url ) : bool {
+    public static function isProtocolRelative( string $url ): bool {
         if ( $url[0] === '/' ) {
             if ( $url[1] === '/' ) {
                 return true;
@@ -123,7 +123,7 @@ class URLHelper {
     public static function protocolRelativeToAbsoluteURL(
         string $url,
         string $site_url
-    ) : string {
+    ): string {
 
         $url = str_replace(
             self::getProtocolRelativeURL( $site_url ),
@@ -142,7 +142,7 @@ class URLHelper {
     public static function isInternalLink(
         string $url,
         string $site_url_host
-    ) : bool {
+    ): bool {
         // quickly match known internal links   ./   ../   /
         $first_char = $url[0];
 

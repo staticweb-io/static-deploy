@@ -22,7 +22,7 @@ class DetectVendorCache {
         string $path_to_trim,
         string $prefix,
         bool $log = false,
-        ) : \Iterator {
+    ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting vendor cache' );
         }

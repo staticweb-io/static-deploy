@@ -4,11 +4,11 @@ namespace WP2Static;
 
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'log' );
     }
-    
-    public static function createTable() : void {
+
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -26,7 +26,7 @@ class WsLog {
         dbDelta( $sql );
     }
 
-    public static function l( string $text ) : void {
+    public static function l( string $text ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -46,7 +46,7 @@ class WsLog {
         }
     }
 
-    public static function w( string $text ) : void {
+    public static function w( string $text ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -71,7 +71,7 @@ class WsLog {
      *
      * @param string[] $lines List of lines to log
      */
-    public static function lines( array $lines ) : void {
+    public static function lines( array $lines ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -90,7 +90,7 @@ class WsLog {
      *
      * @return int Number of rows deleted
      */
-    public static function deleteOldLogs() : int {
+    public static function deleteOldLogs(): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -102,11 +102,11 @@ class WsLog {
         if ( $max_id > 8300000 ) {
             $wpdb->query( "TRUNCATE TABLE $table_name" );
             $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 1" );
-            WsLog::l( 'Truncated log table to avoid AUTO_INCREMENT overflow' );
+            self::l( 'Truncated log table to avoid AUTO_INCREMENT overflow' );
             return 0;
         }
 
-        $max_log_rows = intval( CoreOptions::getValue('maxLogRows') );
+        $max_log_rows = intval( CoreOptions::getValue( 'maxLogRows' ) );
 
         if ( $max_log_rows < 1 ) {
             return 0;
@@ -115,14 +115,16 @@ class WsLog {
         $total_logs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
         if ( $total_logs > $max_log_rows ) {
-            $wpdb->query( "
+            $wpdb->query(
+                "
                 DELETE FROM $table_name
                 WHERE id NOT IN (
                     SELECT id FROM (
                         SELECT id FROM $table_name ORDER BY id DESC LIMIT $max_log_rows
                     ) AS sub
                 )
-            " );
+            "
+            );
         }
 
         return $total_logs;
@@ -133,7 +135,7 @@ class WsLog {
      *
      * @return mixed[] array of Log items
      */
-    public static function getAll() : array {
+    public static function getAll(): array {
         self::deleteOldLogs();
 
         global $wpdb;
@@ -149,9 +151,9 @@ class WsLog {
     /**
      * Poll latest log lines
      */
-    public static function poll() : string {
+    public static function poll(): string {
         self::deleteOldLogs();
-        
+
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -170,7 +172,7 @@ class WsLog {
     /**
      *  Clear Log via truncation
      */
-    public static function truncate() : void {
+    public static function truncate(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -180,4 +182,3 @@ class WsLog {
         self::l( 'Deleted all Logs' );
     }
 }
-

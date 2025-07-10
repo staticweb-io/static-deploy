@@ -43,31 +43,31 @@ class Paginator {
         $this->records = $this->paginateRecords( $records, $page_size, $page );
     }
 
-    public function page() : int {
+    public function page(): int {
         return $this->page;
     }
 
-    public function nextPage() : int {
+    public function nextPage(): int {
         return min( $this->page + 1, $this->pages );
     }
 
-    public function prevPage() : int {
+    public function prevPage(): int {
         return max( 1, $this->page - 1 );
     }
 
-    public function firstPage() : int {
+    public function firstPage(): int {
         return 1;
     }
 
-    public function lastPage() : int {
+    public function lastPage(): int {
         return $this->pages;
     }
 
-    public function pageSize() : int {
+    public function pageSize(): int {
         return count( $this->records );
     }
 
-    public function totalRecords() : int {
+    public function totalRecords(): int {
         return $this->total_records;
     }
 
@@ -76,7 +76,7 @@ class Paginator {
      *
      * @return array<mixed>
      */
-    public function records() : array {
+    public function records(): array {
         return $this->records;
     }
 
@@ -90,7 +90,7 @@ class Paginator {
      * @param int $page
      * @return array<mixed>
      */
-    protected function paginateRecords( array $records, int $page_size, int $page ) : array {
+    protected function paginateRecords( array $records, int $page_size, int $page ): array {
         $keys = array_keys( $records );
         $values = array_values( $records );
 
@@ -100,4 +100,3 @@ class Paginator {
         );
     }
 }
-

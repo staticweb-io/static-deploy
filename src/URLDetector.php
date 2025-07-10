@@ -16,7 +16,7 @@ use WP2Static\FileFiltering;
 
 class URLDetector {
 
-    public static function countURLs() : int {
+    public static function countURLs(): int {
         return count( static::detectURLs( $quiet = true ) );
     }
 
@@ -25,11 +25,11 @@ class URLDetector {
      *
      * @return array<string>
      */
-    public static function detectURLs( bool $quiet = false ) : array {
+    public static function detectURLs( bool $quiet = false ): array {
         return iterator_to_array( static::detectURLsIter( $quiet ) );
     }
 
-    public static function detectURLsIter( bool $quiet = false ) : \Iterator {
+    public static function detectURLsIter( bool $quiet = false ): \Iterator {
         $log_steps = CoreOptions::getValue( 'logDetectionSteps' );
 
         if ( ! $quiet ) {
@@ -44,12 +44,14 @@ class URLDetector {
 
         $iterators_to_merge = [];
 
-        $iterators_to_merge[] = new \ArrayIterator( [
-            [ 'url' => '/' ],
-            [ 'url' => '/robots.txt' ],
-            [ 'url' => '/favicon.ico' ],
-            [ 'url' => '/sitemap.xml' ],
-        ] );
+        $iterators_to_merge[] = new \ArrayIterator(
+            [
+                [ 'url' => '/' ],
+                [ 'url' => '/robots.txt' ],
+                [ 'url' => '/favicon.ico' ],
+                [ 'url' => '/sitemap.xml' ],
+            ]
+        );
 
         $detect_parent_theme = apply_filters(
             Controller::getHookName( 'detect_parent_theme' ),
@@ -191,8 +193,8 @@ class URLDetector {
 
                 $path = FilesHelper::cleanDetectedURL( $home_url, $detected['url'] );
 
-                if ( $path && ! isset( $unique_urls[$path] ) ) {
-                    $unique_urls[$path] = true;
+                if ( $path && ! isset( $unique_urls[ $path ] ) ) {
+                    $unique_urls[ $path ] = true;
 
                     $detected_ct = count( $unique_urls );
                     $now = microtime( true );
@@ -219,15 +221,14 @@ class URLDetector {
         }
     }
 
-    public static function enqueueURLs() : int {
+    public static function enqueueURLs(): int {
         $count = 0;
 
         $detected = static::detectURLsIter();
-        foreach ( CrawlQueue::addPathsIter($detected) as $_ ) {
-            $count++;
+        foreach ( CrawlQueue::addPathsIter( $detected ) as $_ ) {
+            ++$count;
         }
 
         return $count;
     }
 }
-

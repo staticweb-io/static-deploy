@@ -11,7 +11,7 @@ class FilesHelper {
      *
      * @throws WP2StaticException
      */
-    public static function deleteDirWithFiles( string $dir ) : void {
+    public static function deleteDirWithFiles( string $dir ): void {
         if ( is_dir( $dir ) ) {
             $dir_files = scandir( $dir );
 
@@ -41,7 +41,7 @@ class FilesHelper {
      * @return string|null list of relative URLs
      * @throws WP2StaticException
      */
-    public static function cleanDetectedURL( string &$home_url, string &$url ) : ?string {
+    public static function cleanDetectedURL( string &$home_url, string &$url ): ?string {
         if ( ! $url ) {
             return null;
         }
@@ -87,7 +87,7 @@ class FilesHelper {
      * @return string[]|null[] list of relative URLs
      * @throws WP2StaticException
      */
-    public static function cleanDetectedURLs( array $urls ) : array {
+    public static function cleanDetectedURLs( array $urls ): array {
         $home_url = SiteInfo::getUrl( 'home' );
 
         if ( ! is_string( $home_url ) ) {

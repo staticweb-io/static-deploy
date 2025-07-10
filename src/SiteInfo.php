@@ -82,9 +82,9 @@ class SiteInfo {
      *
      * @throws WP2StaticException
      */
-    public static function getPath( string $name ) : string {
+    public static function getPath( string $name ): string {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         // TODO: Move trailingslashit() here ???
@@ -112,9 +112,9 @@ class SiteInfo {
      *
      * @throws WP2StaticException
      */
-    public static function getUrl( string $name ) : string {
+    public static function getUrl( string $name ): string {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         $key = $name . '_url';
@@ -135,17 +135,17 @@ class SiteInfo {
 
     // TODO Use WP_Http 'curl_enabled' => $this->hasCurlSupport(),
     // didn't see the method vailable in WP_Http
-    public static function hasCURLSupport() : bool {
+    public static function hasCURLSupport(): bool {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         return extension_loaded( 'curl' );
     }
 
-    public static function isUploadsWritable() : bool {
+    public static function isUploadsWritable(): bool {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         /**
@@ -156,9 +156,9 @@ class SiteInfo {
         return file_exists( $uploads_dir ) && is_writeable( $uploads_dir );
     }
 
-    public static function permalinksAreCompatible() : bool {
+    public static function permalinksAreCompatible(): bool {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         /**
@@ -169,9 +169,9 @@ class SiteInfo {
         return strlen( $structure ) && 0 === strcmp( $structure[-1], '/' );
     }
 
-    public static function getPermalinks() : string {
+    public static function getPermalinks(): string {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         /**
@@ -187,9 +187,9 @@ class SiteInfo {
      *
      * @throws WP2StaticException
      */
-    public static function getSiteURLHost() : string {
+    public static function getSiteURLHost(): string {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         /**
@@ -209,7 +209,7 @@ class SiteInfo {
     }
 
 
-    public function debug() : void {
+    public function debug(): void {
         var_export( self::$info );
     }
 
@@ -218,12 +218,11 @@ class SiteInfo {
      *
      *  @return mixed[]
      */
-    public static function getAllInfo() : array {
+    public static function getAllInfo(): array {
         if ( self::$instance === null ) {
-             self::$instance = new SiteInfo();
+            self::$instance = new SiteInfo();
         }
 
         return self::$info;
     }
 }
-

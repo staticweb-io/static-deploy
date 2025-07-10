@@ -4,7 +4,7 @@ namespace WP2Static;
 
 class CrawlQueue {
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -36,7 +36,7 @@ class CrawlQueue {
         );
     }
 
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'urls' );
     }
 
@@ -50,10 +50,10 @@ class CrawlQueue {
      *  unless they were updated, e.g., the filename changed.
      * @return \Iterator
      */
-    public static function addPathsIter( 
+    public static function addPathsIter(
         \Iterator $paths,
         bool $omit_unchanged_paths = false
-    ) : \Iterator {
+    ): \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -66,10 +66,10 @@ class CrawlQueue {
                 $paths[] = $path;
             }
 
-            $placeholders = implode(',', array_fill(0, count($hashes), '%s'));
+            $placeholders = implode( ',', array_fill( 0, count( $hashes ), '%s' ) );
             $sql = "SELECT url, filename FROM $table_name WHERE hashed_url IN ($placeholders)";
             $existing_urls = $wpdb->get_results(
-                $wpdb->prepare($sql, ...$hashes),
+                $wpdb->prepare( $sql, ...$hashes ),
                 OBJECT_K
             );
 
@@ -134,12 +134,11 @@ class CrawlQueue {
      * Add an Iterator of paths, returning an Iterator
      * of all paths in the DB.
      * Includes the newly added paths and pre-existing paths.
-     *
      */
-    public static function withPathsIter( \Iterator $paths ) : \Iterator {
+    public static function withPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;
 
-        $db_now = $wpdb->get_var( "SELECT NOW()" );
+        $db_now = $wpdb->get_var( 'SELECT NOW()' );
 
         $table_name = self::getTableName();
 
@@ -170,7 +169,7 @@ class CrawlQueue {
      *
      * @param string $detected_since default to '0000-00-00 00:00:00'
      */
-    public static function getPathsIter( string $detected_since = '0000-00-00 00:00:00' ) : \Iterator {
+    public static function getPathsIter( string $detected_since = '0000-00-00 00:00:00' ): \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -197,7 +196,7 @@ class CrawlQueue {
      *
      *  @return \Iterator<string> All crawlable URLs
      */
-    public static function getCrawlablePaths() : \Iterator {
+    public static function getCrawlablePaths(): \Iterator {
         foreach ( self::getPathsIter() as $path ) {
             yield $path['path'];
         }
@@ -209,7 +208,7 @@ class CrawlQueue {
      * @param array<string> $ids
      * @return void
      */
-    public static function rmUrlsById( array $ids ) : void {
+    public static function rmUrlsById( array $ids ): void {
         global $wpdb;
 
         $ids = implode( ',', array_map( 'absint', $ids ) );
@@ -219,7 +218,7 @@ class CrawlQueue {
         $wpdb->query( "DELETE FROM $table_name WHERE ID IN($ids)" );
     }
 
-    public static function rmUrl( string $url ) : void {
+    public static function rmUrl( string $url ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -237,7 +236,7 @@ class CrawlQueue {
      *
      *  @return int Total crawlable URLs
      */
-    public static function getTotalCrawlableURLs() : int {
+    public static function getTotalCrawlableURLs(): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -250,7 +249,7 @@ class CrawlQueue {
     /**
      *  Clear CrawlQueue via truncate or deletion
      */
-    public static function truncate() : void {
+    public static function truncate(): void {
         WsLog::l( 'Deleting CrawlQueue (Detected URLs)' );
 
         global $wpdb;
@@ -269,7 +268,7 @@ class CrawlQueue {
     /**
      *  Count URLs in Crawl Queue
      */
-    public static function getTotal() : int {
+    public static function getTotal(): int {
         global $wpdb;
 
         $table_name = self::getTableName();

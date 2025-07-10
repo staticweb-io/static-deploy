@@ -13,7 +13,7 @@ use WP_Mock\Tools\TestCase;
  */
 final class SimpleRewriterTest extends TestCase {
 
-    public function setUp() : void
+    public function setUp(): void
     {
         WP_Mock::setUp();
 
@@ -23,20 +23,20 @@ final class SimpleRewriterTest extends TestCase {
             ->andReturnUsing( [ $this, 'getProtocolRelativeURL' ] );
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         WP_Mock::tearDown();
         Mockery::close();
     }
 
-    public static function coreOptionsMock() : \Mockery\CompositeExpectation {
+    public static function coreOptionsMock(): \Mockery\CompositeExpectation {
         return Mockery::mock( 'overload:\WP2Static\CoreOptions' )
-                      ->shouldReceive( 'getValue' )
-                      ->withArgs( [ 'skipURLRewrite' ] )
-                      ->andReturn( '0' )
-                      ->shouldreceive( 'getLineDelimitedBlobValue' )
-                      ->withArgs( [ 'hostsToRewrite' ] )
-                      ->andReturn( [ 'localhost' ] );
+                        ->shouldReceive( 'getValue' )
+                        ->withArgs( [ 'skipURLRewrite' ] )
+                        ->andReturn( '0' )
+                        ->shouldreceive( 'getLineDelimitedBlobValue' )
+                        ->withArgs( [ 'hostsToRewrite' ] )
+                        ->andReturn( [ 'localhost' ] );
     }
 
     /**
@@ -169,15 +169,15 @@ final class SimpleRewriterTest extends TestCase {
     public function testRewriteFileContentsSkipURLRewrite() {
         // Mock the methods and functions used by SimpleRewriter
         Mockery::mock( 'overload:\WP2Static\CoreOptions' )
-               ->shouldReceive( 'getValue' )
-               ->withArgs( [ 'skipURLRewrite' ] )
-               ->andReturn( '1' )
-               ->shouldreceive( 'getLineDelimitedBlobValue' )
-               ->withArgs( [ 'hostsToRewrite' ] )
-               ->andReturn( [ 'localhost' ] )
-               ->shouldreceive( 'getValue' )
-               ->withArgs( [ 'deploymentURL' ] )
-               ->andReturn( 'http://bar.com' );
+                ->shouldReceive( 'getValue' )
+                ->withArgs( [ 'skipURLRewrite' ] )
+                ->andReturn( '1' )
+                ->shouldreceive( 'getLineDelimitedBlobValue' )
+                ->withArgs( [ 'hostsToRewrite' ] )
+                ->andReturn( [ 'localhost' ] )
+                ->shouldreceive( 'getValue' )
+                ->withArgs( [ 'deploymentURL' ] )
+                ->andReturn( 'http://bar.com' );
         Mockery::mock( 'overload:\WP2Static\SiteInfo' )
             ->shouldreceive( 'getUrl' )
             ->withArgs( [ 'site' ] )

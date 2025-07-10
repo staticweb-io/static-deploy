@@ -4,7 +4,7 @@ namespace WP2Static;
 
 class CrawlCache {
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -55,7 +55,7 @@ class CrawlCache {
      *
      *  @return string[] All URLs
      */
-    public static function getHashes() : array {
+    public static function getHashes(): array {
         global $wpdb;
         $urls = [];
 
@@ -66,7 +66,7 @@ class CrawlCache {
         return $urls;
     }
 
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'crawl_cache' );
     }
 
@@ -77,7 +77,7 @@ class CrawlCache {
      * @param \Iterator $paths
      * @return \Iterator
      */
-    public static function addPathsIter( \Iterator $paths ) : \Iterator {
+    public static function addPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -88,7 +88,7 @@ class CrawlCache {
                 $paths[] = $path;
             }
 
-            $placeholders = implode(',', array_fill(0, count($paths), '(%s,%s,%s,%s,%s,%s,NOW())'));
+            $placeholders = implode( ',', array_fill( 0, count( $paths ), '(%s,%s,%s,%s,%s,%s,NOW())' ) );
             $sql = "INSERT INTO $table_name (hashed_url,url,content_type,redirect_to,status,page_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE url = VALUES(url), content_type = VALUES(content_type), redirect_to = VALUES(redirect_to), status = VALUES(status), page_hash = VALUES(page_hash), time = VALUES(time)";
@@ -120,9 +120,8 @@ class CrawlCache {
 
     /**
      * Yields all paths in the table.
-     *
      */
-    public static function getPathsIter() : \Iterator {
+    public static function getPathsIter(): \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -163,17 +162,17 @@ class CrawlCache {
      * Remove 404 URLs from the crawl queue, crawl cache, and
      * files written to disk.
      */
-    public static function remove404s( \Iterator $paths ) : \Iterator {
+    public static function remove404s( \Iterator $paths ): \Iterator {
         foreach ( $paths as $path ) {
             if ( isset( $path['status'] ) && $path['status'] === 404 ) {
                 WsLog::l( '404 for URL ' . $path['path'] );
-                CrawlCache::rmUrl( $path['path'] );
+                self::rmUrl( $path['path'] );
                 // Delete crawl queue to prevent crawling not found urls forever.
                 CrawlQueue::rmUrl( $path['path'] );
                 // Delete previously generated files under the directories,
                 // both the crawled and the processed.
                 array_map(
-                    function( $dir ) use ( $path ) {
+                    function ( $dir ) use ( $path ) {
                         $transformed_path = StaticSite::transformPath( $path['path'] );
                         $suffix = ltrim( $transformed_path, '/' );
                         $full_path = trailingslashit( $dir ) . $suffix;
@@ -196,7 +195,7 @@ class CrawlCache {
      * @param \Iterator $paths
      * @return \Iterator
      */
-    public static function writeFilesIter( \Iterator $paths ) : \Iterator {
+    public static function writeFilesIter( \Iterator $paths ): \Iterator {
         $cache_hits = 0;
         foreach ( $paths as $path ) {
             $body = $path['body'] ?? null;
@@ -205,8 +204,7 @@ class CrawlCache {
 
             if ( $status === 404 ) {
                 $is_cacheable = false;
-            }
-            elseif ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
+            } elseif ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
                 $is_cacheable = false;
             }
 
@@ -216,8 +214,8 @@ class CrawlCache {
                 $path['content_hash'] = $content_hash;
             }
 
-            if ( $is_cacheable && $content_hash && CrawlCache::getUrl( $path['path'], $content_hash ) ) {
-                $cache_hits++;
+            if ( $is_cacheable && $content_hash && self::getUrl( $path['path'], $content_hash ) ) {
+                ++$cache_hits;
             } elseif ( $body ) {
                 $static_path = StaticSite::transformPath( $path['path'] );
                 StaticSite::add( $static_path, $body );
@@ -227,8 +225,12 @@ class CrawlCache {
         }
     }
 
-    public static function addUrl( string $url, string $page_hash, int $status,
-                                   ?string $redirect_to ) : void {
+    public static function addUrl(
+        string $url,
+        string $page_hash,
+        int $status,
+        ?string $redirect_to
+    ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -253,7 +255,7 @@ class CrawlCache {
     }
 
     // TODO: enable date filter as option/alternate method
-    public static function getUrl( string $url, string $page_hash ) : string {
+    public static function getUrl( string $url, string $page_hash ): string {
         global $wpdb;
 
         $hashed_url = md5( $url );
@@ -283,7 +285,7 @@ class CrawlCache {
      *      @type string   $page_hash            MD5 hashed page
      *  }
      */
-    public static function getURLs() : array {
+    public static function getURLs(): array {
         global $wpdb;
         $urls = [];
 
@@ -304,7 +306,7 @@ class CrawlCache {
         return $urls;
     }
 
-    public static function rmUrl( string $url ) : void {
+    public static function rmUrl( string $url ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -323,7 +325,7 @@ class CrawlCache {
      * @param array<string> $ids
      * @return void
      */
-    public static function rmUrlsById( array $ids ) : void {
+    public static function rmUrlsById( array $ids ): void {
         global $wpdb;
 
         $ids = implode( ',', array_map( 'absint', $ids ) );
@@ -336,7 +338,7 @@ class CrawlCache {
     /**
      *  Clear CrawlCache via truncation
      */
-    public static function truncate() : void {
+    public static function truncate(): void {
         WsLog::l( 'Deleting CrawlCache' );
 
         global $wpdb;
@@ -355,7 +357,7 @@ class CrawlCache {
     /**
      *  Count URLs in Crawl Cache
      */
-    public static function getTotal() : int {
+    public static function getTotal(): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -369,7 +371,7 @@ class CrawlCache {
      * @param mixed[] $redirs
      * @return mixed[] redirects
      */
-    public static function wp2static_list_redirects( array $redirs ) : array {
+    public static function wp2static_list_redirects( array $redirs ): array {
         global $wpdb;
 
         $table_name = self::getTableName();

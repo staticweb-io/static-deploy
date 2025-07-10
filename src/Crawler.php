@@ -103,7 +103,7 @@ class Crawler {
         WsLog::l( ( $this->use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
     }
 
-    public static function wp2staticCrawl( string $crawler_slug ) : void {
+    public static function wp2staticCrawl( string $crawler_slug ): void {
         global $wpdb;
 
         if ( 'wp2static' === $crawler_slug ) {
@@ -119,7 +119,8 @@ class Crawler {
                 $crawled = CrawlCache::addPathsIter( $crawled );
             }
             $crawled = $url_discovery->discoverURLs( $crawled );
-            foreach ( $crawled as $_ ) { }
+            foreach ( $crawled as $_ ) {
+            }
 
             $has_new = true;
             while ( $has_new ) {
@@ -140,7 +141,7 @@ class Crawler {
         }
     }
 
-    public function crawlComplete() : void {
+    public function crawlComplete(): void {
         WsLog::l(
             "Crawling complete. $this->crawled crawled, $this->cache_hits skipped (cached)."
         );
@@ -153,11 +154,11 @@ class Crawler {
         do_action( 'wp2static_crawling_complete', $args );
     }
 
-    public function crawlPath(array $detected, array $site_urls) : PromiseInterface {
+    public function crawlPath( array $detected, array $site_urls ): PromiseInterface {
         $filename = $detected['filename'] ?? null;
         $path = $detected['path'];
 
-        $absolute_uri = (new URL( $this->site_path . $path ))->get();
+        $absolute_uri = ( new URL( $this->site_path . $path ) )->get();
         try {
             if ( $filename ) {
                 $request = new Request( 'HEAD', $absolute_uri );
@@ -185,7 +186,7 @@ class Crawler {
 
                     $redirect_to =
                         (string) str_replace( $site_urls, '', $effective_url );
-                } else if ( ! $filename && $status !== 404 ) {
+                } elseif ( ! $filename && $status !== 404 ) {
                     $body = (string) $response->getBody();
                 }
 
@@ -201,7 +202,7 @@ class Crawler {
             function () use ( &$path ) {
                 return [
                     'error' => 'Error crawling ' . $path,
-                    'path' => $path
+                    'path' => $path,
                 ];
             }
         );
@@ -209,7 +210,7 @@ class Crawler {
         return $promise;
     }
 
-    public function crawlIter( \Iterator $path_iter ) : \Iterator {
+    public function crawlIter( \Iterator $path_iter ): \Iterator {
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
@@ -218,10 +219,10 @@ class Crawler {
         $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
         $in_flight = [];
 
-        $startNext = function() use ( &$in_flight, &$path_iter, &$site_urls ) {
+        $startNext = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
             $detected = $path_iter->current();
             $path = $detected['path'];
-            $in_flight[$path] = $this->crawlPath( $detected, $site_urls );
+            $in_flight[ $path ] = $this->crawlPath( $detected, $site_urls );
             $path_iter->next();
         };
 
@@ -242,10 +243,10 @@ class Crawler {
                 }
 
                 unset( $in_flight[ $response['path'] ] );
-                
-                $this->crawled++;
+
+                ++$this->crawled;
                 $now = microtime( true );
-                
+
                 if ( $now - $last_log_time >= 60 ) {
                     WsLog::l( 'Crawled ' . $response['path'] );
                     $notice = "Crawling progress: $this->crawled crawled," .
@@ -259,7 +260,7 @@ class Crawler {
                 } else {
                     yield $response;
                 }
-                
+
                 if ( $path_iter->valid() ) {
                     $startNext();
                 }

@@ -7,11 +7,11 @@ class DeployCache {
     const DEFAULT_NAMESPACE = 'default';
 
 
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'deploy_cache' );
     }
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -58,7 +58,7 @@ class DeployCache {
         string $local_path,
         string $namespace = self::DEFAULT_NAMESPACE,
         ?string $file_hash = null
-    ) : void {
+    ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -83,7 +83,7 @@ class DeployCache {
             ' VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE file_hash = %s, namespace = %s';
 
         $sql = $wpdb->prepare(
-          // Insert values
+            // Insert values
             $sql,
             $path_hash,
             $local_path,
@@ -105,7 +105,7 @@ class DeployCache {
         string $local_path,
         string $namespace = self::DEFAULT_NAMESPACE,
         ?string $file_hash = null
-    ) : bool {
+    ): bool {
         global $wpdb;
 
         $post_processed_dir = ProcessedSite::getPath();
@@ -141,7 +141,7 @@ class DeployCache {
 
     public static function truncate(
         string $namespace = ''
-    ) : void {
+    ): void {
         WsLog::l( 'Deleting DeployCache' );
 
         global $wpdb;
@@ -162,7 +162,7 @@ class DeployCache {
      */
     public static function getTotalByNamespace(
         string $namespace = self::DEFAULT_NAMESPACE
-    ) : int {
+    ): int {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -179,7 +179,7 @@ class DeployCache {
      *
      *  @return mixed[] namespace totals
      */
-    public static function getTotal() : array {
+    public static function getTotal(): array {
         global $wpdb;
         $counts = [];
 
@@ -203,7 +203,7 @@ class DeployCache {
      */
     public static function getPaths(
         string $namespace = self::DEFAULT_NAMESPACE
-    ) : array {
+    ): array {
         global $wpdb;
         $urls = [];
 

@@ -17,7 +17,7 @@ class Utils {
             }
         }
 
-        if ( !empty( $chunk )) {
+        if ( ! empty( $chunk ) ) {
             yield $chunk;
         }
     }
@@ -32,7 +32,7 @@ class Utils {
     public static function microtime_diff(
         string $start,
         string $end = null
-    ) : float {
+    ): float {
         if ( ! $end ) {
             $end = microtime();
         }
@@ -50,7 +50,7 @@ class Utils {
      * Adjusts the max_execution_time ini option
      *
      */
-    public static function set_max_execution_time() : void {
+    public static function set_max_execution_time(): void {
         if (
             ! function_exists( 'set_time_limit' ) ||
             ! function_exists( 'ini_get' )
@@ -75,7 +75,9 @@ class Utils {
         string $subject,
     ): string {
         $pos = strpos( $subject, $search );
-        if ( $pos === false ) return $subject;
+        if ( $pos === false ) {
+            return $subject;
+        }
         return substr_replace( $subject, $replace, $pos, strlen( $search ) );
     }
 }

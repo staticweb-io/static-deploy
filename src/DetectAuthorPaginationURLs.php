@@ -9,7 +9,7 @@ class DetectAuthorPaginationURLs {
      *
      * @return \Iterator<array> list of URLs
      */
-    public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
+    public static function detect( string $wp_site_url, bool $log = false ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting author pagination URLs' );
         }

@@ -38,7 +38,7 @@ class FileWriter {
         $this->backup_locale_ctype = setlocale( LC_CTYPE, null );
     }
 
-    public function saveFile( string $archive_dir ) : void {
+    public function saveFile( string $archive_dir ): void {
         // Fix pathinfo failing with non-latin characters
         setlocale( LC_CTYPE, 'en_US.UTF-8' );
 
@@ -113,4 +113,3 @@ class FileWriter {
         setlocale( LC_CTYPE, (string) $this->backup_locale_ctype );
     }
 }
-

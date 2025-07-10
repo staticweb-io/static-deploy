@@ -4,7 +4,7 @@ namespace WP2Static;
 
 class ViewRenderer {
 
-    public static function renderOptionsPage() : void {
+    public static function renderOptionsPage(): void {
         CoreOptions::init();
 
         $view = [
@@ -15,7 +15,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/options-page.php';
     }
 
-    public static function renderAdvancedOptionsPage() : void {
+    public static function renderAdvancedOptionsPage(): void {
         CoreOptions::init();
 
         $view = [
@@ -26,7 +26,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/advanced-options-page.php';
     }
 
-    public static function renderDiagnosticsPage() : void {
+    public static function renderDiagnosticsPage(): void {
         $view = [];
         $view['memoryLimit'] = ini_get( 'memory_limit' );
         $view['coreOptions'] = array_values( CoreOptions::getAll() );
@@ -42,7 +42,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/diagnostics-page.php';
     }
 
-    public static function renderLogsPage() : void {
+    public static function renderLogsPage(): void {
         $view = [];
         $view['nonce_action'] = 'wp2static-log-page';
         $view['logs'] = WsLog::getAll();
@@ -50,7 +50,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/logs-page.php';
     }
 
-    public static function renderAddonsPage() : void {
+    public static function renderAddonsPage(): void {
         $view = [];
         $view['nonce_action'] = 'wp2static-addons-page';
         $view['addons'] = Addons::getAll();
@@ -58,7 +58,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/addons-page.php';
     }
 
-    public static function renderCrawlQueue() : void {
+    public static function renderCrawlQueue(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -100,7 +100,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/crawl-queue-page.php';
     }
 
-    public static function renderCrawlCache() : void {
+    public static function renderCrawlCache(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -142,7 +142,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/crawl-cache-page.php';
     }
 
-    public static function renderPostProcessedSitePaths() : void {
+    public static function renderPostProcessedSitePaths(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -175,7 +175,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/post-processed-site-paths-page.php';
     }
 
-    public static function renderStaticSitePaths() : void {
+    public static function renderStaticSitePaths(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -208,7 +208,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/static-site-paths-page.php';
     }
 
-    public static function renderDeployCache() : void {
+    public static function renderDeployCache(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -244,7 +244,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/deploy-cache-page.php';
     }
 
-    public static function renderJobsPage() : void {
+    public static function renderJobsPage(): void {
         CoreOptions::init();
         JobQueue::markFailedJobs();
         JobQueue::squashQueue();
@@ -274,14 +274,14 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/jobs-page.php';
     }
 
-    public static function renderRunPage() : void {
+    public static function renderRunPage(): void {
         $view = [];
 
         require_once WP2STATIC_PATH . 'views/run-page.php';
     }
 
 
-    public static function renderCachesPage() : void {
+    public static function renderCachesPage(): void {
         $view = [];
 
         // performance check vs map
@@ -362,6 +362,4 @@ class ViewRenderer {
 
         require_once WP2STATIC_PATH . 'views/caches-page.php';
     }
-
-
 }

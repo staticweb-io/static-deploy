@@ -3,11 +3,11 @@
 namespace WP2Static;
 
 class Addons {
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'addons' );
     }
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -34,7 +34,7 @@ class Addons {
         string $name,
         string $docs_url,
         string $description
-    ) : void {
+    ): void {
         // TODO: guard against unknown addon type
 
         global $wpdb;
@@ -54,7 +54,7 @@ class Addons {
      *
      * @return mixed[] array of Addon objects
      */
-    public static function getAll( string $type = 'all' ) : array {
+    public static function getAll( string $type = 'all' ): array {
         global $wpdb;
         $addons = [];
 
@@ -79,7 +79,7 @@ class Addons {
      * @param string $type Type of addon to return
      * @return mixed[] array of Addon objects
      */
-    public static function getType( string $type ) : array {
+    public static function getType( string $type ): array {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -96,7 +96,7 @@ class Addons {
     /**
      *  Deregister Addons
      */
-    public static function truncate() : void {
+    public static function truncate(): void {
         global $wpdb;
 
         $table_name = self::getTableName();

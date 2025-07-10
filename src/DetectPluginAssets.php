@@ -14,7 +14,7 @@ class DetectPluginAssets {
     public static function detect(
         FileFiltering $filtering,
         bool $log = false
-    ) : \Iterator {
+    ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting plugin assets' );
         }

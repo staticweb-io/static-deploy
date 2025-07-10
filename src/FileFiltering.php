@@ -53,11 +53,10 @@ class FileFiltering {
      *
      * @param string $directory
      * @return \Iterator
-     * 
      */
     public function crawlableFiles(
         string $directory,
-    ) : \Iterator {
+    ): \Iterator {
         $abs_base_dir = ( new \SplFileInfo( $directory ) )->getPathname();
 
         $dir_iter = new \RecursiveDirectoryIterator(
@@ -93,10 +92,10 @@ class FileFiltering {
      */
     public function getListOfLocalFilesByDir(
         string $dir,
-    ) : \Iterator {
+    ): \Iterator {
         $site_path = SiteInfo::getPath( 'site' );
 
-        if ( is_string( $site_path ) &&is_dir( $dir ) ) {
+        if ( is_string( $site_path ) && is_dir( $dir ) ) {
             $iterator = $this->crawlableFiles( $dir );
 
             foreach ( $iterator as $filename => $file_object ) {
@@ -116,7 +115,7 @@ class FileFiltering {
      */
     public function pathLooksCrawlable(
         string $path,
-    ) : bool {
+    ): bool {
         foreach ( $this->patterns_to_ignore as $pattern ) {
             if ( $pattern->matchesPath( $path ) ) {
                 return false;

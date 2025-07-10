@@ -72,7 +72,7 @@ final class DetectPostURLsTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    public function get_permalink( int $post_id, string $permalink ) : string {
+    public function get_permalink( int $post_id, string $permalink ): string {
         return "https://foo.com/2020/08/{$post_id}";
     }
 }

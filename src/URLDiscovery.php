@@ -12,7 +12,7 @@ class URLDiscovery {
     private FileFiltering $file_filtering;
     private string $site_host;
 
-    public function __construct( ) {
+    public function __construct() {
         $this->destination_url = untrailingslashit(
             apply_filters(
                 Controller::getHookName( 'set_destination_url' ),
@@ -23,7 +23,7 @@ class URLDiscovery {
         $this->file_filtering = new FileFiltering();
     }
 
-    public function discoverURLs( \Iterator $iterator ) : \Iterator {
+    public function discoverURLs( \Iterator $iterator ): \Iterator {
         global $wpdb;
 
         $table_name = CrawlQueue::getTableName();
@@ -32,7 +32,7 @@ class URLDiscovery {
             if ( isset( $arr['content_type'] ) && str_starts_with( $arr['content_type'], 'text/html' ) ) {
                 $urls = [];
                 foreach ( $this->parseURLs( $arr ) as $url ) {
-                    $urls[$url] = true;
+                    $urls[ $url ] = true;
                 }
                 if ( empty( $urls ) ) {
                     yield $arr;
@@ -53,7 +53,7 @@ class URLDiscovery {
         $this->discover_complete = true;
     }
 
-    public function isURLLocal( \Wa72\Url\Url $base_url, \Wa72\Url\Url $url ) : bool {
+    public function isURLLocal( \Wa72\Url\Url $base_url, \Wa72\Url\Url $url ): bool {
         if ( ! $url->getPath() && ! $url->getHost() ) {
             // fragment-only URL
             return false;
@@ -77,11 +77,11 @@ class URLDiscovery {
         return false;
     }
 
-    public function parseURLs( array $arr ) : \Iterator {
+    public function parseURLs( array $arr ): \Iterator {
         $body = null;
         if ( isset( $arr['body'] ) ) {
             $body = $arr['body'];
-        } else if ( $arr['filename'] ?? null ) {
+        } elseif ( $arr['filename'] ?? null ) {
             $body = file_get_contents( $arr['filename'] );
         }
 
@@ -102,5 +102,4 @@ class URLDiscovery {
             }
         }
     }
-
 }

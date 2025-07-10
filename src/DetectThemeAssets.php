@@ -12,10 +12,10 @@ class DetectThemeAssets {
      * @return \Iterator<array>
      */
     public static function detect(
-            FileFiltering $filtering,
-            string $theme_type,
-            bool $log = false,
-        ) : \Iterator {
+        FileFiltering $filtering,
+        string $theme_type,
+        bool $log = false,
+    ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting theme assets' );
         }

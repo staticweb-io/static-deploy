@@ -7,9 +7,9 @@ namespace WP_CLI\Loggers {
     abstract class Base {
 
         protected $in_color = false;
-        abstract public function info( $message);
-        abstract public function success( $message);
-        abstract public function warning( $message);
+        abstract public function info( $message );
+        abstract public function success( $message );
+        abstract public function warning( $message );
         /**
          * Retrieve the runner instance from the base CLI object. This facilitates
          * unit testing, where the WP_CLI instance isn't available
@@ -201,7 +201,7 @@ namespace WP_CLI\Fetchers {
          * @param string $arg The raw CLI argument
          * @return mixed|false The item if found; false otherwise
          */
-        abstract public function get( $arg);
+        abstract public function get( $arg );
         /**
          * Like get(), but calls WP_CLI::error() instead of returning false.
          *
@@ -1737,7 +1737,7 @@ namespace WP_CLI\Bootstrap {
          *
          * @return BootstrapState Modified state to pass to the next step.
          */
-        public function process( \WP_CLI\Bootstrap\BootstrapState $state);
+        public function process( \WP_CLI\Bootstrap\BootstrapState $state );
     }
     /**
      * Class RegisterFrameworkCommands.
@@ -1945,6 +1945,7 @@ namespace WP_CLI\Bootstrap {
      *
      * Maintain BC: Changing the method names in this class breaks autoload interactions between Phar
      * & framework/commands you use outside of Phar (like when running the Phar WP inside of a command folder).
+     *
      * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
      */
     class BootstrapState {

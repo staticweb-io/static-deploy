@@ -14,7 +14,7 @@ class DetectSitemapsURLs {
      * @return \Iterator<array> list of URLs
      * @throws WP2StaticException
      */
-    public static function detect( string $wp_site_url, bool $log = false ) : \Iterator {
+    public static function detect( string $wp_site_url, bool $log = false ): \Iterator {
         if ( $log ) {
             WsLog::l( 'Detecting sitemap URLs' );
         }
@@ -104,7 +104,7 @@ class DetectSitemapsURLs {
                 }
                 $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
                 foreach ( $robotsmaps as $map ) {
-                    $sitemaps[$map] = [];
+                    $sitemaps[ $map ] = [];
                 }
                 if ( $log && count( $sitemaps ) > 0 ) {
                     WsLog::l( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );

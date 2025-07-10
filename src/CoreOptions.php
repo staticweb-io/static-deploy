@@ -14,16 +14,16 @@ class CoreOptions {
      */
     private static $cached_option_specs = null;
 
-    public static function init() : void {
+    public static function init(): void {
         self::createTable();
         self::seedOptions();
     }
 
-    public static function getTableName() : string {
+    public static function getTableName(): string {
         return Controller::getTableName( 'core_options' );
     }
 
-    public static function createTable() : void {
+    public static function createTable(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -75,7 +75,7 @@ class CoreOptions {
         string $description,
         ?string $default_blob_value = null,
         ?string $filter_name = null
-    ) : array {
+    ): array {
         return [
             'type' => $type,
             'name' => $name,
@@ -90,7 +90,7 @@ class CoreOptions {
     /**
      * @return array<string, array<string, ?string>>
      */
-    public static function optionSpecs() : array {
+    public static function optionSpecs(): array {
         if ( self::$cached_option_specs ) {
             return self::$cached_option_specs;
         }
@@ -390,7 +390,7 @@ class CoreOptions {
     /**
      * Seed options
      */
-    public static function seedOptions() : void {
+    public static function seedOptions(): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -416,7 +416,7 @@ VALUES (%s, %s, %s);";
      * @throws WP2StaticException
      * @return string option value
      */
-    public static function getValue( string $name ) : string {
+    public static function getValue( string $name ): string {
         global $wpdb;
 
         $opt_spec = self::optionSpecs()[ $name ];
@@ -461,7 +461,7 @@ VALUES (%s, %s, %s);";
      * @throws WP2StaticException
      * @return string option BLOB value
      */
-    public static function getBlobValue( string $name ) : string {
+    public static function getBlobValue( string $name ): string {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -487,7 +487,7 @@ VALUES (%s, %s, %s);";
     /**
      * @return array<string>
      */
-    public static function getLineDelimitedBlobValue( string $name ) : array {
+    public static function getLineDelimitedBlobValue( string $name ): array {
         $vals = preg_split(
             '/\r\n|\r|\n/',
             self::getBlobValue( $name )
@@ -506,7 +506,7 @@ VALUES (%s, %s, %s);";
      * @throws WP2StaticException
      * @return string option default BLOB value
      */
-    public static function getDefaultBlobValue( string $name ) : string {
+    public static function getDefaultBlobValue( string $name ): string {
         $val = self::optionSpecs()[ $name ]['default_blob_value'];
         return $val ? $val : '';
     }
@@ -514,7 +514,7 @@ VALUES (%s, %s, %s);";
     /**
      * @return array<string>
      */
-    public static function getDefaultLineDelimitedBlobValue( string $name ) : array {
+    public static function getDefaultLineDelimitedBlobValue( string $name ): array {
         $vals = preg_split(
             '/\r\n|\r|\n/',
             self::getDefaultBlobValue( $name )
@@ -598,7 +598,7 @@ VALUES (%s, %s, %s);";
             $name = $opt_spec['name'];
             $opt = $options_map[ $name ];
             if ( ! $opt ) {
-                 // Make a copy so we don't modify $cached_option_specs
+                // Make a copy so we don't modify $cached_option_specs
                 $opt = array_merge( $opt_spec );
                 $opt['unfiltered_value'] = $opt_spec['default_value'];
                 $opt['blob_value'] = $opt_spec['default_blob_value'];
@@ -628,7 +628,7 @@ VALUES (%s, %s, %s);";
      *
      * @throws WP2StaticException
      */
-    public static function encrypt_decrypt( string $action, string $string ) : string {
+    public static function encrypt_decrypt( string $action, string $string ): string {
         $encrypt_method = 'AES-256-CBC';
 
         /**
@@ -669,7 +669,7 @@ VALUES (%s, %s, %s);";
     /**
      * Save all options POST'ed via UI
      */
-    public static function savePosted( string $screen = 'core' ) : void {
+    public static function savePosted( string $screen = 'core' ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -775,7 +775,7 @@ VALUES (%s, %s, %s);";
             case 'jobs':
                 $queue_on_post_save = isset( $_POST['queueJobOnPostSave'] ) ? 1 : 0;
                 $queue_on_post_delete = isset( $_POST['queueJobOnPostDelete'] ) ? 1 : 0;
-                $process_queue_immediately = isset( $_POST['processQueueImmediately'] ) ? intval ( $_POST['processQueueImmediately'] ) : 0;
+                $process_queue_immediately = isset( $_POST['processQueueImmediately'] ) ? intval( $_POST['processQueueImmediately'] ) : 0;
 
                 $wpdb->update(
                     $table_name,
@@ -800,7 +800,7 @@ VALUES (%s, %s, %s);";
                  */
                 $process_queue_interval =
                     isset( $_POST['processQueueInterval'] ) ?
-                     $_POST['processQueueInterval'] : 0;
+                    $_POST['processQueueInterval'] : 0;
 
                 $wpdb->update(
                     $table_name,
@@ -916,7 +916,7 @@ VALUES (%s, %s, %s);";
      *
      * @param mixed $value Updated option value
      */
-    public static function save( string $name, $value ) : void {
+    public static function save( string $name, $value ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -929,4 +929,3 @@ VALUES (%s, %s, %s);";
         );
     }
 }
-
