@@ -26,6 +26,19 @@ class WsLog {
         dbDelta( $sql );
     }
 
+    public static function ex(
+        string $message,
+        int $code = 0,
+        ?Throwable $previous = null
+    ): WP2StaticException {
+        self::l( $message );
+        return new WP2StaticException(
+            esc_html( $message ),
+            $code,
+            $previous
+        );
+    }
+
     public static function l( string $text ): void {
         global $wpdb;
 
