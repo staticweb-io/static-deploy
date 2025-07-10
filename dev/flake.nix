@@ -130,6 +130,8 @@
                     }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
                     ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.composerVendorDev}/. .
                     ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.wp2staticSrcDev}/. .
+                    chmod ug+w -R ./vendor
+                    ${phpPackages.composer}/bin/composer dump-autoload
                     WORDPRESS_DIR="$(realpath ./data/wordpress1)"
                     export WORDPRESS_DIR
                     ${php}/bin/php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result ./tests/integration/

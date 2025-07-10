@@ -51,6 +51,11 @@
             "WP2Static\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "WP2Static\\": "tests/integration/"
+        }
+    },
     "config": {
         "preferred-install": {
             "*": "dist"

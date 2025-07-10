@@ -19,7 +19,7 @@
             let rel = baseNameOf path;
             in rel == "composer.json" || rel == "composer.lock";
         };
-        composerHash = "sha256-9sgyD5KnMCUvxelE4RT35gRnxb0Jd+I5oQSrgdmhO84=";
+        composerHash = "sha256-ygIAYxi3WuOBDDTiIe6k1vXWNGopnTFSZ82ThFxWDBY=";
         composerVendor = php.mkComposerVendor (finalAttrs: {
           pname = "${name}-composer-deps";
           version = version;
