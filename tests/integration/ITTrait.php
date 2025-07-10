@@ -8,7 +8,7 @@ namespace WP2Static;
 trait ITTrait {
     public function wpCli( array $args, array $expect_warnings = [] ): array
     {
-        $wordpress_dir = ITEnv::getwordpress_dir();
+        $wordpress_dir = ITEnv::getWordPressDir();
         $cmd = implode(
             ' ',
             array_map(
@@ -43,7 +43,7 @@ trait ITTrait {
 
     public function getCrawledFile( string $path ): string
     {
-        $wordpress_dir = ITEnv::getwordpress_dir();
+        $wordpress_dir = ITEnv::getWordPressDir();
         $crawled_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-crawled-site';
         $content = file_get_contents( "{$crawled_site_dir}/$path" );
         $this->assertNotFalse( $content, "Failed to read file: {$crawled_site_dir}/$path" );

@@ -12,7 +12,7 @@ class ITEnv {
 
     final private function __construct() { }
 
-    public static function getwordpress_dir(): string
+    public static function getWordPressDir(): string
     {
         if ( ! isset( self::$wordpress_dir ) ) {
             $wordpress_dir = getenv( 'WORDPRESS_DIR' );
