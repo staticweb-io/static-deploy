@@ -511,7 +511,7 @@ class Controller {
     public static function wp2staticToggleAddon( string $addon_slug = null ): void {
         if ( defined( 'WP_CLI' ) ) {
             if ( ! $addon_slug ) {
-                throw new WP2StaticException(
+                throw WsLog::ex(
                     'No addon slug given for CLI toggling'
                 );
             }

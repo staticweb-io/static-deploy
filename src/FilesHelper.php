@@ -17,8 +17,7 @@ class FilesHelper {
 
             if ( ! $dir_files ) {
                 $err = 'Trying to delete nonexistent dir: ' . $dir;
-                WsLog::l( $err );
-                throw new WP2StaticException( $err );
+                throw WsLog::ex( $err );
             }
 
             $files = array_diff( $dir_files, [ '.', '..' ] );
@@ -92,8 +91,7 @@ class FilesHelper {
 
         if ( ! is_string( $home_url ) ) {
             $err = 'Home URL not defined ';
-            WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw WsLog::ex( $err );
         }
 
         $cleaned_urls = [];

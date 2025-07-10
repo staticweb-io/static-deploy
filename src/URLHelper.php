@@ -62,7 +62,7 @@ class URLHelper {
             ! isset( $url_array['host'] ) ||
             ! isset( $url_array['path'] )
         ) {
-            throw new WP2StaticException( 'Unable to parse URL' );
+            throw WsLog::ex( 'Unable to parse URL' );
         }
 
         return $url_array['scheme'] . '://' .

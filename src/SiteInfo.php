@@ -92,8 +92,7 @@ class SiteInfo {
 
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo path';
-            WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw WsLog::ex( $err );
         }
 
         /**
@@ -121,8 +120,7 @@ class SiteInfo {
 
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo URL';
-            WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw WsLog::ex( $err );
         }
 
         /**
@@ -201,8 +199,7 @@ class SiteInfo {
 
         if ( ! is_string( $url_host ) ) {
             $err = 'Failed to get hostname from Site URL';
-            WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw WsLog::ex( $err );
         }
 
         return $url_host;

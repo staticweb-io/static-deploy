@@ -177,7 +177,7 @@ class SitemapParser {
         $this->clean();
         $this->current_url = $this->urlEncode( $url );
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw WsLog::ex( 'Invalid URL' );
         }
         $this->history[] = $this->current_url;
         $response = is_string( $url_content ) ? $url_content : $this->getContent();
@@ -227,7 +227,7 @@ class SitemapParser {
             $this->urlEncode( (string) $this->current_url );
 
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw WsLog::ex( 'Invalid URL' );
         }
 
         try {
@@ -251,9 +251,9 @@ class SitemapParser {
                 return null;
             }
         } catch ( WP2StaticGuzzleHttp\Exception\TransferException $e ) {
-            throw new WP2StaticException( 'Unable to fetch URL contents', 0, $e );
+            throw WsLog::ex( 'Unable to fetch URL contents', 0, $e );
         } catch ( WP2StaticGuzzleHttp\Exception\GuzzleException $e ) {
-            throw new WP2StaticException( 'WP2StaticGuzzleHttp exception', 0, $e );
+            throw WsLog::ex( 'WP2StaticGuzzleHttp exception', 0, $e );
         }
     }
 
