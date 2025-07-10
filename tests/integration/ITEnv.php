@@ -8,19 +8,19 @@ use PHPUnit\Framework\TestCase;
  * Integration test environment helpers
  */
 class ITEnv {
-    private static string $wordpressDir;
+    private static string $wordpress_dir;
 
     final private function __construct() { }
 
-    public static function getWordPressDir(): string
+    public static function getwordpress_dir(): string
     {
-        if ( ! isset( self::$wordpressDir ) ) {
-            $wordpressDir = getenv( 'WORDPRESS_DIR' );
-            if ( ! $wordpressDir ) {
+        if ( ! isset( self::$wordpress_dir ) ) {
+            $wordpress_dir = getenv( 'WORDPRESS_DIR' );
+            if ( ! $wordpress_dir ) {
                 throw new \RuntimeException( 'WORDPRESS_DIR environment variable not set' );
             }
-            self::$wordpressDir = rtrim( $wordpressDir, '/' );
+            self::$wordpress_dir = rtrim( $wordpress_dir, '/' );
         }
-        return self::$wordpressDir;
+        return self::$wordpress_dir;
     }
 }

@@ -6,33 +6,33 @@ namespace WP2Static;
  * Integration test helper trait
  */
 trait ITTrait {
-    public function runWpCli( array $args, array $expectWarnings = [] ): array
+    public function runWpCli( array $args, array $expect_warnings = [] ): array
     {
-        $wordpressDir = ITEnv::getWordPressDir();
-        $cmd = implode( ' ', array_map( 'escapeshellarg', array_merge( [ 'wp', '--path=' . $wordpressDir ], $args ) ) );
+        $wordpress_dir = ITEnv::getwordpress_dir();
+        $cmd = implode( ' ', array_map( 'escapeshellarg', array_merge( [ 'wp', '--path=' . $wordpress_dir ], $args ) ) );
         $output = [];
-        $exitCode = 0;
-        exec( $cmd . ' 2>&1', $output, $exitCode );
+        $exit_code = 0;
+        exec( $cmd . ' 2>&1', $output, $exit_code );
 
-        foreach ( $expectWarnings as $pattern => $expectedCount ) {
+        foreach ( $expect_warnings as $pattern => $expected_count ) {
             $matches = array_filter( $output, fn( $line ) => preg_match( $pattern, $line ) );
-            $this->assertCount( $expectedCount, $matches, "Expected $expectedCount matches for pattern: $pattern" );
+            $this->assertCount( $expected_count, $matches, "Expected $expected_count matches for pattern: $pattern" );
         }
 
-        $this->assertSame( 0, $exitCode, "WP CLI command failed: $cmd\nOutput: " . implode( "\n", $output ) );
+        $this->assertSame( 0, $exit_code, "WP CLI command failed: $cmd\nOutput: " . implode( "\n", $output ) );
 
         return [
-            'exit' => $exitCode,
+            'exit' => $exit_code,
             'output' => $output,
         ];
     }
 
     public function getCrawledFile( string $path ): string
     {
-        $wordpressDir = ITEnv::getWordPressDir();
-        $crawledSiteDir = $wordpressDir . '/wp-content/uploads/wp2static-crawled-site';
-        $content = file_get_contents( "{$crawledSiteDir}/$path" );
-        $this->assertNotFalse( $content, "Failed to read file: {$crawledSiteDir}/$path" );
+        $wordpress_dir = ITEnv::getwordpress_dir();
+        $crawled_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-crawled-site';
+        $content = file_get_contents( "{$crawled_site_dir}/$path" );
+        $this->assertNotFalse( $content, "Failed to read file: {$crawled_site_dir}/$path" );
         return $content;
     }
 }

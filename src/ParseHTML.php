@@ -10,23 +10,24 @@ class ParseHTML {
      * @return \Iterator<string>
      */
     public static function parseURLsDOMNode( \DOMNode $node ): \Iterator {
-        foreach ( $node->childNodes as $child ) {
+        foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
             if ( $child instanceof \DOMElement ) {
-                $tag_name = strtolower( $child->tagName );
-                switch ( $tag_name ) {
-                    case 'a':
-                    case 'link':
-                        yield $child->getAttribute( 'href' );
-                        break;
-                    case 'img':
-                    case 'script':
-                    case 'source':
-                        yield $child->getAttribute( 'src' );
-                        break;
-                }
-                foreach ( self::parseURLsDOMNode( $child ) as $url ) {
-                    yield $url;
-                }
+                $tag_name = strtolower( $child->tagName );  // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+            } {
+            switch ( $tag_name ) {
+                case 'a':
+                case 'link':
+                    yield $child->getAttribute( 'href' );
+                    break;
+                case 'img':
+                case 'script':
+                case 'source':
+                    yield $child->getAttribute( 'src' );
+                    break;
+            }
+            foreach ( self::parseURLsDOMNode( $child ) as $url ) {
+                yield $url;
+            }
             }
         }
     }

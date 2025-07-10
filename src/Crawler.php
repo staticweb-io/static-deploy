@@ -219,7 +219,7 @@ class Crawler {
         $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
         $in_flight = [];
 
-        $startNext = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
+        $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
             $detected = $path_iter->current();
             $path = $detected['path'];
             $in_flight[ $path ] = $this->crawlPath( $detected, $site_urls );
@@ -228,12 +228,12 @@ class Crawler {
 
         $i = 0;
         while ( $i++ < $concurrency && $path_iter->valid() ) {
-            $startNext();
+            $start_next();
         }
 
         $last_log_time = microtime( true );
 
-        $responses = function ( &$path_iter ) use ( &$in_flight, $last_log_time, $startNext ) {
+        $responses = function ( &$path_iter ) use ( &$in_flight, $last_log_time, $start_next ) {
             while ( ! empty( $in_flight ) ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
 
@@ -262,7 +262,7 @@ class Crawler {
                 }
 
                 if ( $path_iter->valid() ) {
-                    $startNext();
+                    $start_next();
                 }
             }
         };
