@@ -49,4 +49,10 @@ trait ITTrait {
         $this->assertNotFalse( $content, "Failed to read file: {$crawled_site_dir}/$path" );
         return $content;
     }
+
+    public function getOptionValue( string $option_name ): string {
+        $lines = $this->wpCli( [ 'wp2static', 'options', 'get', $option_name ] )['output'];
+        // Ignore extra lines from things like deprecation warnings
+        return $lines[ count( $lines ) - 1 ];
+    }
 }
