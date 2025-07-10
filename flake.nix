@@ -80,8 +80,6 @@
           '';
 
           checkPhase = ''
-            TMPDIR="$(realpath ./tmp)"
-            mkdir -p "$TMPDIR"
             export PLUGIN_DIR="$TMPDIR/${name}"
             mkdir -p "$PLUGIN_DIR"
             cd "$PLUGIN_DIR"
