@@ -65,19 +65,7 @@
           cd "$PLUGIN_DIR"/..
           ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
         '';
-        phpVersions = {
-          php81 = php81;
-          php82 = php82;
-          php83 = php83;
-          php84 = php84;
-        };
-        phpBins = lib.attrsets.mapAttrsToList (name: phpPkg:
-          pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'') phpVersions;
       in {
-        devShells.default = mkShell {
-          buildInputs = [ omnix php phpunit phpPackages.composer shellcheck ]
-            ++ phpBins;
-        };
         packages = {
           inherit composerVendorDev composerVendor wp2static wp2staticSrcDev
             wp2staticSrc;

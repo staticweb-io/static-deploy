@@ -12,24 +12,34 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [ inputs.process-compose-flake.flakeModule ];
-      perSystem = { self', pkgs, config, lib, system, ... }: {
-        # `process-compose.foo` will add a flake package output called "foo".
-        # Therefore, this will add a default package that you can build using
-        # `nix build` and run using `nix run`.
-        process-compose."default" = { config, ... }:
-          let
-            dbName = "wordpress";
-            dbPort = 3306;
-            dbUserName = "wordpress";
-            dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
-            serverPort = 8888;
-            php = pkgs.php84.buildEnv {
-              extensions = { enabled, all }:
-                enabled ++ (with all; [ imagick memcached ]);
-            };
-            wp2staticPkgs = inputs.wp2static.packages.${system};
-            wp2static = wp2staticPkgs.plugin;
-          in {
+      perSystem = { self', pkgs, config, lib, system, ... }:
+        with pkgs;
+        let
+          dbName = "wordpress";
+          dbPort = 3306;
+          dbUserName = "wordpress";
+          dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
+          serverPort = 8888;
+          phpVersions = {
+            php81 = php81;
+            php82 = php82;
+            php83 = php83;
+            php84 = php84;
+          };
+          phpBins = lib.attrsets.mapAttrsToList (name: phpPkg:
+            pkgs.writeShellScriptBin name ''${phpPkg}/bin/php "$@"'')
+            phpVersions;
+          php = php84.buildEnv {
+            extensions = { enabled, all }:
+              enabled ++ (with all; [ imagick memcached ]);
+          };
+          wp2staticPkgs = inputs.wp2static.packages.${system};
+          wp2static = wp2staticPkgs.plugin;
+        in {
+          # `process-compose.foo` will add a flake package output called "foo".
+          # Therefore, this will add a default package that you can build using
+          # `nix build` and run using `nix run`.
+          process-compose."default" = { config, ... }: {
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.mysql."mysql1" = {
               enable = true;
@@ -111,7 +121,7 @@
                 command = pkgs.writeShellApplication {
                   name = "test";
                   runtimeInputs =
-                    [ config.services.mysql."mysql1".package php pkgs.wp-cli ];
+                    [ config.services.mysql."mysql1".package php wp-cli ];
                   text = ''
                     TMPDIR="$(realpath ./tmp)"
                     mkdir -p "$TMPDIR"
@@ -205,11 +215,13 @@
             };
           };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = [ pkgs.wp-cli ];
-          inputsFrom =
-            [ config.process-compose."default".services.outputs.devShell ];
+          devShells.default = pkgs.mkShell {
+            buildInputs =
+              [ omnix php phpunit phpPackages.composer shellcheck wp-cli ]
+              ++ phpBins;
+            inputsFrom =
+              [ config.process-compose."default".services.outputs.devShell ];
+          };
         };
-      };
     };
 }
