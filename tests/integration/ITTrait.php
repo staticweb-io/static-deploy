@@ -6,9 +6,9 @@ namespace WP2Static;
  * Integration test helper trait
  */
 trait ITTrait {
-    public static function runWpCli(array $args, array $expectWarnings = []): array
+    public function runWpCli(array $args, array $expectWarnings = []): array
     {
-        $wordpressDir = rtrim(getenv('WORDPRESS_DIR'), '/');
+        $wordpressDir = ITEnv::getWordPressDir();
         $cmd = implode(' ', array_map('escapeshellarg', array_merge(['wp', '--path=' . $wordpressDir], $args)));
         $output = [];
         $exitCode = 0;
@@ -26,9 +26,9 @@ trait ITTrait {
         return ['exit' => $exitCode, 'output' => $output];
     }
 
-    public static function getCrawledFile(string $path): string
+    public function getCrawledFile(string $path): string
     {
-        $wordpressDir = rtrim(getenv('WORDPRESS_DIR'), '/');
+        $wordpressDir = ITEnv::getWordPressDir();
         $crawledSiteDir = $wordpressDir . '/wp-content/uploads/wp2static-crawled-site';
         $content = file_get_contents("{$crawledSiteDir}/$path");
         if ($content === false) {
