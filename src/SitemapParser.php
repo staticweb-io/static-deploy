@@ -312,24 +312,24 @@ class SitemapParser {
      * Validate URL arrays and add them to their corresponding arrays
      *
      * @param string $type sitemap|url
-     * @param mixed[] $array Tag array
+     * @param mixed[] $arr Tag array
      * @return bool
      */
-    protected function addArray( $type, array $array ) {
-        if ( ! isset( $array['loc'] ) ) {
+    protected function addArray( $type, array $arr ) {
+        if ( ! isset( $arr['loc'] ) ) {
             return false;
         }
-        $array['loc'] = $this->urlEncode( trim( strval( $array['loc'] ) ) );
-        if ( $this->urlValidate( $array['loc'] ) ) {
+        $arr['loc'] = $this->urlEncode( trim( strval( $arr['loc'] ) ) );
+        if ( $this->urlValidate( $arr['loc'] ) ) {
             switch ( $type ) {
                 case self::XML_TAG_SITEMAP:
-                    $this->sitemaps[ $array['loc'] ] =
-                        $this->fixMissingTags( [ 'lastmod' ], $array );
+                    $this->sitemaps[ $arr['loc'] ] =
+                        $this->fixMissingTags( [ 'lastmod' ], $arr );
                     return true;
                 case self::XML_TAG_URL:
-                    $this->urls[ $array['loc'] ] = $this->fixMissingTags(
+                    $this->urls[ $arr['loc'] ] = $this->fixMissingTags(
                         [ 'lastmod', 'changefreq', 'priority' ],
-                        $array
+                        $arr
                     );
                     return true;
             }
@@ -341,16 +341,16 @@ class SitemapParser {
      * Check for missing values and set them to null
      *
      * @param mixed[] $tags Tags check if exists
-     * @param mixed[] $array Array to check
+     * @param mixed[] $arr Array to check
      * @return mixed[]
      */
-    protected function fixMissingTags( array $tags, array $array ) {
+    protected function fixMissingTags( array $tags, array $arr ) {
         foreach ( $tags as $tag ) {
-            if ( empty( $array[ $tag ] ) ) {
-                $array[ $tag ] = null;
+            if ( empty( $arr[ $tag ] ) ) {
+                $arr[ $tag ] = null;
             }
         }
-        return $array;
+        return $arr;
     }
     /**
      * Generate the \SimpleXMLElement object if the XML is valid
@@ -382,10 +382,10 @@ class SitemapParser {
     /**
      * Parse line separated text string
      *
-     * @param string $string
+     * @param string $str
      * @return bool
      */
-    protected function parseString( $string ) {
+    protected function parseString( $str ) {
         if ( ! isset( $this->config['strict'] ) || $this->config['strict'] !== false ) {
             // Strings are not part of any documented sitemap standard
             return false;
@@ -393,7 +393,7 @@ class SitemapParser {
         $array = array_filter(
             array_map(
                 fn ( $line ) => trim( (string) $line ),
-                (array) preg_split( '/\r\n|\n|\r/', $string )
+                (array) preg_split( '/\r\n|\n|\r/', $str )
             )
         );
         foreach ( $array as $line ) {

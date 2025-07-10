@@ -628,7 +628,7 @@ VALUES (%s, %s, %s);";
      *
      * @throws WP2StaticException
      */
-    public static function encrypt_decrypt( string $action, string $string ): string {
+    public static function encrypt_decrypt( string $action, string $str ): string {
         $encrypt_method = 'AES-256-CBC';
 
         /**
@@ -653,7 +653,7 @@ VALUES (%s, %s, %s);";
 
         if ( $action === 'decrypt' ) {
             return (string) openssl_decrypt(
-                (string) base64_decode( $string ),
+                (string) base64_decode( $str ),
                 $encrypt_method,
                 $hex_key,
                 0,
@@ -661,7 +661,7 @@ VALUES (%s, %s, %s);";
             );
         }
 
-        $output = openssl_encrypt( $string, $encrypt_method, $hex_key, 0, $hex_iv );
+        $output = openssl_encrypt( $str, $encrypt_method, $hex_key, 0, $hex_iv );
 
         return (string) base64_encode( (string) $output );
     }

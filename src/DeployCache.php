@@ -56,7 +56,7 @@ class DeployCache {
 
     public static function addFile(
         string $local_path,
-        string $namespace = self::DEFAULT_NAMESPACE,
+        string $ns = self::DEFAULT_NAMESPACE,
         ?string $file_hash = null
     ): void {
         global $wpdb;
@@ -88,10 +88,10 @@ class DeployCache {
             $path_hash,
             $local_path,
             $file_hash,
-            $namespace,
+            $ns,
             // Duplicate key values
             $file_hash,
-            $namespace
+            $ns
         );
 
         $wpdb->query( $sql );
@@ -103,7 +103,7 @@ class DeployCache {
      */
     public static function fileisCached(
         string $local_path,
-        string $namespace = self::DEFAULT_NAMESPACE,
+        string $ns = self::DEFAULT_NAMESPACE,
         ?string $file_hash = null
     ): bool {
         global $wpdb;
@@ -131,7 +131,7 @@ class DeployCache {
             ' path_hash = %s AND file_hash = %s AND namespace = %s LIMIT 1',
             $path_hash,
             $file_hash,
-            $namespace
+            $ns
         );
 
         $hash = $wpdb->get_var( $sql );
@@ -140,7 +140,7 @@ class DeployCache {
     }
 
     public static function truncate(
-        string $namespace = ''
+        string $ns = ''
     ): void {
         WsLog::l( 'Deleting DeployCache' );
 
@@ -148,11 +148,11 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
-        if ( ! $namespace ) {
+        if ( ! $ns ) {
             $sql = "TRUNCATE TABLE $table_name";
         } else {
             $sql = "DELETE FROM $table_name WHERE namespace = %s";
-            $sql = $wpdb->prepare( $sql, $namespace );
+            $sql = $wpdb->prepare( $sql, $ns );
         }
         $wpdb->query( $sql );
     }
@@ -161,14 +161,14 @@ class DeployCache {
      *  Count Paths in Deploy Cache for default or specific namespace
      */
     public static function getTotalByNamespace(
-        string $namespace = self::DEFAULT_NAMESPACE
+        string $ns = self::DEFAULT_NAMESPACE
     ): int {
         global $wpdb;
 
         $table_name = self::getTableName();
 
         $sql = "SELECT count(*) FROM $table_name WHERE namespace = %s";
-        $sql = $wpdb->prepare( $sql, $namespace );
+        $sql = $wpdb->prepare( $sql, $ns );
         $total = $wpdb->get_var( $sql );
 
         return $total;
@@ -202,7 +202,7 @@ class DeployCache {
      *  @return string[] All cached paths
      */
     public static function getPaths(
-        string $namespace = self::DEFAULT_NAMESPACE
+        string $ns = self::DEFAULT_NAMESPACE
     ): array {
         global $wpdb;
         $urls = [];
@@ -210,7 +210,7 @@ class DeployCache {
         $table_name = self::getTableName();
 
         $sql = "SELECT path FROM $table_name WHERE namespace = %s ORDER BY path";
-        $sql = $wpdb->prepare( $sql, $namespace );
+        $sql = $wpdb->prepare( $sql, $ns );
         $urls = $wpdb->get_col( $sql );
 
         return $urls;

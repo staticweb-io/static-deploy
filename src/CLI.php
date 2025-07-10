@@ -752,8 +752,8 @@ class CLI {
     /**
      * Print multilines of input text via WP-CLI
      */
-    public function multilinePrint( string $string ): void {
-        $msg = trim( str_replace( [ "\r", "\n" ], '', $string ) );
+    public function multilinePrint( string $str ): void {
+        $msg = trim( str_replace( [ "\r", "\n" ], '', $str ) );
 
         $msg = preg_replace( '!\s+!', ' ', $msg );
 
