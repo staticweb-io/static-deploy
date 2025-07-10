@@ -50,7 +50,7 @@
             && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
             == "directory" && base == "views" || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "phpunit.xml";
+            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
@@ -65,7 +65,31 @@
           cd "$PLUGIN_DIR"/..
           ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
         '';
+        wp2staticCheck = stdenv.mkDerivation {
+          pname = "wp2static-check";
+          version = version;
+
+          src = wp2staticSrcDev;
+
+          nativeBuildInputs = [ bash php ];
+
+          doBuild = false;
+          doCheck = true;
+
+          checkPhase = ''
+            TMPDIR="$(realpath ./tmp)"
+            mkdir -p "$TMPDIR"
+            export PLUGIN_DIR="$TMPDIR/${name}"
+            mkdir -p "$PLUGIN_DIR"
+            cd "$PLUGIN_DIR"
+            cp -a "${composerVendorDev}/vendor" .
+            cp -a "$src"/* .
+            ${phpPackages.composer}/bin/composer lint
+            ${phpPackages.composer}/bin/composer phpcs
+          '';
+        };
       in {
+        checks = { inherit wp2staticCheck; };
         lib = { inherit wp2staticSrcDev wp2staticSrc; };
         packages = {
           inherit composerVendorDev composerVendor wp2static;
