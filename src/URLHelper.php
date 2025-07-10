@@ -7,7 +7,7 @@ use Exception;
 class URLHelper {
     public static function isSecure(): bool {
         return ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ||
-            $_SERVER['SERVER_PORT'] == 443;
+            $_SERVER['SERVER_PORT'] === 443;
     }
 
     /*
@@ -103,7 +103,7 @@ class URLHelper {
     }
 
     public static function isMailto( string $url ): bool {
-        if ( substr( $url, 0, 7 ) == 'mailto:' ) {
+        if ( substr( $url, 0, 7 ) === 'mailto:' ) {
             return true;
         }
 

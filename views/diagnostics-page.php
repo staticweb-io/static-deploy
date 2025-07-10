@@ -22,11 +22,11 @@
             <tr>
                 <td>PHP max_execution_time</td>
                 <td>
-                    <?php echo $view['maxExecutionTime'] == 0 ? 'Unlimited' : $view['maxExecutionTime'] . ' secs'; ?>
+                    <?php echo $view['maxExecutionTime'] === 0 ? 'Unlimited' : $view['maxExecutionTime'] . ' secs'; ?>
 
                     <span
-                        class="dashicons <?php echo $view['maxExecutionTime'] == 0 ? 'dashicons-yes' : 'dashicons-no'; ?>"
-                        style="color: <?php echo $view['maxExecutionTime'] == 0 ? 'green' : 'red'; ?>;"
+                        class="dashicons <?php echo $view['maxExecutionTime'] === 0 ? 'dashicons-yes' : 'dashicons-no'; ?>"
+                        style="color: <?php echo $view['maxExecutionTime'] === 0 ? 'green' : 'red'; ?>;"
                     ></span>
                 </td>
                 <td>Generating a static site can involve long-running processes. Set your PHP max_execution_time setting to unlimited or find a better webhost if you're prevented from doing so.</td>

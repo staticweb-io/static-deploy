@@ -352,7 +352,6 @@ class SitemapParser {
         }
         return $array;
     }
-
     /**
      * Generate the \SimpleXMLElement object if the XML is valid
      *
@@ -419,11 +418,11 @@ class SitemapParser {
                 substr(
                     (string) $path,
                     -strlen( self::XML_EXTENSION ) - 1
-                ) == '.' . self::XML_EXTENSION ||
+                ) === '.' . self::XML_EXTENSION ||
                 substr(
                     (string) $path,
                     -strlen( self::XML_EXTENSION_COMPRESSED ) - 1
-                ) == '.' . self::XML_EXTENSION_COMPRESSED
+                ) === '.' . self::XML_EXTENSION_COMPRESSED
             );
     }
 

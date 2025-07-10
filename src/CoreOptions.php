@@ -651,7 +651,7 @@ VALUES (%s, %s, %s);";
         $hex_key = (string) hex2bin( $key );
         $hex_iv = (string) hex2bin( $variate );
 
-        if ( $action == 'decrypt' ) {
+        if ( $action === 'decrypt' ) {
             return (string) openssl_decrypt(
                 (string) base64_decode( $string ),
                 $encrypt_method,

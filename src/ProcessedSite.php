@@ -93,7 +93,7 @@ class ProcessedSite {
              */
 
             $base_name = basename( $filename );
-            if ( $base_name != '.' && $base_name != '..' ) {
+            if ( $base_name !== '.' && $base_name !== '..' ) {
                 $real_filepath = realpath( $filename );
 
                 if ( is_string( $real_filepath ) ) {
