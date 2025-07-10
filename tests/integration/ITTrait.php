@@ -9,17 +9,31 @@ trait ITTrait {
     public function runWpCli( array $args, array $expect_warnings = [] ): array
     {
         $wordpress_dir = ITEnv::getwordpress_dir();
-        $cmd = implode( ' ', array_map( 'escapeshellarg', array_merge( [ 'wp', '--path=' . $wordpress_dir ], $args ) ) );
+        $cmd = implode(
+            ' ',
+            array_map(
+                'escapeshellarg',
+                array_merge( [ 'wp', '--path=' . $wordpress_dir ], $args )
+            )
+        );
         $output = [];
         $exit_code = 0;
         exec( $cmd . ' 2>&1', $output, $exit_code );
 
         foreach ( $expect_warnings as $pattern => $expected_count ) {
             $matches = array_filter( $output, fn( $line ) => preg_match( $pattern, $line ) );
-            $this->assertCount( $expected_count, $matches, "Expected $expected_count matches for pattern: $pattern" );
+            $this->assertCount(
+                $expected_count,
+                $matches,
+                "Expected $expected_count matches for pattern: $pattern"
+            );
         }
 
-        $this->assertSame( 0, $exit_code, "WP CLI command failed: $cmd\nOutput: " . implode( "\n", $output ) );
+        $this->assertSame(
+            0,
+            $exit_code,
+            "WP CLI command failed: $cmd\nOutput: " . implode( "\n", $output )
+        );
 
         return [
             'exit' => $exit_code,

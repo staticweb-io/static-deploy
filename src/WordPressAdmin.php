@@ -26,6 +26,7 @@ class WordPressAdmin {
      */
     public static function buildUpdateChecker( string $bootstrap_file ): void {
         PucFactory::buildUpdateChecker(
+            // phpcs:disable Generic.Files.LineLength
             'https://raw.githubusercontent.com/staticweb-io/wp2static/refs/heads/develop/update.json',
             $bootstrap_file,
             'wp2static'
@@ -357,7 +358,10 @@ class WordPressAdmin {
             $msg = "Invalid method in request to admin-post.php (wp2static_process_queue): $method";
         }
         $nonce = filter_input( INPUT_POST, '_wpnonce' );
-        $nonce_valid = $nonce && wp_verify_nonce( strval( $nonce ), Controller::getHookName( 'process_queue' ) );
+        $nonce_valid = $nonce && wp_verify_nonce(
+            strval( $nonce ),
+            Controller::getHookName( 'process_queue' )
+        );
         if ( ! $nonce_valid ) {
             $msg = 'Invalid nonce in request to admin-post.php (wpstatic_process_queue)';
         }

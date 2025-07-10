@@ -30,7 +30,11 @@ class WPCron {
 
         WsLog::l( 'Setting auto queue processing interval to ' . $interval );
 
-        $result = wp_schedule_event( time(), $interval, Controller::getHookName( 'process_queue' ) );
+        $result = wp_schedule_event(
+            time(),
+            $interval,
+            Controller::getHookName( 'process_queue' )
+        );
 
         if ( ! $result ) {
             WsLog::l( 'Unable to schedule WP Cron recurring event' );

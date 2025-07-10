@@ -88,10 +88,24 @@ class CrawlCache {
                 $paths[] = $path;
             }
 
-            $placeholders = implode( ',', array_fill( 0, count( $paths ), '(%s,%s,%s,%s,%s,%s,NOW())' ) );
-            $sql = "INSERT INTO $table_name (hashed_url,url,content_type,redirect_to,status,page_hash,time)
+            $placeholders = implode(
+                ',',
+                array_fill(
+                    0,
+                    count( $paths ),
+                    '(%s,%s,%s,%s,%s,%s,NOW())'
+                )
+            );
+            $sql = "INSERT INTO $table_name
+                    (hashed_url,url,content_type,redirect_to,status,page_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
-                    UPDATE url = VALUES(url), content_type = VALUES(content_type), redirect_to = VALUES(redirect_to), status = VALUES(status), page_hash = VALUES(page_hash), time = VALUES(time)";
+                    UPDATE
+                      url = VALUES(url),
+                      content_type = VALUES(content_type),
+                      redirect_to = VALUES(redirect_to),
+                      status = VALUES(status),
+                      page_hash = VALUES(page_hash),
+                      time = VALUES(time)";
 
             $values = [];
             foreach ( $paths as $path ) {
@@ -130,7 +144,14 @@ class CrawlCache {
         $last_id = 0;
         $static_site_path = StaticSite::getPath();
         while ( true ) {
-            $qs = "SELECT cc.id, cc.url AS path, cc.page_hash AS content_hash, cc.status, cc.redirect_to, cc.content_type, cq.filename
+            $qs = "SELECT
+                cc.id,
+                cc.url AS path,
+                cc.page_hash AS content_hash,
+                cc.status,
+                cc.redirect_to,
+                cc.content_type,
+                cq.filename
               FROM $table_name AS cc
               JOIN $queue_table_name AS cq
               ON cc.hashed_url = cq.hashed_url

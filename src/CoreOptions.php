@@ -296,7 +296,8 @@ class CoreOptions {
                 'filenamesToIgnore',
                 '1',
                 'Directory and File Names to Ignore',
-                'Directories and files with these names will be ignored. Glob syntax is supported via <a href="https://github.com/PHLAK/Splat">Splat</a>.',
+                'Directories and files with these names will be ignored.' .
+                ' Glob syntax is supported via <a href="https://github.com/PHLAK/Splat">Splat</a>.',
                 implode(
                     "\n",
                     [
@@ -775,7 +776,9 @@ VALUES (%s, %s, %s);";
             case 'jobs':
                 $queue_on_post_save = isset( $_POST['queueJobOnPostSave'] ) ? 1 : 0;
                 $queue_on_post_delete = isset( $_POST['queueJobOnPostDelete'] ) ? 1 : 0;
-                $process_queue_immediately = isset( $_POST['processQueueImmediately'] ) ? intval( $_POST['processQueueImmediately'] ) : 0;
+                $process_queue_immediately = isset( $_POST['processQueueImmediately'] )
+                ? intval( $_POST['processQueueImmediately'] )
+                    : 0;
 
                 $wpdb->update(
                     $table_name,

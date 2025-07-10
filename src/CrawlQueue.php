@@ -118,7 +118,9 @@ class CrawlQueue {
                     $filename = $update_values[ $i * 2 ];
                     $hash = $update_values[ $i * 2 + 1 ];
                     $query_string =
-                        "UPDATE $table_name SET filename = %s, detected_at = NOW() WHERE hashed_url = %s";
+                        "UPDATE $table_name
+                        SET filename = %s, detected_at = NOW()
+                        WHERE hashed_url = %s";
                     $query = $wpdb->prepare( $query_string, $filename, $hash );
                     $wpdb->query( $query );
                 }
@@ -149,7 +151,11 @@ class CrawlQueue {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d AND detected_at < %s ORDER BY id ASC LIMIT %d";
+            $qs = "SELECT id, url AS path, filename
+            FROM $table_name
+            WHERE id > %d AND detected_at < %s
+            ORDER BY id ASC
+            LIMIT %d";
             $q = $wpdb->prepare( $qs, $last_id, $db_now, $batch_size );
             $rows = $wpdb->get_results( $q, ARRAY_A );
 
@@ -169,15 +175,26 @@ class CrawlQueue {
      *
      * @param string $detected_since default to '0000-00-00 00:00:00'
      */
-    public static function getPathsIter( string $detected_since = '0000-00-00 00:00:00' ): \Iterator {
+    public static function getPathsIter(
+        string $detected_since = '0000-00-00 00:00:00'
+    ): \Iterator {
         global $wpdb;
 
         $table_name = self::getTableName();
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, url AS path, filename FROM $table_name WHERE id > %d AND detected_at >= %s ORDER BY id ASC LIMIT %d";
-            $q = $wpdb->prepare( $qs, $last_id, $detected_since, $batch_size );
+            $qs = "SELECT id, url AS path, filename
+            FROM $table_name
+            WHERE id > %d AND detected_at >= %s
+            ORDER BY id ASC
+            LIMIT %d";
+            $q = $wpdb->prepare(
+                $qs,
+                $last_id,
+                $detected_since,
+                $batch_size
+            );
             $rows = $wpdb->get_results( $q, ARRAY_A );
 
             foreach ( $rows as $row ) {

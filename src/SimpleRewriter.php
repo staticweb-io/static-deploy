@@ -40,7 +40,8 @@ class SimpleRewriter {
             Controller::getHookName( 'set_wordpress_site_url' ),
             untrailingslashit( SiteInfo::getUrl( 'site' ) )
         );
-        $this->skip_url_rewrite = (int) CoreOptions::getValue( 'skipURLRewrite' ) === 1 ? true : false;
+        $url_rewrite = (int) CoreOptions::getValue( 'skipURLRewrite' );
+        $this->skip_url_rewrite = $url_rewrite === 1 ? true : false;
     }
 
     /**

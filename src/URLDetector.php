@@ -59,7 +59,11 @@ class URLDetector {
         );
 
         if ( $detect_parent_theme ) {
-            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'parent', log: $log_steps );
+            $iterators_to_merge[] = DetectThemeAssets::detect(
+                $filtering,
+                'parent',
+                log: $log_steps
+            );
         }
 
         $detect_child_theme = apply_filters(
@@ -68,7 +72,11 @@ class URLDetector {
         );
 
         if ( $detect_child_theme ) {
-            $iterators_to_merge[] = DetectThemeAssets::detect( $filtering, 'child', log: $log_steps );
+            $iterators_to_merge[] = DetectThemeAssets::detect(
+                $filtering,
+                'child',
+                log: $log_steps
+            );
         }
 
         $detect_plugin_assets = apply_filters(
@@ -102,7 +110,11 @@ class URLDetector {
         );
 
         if ( $detect_vendor_cache ) {
-            $iterators_to_merge[] = DetectVendorFiles::detect( $filtering, SiteInfo::getURL( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectVendorFiles::detect(
+                $filtering,
+                SiteInfo::getURL( 'site' ),
+                log: $log_steps
+            );
         }
 
         $detect_sitemaps = apply_filters(
@@ -111,7 +123,10 @@ class URLDetector {
         );
 
         if ( $detect_sitemaps ) {
-            $iterators_to_merge[] = DetectSitemapsURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectSitemapsURLs::detect(
+                SiteInfo::getURL( 'site' ),
+                log: $log_steps
+            );
         }
 
         if ( CoreOptions::getValue( 'detectPosts' ) ) {
@@ -132,7 +147,10 @@ class URLDetector {
         );
 
         if ( $detect_posts_pagination ) {
-            $iterators_to_merge[] = DetectPostsPaginationURLs::detect( SiteInfo::getURL( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectPostsPaginationURLs::detect(
+                SiteInfo::getURL( 'site' ),
+                log: $log_steps
+            );
         }
 
         $detect_archives = apply_filters(
@@ -177,7 +195,10 @@ class URLDetector {
         );
 
         if ( $detect_authors_pagination ) {
-            $iterators_to_merge[] = DetectAuthorPaginationURLs::detect( SiteInfo::getUrl( 'site' ), log: $log_steps );
+            $iterators_to_merge[] = DetectAuthorPaginationURLs::detect(
+                SiteInfo::getUrl( 'site' ),
+                log: $log_steps
+            );
         }
 
         $home_url = SiteInfo::getUrl( 'home' );

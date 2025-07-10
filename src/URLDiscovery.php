@@ -29,7 +29,8 @@ class URLDiscovery {
         $table_name = CrawlQueue::getTableName();
 
         foreach ( $iterator as $arr ) {
-            if ( isset( $arr['content_type'] ) && str_starts_with( $arr['content_type'], 'text/html' ) ) {
+            if ( isset( $arr['content_type'] )
+            && str_starts_with( $arr['content_type'], 'text/html' ) ) {
                 $urls = [];
                 foreach ( $this->parseURLs( $arr ) as $url ) {
                     $urls[ $url ] = true;
@@ -39,7 +40,8 @@ class URLDiscovery {
                     continue;
                 }
                 $placeholders = array_fill( 0, count( $urls ), '(%s)' );
-                $sql = "INSERT IGNORE INTO $table_name (url) VALUES " . implode( ',', $placeholders );
+                $sql = "INSERT IGNORE INTO $table_name (url)
+                  VALUES " . implode( ',', $placeholders );
                 $result = $wpdb->query( $wpdb->prepare( $sql, ...array_keys( $urls ) ) );
                 if ( false === $result ) {
                     WsLog::w( 'Error inserting into crawl queue: ' . $wpdb->last_error );

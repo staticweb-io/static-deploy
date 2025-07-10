@@ -65,7 +65,9 @@ class JobQueue {
         // TODO: squash any of same job_types with 'waiting' status
         // setting this one to be the one that runs next
 
-        $query_string = "INSERT INTO $table_name (job_type, status, triggering_post_id) VALUES (%s, 'waiting', %s);";
+        $query_string = "INSERT INTO $table_name
+        (job_type, status, triggering_post_id)
+        VALUES (%s, 'waiting', %s);";
         $query = $wpdb->prepare( $query_string, $job_type, $post_id );
 
         $wpdb->query( $query );

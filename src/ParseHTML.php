@@ -10,9 +10,11 @@ class ParseHTML {
      * @return \Iterator<string>
      */
     public static function parseURLsDOMNode( \DOMNode $node ): \Iterator {
-        foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+        // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+        foreach ( $node->childNodes as $child ) {
             if ( $child instanceof \DOMElement ) {
-                $tag_name = strtolower( $child->tagName );  // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                $tag_name = strtolower( $child->tagName );
             } {
             switch ( $tag_name ) {
                 case 'a':
