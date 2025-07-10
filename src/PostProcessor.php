@@ -18,10 +18,9 @@ class PostProcessor {
      * PostProcessor constructor
      */
     public function __construct() {
-
     }
 
-    public function processContentType( string $content_type ) : bool {
+    public function processContentType( string $content_type ): bool {
         if ( str_starts_with( $content_type, 'text/html' ) ||
             str_starts_with( $content_type, 'text/css' ) ||
             str_starts_with( $content_type, 'application/xml' ) ||
@@ -42,7 +41,7 @@ class PostProcessor {
      */
     public function processStaticSite(
         string $static_site_path
-    ) : void {
+    ): void {
         WsLog::l(
             'Processing crawled site.'
         );
@@ -62,15 +61,15 @@ class PostProcessor {
             $save_path = StaticSite::transformPath( $path['path'] );
             if ( $path['body'] ?? null ) {
                 ProcessedSite::add( $save_path, $path['body'] );
-                $this->processed++;
-            } else if ( $path['filename'] ?? null ) {
+                ++$this->processed;
+            } elseif ( $path['filename'] ?? null ) {
                 ProcessedSite::copy( $save_path, $path['filename'] );
-                $this->skipped++;
+                ++$this->skipped;
             } else {
                 WsLog::w(
                     'No contents found for crawled path: ' . json_encode( $path )
                 );
-                $this->skipped++;
+                ++$this->skipped;
             }
         }
 
@@ -84,9 +83,9 @@ class PostProcessor {
 
     public function processIter(
         \Iterator $crawl_responses
-    ) : \Iterator {
+    ): \Iterator {
         $rewriter = new SimpleRewriter();
-        $process = function ( $crawl_responses) use ( $rewriter ) {
+        $process = function ( $crawl_responses ) use ( $rewriter ) {
             foreach ( $crawl_responses as $crawled ) {
                 $content_type = $crawled['content_type'] ?? null;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
@@ -96,18 +95,18 @@ class PostProcessor {
                             $crawled['body'] = $rewritten;
                             unset( $crawled['content_hash'] );
                         }
-                        $this->processed++;
-                    } else if ( $crawled['filename'] ?? null ) {
+                        ++$this->processed;
+                    } elseif ( $crawled['filename'] ?? null ) {
                         $file_contents = file_get_contents( $crawled['filename'] );
                         $rewritten = $rewriter->rewriteFileContents( $file_contents );
                         if ( $rewritten !== $file_contents ) {
                             $crawled['body'] = $rewritten;
                             unset( $crawled['content_hash'] );
                         }
-                        $this->processed++;
+                        ++$this->processed;
                     }
                 } else {
-                    $this->skipped++;
+                    ++$this->skipped;
                 }
                 yield $crawled;
             }
@@ -116,7 +115,7 @@ class PostProcessor {
         return $process( $crawl_responses );
     }
 
-    public function complete() : void {
+    public function complete(): void {
         WsLog::l(
             "Post processing complete. $this->processed processed, $this->skipped skipped."
         );
