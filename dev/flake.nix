@@ -33,6 +33,7 @@
             extensions = { enabled, all }:
               enabled ++ (with all; [ imagick memcached ]);
           };
+          wp2staticLib = inputs.wp2static.lib.${system};
           wp2staticPkgs = inputs.wp2static.packages.${system};
           wp2static = wp2staticPkgs.plugin;
         in {
@@ -129,7 +130,7 @@
                       toString dbPort
                     }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
                     ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.composerVendorDev}/. .
-                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.wp2staticSrcDev}/. .
+                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticLib.wp2staticSrcDev}/. .
                     chmod ug+w -R ./vendor
                     ${phpPackages.composer}/bin/composer dump-autoload
                     WORDPRESS_DIR="$(realpath ./data/wordpress1)"

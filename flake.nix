@@ -66,9 +66,9 @@
           ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
         '';
       in {
+        lib = { inherit wp2staticSrcDev wp2staticSrc; };
         packages = {
-          inherit composerVendorDev composerVendor wp2static wp2staticSrcDev
-            wp2staticSrc;
+          inherit composerVendorDev composerVendor wp2static;
           plugin = wp2static;
         };
       });
