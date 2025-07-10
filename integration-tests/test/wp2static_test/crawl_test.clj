@@ -6,13 +6,6 @@
 (defn get-crawled-file [path]
   (slurp (str "wordpress/wp-content/uploads/wp2static-crawled-site/" path)))
 
-(deftest test-crawled-site
-  (test/with-test-system [_]
-    (test/wp-cli! {} "wp2static" "detect")
-    (test/wp-cli! {} "wp2static" "crawl")
-    (is (str/includes? (get-crawled-file "index.html") "Welcome to WordPress"))
-    (is (str/includes? (get-crawled-file "robots.txt") "Sitemap: http://localhost:7000/wp-sitemap.xml"))))
-
 (deftest test-basic-auth
   (let [opts {:sh-opts [:env {"HTTP_HOST" "localhost:7002"}]}]
     (test/with-test-system [_]

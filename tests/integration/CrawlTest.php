@@ -14,7 +14,12 @@ final class CrawlTest extends TestCase {
         $this->wpCli( [ 'wp2static', 'crawl' ] );
 
         $content = $this->getCrawledFileContents( 'index.html' );
-
         $this->assertStringContainsString( 'Welcome to WordPress', $content );
+
+        $content = $this->getCrawledFileContents( 'robots.txt' );
+        $this->assertStringContainsString(
+            'Sitemap: http://localhost:8888/wp-sitemap.xml',
+            $content
+        );
     }
 }
