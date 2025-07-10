@@ -68,15 +68,15 @@
     },
     "scripts": {
         "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
-        "phpcbf": "vendor/bin/phpcbf -d memory_limit=512M --standard=./tools/phpcs.xml --extensions=php src tests views *.php",
-        "phpcs": "vendor/bin/phpcs -d memory_limit=512M -s --standard=./tools/phpcs.xml --extensions=php src tests views *.php",
-        "php81": "vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.1 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
-        "php82": "vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.2 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
-        "php83": "vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
-        "php84": "vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
-        "phpunit": "vendor/bin/phpunit ./tests/unit/",
-        "coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit tests/unit --coverage-html coverage --whitelist src/",
-        "lint": "vendor/bin/parallel-lint --exclude integration-tests --exclude vendor .",
+        "phpcbf": "php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php",
+        "phpcs": "php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php",
+        "php81": "php ./vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.1 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
+        "php82": "php ./vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.2 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
+        "php83": "php ./vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
+        "php84": "php ./vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.4 --ignore=*/tests/*,*/admin/*,**/coverage/*,*.js,*/vendor/*,*/integration-tests/bedrock/*,*/integration-tests/result*,*/integration-tests/wordpress/* ./",
+        "phpunit": "php ./vendor/bin/phpunit ./tests/unit/",
+        "coverage": "XDEBUG_MODE=coverage php ./vendor/bin/phpunit tests/unit --coverage-html coverage --whitelist src/",
+        "lint": "php ./vendor/bin/parallel-lint --exclude integration-tests --exclude vendor .",
         "test": [
             "composer validate --strict",
             "@lint",
@@ -89,7 +89,7 @@
             "@phpunit"
         ],
         "test-integration": "nix flake check ./dev",
-        "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) vendor/bin/phpunit tests/integration",
+        "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit tests/integration",
         "build": "nix build .#plugin"
     }
 }

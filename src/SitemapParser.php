@@ -116,21 +116,24 @@ class SitemapParser {
      */
     public function parseRecursive( $url ) {
         $this->addToQueue( [ $url ] );
+        $todo = $this->getQueue();
 
-        // TODO: ignore until refactor, need to tear apart
-        // phpcs:ignore Squiz.PHP.DisallowSizeFunctionsInLoops.Found
-        while ( count( $todo = $this->getQueue() ) > 0 ) {
+        while ( count( $todo ) > 0 ) {
             $sitemaps = $this->sitemaps;
             $urls = $this->urls;
+
             try {
-                $this->parse( strval( $todo[0] ) );
+                $this->parse( strval( array_shift( $todo ) ) );
             } catch ( WP2StaticException $e ) {
                 WsLog::w( $e->getMessage() );
                 // Keep crawling
                 continue;
             }
+
             $this->sitemaps = array_merge_recursive( $sitemaps, $this->sitemaps );
             $this->urls = array_merge_recursive( $urls, $this->urls );
+
+            $todo = $this->getQueue();
         }
     }
 
@@ -177,7 +180,7 @@ class SitemapParser {
         $this->clean();
         $this->current_url = $this->urlEncode( $url );
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw WsLog::ex( 'Invalid URL' );
         }
         $this->history[] = $this->current_url;
         $response = is_string( $url_content ) ? $url_content : $this->getContent();
@@ -227,7 +230,7 @@ class SitemapParser {
             $this->urlEncode( (string) $this->current_url );
 
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw WsLog::ex( 'Invalid URL' );
         }
 
         try {
@@ -251,9 +254,9 @@ class SitemapParser {
                 return null;
             }
         } catch ( WP2StaticGuzzleHttp\Exception\TransferException $e ) {
-            throw new WP2StaticException( 'Unable to fetch URL contents', 0, $e );
+            throw WsLog::ex( 'Unable to fetch URL contents', 0, $e );
         } catch ( WP2StaticGuzzleHttp\Exception\GuzzleException $e ) {
-            throw new WP2StaticException( 'WP2StaticGuzzleHttp exception', 0, $e );
+            throw WsLog::ex( 'WP2StaticGuzzleHttp exception', 0, $e );
         }
     }
 

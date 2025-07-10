@@ -24,17 +24,17 @@
           pname = "${name}-composer-deps";
           version = version;
           src = composerSrc;
-          vendorHash = "sha256-22HRb3w2JLmoqi3AtX6RpVCk7QAdMOx0MuOFBzubziU=";
+          vendorHash = "sha256-3Hi6VYSpfgsTv71O6AhstrJxeuEzJL0Dkhq2HSZCIkI=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = version;
           src = composerSrc;
-          vendorHash = "sha256-P5F8UWN4KPAA5OegcrhZWE/dyeaKUrg2EdHnSM5MMxo=";
+          vendorHash = "sha256-/38uou7iOaDCZUT3SHXP+opn/SgKRXP+EMx2c8s0EJw=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
-          src = wp2staticSrcDev;
+          src = self;
           filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
@@ -50,7 +50,7 @@
             && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
             == "directory" && base == "views" || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "phpunit.xml";
+            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
         wp2static = runCommand "wp2static" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
@@ -65,10 +65,34 @@
           cd "$PLUGIN_DIR"/..
           ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
         '';
+        wp2staticCheck = stdenv.mkDerivation {
+          pname = "wp2static-check";
+          version = version;
+
+          src = wp2staticSrcDev;
+
+          nativeBuildInputs = [ bash php ];
+
+          doBuild = false;
+          doCheck = true;
+
+          checkPhase = ''
+            TMPDIR="$(realpath ./tmp)"
+            mkdir -p "$TMPDIR"
+            export PLUGIN_DIR="$TMPDIR/${name}"
+            mkdir -p "$PLUGIN_DIR"
+            cd "$PLUGIN_DIR"
+            cp -a "${composerVendorDev}/vendor" .
+            cp -a "$src"/* .
+            ${phpPackages.composer}/bin/composer lint
+            ${phpPackages.composer}/bin/composer phpcs
+          '';
+        };
       in {
+        checks = { inherit wp2staticCheck; };
+        lib = { inherit wp2staticSrcDev wp2staticSrc; };
         packages = {
-          inherit composerVendorDev composerVendor wp2static wp2staticSrcDev
-            wp2staticSrc;
+          inherit composerVendorDev composerVendor wp2static;
           plugin = wp2static;
         };
       });

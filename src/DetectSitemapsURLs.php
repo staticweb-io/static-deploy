@@ -163,8 +163,7 @@ class DetectSitemapsURLs {
                 }
             }
         } catch ( WP2StaticException $e ) {
-            WsLog::l( $e->getMessage() );
-            throw new WP2StaticException( $e->getMessage(), 0, $e );
+            throw WsLog::ex( $e->getMessage(), 0, $e );
         }
     }
 }
