@@ -89,6 +89,7 @@
     <exclude name="WordPress.Security.ValidatedSanitizedInput" />
     <exclude name="WordPress.WP.AlternativeFunctions" />
     <exclude name="Generic.Arrays.DisallowShortArraySyntax" />
+    <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
   </rule>
   <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 </ruleset>
