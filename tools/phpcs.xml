@@ -32,19 +32,6 @@
     <exclude name="Squiz.Commenting.VariableComment"/>
     <exclude name="Squiz.Commenting.LongConditionClosingComment"/>
   </rule>
-  <rule ref="WordPress.NamingConventions.ValidVariableName">
-    <properties>
-      <property name="customPropertiesWhitelist" type="array">
-        <element value="parentNode"/>
-        <element value="nodeType"/>
-        <element value="nodeText"/>
-        <element value="textContent"/>
-        <element value="tagName"/>
-        <element value="firstChild"/>
-        <element value="childNodes"/>
-      </property>
-    </properties>
-  </rule>
   <rule ref="WordPress">
     <exclude name="Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed" />
     <exclude name="Generic.Commenting.DocComment.ShortNotCapital" />
@@ -100,7 +87,6 @@
     <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
     <exclude name="WordPress.Security.NonceVerification" />
     <exclude name="WordPress.Security.ValidatedSanitizedInput" />
-    <exclude name="WordPress.WhiteSpace.PrecisionAlignment" />
     <exclude name="WordPress.WP.AlternativeFunctions" />
     <exclude name="Generic.Arrays.DisallowShortArraySyntax" />
   </rule>
