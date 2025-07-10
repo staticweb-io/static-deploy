@@ -34,7 +34,7 @@
           vendorHash = "sha256-P5F8UWN4KPAA5OegcrhZWE/dyeaKUrg2EdHnSM5MMxo=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
-          src = wp2staticSrcDev;
+          src = self;
           filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
