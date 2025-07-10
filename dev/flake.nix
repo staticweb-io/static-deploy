@@ -220,7 +220,7 @@
 
           devShells.default = pkgs.mkShell {
             buildInputs =
-              [ omnix php phpunit phpPackages.composer shellcheck wp-cli ];
+              [ jq omnix php phpunit phpPackages.composer shellcheck wp-cli ];
             inputsFrom =
               [ config.process-compose."default".services.outputs.devShell ];
           };
