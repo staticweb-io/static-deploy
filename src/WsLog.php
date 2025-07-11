@@ -77,8 +77,8 @@ class WsLog {
                 self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
             }
 
-            if ( ! isset( self::$debug_logging )
-            || ( ! self::$debug_logging && defined( 'WP_CLI' ) ) ) {
+            if ( ( ! isset( self::$debug_logging )
+            || ! self::$debug_logging ) && defined( 'WP_CLI' ) ) {
                 $date = current_time( 'c' );
                 $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
                 // --debug will show debug messages even if

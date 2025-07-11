@@ -434,8 +434,12 @@ VALUES (%s, %s, %s);";
         $opt_spec = self::optionSpecs()[ $name ];
 
         if ( ! $opt_spec ) {
-            WsLog::w( 'Attempt to getValue of unknown option $name' );
-            return '';
+            WsLog::l(
+                "Unknown option: $name",
+                $level = 'error',
+                $option_lookups = $option_lookups,
+            );
+            throw new WP2StaticException( "Unknown option: $name" );
         }
 
         $table_name = self::getTableName();
