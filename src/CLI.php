@@ -908,9 +908,9 @@ class CLI {
         }
 
         if ( $action === 'count' ) {
-            $urls = CrawlQueue::getCrawlablePaths();
+            $count = CrawlQueue::getTotalCrawlableURLs();
 
-            WP_CLI::line( (string) count( $urls ) );
+            WP_CLI::line( (string) $count );
         }
 
         if ( $action === 'delete' ) {

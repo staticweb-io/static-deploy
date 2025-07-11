@@ -8,6 +8,13 @@ final class DetectTest extends TestCase {
 
     use ITTrait;
 
+    public function testCount(): void {
+        $this->wpCli( [ 'wp2static', 'detect' ] );
+        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'count' ] )['output'];
+        $count = (int) $lines[ count( $lines ) - 1 ];
+        $this->assertGreaterThan( 1000, $count );
+    }
+
     public function testSitemapDoubleSlashes(): void
     {
         $robotstxt = ITEnv::getWordPressDir() . '/robots.txt';
