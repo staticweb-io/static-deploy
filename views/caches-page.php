@@ -115,7 +115,7 @@ select.wp2static-select {
                 <td><?php echo $exported_site_file_count; ?> files, using <?php echo $exported_site_disk_space; ?>
                     <br>
 
-                    <a href="file://<?php echo $uploads_path; ?>wp2static-exported-site" />Path</a>
+                    <a href="file://<?php echo \WP2Static\StaticSite::getPath(); ?>" />Path</a>
 
                 </td>
                 <td>
