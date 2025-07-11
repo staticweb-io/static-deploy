@@ -35,7 +35,8 @@ class FileFiltering {
     public function crawlableFiles(
         string $directory,
     ): \Iterator {
-        $abs_base_dir = ( new \SplFileInfo( $directory ) )->getPathname();
+        $site_root = SiteInfo::getPath( 'site' );
+        $abs_base_dir = ( new \SplFileInfo( $site_root ) )->getPathname();
 
         $dir_iter = new \RecursiveDirectoryIterator(
             $directory,
