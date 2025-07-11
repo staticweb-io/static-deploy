@@ -101,8 +101,8 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testGetListOfLocalFilesByDir() {
-        $filenames_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
-            'filenamesToIgnore'
+        $paths_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+            'pathsToIgnore'
         );
         $file_extensions_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
             'fileExtensionsToIgnore'
@@ -147,7 +147,7 @@ final class FileHelperTest extends TestCase {
         ];
         $actual = FilesHelper::getListOfLocalFilesByDir(
             $filepath,
-            $filenames_to_ignore,
+            $paths_to_ignore,
             $file_extensions_to_ignore
         );
         $this->assertEquals( $expected, $actual );
@@ -161,7 +161,7 @@ final class FileHelperTest extends TestCase {
         ];
         $actual = FilesHelper::getListOfLocalFilesByDir(
             $filepath,
-            $filenames_to_ignore,
+            $paths_to_ignore,
             $file_extensions_to_ignore
         );
         $this->assertEquals( $expected, $actual );
@@ -173,7 +173,7 @@ final class FileHelperTest extends TestCase {
         ];
         $actual = FilesHelper::getListOfLocalFilesByDir(
             $filepath,
-            $filenames_to_ignore,
+            $paths_to_ignore,
             $file_extensions_to_ignore
         );
 
@@ -186,20 +186,20 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testPathLooksCrawlable() {
-        $filenames_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
-            'filenamesToIgnore'
+        $paths_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+            'pathsToIgnore'
         );
         $file_extensions_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
             'fileExtensionsToIgnore'
         );
 
         $looks_crawlable = function ( $file_name ) use (
-            &$filenames_to_ignore,
+            &$paths_to_ignore,
             &$file_extensions_to_ignore
         ) {
             return FilesHelper::pathLooksCrawlable(
                 $file_name,
-                $filenames_to_ignore,
+                $paths_to_ignore,
                 $file_extensions_to_ignore
             );
         };

@@ -256,10 +256,10 @@ class CoreOptions {
             ),
             self::makeOptionSpec(
                 'array',
-                'filenamesToIgnore',
+                'pathsToIgnore',
                 '1',
-                'Directory and File Names to Ignore',
-                'Directories and files with these names will be ignored.' .
+                'Paths to Ignore',
+                'Path matching these patterns will be ignored.' .
                 ' Glob syntax is supported via <a href="https://github.com/PHLAK/Splat">Splat</a>.',
                 implode(
                     "\n",
@@ -846,15 +846,15 @@ VALUES (%s, %s, %s);";
                     [ 'name' => 'crawlConcurrency' ]
                 );
 
-                $filenames_to_ignore = preg_replace(
+                $paths_to_ignore = preg_replace(
                     '/^\s+|\s+$/m',
                     '',
-                    strval( filter_input( INPUT_POST, 'filenamesToIgnore' ) )
+                    strval( filter_input( INPUT_POST, 'pathsToIgnore' ) )
                 );
                 $wpdb->update(
                     $table_name,
-                    [ 'blob_value' => $filenames_to_ignore ],
-                    [ 'name' => 'filenamesToIgnore' ]
+                    [ 'blob_value' => $paths_to_ignore ],
+                    [ 'name' => 'pathsToIgnore' ]
                 );
 
                 $hosts_to_rewrite = preg_replace(

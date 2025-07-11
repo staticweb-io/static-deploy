@@ -32,7 +32,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'filenamesToIgnore' ); ?>
+            <?php echo $row( 'pathsToIgnore' ); ?>
             <?php echo $row( 'logDetectionSteps' ); ?>
         </tbody>
     </table>

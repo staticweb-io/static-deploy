@@ -19,9 +19,9 @@ class FileFiltering {
     public function __construct() {
         $this->patterns_to_ignore = [];
 
-        $filenames_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'filenamesToIgnore' );
+        $paths_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'pathsToIgnore' );
 
-        foreach ( $filenames_to_ignore as $filename ) {
+        foreach ( $paths_to_ignore as $filename ) {
             $this->patterns_to_ignore[] = new FileIgnorePattern( $filename );
         }
     }
