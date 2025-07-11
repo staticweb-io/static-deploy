@@ -70,9 +70,7 @@ class FileIgnorePattern {
         string $path,
     ): bool {
         if ( preg_match( $this->regex, $path ) ) {
-            // WsLog::l(
-            // "Ignoring $path with regex $this->regex"
-            // );
+            WsLog::d( "Ignoring $path with regex $this->regex" );
             return true;
         }
 
