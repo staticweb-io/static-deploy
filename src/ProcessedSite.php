@@ -13,9 +13,15 @@ use RecursiveDirectoryIterator;
 
 class ProcessedSite {
 
+    private static string $processed_site_path;
+
     public static function getPath(): string {
-        return SiteInfo::getPath( 'uploads' ) .
-            CoreOptions::getValue( 'processedSitePath' );
+        if ( ! isset( self::$processed_site_path ) ) {
+            self::$processed_site_path =
+                CoreOptions::getValue( 'processedSitePath' );
+        }
+
+        return SiteInfo::getPath( 'uploads' ) . self::$processed_site_path;
     }
 
     /**
