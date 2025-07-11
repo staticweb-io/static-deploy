@@ -302,7 +302,6 @@ class CoreOptions {
                         '**.sql',
                         '**.tar.gz',
                         '**.tpl',
-                        '**.txt',
                         '**.yarn',
                         '**.zip',
                         '__MACOSX',
