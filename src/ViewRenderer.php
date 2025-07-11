@@ -74,7 +74,7 @@ class ViewRenderer {
             CrawlQueue::rmUrlsById( $url_id );
         }
 
-        $urls = CrawlQueue::getCrawlablePaths();
+        $urls = iterator_to_array( CrawlQueue::getCrawlablePaths() );
         // Apply search
         $search_term = strval( filter_input( INPUT_GET, 's' ) );
         if ( $search_term !== '' ) {
