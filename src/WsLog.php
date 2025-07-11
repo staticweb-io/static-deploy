@@ -18,6 +18,7 @@ class WsLog {
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            level ENUM('debug', 'info', 'warn', 'error') NOT NULL DEFAULT 'info',
             log TEXT NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
@@ -39,7 +40,7 @@ class WsLog {
         int $code = 0,
         ?Throwable $previous = null
     ): WP2StaticException {
-        self::l( $message );
+        self::l( $message, 'error' );
         return new WP2StaticException(
             $message,
             $code,
@@ -47,7 +48,7 @@ class WsLog {
         );
     }
 
-    public static function l( string $text ): void {
+    public static function l( string $text, string $level = 'info' ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -56,35 +57,35 @@ class WsLog {
             $table_name,
             [
                 'log' => $text,
+                'level' => $level,
             ]
         );
 
         if ( defined( 'WP_CLI' ) ) {
             $date = current_time( 'c' );
-            \WP_CLI::log(
-                \WP_CLI::colorize( "%W[$date] %n$text" )
-            );
+            $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
+            switch ( $level ) {
+                case 'debug':
+                    \WP_CLI::debug( $colorized );
+                    break;
+                case 'error':
+                    \WP_CLI::error_multi_line( [ $colorized ] );
+                    break;
+                case 'info':
+                    \WP_CLI::log( $colorized );
+                    break;
+                case 'warn':
+                    \WP_CLI::warning( $colorized );
+                    break;
+                default:
+                    self::ex( "Invalid log level: $level" );
+                    break;
+            }
         }
     }
 
     public static function w( string $text ): void {
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
-        $wpdb->insert(
-            $table_name,
-            [
-                'log' => $text,
-            ]
-        );
-
-        if ( defined( 'WP_CLI' ) ) {
-            $date = current_time( 'c' );
-            \WP_CLI::warning(
-                \WP_CLI::colorize( "%W[$date] %n$text" )
-            );
-        }
+        self::l( $text, 'warn' );
     }
 
     /**
