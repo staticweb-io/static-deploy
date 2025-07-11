@@ -2,8 +2,6 @@
 
 namespace WP2Static;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Integration test environment helpers
  */
