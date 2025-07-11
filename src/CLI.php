@@ -1100,13 +1100,13 @@ class CLI {
         if ( ! isset( $assoc_args['force'] ) ) {
             $this->multilinePrint(
                 "no --force given. Please type 'yes' to confirm
-                deletion of Crawl Cache"
+                deletion of all caches"
             );
 
             $userval = trim( (string) fgets( STDIN ) );
 
             if ( $userval !== 'yes' ) {
-                WP_CLI::error( 'Failed to delete Crawl Cache' );
+                WP_CLI::error( 'Failed to delete all caches' );
             }
         }
 
