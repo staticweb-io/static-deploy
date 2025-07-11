@@ -9,10 +9,8 @@ class DetectPostsPaginationURLs {
      *
      * @return \Iterator<array> list of URLs
      */
-    public static function detect( string $wp_site_url, bool $log = false ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting post pagination URLs' );
-        }
+    public static function detect( string $wp_site_url ): \Iterator {
+        WsLog::d( 'Detecting post pagination URLs' );
 
         global $wpdb, $wp_rewrite;
 

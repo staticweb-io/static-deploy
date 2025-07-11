@@ -14,11 +14,8 @@ class DetectWPIncludesAssets {
      */
     public static function detect(
         FileFiltering $filtering,
-        bool $log = false,
     ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting assets within wp-includes path' );
-        }
+        WsLog::d( 'Detecting assets within wp-includes path' );
 
         $includes_path = SiteInfo::getPath( 'includes' );
         $includes_url = SiteInfo::getUrl( 'includes' );

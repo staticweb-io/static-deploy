@@ -9,10 +9,8 @@ class DetectCategoryURLs {
      *
      * @return \Iterator<array> list of URLs
      */
-    public static function detect( bool $log = false ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting category URLs' );
-        }
+    public static function detect(): \Iterator {
+        WsLog::d( 'Detecting category URLs' );
 
         global $wp_rewrite, $wpdb;
 

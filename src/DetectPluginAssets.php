@@ -13,11 +13,8 @@ class DetectPluginAssets {
      */
     public static function detect(
         FileFiltering $filtering,
-        bool $log = false
     ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting plugin assets' );
-        }
+        WsLog::d( 'Detecting plugin assets' );
 
         $plugins_path = SiteInfo::getPath( 'plugins' );
         $plugins_url = SiteInfo::getUrl( 'plugins' );

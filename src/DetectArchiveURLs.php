@@ -15,10 +15,8 @@ class DetectArchiveURLs {
      *
      * @return \Iterator<array>
      */
-    public static function detect( bool $log = false ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting archive URLs' );
-        }
+    public static function detect(): \Iterator {
+        WsLog::d( 'Detecting archive URLs' );
 
         global $wpdb;
 

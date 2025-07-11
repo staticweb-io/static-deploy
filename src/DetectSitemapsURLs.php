@@ -14,10 +14,8 @@ class DetectSitemapsURLs {
      * @return \Iterator<array> list of URLs
      * @throws WP2StaticException
      */
-    public static function detect( string $wp_site_url, bool $log = false ): \Iterator {
-        if ( $log ) {
-            WsLog::l( 'Detecting sitemap URLs' );
-        }
+    public static function detect( string $wp_site_url ): \Iterator {
+        WsLog::d( 'Detecting sitemap URLs' );
 
         $opts = [
             'http_errors' => false,
@@ -30,7 +28,7 @@ class DetectSitemapsURLs {
             $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
 
             if ( $auth_password ) {
-                WsLog::l( 'Using basic auth credentials to crawl' );
+                WsLog::d( 'Using basic auth credentials to crawl' );
                 $opts['auth'] = [ $auth_user, $auth_password ];
             }
         }
@@ -99,23 +97,19 @@ class DetectSitemapsURLs {
 
             // if robots exists, parse for possible sitemaps
             if ( $robots_exists ) {
-                if ( $log ) {
-                    WsLog::l( 'Parsing robots.txt for sitemaps' );
-                }
+                WsLog::d( 'Parsing robots.txt for sitemaps' );
                 $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
                 foreach ( $robotsmaps as $map ) {
                     $sitemaps[ $map ] = [];
                 }
-                if ( $log && count( $sitemaps ) > 0 ) {
-                    WsLog::l( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
+                if ( count( $sitemaps ) > 0 ) {
+                    WsLog::d( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
                 }
             }
 
             // if no sitemaps add known sitemaps
             if ( $sitemaps === [] ) {
-                if ( $log ) {
-                    WsLog::l( 'No sitemaps found in robots.txt. Using default sitemaps.' );
-                }
+                WsLog::d( 'No sitemaps found in robots.txt. Using default sitemaps.' );
                 $sitemaps = [
                     // we're assigning empty arrays to match sitemaps library
                     'sitemap.xml' => [], // normal sitemap
@@ -135,9 +129,7 @@ class DetectSitemapsURLs {
                     $sitemap
                 );
 
-                if ( $log ) {
-                    WsLog::l( 'Detecting URLs from sitemap: ' . $sitemap );
-                }
+                WsLog::d( 'Detecting URLs from sitemap: ' . $sitemap );
 
                 $request = new Request( 'GET', $base_uri . $sitemap, $headers );
 

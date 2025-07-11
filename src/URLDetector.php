@@ -30,8 +30,6 @@ class URLDetector {
     }
 
     public static function detectURLsIter( bool $quiet = false ): \Iterator {
-        $log_steps = CoreOptions::getValue( 'debugLogging' );
-
         if ( ! $quiet ) {
             WsLog::l( 'Starting to detect WordPress site URLs.' );
         }
@@ -62,7 +60,6 @@ class URLDetector {
             $iterators_to_merge[] = DetectThemeAssets::detect(
                 $filtering,
                 'parent',
-                log: $log_steps
             );
         }
 
@@ -75,7 +72,6 @@ class URLDetector {
             $iterators_to_merge[] = DetectThemeAssets::detect(
                 $filtering,
                 'child',
-                log: $log_steps
             );
         }
 
@@ -85,7 +81,7 @@ class URLDetector {
         );
 
         if ( $detect_plugin_assets ) {
-            $iterators_to_merge[] = DetectPluginAssets::detect( $filtering, log: $log_steps );
+            $iterators_to_merge[] = DetectPluginAssets::detect( $filtering );
         }
 
         $detect_wpinc_assets = apply_filters(
@@ -94,7 +90,7 @@ class URLDetector {
         );
 
         if ( $detect_wpinc_assets ) {
-            $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering, log: $log_steps );
+            $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering );
         }
 
         if ( CoreOptions::getValue( 'detectUploads' ) ) {
@@ -113,7 +109,6 @@ class URLDetector {
             $iterators_to_merge[] = DetectVendorFiles::detect(
                 $filtering,
                 SiteInfo::getURL( 'site' ),
-                log: $log_steps
             );
         }
 
@@ -125,20 +120,19 @@ class URLDetector {
         if ( $detect_sitemaps ) {
             $iterators_to_merge[] = DetectSitemapsURLs::detect(
                 SiteInfo::getURL( 'site' ),
-                log: $log_steps
             );
         }
 
         if ( CoreOptions::getValue( 'detectPosts' ) ) {
-            $iterators_to_merge[] = DetectPostURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectPostURLs::detect();
         }
 
         if ( CoreOptions::getValue( 'detectPages' ) ) {
-            $iterators_to_merge[] = DetectPageURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectPageURLs::detect();
         }
 
         if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
-            $iterators_to_merge[] = DetectCustomPostTypeURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCustomPostTypeURLs::detect();
         }
 
         $detect_posts_pagination = apply_filters(
@@ -149,7 +143,6 @@ class URLDetector {
         if ( $detect_posts_pagination ) {
             $iterators_to_merge[] = DetectPostsPaginationURLs::detect(
                 SiteInfo::getURL( 'site' ),
-                log: $log_steps
             );
         }
 
@@ -159,7 +152,7 @@ class URLDetector {
         );
 
         if ( $detect_archives ) {
-            $iterators_to_merge[] = DetectArchiveURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectArchiveURLs::detect();
         }
 
         $detect_categories = apply_filters(
@@ -168,7 +161,7 @@ class URLDetector {
         );
 
         if ( $detect_categories ) {
-            $iterators_to_merge[] = DetectCategoryURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCategoryURLs::detect();
         }
 
         $detect_category_pagination = apply_filters(
@@ -177,7 +170,7 @@ class URLDetector {
         );
 
         if ( $detect_category_pagination ) {
-            $iterators_to_merge[] = DetectCategoryPaginationURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectCategoryPaginationURLs::detect();
         }
 
         $detect_authors = apply_filters(
@@ -186,7 +179,7 @@ class URLDetector {
         );
 
         if ( $detect_authors ) {
-            $iterators_to_merge[] = DetectAuthorsURLs::detect( log: $log_steps );
+            $iterators_to_merge[] = DetectAuthorsURLs::detect();
         }
 
         $detect_authors_pagination = apply_filters(
@@ -197,7 +190,6 @@ class URLDetector {
         if ( $detect_authors_pagination ) {
             $iterators_to_merge[] = DetectAuthorPaginationURLs::detect(
                 SiteInfo::getUrl( 'site' ),
-                log: $log_steps
             );
         }
 
