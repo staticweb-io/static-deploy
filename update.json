@@ -3,5 +3,5 @@
   "version": "8.3.0",
   "download_url": "https://github.com/staticweb-io/wp2static/releases/download/v8.3.0/plugin.zip",
   "requires": "6.4",
-  "tested": "6.4"
+  "tested": "6.8"
 }
