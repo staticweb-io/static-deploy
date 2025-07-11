@@ -618,9 +618,6 @@ class Controller {
                     case 'post_process':
                         WsLog::l( 'Starting post-processing' );
                         $post_processor = new PostProcessor();
-                        $processed_site_dir =
-                            SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site';
-                        $processed_site = new ProcessedSite();
                         $post_processor->processStaticSite( StaticSite::getPath() );
                         WsLog::l( 'Post-processing completed' );
                         break;
@@ -721,9 +718,6 @@ class Controller {
 
         WsLog::l( 'Starting post-processing' );
         $post_processor = new PostProcessor();
-        $processed_site_dir =
-            SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site';
-        $processed_site = new ProcessedSite();
         $post_processor->processStaticSite( StaticSite::getPath() );
         WsLog::l( 'Post-processing completed' );
 

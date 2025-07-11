@@ -262,6 +262,13 @@ class CoreOptions {
                 'Path to the crawled site files.'
             ),
             self::makeOptionSpec(
+                'string',
+                'processedSitePath',
+                'wp2static-processed-site',
+                'Processed Site Path',
+                'Path to the processed site files.'
+            ),
+            self::makeOptionSpec(
                 'array',
                 'pathsToIgnore',
                 '1',
@@ -865,6 +872,17 @@ VALUES (%s, %s, %s);";
                         ),
                     ],
                     [ 'name' => 'crawledSitePath' ]
+                );
+
+                $wpdb->update(
+                    $table_name,
+                    [
+                        'value' =>
+                        sanitize_text_field(
+                            strval( filter_input( INPUT_POST, 'processedSitePath' ) )
+                        ),
+                    ],
+                    [ 'name' => 'processedSitePath' ]
                 );
 
                 $paths_to_ignore = preg_replace(

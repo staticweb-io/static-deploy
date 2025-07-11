@@ -64,6 +64,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
+            <?php echo $row( 'processedSitePath' ); ?>
             <?php echo $row( 'skipURLRewrite' ); ?>
             <?php echo $row( 'hostsToRewrite' ); ?>
         </tbody>
