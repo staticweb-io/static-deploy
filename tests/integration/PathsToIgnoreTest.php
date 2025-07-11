@@ -50,4 +50,24 @@ final class PathsToIgnoreTest extends TestCase {
             'Directory literals are ignored'
         );
     }
+
+    /**
+     * Test that detect step ignores path patterns
+     * matching vendored files.
+     */
+    public function testVendorIgnores(): void {
+        $wordpress_dir = ITEnv::getWordPressDir();
+        file_put_contents(
+            $wordpress_dir . '/wp-content/plugins/wp2static/vendor/findme.html',
+            '<html>'
+        );
+
+        $this->wpCli( [ 'wp2static', 'detect' ] );
+        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $this->assertNotContains(
+            '/wp-content/plugins/wp2static/vendor/findme.html',
+            $lines,
+            'Vendored files are ignored'
+        );
+    }
 }
