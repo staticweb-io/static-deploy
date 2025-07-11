@@ -42,6 +42,8 @@ class Crawler {
      */
     private $cache_hits = 0;
 
+    private int $concurrency;
+
     /**
      * @var bool
      */
@@ -213,14 +215,16 @@ class Crawler {
     }
 
     public function crawlIter( \Iterator $path_iter ): \Iterator {
+        if ( ! isset( $this->concurrency ) ) {
+            $this->concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
+        }
+
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
         $site_urls = [ "http://$site_host", "https://$site_host" ];
 
-        $concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
         $in_flight = [];
-
         $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
             $detected = $path_iter->current();
             $path = $detected['path'];
@@ -229,7 +233,7 @@ class Crawler {
         };
 
         $i = 0;
-        while ( $i++ < $concurrency && $path_iter->valid() ) {
+        while ( $i++ < $this->concurrency && $path_iter->valid() ) {
             $start_next();
         }
 
