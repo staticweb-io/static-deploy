@@ -14,6 +14,8 @@ use RecursiveDirectoryIterator;
 
 class StaticSite {
 
+    private static string $crawled_site_path;
+
     /**
      * Add crawled resource to static site
      */
@@ -34,7 +36,10 @@ class StaticSite {
     }
 
     public static function getPath(): string {
-        return SiteInfo::getPath( 'uploads' ) . CoreOptions::getValue( 'crawledSitePath' );
+        if ( ! isset( self::$crawled_site_path ) ) {
+            self::$crawled_site_path = CoreOptions::getValue( 'crawledSitePath' );
+        }
+        return SiteInfo::getPath( 'uploads' ) . self::$crawled_site_path;
     }
 
     /**
