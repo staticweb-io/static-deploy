@@ -57,13 +57,28 @@ class WsLog {
         );
     }
 
-    public static function l( string $text, string $level = 'info' ): void {
+    /**
+     * Log a message at the specified level
+     *
+     * @param string $text The message to log
+     * @param string $level The level to log at. One of
+     *   [ 'debug', 'info', 'warn', 'error' ]
+     * @param bool $option_lookups Whether option values
+     *   can be looked up. Option value functions set this
+     *   to false to prevent infinite recursion.
+     */
+    public static function l(
+        string $text,
+        string $level = 'info',
+        bool $option_lookups = true,
+    ): void {
         if ( $level === 'debug' ) {
-            if ( ! isset( self::$debug_logging ) ) {
+            if ( $option_lookups && ! isset( self::$debug_logging ) ) {
                 self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
             }
 
-            if ( ! self::$debug_logging && defined( 'WP_CLI' ) ) {
+            if ( ! isset( self::$debug_logging )
+            || ( ! self::$debug_logging && defined( 'WP_CLI' ) ) ) {
                 $date = current_time( 'c' );
                 $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
                 // --debug will show debug messages even if
