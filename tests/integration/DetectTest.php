@@ -15,6 +15,15 @@ final class DetectTest extends TestCase {
         $this->assertGreaterThan( 1000, $count );
     }
 
+    /**
+     * Test that the crawl queue list contains expected URL
+     */
+    public function testList(): void {
+        $this->wpCli( [ 'wp2static', 'detect' ] );
+        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $this->assertContains( '/hello-world/', $lines );
+    }
+
     public function testSitemapDoubleSlashes(): void
     {
         $robotstxt = ITEnv::getWordPressDir() . '/robots.txt';
