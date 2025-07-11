@@ -22,16 +22,16 @@
         composerVendor = php.mkComposerVendor (finalAttrs: {
           composerNoDev = true;
           pname = "${name}-composer-deps";
-          version = version;
+          version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-9Kq1JgCPDqy0/ny/3XmLOncrfaZl4G+rEoF4h419Gq8=";
+          vendorHash = "sha256-TJF2XUURWurM+sCgmX9U4ucInMhFCCtD+3fv7EnWNn8=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
-          version = version;
+          version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-wbH0LTt411E9CheDQK0L5nL2rEtBpT5yb3qBj+6UUrs=";
+          vendorHash = "sha256-JsvIQKTZRmpoxBWIfgspWPXpd7TK58Tp+kXQqChzuIA=";
         });
         wp2staticSrc = pkgs.lib.cleanSourceWith {
           src = self;
