@@ -274,6 +274,7 @@ class CoreOptions {
                 '1',
                 'Paths to Ignore',
                 'Path matching these patterns will be ignored.' .
+                ' Matches are not case-sensitive.' .
                 ' Glob syntax is supported via ' .
                 '<a href="' .
                 'https://github.com/PHLAK/Splat?tab=readme-ov-file#matching-expressions' .
