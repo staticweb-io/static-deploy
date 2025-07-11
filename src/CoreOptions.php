@@ -329,8 +329,6 @@ class CoreOptions {
                         'node_modules',
                         'package.json',
                         'pb_backupbuddy',
-                        'plugins/*/vendor',
-                        'plugins/wp2static',
                         'previous-export',
                         'README',
                         'static-html-output-plugin',
@@ -342,6 +340,7 @@ class CoreOptions {
                         'wpallimport',
                         'wp-admin',
                         'wp-content/plugins/*/vendor',
+                        'wp-content/plugins/wp2static',
                         'wp-static-html-output', // exclude earlier version exports
                         'wp2static-addon',
                         'wp2static-crawled-site',
