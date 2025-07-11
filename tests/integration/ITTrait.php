@@ -7,6 +7,8 @@ namespace WP2Static;
  */
 trait ITTrait {
     public function setUp(): void {
+        exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
+
         $this->wpCli( [ 'wp2static', 'delete_all_cache', '--force' ] );
     }
 

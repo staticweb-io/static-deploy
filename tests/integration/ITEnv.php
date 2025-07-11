@@ -10,6 +10,24 @@ class ITEnv {
 
     final private function __construct() { }
 
+    /**
+     * Return directory used for adding test content
+     * files.
+     */
+    public static function getTestContentDir(): string {
+        $dir = self::getWordPressDir() . self::getTestContentPath();
+        mkdir( $dir, 0777, true );
+        return $dir;
+    }
+
+    /**
+     * Return relative URL path where test content files
+     * should appear on the site.
+     */
+    public static function getTestContentPath(): string {
+        return '/wp-content/tstcontent';
+    }
+
     public static function getWordPressDir(): string
     {
         if ( ! isset( self::$wordpress_dir ) ) {
