@@ -30,22 +30,6 @@ class FileFiltering {
         foreach ( $filenames_to_ignore as $filename ) {
             $this->patterns_to_ignore[] = new FileIgnorePattern( $filename );
         }
-
-        $file_extensions_to_ignore = CoreOptions::getLineDelimitedBlobValue(
-            'fileExtensionsToIgnore'
-        );
-
-        $file_extensions_to_ignore =
-            apply_filters(
-                Controller::getHookName( 'file_extensions_to_ignore' ),
-                $file_extensions_to_ignore
-            );
-
-        foreach ( $file_extensions_to_ignore as $extension ) {
-            $this->patterns_to_ignore[] = new FileIgnorePattern(
-                "**$extension"
-            );
-        }
     }
 
     /**

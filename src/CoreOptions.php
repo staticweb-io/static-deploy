@@ -256,43 +256,6 @@ class CoreOptions {
             ),
             self::makeOptionSpec(
                 'array',
-                'fileExtensionsToIgnore',
-                '1',
-                'File Extensions to Ignore',
-                'Files with these extensions will be ignored.',
-                implode(
-                    "\n",
-                    [
-                        '.bat',
-                        '.crt',
-                        '.data', // et-cache puts these in wp-content/et-cache
-                        '.DS_Store',
-                        '.git',
-                        '.idea',
-                        '.ini',
-                        '.less',
-                        '.map',
-                        '.md',
-                        '.mo',
-                        '.php',
-                        '.PHP',
-                        '.phtml',
-                        '.po',
-                        '.pot',
-                        '.scss',
-                        '.sh',
-                        '.sql',
-                        '.SQL',
-                        '.tar.gz',
-                        '.tpl',
-                        '.txt',
-                        '.yarn',
-                        '.zip',
-                    ]
-                )
-            ),
-            self::makeOptionSpec(
-                'array',
                 'filenamesToIgnore',
                 '1',
                 'Directory and File Names to Ignore',
@@ -301,6 +264,31 @@ class CoreOptions {
                 implode(
                     "\n",
                     [
+                        '**.bat',
+                        '**.crt',
+                        '**.data', // et-cache puts these in wp-content/et-cache
+                        '**.DS_Store',
+                        '**.git',
+                        '**.idea',
+                        '**.ini',
+                        '**.less',
+                        '**.map',
+                        '**.md',
+                        '**.mo',
+                        '**.php',
+                        '**.PHP',
+                        '**.phtml',
+                        '**.po',
+                        '**.pot',
+                        '**.scss',
+                        '**.sh',
+                        '**.sql',
+                        '**.SQL',
+                        '**.tar.gz',
+                        '**.tpl',
+                        '**.txt',
+                        '**.yarn',
+                        '**.zip',
                         '__MACOSX',
                         '.babelrc',
                         '.git',
@@ -856,17 +844,6 @@ VALUES (%s, %s, %s);";
                     $table_name,
                     [ 'value' => $crawl_concurrency < 1 ? 1 : $crawl_concurrency ],
                     [ 'name' => 'crawlConcurrency' ]
-                );
-
-                $file_extensions_to_ignore = preg_replace(
-                    '/^\s+|\s+$/m',
-                    '',
-                    strval( filter_input( INPUT_POST, 'fileExtensionsToIgnore' ) )
-                );
-                $wpdb->update(
-                    $table_name,
-                    [ 'blob_value' => $file_extensions_to_ignore ],
-                    [ 'name' => 'fileExtensionsToIgnore' ]
                 );
 
                 $filenames_to_ignore = preg_replace(
