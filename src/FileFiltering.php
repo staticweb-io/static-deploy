@@ -21,12 +21,6 @@ class FileFiltering {
 
         $filenames_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'filenamesToIgnore' );
 
-        $filenames_to_ignore =
-            apply_filters(
-                Controller::getHookName( 'filenames_to_ignore' ),
-                $filenames_to_ignore
-            );
-
         foreach ( $filenames_to_ignore as $filename ) {
             $this->patterns_to_ignore[] = new FileIgnorePattern( $filename );
         }
