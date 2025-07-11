@@ -33,15 +33,8 @@ class WsLog {
      * Log a debug message if debug logging is enabled
      */
     public static function d( string $text ): void {
-        if ( ! isset( self::$debug_logging ) ) {
-            self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
-        }
-
-        if ( self::$debug_logging ) {
-            self::l( $text, 'debug' );
-        }
+        self::l( $text, 'debug' );
     }
-
 
     /**
      * Log an error message and return a throwable exception
@@ -65,6 +58,21 @@ class WsLog {
     }
 
     public static function l( string $text, string $level = 'info' ): void {
+        if ( $level === 'debug' ) {
+            if ( ! isset( self::$debug_logging ) ) {
+                self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
+            }
+
+            if ( ! self::$debug_logging && defined( 'WP_CLI' ) ) {
+                $date = current_time( 'c' );
+                $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
+                // --debug will show debug messages even if
+                // debugLogging is not enabled
+                \WP_CLI::debug( $colorized );
+                return;
+            }
+        }
+
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -82,7 +90,10 @@ class WsLog {
             $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
             switch ( $level ) {
                 case 'debug':
-                    \WP_CLI::debug( $colorized );
+                    // WP_CLI hides debug level messages unless
+                    // --debug is passed, so we use ::log when
+                    // debugLogging is enabled.
+                    \WP_CLI::log( $colorized );
                     break;
                 case 'error':
                     \WP_CLI::error_multi_line( [ $colorized ] );
