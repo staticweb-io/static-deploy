@@ -28,6 +28,16 @@ $row = function ( $name ) use ( $options ) {
 
     <h1>Advanced Options<h1>
 
+    <h2>Logging Options</h2>
+
+    <table class="widefat striped">
+        <tbody>
+            <?php echo $row( 'maxLogRows' ); ?>
+        </tbody>
+    </table>
+
+    <p/>
+
     <h2>Detection Options</h2>
 
     <table class="widefat striped">
@@ -39,12 +49,20 @@ $row = function ( $name ) use ( $options ) {
 
     <p/>
 
-    <h2>Post-processing Options</h2>
+    <h2>Crawling Options</h2>
 
     <table class="widefat striped">
         <tbody>
             <?php echo $row( 'crawlConcurrency' ); ?>
-            <?php echo $row( 'maxLogRows' ); ?>
+        </tbody>
+    </table>
+
+    <p/>
+
+    <h2>Post-processing Options</h2>
+
+    <table class="widefat striped">
+        <tbody>
             <?php echo $row( 'skipURLRewrite' ); ?>
             <?php echo $row( 'hostsToRewrite' ); ?>
         </tbody>
