@@ -76,14 +76,8 @@ class DetectSitemapsURLs {
 
         $headers = [];
 
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
-
-        if ( $auth_user ) {
-            $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
-
-            if ( $auth_password ) {
-                $headers['auth'] = [ $auth_user, $auth_password ];
-            }
+        if ( $auth_user && $auth_password ) {
+            $headers['auth'] = [ $auth_user, $auth_password ];
         }
 
         $request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
