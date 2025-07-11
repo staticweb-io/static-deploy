@@ -16,7 +16,7 @@ class ITEnv {
      */
     public static function getTestContentDir(): string {
         $dir = self::getWordPressDir() . self::getTestContentPath();
-        mkdir( $dir, 0777, true );
+        mkdir( $dir, 0775, true );
         return $dir;
     }
 
