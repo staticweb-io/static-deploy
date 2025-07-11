@@ -56,8 +56,10 @@ class FileIgnorePattern {
         $this->regex = $regex . 'i';
 
         // URL paths can match with or without trailing /
+        // We add a .* to make directory patterns also match
+        // child paths
         $url_regex = Pattern::make( $pattern )->toRegex( Pattern::START_ANCHOR );
-        $this->url_regex = substr( $url_regex, 0, -1 ) . '/?$#i';
+        $this->url_regex = substr( $url_regex, 0, -1 ) . '(/.*)?$#i';
     }
 
     public function matches(
