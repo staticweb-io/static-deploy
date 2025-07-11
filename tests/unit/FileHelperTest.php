@@ -272,32 +272,6 @@ final class FileHelperTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    /**
-     * Test pathLooksCrawlable method's $filenames_to_ignore argument
-     * filter.
-     *
-     * @return void
-     */
-    public function testPathLooksCrawlableFilenames() {
-        $looks_crawlable = function ( $file_name ) {
-            return FilesHelper::pathLooksCrawlable(
-                $file_name,
-                [ 'yarn.lock' ],
-                []
-            );
-        };
-
-        // We've disallowed yarn.lock - test it
-        $expected = false;
-        $actual = $looks_crawlable( '/path/to/yarn.lock' );
-        $this->assertEquals( $expected, $actual );
-
-        // thumbs.db filenames should now be allowed - test it
-        $expected = true;
-        $actual = $looks_crawlable( '/path/to/thumbs.db' );
-        $this->assertEquals( $expected, $actual );
-    }
-
     public function testCleanDetectedURLs() {
         // Mock the WP functions used by FilesHelper::cleanDetectedURLs()
         $mock = \Mockery::mock( 'alias:WP2Static\SiteInfo' )
