@@ -59,7 +59,9 @@ trait ITTrait {
     public function getProcessedFileContents( string $path ): string
     {
         $wordpress_dir = ITEnv::getWordPressDir();
-        $processed_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-processed-site';
+        $processed_site_dir = $wordpress_dir .
+            '/wp-content/uploads/' .
+            $this->getOptionValue( 'processedSitePath' );
         $content = file_get_contents( "{$processed_site_dir}/$path" );
         $this->assertNotFalse( $content, "Failed to read file: {$processed_site_dir}/$path" );
         return $content;

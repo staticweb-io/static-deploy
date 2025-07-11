@@ -14,10 +14,8 @@ use RecursiveDirectoryIterator;
 class ProcessedSite {
 
     public static function getPath(): string {
-        return apply_filters(
-            Controller::getHookName( 'processed_site_path' ),
-            SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site'
-        );
+        return SiteInfo::getPath( 'uploads' ) .
+            CoreOptions::getValue( 'processedSitePath' );
     }
 
     /**

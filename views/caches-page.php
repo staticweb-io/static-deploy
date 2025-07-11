@@ -141,7 +141,7 @@ select.wp2static-select {
                 <td><?php echo $processed_site_file_count; ?> files, using <?php echo $processed_site_disk_space; ?>
                     <br>
 
-                    <a href="file://<?php echo $uploads_path; ?>wp2static-processed-site" />Path</a>
+                    <a href="file://<?php echo \WP2Static\ProcessedSite::getPath(); ?>" />Path</a>
                 </td>
                 <td>
                     <form
