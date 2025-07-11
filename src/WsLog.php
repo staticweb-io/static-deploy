@@ -4,6 +4,8 @@ namespace WP2Static;
 
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {
+    private static bool $debug_logging;
+
     public static function getTableName(): string {
         return Controller::getTableName( 'log' );
     }
@@ -26,6 +28,20 @@ class WsLog {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
     }
+
+    /**
+     * Log a debug message if debug logging is enabled
+     */
+    public static function d( string $text ): void {
+        if ( ! isset( self::$debug_logging ) ) {
+            self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
+        }
+
+        if ( self::$debug_logging ) {
+            self::l( $text, 'debug' );
+        }
+    }
+
 
     /**
      * Log an error message and return a throwable exception

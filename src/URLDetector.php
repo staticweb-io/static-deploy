@@ -30,7 +30,7 @@ class URLDetector {
     }
 
     public static function detectURLsIter( bool $quiet = false ): \Iterator {
-        $log_steps = CoreOptions::getValue( 'logDetectionSteps' );
+        $log_steps = CoreOptions::getValue( 'debugLogging' );
 
         if ( ! $quiet ) {
             WsLog::l( 'Starting to detect WordPress site URLs.' );

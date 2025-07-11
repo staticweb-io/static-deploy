@@ -32,6 +32,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
+            <?php echo $row( 'debugLogging' ); ?>
             <?php echo $row( 'maxLogRows' ); ?>
         </tbody>
     </table>
@@ -43,7 +44,6 @@ $row = function ( $name ) use ( $options ) {
     <table class="widefat striped">
         <tbody>
             <?php echo $row( 'pathsToIgnore' ); ?>
-            <?php echo $row( 'logDetectionSteps' ); ?>
         </tbody>
     </table>
 

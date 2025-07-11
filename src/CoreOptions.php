@@ -362,10 +362,10 @@ class CoreOptions {
             ),
             self::makeOptionSpec(
                 'boolean',
-                'logDetectionSteps',
+                'debugLogging',
                 '0',
-                'Log Detection Steps',
-                'Log each step of the detection process.',
+                'Debug Logging',
+                'Enable debug logging.',
             ),
             self::makeOptionSpec(
                 'integer',
@@ -906,11 +906,11 @@ VALUES (%s, %s, %s);";
                     [ 'name' => 'hostsToRewrite' ]
                 );
 
-                $log_detection_steps = intval( $_POST['logDetectionSteps'] );
+                $debug_logging = intval( $_POST['debugLogging'] );
                 $wpdb->update(
                     $table_name,
-                    [ 'value' => $log_detection_steps < 0 ? 0 : $log_detection_steps ],
-                    [ 'name' => 'logDetectionSteps' ]
+                    [ 'value' => $debug_logging < 0 ? 0 : $debug_logging ],
+                    [ 'name' => 'debugLogging' ]
                 );
 
                 $max_log_rows = intval( $_POST['maxLogRows'] );
