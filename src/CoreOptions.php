@@ -422,6 +422,13 @@ VALUES (%s, %s, %s);";
      * @return string option value
      */
     public static function getValue( string $name ): string {
+        $option_lookups = ( $name !== 'debugLogging' );
+        WsLog::l(
+            "Getting value of option: $name",
+            $level = 'debug',
+            $option_lookups = $option_lookups,
+        );
+
         global $wpdb;
 
         $opt_spec = self::optionSpecs()[ $name ];
@@ -467,6 +474,8 @@ VALUES (%s, %s, %s);";
      * @return string option BLOB value
      */
     public static function getBlobValue( string $name ): string {
+        WsLog::d( "Getting blob value of option: $name" );
+
         global $wpdb;
 
         $table_name = self::getTableName();
