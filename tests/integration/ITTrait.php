@@ -6,6 +6,10 @@ namespace WP2Static;
  * Integration test helper trait
  */
 trait ITTrait {
+    public function setUp(): void {
+        $this->wpCli( [ 'wp2static', 'delete_all_cache', '--force' ] );
+    }
+
     public function wpCli( array $args, array $expect_warnings = [] ): array
     {
         $wordpress_dir = ITEnv::getWordPressDir();
