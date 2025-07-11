@@ -260,7 +260,10 @@ class CoreOptions {
                 '1',
                 'Paths to Ignore',
                 'Path matching these patterns will be ignored.' .
-                ' Glob syntax is supported via <a href="https://github.com/PHLAK/Splat">Splat</a>.',
+                ' Glob syntax is supported via ' .
+                '<a href="' .
+                'https://github.com/PHLAK/Splat?tab=readme-ov-file#matching-expressions' .
+                '">Splat</a>.',
                 implode(
                     "\n",
                     [
