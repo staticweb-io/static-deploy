@@ -8,8 +8,6 @@ namespace WP2Static;
 class ITEnv {
     private static string $wordpress_dir;
 
-    final private function __construct() { }
-
     /**
      * Return directory used for adding test content
      * files.
