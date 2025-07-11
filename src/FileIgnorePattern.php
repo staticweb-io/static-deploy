@@ -20,6 +20,12 @@ class FileIgnorePattern {
     private $regex;
 
     /**
+     * @var string
+     * Regex tested against relative URLs.
+     */
+    private $url_regex;
+
+    /**
      * Following gitignore rules:
      * - Patterns ending in / match only directories.
      * - Patterns with a / at the start or middle match
@@ -49,7 +55,9 @@ class FileIgnorePattern {
         // Make it case-insensitive
         $this->regex = $regex . 'i';
 
-        // WsLog::l("Created regex $this->regex for pattern $pattern");
+        // URL paths can match with or without trailing /
+        $url_regex = Pattern::make( $pattern )->toRegex( Pattern::START_ANCHOR );
+        $this->url_regex = substr( $url_regex, 0, -1 ) . '/?$#i';
     }
 
     public function matches(
@@ -69,8 +77,8 @@ class FileIgnorePattern {
     public function matchesPath(
         string $path,
     ): bool {
-        if ( preg_match( $this->regex, $path ) ) {
-            WsLog::d( "Ignoring $path with regex $this->regex" );
+        if ( preg_match( $this->url_regex, $path ) ) {
+            WsLog::d( "Ignoring $path with regex $this->url_regex" );
             return true;
         }
 
