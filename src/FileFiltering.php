@@ -21,8 +21,8 @@ class FileFiltering {
 
         $paths_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'pathsToIgnore' );
 
-        foreach ( $paths_to_ignore as $filename ) {
-            $this->patterns_to_ignore[] = new FileIgnorePattern( $filename );
+        foreach ( $paths_to_ignore as $path_pattern ) {
+            $this->patterns_to_ignore[] = new FileIgnorePattern( $path_pattern );
         }
     }
 
