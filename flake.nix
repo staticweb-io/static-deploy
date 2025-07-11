@@ -12,7 +12,7 @@
       with pkgs;
       let
         name = "wp2static";
-        version = "8.3.0";
+        version = "8.4.0";
         composerSrc = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
