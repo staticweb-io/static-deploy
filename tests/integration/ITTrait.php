@@ -48,7 +48,9 @@ trait ITTrait {
     public function getCrawledFileContents( string $path ): string
     {
         $wordpress_dir = ITEnv::getWordPressDir();
-        $crawled_site_dir = $wordpress_dir . '/wp-content/uploads/wp2static-crawled-site';
+        $crawled_site_dir = $wordpress_dir .
+            '/wp-content/uploads/' .
+            $this->getOptionValue( 'crawledSitePath' );
         $content = file_get_contents( "{$crawled_site_dir}/$path" );
         $this->assertNotFalse( $content, "Failed to read file: {$crawled_site_dir}/$path" );
         return $content;

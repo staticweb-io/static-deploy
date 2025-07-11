@@ -255,6 +255,13 @@ class CoreOptions {
                 'The maximum number of files that will be crawled at the same time.'
             ),
             self::makeOptionSpec(
+                'string',
+                'crawledSitePath',
+                'wp2static-crawled-site',
+                'Crawled Site Path',
+                'Path to the crawled site files.'
+            ),
+            self::makeOptionSpec(
                 'array',
                 'pathsToIgnore',
                 '1',
@@ -847,6 +854,17 @@ VALUES (%s, %s, %s);";
                     $table_name,
                     [ 'value' => $crawl_concurrency < 1 ? 1 : $crawl_concurrency ],
                     [ 'name' => 'crawlConcurrency' ]
+                );
+
+                $wpdb->update(
+                    $table_name,
+                    [
+                        'value' =>
+                        sanitize_text_field(
+                            strval( filter_input( INPUT_POST, 'crawledSitePath' ) )
+                        ),
+                    ],
+                    [ 'name' => 'crawledSitePath' ]
                 );
 
                 $paths_to_ignore = preg_replace(

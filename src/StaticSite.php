@@ -34,10 +34,7 @@ class StaticSite {
     }
 
     public static function getPath(): string {
-        return apply_filters(
-            Controller::getHookName( 'crawled_site_path' ),
-            SiteInfo::getPath( 'uploads' ) . 'wp2static-crawled-site'
-        );
+        return SiteInfo::getPath( 'uploads' ) . CoreOptions::getValue( 'crawledSitePath' );
     }
 
     /**

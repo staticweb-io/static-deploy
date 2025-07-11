@@ -53,6 +53,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
+            <?php echo $row( 'crawledSitePath' ); ?>
             <?php echo $row( 'crawlConcurrency' ); ?>
         </tbody>
     </table>
