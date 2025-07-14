@@ -13,8 +13,8 @@ class CrawlQueue {
 
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            url VARCHAR(2083) NOT NULL,
-            hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
+            path VARCHAR(2083) NOT NULL,
+            path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
             filename VARCHAR(2083) DEFAULT '' NOT NULL,
             detected_at datetime DEFAULT NOW() NOT NULL,
             PRIMARY KEY  (id)
@@ -25,8 +25,8 @@ class CrawlQueue {
 
         Controller::ensureIndex(
             $table_name,
-            'hashed_url',
-            "CREATE UNIQUE INDEX hashed_url ON $table_name (hashed_url)"
+            'path_hash',
+            "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
         );
 
         Controller::ensureIndex(
@@ -67,7 +67,7 @@ class CrawlQueue {
             }
 
             $placeholders = implode( ',', array_fill( 0, count( $hashes ), '%s' ) );
-            $sql = "SELECT url, filename FROM $table_name WHERE hashed_url IN ($placeholders)";
+            $sql = "SELECT path, filename FROM $table_name WHERE path_hash IN ($placeholders)";
             $existing_urls = $wpdb->get_results(
                 $wpdb->prepare( $sql, ...$hashes ),
                 OBJECT_K
@@ -100,12 +100,12 @@ class CrawlQueue {
                 }
             }
 
-            // INSERT IGNORE new URLs
+            // INSERT IGNORE new paths
             if ( count( $insert_values ) > 0 ) {
                 $insert_rows = count( $insert_values ) / 2;
                 $placeholders = array_fill( 0, $insert_rows, '(%s,%s)' );
                 $query_string =
-                    "INSERT IGNORE INTO $table_name (url, filename) " .
+                    "INSERT IGNORE INTO $table_name (path, filename) " .
                     ' VALUES ' . implode( ',', $placeholders );
                 $query = $wpdb->prepare( $query_string, ...$insert_values );
                 $wpdb->query( $query );
@@ -120,7 +120,7 @@ class CrawlQueue {
                     $query_string =
                         "UPDATE $table_name
                         SET filename = %s, detected_at = NOW()
-                        WHERE hashed_url = %s";
+                        WHERE path_hash = %s";
                     $query = $wpdb->prepare( $query_string, $filename, $hash );
                     $wpdb->query( $query );
                 }
@@ -151,7 +151,7 @@ class CrawlQueue {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, url AS path, filename
+            $qs = "SELECT id, path, filename
             FROM $table_name
             WHERE id > %d AND detected_at < %s
             ORDER BY id ASC
@@ -184,7 +184,7 @@ class CrawlQueue {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, url AS path, filename
+            $qs = "SELECT id, path, filename
             FROM $table_name
             WHERE id > %d AND detected_at >= %s
             ORDER BY id ASC
@@ -243,7 +243,7 @@ class CrawlQueue {
         $wpdb->delete(
             $table_name,
             [
-                'hashed_url' => md5( $url ),
+                'path' => md5( $url ),
             ]
         );
     }

@@ -154,7 +154,7 @@ class CrawlCache {
                 cq.filename
               FROM $table_name AS cc
               JOIN $queue_table_name AS cq
-              ON cc.hashed_url = cq.hashed_url
+              ON cc.hashed_url = cq.path_hash
               WHERE cc.id > %d
               ORDER BY cc.id ASC
               LIMIT %d";
