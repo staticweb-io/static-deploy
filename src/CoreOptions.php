@@ -216,15 +216,6 @@ class CoreOptions {
                 'Password for basic authentication.'
             ),
             self::makeOptionSpec(
-                'boolean',
-                'useCrawlCaching',
-                '1',
-                'Use CrawlCache',
-                'Skip crawling unchanged URLs.',
-                null,
-                'wp2static_use_crawl_cache'
-            ),
-            self::makeOptionSpec(
                 'string',
                 'completionEmail',
                 '',
@@ -748,12 +739,6 @@ VALUES (%s, %s, %s);";
                         ),
                     ],
                     [ 'name' => 'basicAuthPassword' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['useCrawlCaching'] ) ? 1 : 0 ],
-                    [ 'name' => 'useCrawlCaching' ]
                 );
 
                 $wpdb->update(

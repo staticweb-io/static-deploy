@@ -45,11 +45,6 @@ class Crawler {
     private int $concurrency;
 
     /**
-     * @var bool
-     */
-    private $use_crawl_cache = false;
-
-    /**
      * Crawler constructor
      */
     public function __construct() {
@@ -99,10 +94,6 @@ class Crawler {
         $this->client = new Client( $opts );
 
         WsLog::l( 'Starting crawl.' );
-
-        $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
-
-        WsLog::l( ( $this->use_crawl_cache ? 'Using' : 'Not using' ) . ' CrawlCache.' );
     }
 
     public static function wp2staticCrawl( string $crawler_slug ): void {
@@ -117,9 +108,7 @@ class Crawler {
             $crawled = $crawler->crawlIter( $detected );
             $crawled = CrawlCache::remove404s( $crawled );
             $crawled = CrawlCache::writeFilesIter( $crawled );
-            if ( $crawler->use_crawl_cache ) {
-                $crawled = CrawlCache::addPathsIter( $crawled );
-            }
+            $crawled = CrawlCache::addPathsIter( $crawled );
             $crawled = $url_discovery->discoverURLs( $crawled );
             foreach ( $crawled as $_ ) {
                 // Intentionally empty to consume the iterator
@@ -132,9 +121,7 @@ class Crawler {
                 $last_now = $wpdb->get_var( 'SELECT NOW()' );
                 $crawled = $crawler->crawlIter( $detected );
                 $crawled = CrawlCache::writeFilesIter( $crawled );
-                if ( $crawler->use_crawl_cache ) {
-                    $crawled = CrawlCache::addPathsIter( $crawled );
-                }
+                $crawled = CrawlCache::addPathsIter( $crawled );
                 $crawled = $url_discovery->discoverURLs( $crawled );
                 $has_new = false;
                 foreach ( $crawled as $_ ) {

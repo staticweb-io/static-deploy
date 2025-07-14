@@ -54,7 +54,6 @@ $row = function ( $name ) use ( $options ) {
         <tbody>
             <?php echo $row( 'basicAuthUser' ); ?>
             <?php echo $row( 'basicAuthPassword' ); ?>
-            <?php echo $row( 'useCrawlCaching' ); ?>
         </tbody>
     </table>
 

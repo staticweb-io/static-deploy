@@ -12,7 +12,6 @@ class DirectDeployer {
     private $deployer;
     private $processor;
     private $url_discovery;
-    private $use_crawl_cache;
 
     public function __construct() {
         $deployer = Addons::getDeployer();
@@ -37,8 +36,6 @@ class DirectDeployer {
         $this->crawler = new Crawler();
         $this->url_discovery = new URLDiscovery();
         $this->processor = new PostProcessor();
-
-        $this->use_crawl_cache = CoreOptions::getValue( 'useCrawlCaching' );
     }
 
     public function deploy(): void {
@@ -84,11 +81,7 @@ class DirectDeployer {
         if ( $remove_404s ) {
             $crawled = CrawlCache::remove404s( $crawled );
         }
-
-        if ( $this->use_crawl_cache ) {
-            $crawled = CrawlCache::addPathsIter( $crawled );
-        }
-
+        $crawled = CrawlCache::addPathsIter( $crawled );
         $crawled = $this->url_discovery->discoverURLs( $crawled );
 
         $processed = $this->processor->processIter( $crawled );
