@@ -41,11 +41,11 @@ class DirectDeployer {
     public function deploy(): void {
         global $wpdb;
 
-        $queue_table = CrawlQueue::getTableName();
+        $queue_table = DetectedFiles::getTableName();
         $last_now = $wpdb->get_var( 'SELECT NOW()' );
 
         $detected = URLDetector::detectURLsIter();
-        $added = CrawlQueue::withPathsIter( $detected );
+        $added = DetectedFiles::withPathsIter( $detected );
         $this->deployPaths( $added );
 
         while ( true ) {
@@ -58,9 +58,9 @@ class DirectDeployer {
                 break;
             }
             WsLog::l( "Found $new_ct new URLs during crawling." );
-            $detected = CrawlQueue::getPathsIter( $last_now );
+            $detected = DetectedFiles::getPathsIter( $last_now );
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
-            $added = CrawlQueue::withPathsIter( $detected );
+            $added = DetectedFiles::withPathsIter( $detected );
             $this->deployPaths( $added, false );
         }
     }

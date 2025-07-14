@@ -7,9 +7,9 @@
  */
 
 /**
- * @var int $crawl_queue_total_urls
+ * @var int $detected_files_total
  */
-$crawl_queue_total_urls = $view['crawlQueueTotalURLs'];
+$detected_files_total = $view['DetectedFilesTotal'];
 
 /**
  * @var int $crawl_cache_total_urls
@@ -67,21 +67,21 @@ select.wp2static-select {
         </thead>
         <tbody>
             <tr>
-                <td>Crawl Queue (Detected URLs)</td>
-                <td><?php echo $crawl_queue_total_urls; ?> URLs in database</td>
+                <td>Detected Files</td>
+                <td><?php echo $detected_files_total; ?> files in database</td>
                 <td>
     <!-- TODO: allow downloading zipped CSV of all lists  <a href="#"><button class="button btn-danger">Download List</button></a> -->
 
                     <form
-                        name="wp2static-crawl-queue-delete"
+                        name="wp2static-detected-files-delete"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_crawl_queue_show">Show URLs</option>
-                            <option value="wp2static_crawl_queue_delete">Delete Crawl Queue</option>
+                            <option value="wp2static_detected_files_show">Show URLs</option>
+                            <option value="wp2static_detected_files_delete">Delete Detected Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>

@@ -23,7 +23,7 @@ final class PathsToIgnoreTest extends TestCase {
         file_put_contents( $dir . '/node_modules/hello.html', 'RUN' );
 
         $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
         $this->assertContains(
             $path . '/Dckrfile',
             $lines,
@@ -63,7 +63,7 @@ final class PathsToIgnoreTest extends TestCase {
         );
 
         $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
         $this->assertNotContains(
             '/wp-content/plugins/wp2static/vendor/findme.html',
             $lines,

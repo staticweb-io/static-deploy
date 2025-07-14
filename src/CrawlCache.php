@@ -139,7 +139,7 @@ class CrawlCache {
         global $wpdb;
 
         $table_name = self::getTableName();
-        $queue_table_name = CrawlQueue::getTableName();
+        $queue_table_name = DetectedFiles::getTableName();
         $batch_size = 1000;
         $last_id = 0;
         $static_site_path = StaticSite::getPath();
@@ -180,7 +180,7 @@ class CrawlCache {
     }
 
     /**
-     * Remove 404 URLs from the crawl queue, crawl cache, and
+     * Remove 404 URLs from the detected files, crawl cache, and
      * files written to disk.
      */
     public static function remove404s( \Iterator $paths ): \Iterator {
@@ -188,8 +188,8 @@ class CrawlCache {
             if ( isset( $path['status'] ) && $path['status'] === 404 ) {
                 WsLog::l( '404 for URL ' . $path['path'] );
                 self::rmUrl( $path['path'] );
-                // Delete crawl queue to prevent crawling not found urls forever.
-                CrawlQueue::rmUrl( $path['path'] );
+                // Delete from detected files to prevent crawling not found urls forever.
+                DetectedFiles::rmUrl( $path['path'] );
                 // Delete previously generated files under the directories,
                 // both the crawled and the processed.
                 array_map(

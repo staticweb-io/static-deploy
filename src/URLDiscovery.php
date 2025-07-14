@@ -26,7 +26,7 @@ class URLDiscovery {
     public function discoverURLs( \Iterator $iterator ): \Iterator {
         global $wpdb;
 
-        $table_name = CrawlQueue::getTableName();
+        $table_name = DetectedFiles::getTableName();
 
         foreach ( $iterator as $arr ) {
             if ( isset( $arr['content_type'] )
@@ -44,7 +44,7 @@ class URLDiscovery {
                   VALUES " . implode( ',', $placeholders );
                 $result = $wpdb->query( $wpdb->prepare( $sql, ...array_keys( $urls ) ) );
                 if ( false === $result ) {
-                    WsLog::w( 'Error inserting into crawl queue: ' . $wpdb->last_error );
+                    WsLog::w( 'Error inserting into detected files: ' . $wpdb->last_error );
                 }
                 yield $arr;
             } else {

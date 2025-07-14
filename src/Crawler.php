@@ -103,7 +103,7 @@ class Crawler {
             $crawler = new Crawler();
             $url_discovery = new URLDiscovery();
 
-            $detected = CrawlQueue::getPathsIter();
+            $detected = DetectedFiles::getPathsIter();
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
             $crawled = $crawler->crawlIter( $detected );
             $crawled = CrawlCache::remove404s( $crawled );
@@ -117,7 +117,7 @@ class Crawler {
 
             $has_new = true;
             while ( $has_new ) {
-                $detected = CrawlQueue::getPathsIter( $last_now );
+                $detected = DetectedFiles::getPathsIter( $last_now );
                 $last_now = $wpdb->get_var( 'SELECT NOW()' );
                 $crawled = $crawler->crawlIter( $detected );
                 $crawled = CrawlCache::writeFilesIter( $crawled );

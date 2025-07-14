@@ -2,7 +2,7 @@
 
 namespace WP2Static;
 
-class CrawlQueue {
+class DetectedFiles {
 
     public static function createTable(): void {
         global $wpdb;
@@ -37,7 +37,7 @@ class CrawlQueue {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'urls' );
+        return Controller::getTableName( 'detected_files' );
     }
 
     /**
@@ -264,10 +264,10 @@ class CrawlQueue {
     }
 
     /**
-     *  Clear CrawlQueue via truncate or deletion
+     *  Clear Detected via truncate or deletion
      */
     public static function truncate(): void {
-        WsLog::l( 'Deleting CrawlQueue (Detected URLs)' );
+        WsLog::l( 'Deleting Detected (Detected URLs)' );
 
         global $wpdb;
 
@@ -278,12 +278,12 @@ class CrawlQueue {
         $total_urls = self::getTotalCrawlableURLs();
 
         if ( $total_urls > 0 ) {
-            WsLog::l( 'failed to truncate CrawlQueue: try deleting instead' );
+            WsLog::l( 'failed to truncate Detected: try deleting instead' );
         }
     }
 
     /**
-     *  Count URLs in Crawl Queue
+     *  Count detected files
      */
     public static function getTotal(): int {
         global $wpdb;

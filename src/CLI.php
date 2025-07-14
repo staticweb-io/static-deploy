@@ -171,7 +171,7 @@ class CLI {
         $detected_url_count = URLDetector::countURLs();
         // WP_CLI::line(sprintf('%d URLs detected', $detected_url_count));
 
-        $crawlable_urls = CrawlQueue::getCrawlablePaths();
+        $crawlable_urls = DetectedFiles::getCrawlablePaths();
         if ( count( $crawlable_urls ) === 0 ) {
             WP_CLI::line( 'No URLs are queued for crawling.' );
             $this->hintDetectNext();
@@ -332,7 +332,7 @@ class CLI {
     private function crawledSiteStatus(): void {
         $crawlable_urls = array_map(
             '\WP2Static\StaticSite::transformPath',
-            CrawlQueue::getCrawlablePaths(),
+            DetectedFiles::getCrawlablePaths(),
         );
         $crawled_urls = StaticSite::getPaths();
 
@@ -419,8 +419,7 @@ class CLI {
         if ( $this->should_show_next() ) {
             WP_CLI::line(
                 WP_CLI::colorize(
-                    "\n\tYou should run `%gwp wp2static detect%n`"
-                    . " to add URLs to the crawl queue\n"
+                    "\n\tYou should run `%gwp wp2static detect%n`."
                 )
             );
         }
@@ -552,7 +551,7 @@ class CLI {
             $post_id = intval( $args[0] );
             $path = wp_make_link_relative( get_permalink( $post_id ) );
             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
-            $detected = CrawlQueue::addPathsIter( $paths );
+            $detected = DetectedFiles::addPathsIter( $paths );
             WsLog::l( 'Starting direct deployment for path ' . $path );
             $deployer->deployPaths( $detected );
         } else {
@@ -879,28 +878,28 @@ class CLI {
     }
 
     /**
-     * Crawl Queue
+     * Detected Files
      *
      * <list>
      *
-     * List all URLs in the CrawlQueue
+     * List all detected files
      *
      * <count>
      *
-     * Show total number of URLs in CrawlQueue
+     * Show total number of detected files
      *
      * <delete>
      *
-     * Empty all URLs from CrawlQueue
+     * Empty all detected files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function crawl_queue( array $args, array $assoc_args ): void {
+    public function detected_files( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
-            $urls = CrawlQueue::getCrawlablePaths();
+            $urls = DetectedFiles::getCrawlablePaths();
 
             foreach ( $urls as $url ) {
                 WP_CLI::line( $url );
@@ -908,7 +907,7 @@ class CLI {
         }
 
         if ( $action === 'count' ) {
-            $count = CrawlQueue::getTotalCrawlableURLs();
+            $count = DetectedFiles::getTotalCrawlableURLs();
 
             WP_CLI::line( (string) $count );
         }
@@ -918,19 +917,19 @@ class CLI {
             if ( ! isset( $assoc_args['force'] ) ) {
                 $this->multilinePrint(
                     "no --force given. Please type 'yes' to confirm
-                    deletion of CrawlQueue"
+                    deletion of detected files"
                 );
 
                 $userval = trim( (string) fgets( STDIN ) );
 
                 if ( $userval !== 'yes' ) {
-                    WP_CLI::error( 'Failed to delete Crawl Queue' );
+                    WP_CLI::error( 'Failed to delete detected files' );
                 }
             }
 
-            CrawlQueue::truncate();
+            DetectedFiles::truncate();
 
-            WP_CLI::success( 'Deleted Crawl Queue' );
+            WP_CLI::success( 'Deleted detected files' );
         }
     }
 

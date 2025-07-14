@@ -157,15 +157,15 @@ class WordPressAdmin {
         );
 
         add_action(
-            'admin_post_wp2static_crawl_queue_delete',
-            [ Controller::class, 'wp2staticCrawlQueueDelete' ],
+            'admin_post_wp2static_detected_files_delete',
+            [ Controller::class, 'wp2staticDetectedFilesDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_crawl_queue_show',
-            [ Controller::class, 'wp2staticCrawlQueueShow' ],
+            'admin_post_wp2static_detected_files_show',
+            [ Controller::class, 'wp2staticDetectedFilesShow' ],
             10,
             0
         );

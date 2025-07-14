@@ -37,7 +37,7 @@ $addons = $view['addons'];
                 <tr>
                     <td>
                         <form
-                            name="wp2static-crawl-queue-delete"
+                            name="wp2static-detected-files-delete"
                             method="POST"
                             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 

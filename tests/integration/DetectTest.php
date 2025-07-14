@@ -10,13 +10,13 @@ final class DetectTest extends TestCase {
 
     public function testCount(): void {
         $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'count' ] )['output'];
+        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'count' ] )['output'];
         $count = (int) $lines[ count( $lines ) - 1 ];
         $this->assertGreaterThan( 1000, $count );
     }
 
     /**
-     * Test that the crawl queue list includes
+     * Test that the detected files list includes
      * content that we added.
      */
     public function testIncludesAddedContent(): void {
@@ -24,7 +24,7 @@ final class DetectTest extends TestCase {
         file_put_contents( $dir . '/new-content.html', 'New Content' );
 
         $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
         $this->assertContains(
             ITEnv::getTestContentPath() . '/new-content.html',
             $lines
@@ -32,11 +32,11 @@ final class DetectTest extends TestCase {
     }
 
     /**
-     * Test that the crawl queue list contains expected URL
+     * Test that the detected files list contains expected URL
      */
     public function testList(): void {
         $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'crawl_queue', 'list' ] )['output'];
+        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
         $this->assertContains( '/hello-world/', $lines );
     }
 

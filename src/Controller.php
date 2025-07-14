@@ -106,7 +106,7 @@ class Controller {
         WsLog::createTable();
         CoreOptions::init();
         CrawlCache::createTable();
-        CrawlQueue::createTable();
+        DetectedFiles::createTable();
         DeployCache::createTable();
         JobQueue::createTable();
         Addons::createTable();
@@ -225,11 +225,11 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Crawl Queue',
-            'Crawl Queue',
+            'WP2Static Detected Files',
+            'Detected Files',
             'manage_options',
-            'wp2static-crawl-queue',
-            [ ViewRenderer::class, 'renderCrawlQueue' ]
+            'wp2static-detected-files',
+            [ ViewRenderer::class, 'renderDetectedFiles' ]
         );
 
         add_submenu_page(
@@ -301,19 +301,19 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticCrawlQueueDelete(): void {
+    public static function wp2staticDetectedFilesDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
-        CrawlQueue::truncate();
+        DetectedFiles::truncate();
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
         exit;
     }
 
-    public static function wp2staticCrawlQueueShow(): void {
+    public static function wp2staticDetectedFilesShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawl-queue' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-detected-files' ) );
         exit;
     }
 
@@ -336,7 +336,7 @@ class Controller {
     }
 
     public static function deleteAllCaches(): void {
-        CrawlQueue::truncate();
+        DetectedFiles::truncate();
         CrawlCache::truncate();
         StaticSite::delete();
         ProcessedSite::delete();
@@ -653,7 +653,7 @@ class Controller {
                         if ( $post_id ) {
                             $path = wp_make_link_relative( get_permalink( $post_id ) );
                             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
-                            $detected = CrawlQueue::addPathsIter( $paths );
+                            $detected = DetectedFiles::addPathsIter( $paths );
                             WsLog::l( 'Starting direct deployment for path ' . $path );
                             $deployer->deployPaths( $detected );
                         } else {

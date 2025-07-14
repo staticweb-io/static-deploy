@@ -48,7 +48,7 @@ $paginator_last_page = $view['paginatorLastPage'];
         <input type="hidden" name="paged" value="<?php echo $paginator_page; ?>" />
 
         <p class="search-box">
-            <label class="screen-reader-text" for="post-search-input">Search Crawl Queue URLs:</label>
+            <label class="screen-reader-text" for="post-search-input">Search Detected Files:</label>
             <input type="search" id="post-search-input" name="s" value="<?php echo esc_attr( $search_term ); ?>">
             <input type="submit" id="search-submit" class="button" value="Search URLs">
         </p>
@@ -64,7 +64,7 @@ $paginator_last_page = $view['paginatorLastPage'];
             </div>
         
             <!-- start Paginator template partial -->
-            <h2 class="screen-reader-text">Crawl Queue list navigation</h2>
+            <h2 class="screen-reader-text">Detected Files list navigation</h2>
             <div class="tablenav-pages">
                 <span class="displaying-num"><?php echo number_format( $paginator_total_records ); ?> items</span>
                 <span class="pagination-links">

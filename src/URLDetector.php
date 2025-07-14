@@ -6,7 +6,7 @@
 
     Users can control detection levels
 
-    Saves URLs to CrawlQueue
+    Saves URLs to DetectedFiles
 
 */
 
@@ -238,7 +238,7 @@ class URLDetector {
         $count = 0;
 
         $detected = static::detectURLsIter();
-        foreach ( CrawlQueue::addPathsIter( $detected ) as $_ ) {
+        foreach ( DetectedFiles::addPathsIter( $detected ) as $_ ) {
             ++$count;
         }
 
