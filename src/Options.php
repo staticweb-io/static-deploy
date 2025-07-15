@@ -585,6 +585,63 @@ VALUES (%s, %s, %s);";
     }
 
     /**
+     * Save options saved from the admin UI
+     *
+     * @param array<OptionData> $option_specs
+     */
+    public static function saveFromAdmin(
+        array $option_specs,
+    ): void {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        foreach ( $option_specs as $option_spec ) {
+            $name = $option_spec->name;
+            $v = isset( $_POST[ $name ] ) ? $_POST[ $name ] : '';
+            $column = 'value';
+
+            switch ( $option_spec->type ) {
+                case 'array':
+                    $column = 'blob_value';
+                    $value = preg_replace(
+                        '/^\s+|\s+$/m',
+                        '',
+                        strval( $v )
+                    );
+                    break;
+                case 'boolean':
+                    $value = isset( $_POST[ $name ] ) ? '1' : '0';
+                    break;
+                case 'integer':
+                    $value = (string) intval( $v );
+                    break;
+                case 'password':
+                    $value = sanitize_text_field( strval( $v ) );
+                    $value = self::encrypt_decrypt( 'encrypt', $value );
+                    break;
+                case 'string':
+                    $value = sanitize_text_field( strval( $v ) );
+                    break;
+                case 'url':
+                    $value = esc_url_raw( strval( $v ) );
+                    break;
+                default:
+                    throw WsLog::ex(
+                        'Unknown option type: ' . $option_spec->type
+                        . ' for option: ' . $option_spec->name
+                    );
+            }
+
+            $wpdb->update(
+                $table_name,
+                [ $column => $value ],
+                [ 'name' => $name ]
+            );
+        }
+    }
+
+    /**
      * Save all options POST'ed via UI
      */
     public static function savePosted( string $screen = 'core' ): void {
