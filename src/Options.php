@@ -292,8 +292,8 @@ class Options {
                         'wpallimport',
                         'wp-admin',
                         'wp-content/plugins/*/vendor',
-                        'wp2static-crawled-site',
-                        'wp2static-processed-site',
+                        '*-crawled-site',
+                        '*-processed-site',
                         'yarn-error.log',
                         'yarn.lock',
                     ]
