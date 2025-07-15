@@ -651,95 +651,23 @@ VALUES (%s, %s, %s);";
 
         switch ( $screen ) {
             case 'core':
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['detectCustomPostTypes'] ) ? 1 : 0 ],
-                    [ 'name' => 'detectCustomPostTypes' ]
+                $names = [
+                    'basicAuthPassword',
+                    'basicAuthUser',
+                    'completionEmail',
+                    'completionWebhook',
+                    'completionWebhookMethod',
+                    'deploymentURL',
+                    'detectCustomPostTypes',
+                    'detectPages',
+                    'detectPosts',
+                    'detectUploads',
+                ];
+                $option_specs = array_intersect_key(
+                    self::optionSpecs(),
+                    array_flip( $names )
                 );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['detectPosts'] ) ? 1 : 0 ],
-                    [ 'name' => 'detectPosts' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['detectPages'] ) ? 1 : 0 ],
-                    [ 'name' => 'detectPages' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['detectUploads'] ) ? 1 : 0 ],
-                    [ 'name' => 'detectUploads' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        esc_url_raw( strval( filter_input( INPUT_POST, 'deploymentURL' ) ) ),
-                    ],
-                    [ 'name' => 'deploymentURL' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        sanitize_text_field(
-                            strval( filter_input( INPUT_POST, 'basicAuthUser' ) )
-                        ),
-                    ],
-                    [ 'name' => 'basicAuthUser' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        self::encrypt_decrypt(
-                            'encrypt',
-                            sanitize_text_field(
-                                strval( filter_input( INPUT_POST, 'basicAuthPassword' ) )
-                            )
-                        ),
-                    ],
-                    [ 'name' => 'basicAuthPassword' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        sanitize_text_field(
-                            strval( filter_input( INPUT_POST, 'completionEmail' ) )
-                        ),
-                    ],
-                    [ 'name' => 'completionEmail' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        esc_url_raw( strval( filter_input( INPUT_POST, 'completionWebhook' ) ) ),
-                    ],
-                    [ 'name' => 'completionWebhook' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        sanitize_text_field(
-                            strval( filter_input( INPUT_POST, 'completionWebhookMethod' ) )
-                        ),
-                    ],
-                    [ 'name' => 'completionWebhookMethod' ]
-                );
-
+                self::saveFromAdmin( $option_specs );
                 break;
             case 'jobs':
                 $queue_on_post_save = isset( $_POST['queueJobOnPostSave'] ) ? 1 : 0;
