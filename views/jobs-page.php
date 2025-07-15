@@ -62,7 +62,7 @@ $row = function ( $name ) use ( $options ) {
                     <?php echo $label( 'queueJobOnPostSave' ); ?>
                 </td>
                 <td>
-                    <?php echo $options['queueJobOnPostSave']->description; ?>
+                    <?php echo $options['queueJobOnPostSave']->option_spec->description; ?>
                 </td>
                 <td>
                     <?php echo $input( 'queueJobOnPostSave' ); ?>
@@ -73,7 +73,7 @@ $row = function ( $name ) use ( $options ) {
                     <?php echo $label( 'queueJobOnPostDelete' ); ?>
                 </td>
                 <td>
-                    <?php echo $options['queueJobOnPostDelete']->description; ?>
+                    <?php echo $options['queueJobOnPostDelete']->option_spec->description; ?>
                 </td>
                 <td>
                     <?php echo $input( 'queueJobOnPostDelete' ); ?>
