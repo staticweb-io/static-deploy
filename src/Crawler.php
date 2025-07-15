@@ -80,10 +80,10 @@ class Crawler {
             ],
         ];
 
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
+        $auth_user = Options::getValue( 'basicAuthUser' );
 
         if ( $auth_user ) {
-            $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
+            $auth_password = Options::getValue( 'basicAuthPassword' );
 
             if ( $auth_password ) {
                 WsLog::l( 'Using basic auth credentials to crawl' );
@@ -203,7 +203,7 @@ class Crawler {
 
     public function crawlIter( \Iterator $path_iter ): \Iterator {
         if ( ! isset( $this->concurrency ) ) {
-            $this->concurrency = intval( CoreOptions::getValue( 'crawlConcurrency' ) );
+            $this->concurrency = intval( Options::getValue( 'crawlConcurrency' ) );
         }
 
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );

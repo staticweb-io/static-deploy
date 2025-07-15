@@ -143,7 +143,7 @@
         </thead>
         <tbody>
 
-            <?php foreach ( $view['coreOptions'] as $option ) : ?>
+            <?php foreach ( $view['options'] as $option ) : ?>
 
             <tr>
             <td><?php echo $option->label; ?></td>

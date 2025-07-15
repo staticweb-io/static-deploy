@@ -329,7 +329,7 @@ class Deployer {
         ) {
             $client_options['credentials'] = [
                 'key' => Controller::getValue( 's3AccessKeyID' ),
-                'secret' => \WP2Static\CoreOptions::encrypt_decrypt(
+                'secret' => \WP2Static\Options::encrypt_decrypt(
                     'decrypt',
                     Controller::getValue( 's3SecretAccessKey' )
                 ),
@@ -356,7 +356,7 @@ class Deployer {
             // Use the supplied access keys.
             $credentials = new \Aws\Credentials\Credentials(
                 Controller::getValue( 'cfAccessKeyID' ),
-                \WP2Static\CoreOptions::encrypt_decrypt(
+                \WP2Static\Options::encrypt_decrypt(
                     'decrypt',
                     Controller::getValue( 'cfSecretAccessKey' )
                 )

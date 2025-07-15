@@ -37,7 +37,7 @@ class StaticSite {
 
     public static function getPath(): string {
         if ( ! isset( self::$crawled_site_path ) ) {
-            self::$crawled_site_path = CoreOptions::getValue( 'crawledSitePath' );
+            self::$crawled_site_path = Options::getValue( 'crawledSitePath' );
         }
         return SiteInfo::getPath( 'uploads' ) . self::$crawled_site_path;
     }

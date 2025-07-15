@@ -104,7 +104,7 @@ class Controller {
     public static function activateForSingleSite(): void {
         // prepare DB tables
         WsLog::createTable();
-        CoreOptions::init();
+        Options::init();
         CrawledFiles::createTable();
         DetectedFiles::createTable();
         DeployCache::createTable();
@@ -281,7 +281,7 @@ class Controller {
     }
 
     public function resetDefaultSettings(): void {
-        CoreOptions::seedOptions();
+        Options::seedOptions();
     }
 
     public function deleteDeployCache(): void {
@@ -289,7 +289,7 @@ class Controller {
     }
 
     public static function wp2staticUISaveOptions(): void {
-        CoreOptions::savePosted( 'core' );
+        Options::savePosted( 'core' );
 
         do_action(
             self::getHookName( 'addon_ui_save_options' )
@@ -444,7 +444,7 @@ class Controller {
     }
 
     public static function wp2staticUISaveJobOptions(): void {
-        CoreOptions::savePosted( 'jobs' );
+        Options::savePosted( 'jobs' );
 
         do_action(
             self::getHookName( 'addon_ui_save_job_options' )
@@ -457,20 +457,20 @@ class Controller {
     }
 
     public static function wp2staticSavePostHandler( int $post_id ): void {
-        if ( CoreOptions::getValue( 'queueJobOnPostSave' ) &&
+        if ( Options::getValue( 'queueJobOnPostSave' ) &&
             get_post_status( $post_id ) === 'publish' ) {
             self::wp2staticEnqueueJobs( $post_id );
         }
     }
 
     public static function wp2staticTrashedPostHandler(): void {
-        if ( CoreOptions::getValue( 'queueJobOnPostDelete' ) ) {
+        if ( Options::getValue( 'queueJobOnPostDelete' ) ) {
             self::wp2staticEnqueueJobs();
         }
     }
 
     public static function wp2staticUISaveAdvancedOptions(): void {
-        CoreOptions::savePosted( 'advanced' );
+        Options::savePosted( 'advanced' );
 
         do_action(
             self::getHookName( 'addon_ui_save_advanced_options' )
@@ -494,12 +494,12 @@ class Controller {
         ];
 
         foreach ( $job_types as $key => $job_type ) {
-            if ( (int) CoreOptions::getValue( $key ) === 1 ) {
+            if ( (int) Options::getValue( $key ) === 1 ) {
                 JobQueue::addJob( $job_type, $post_id );
             }
         }
 
-        $immediate_mode = intval( CoreOptions::getValue( 'processQueueImmediately' ) );
+        $immediate_mode = intval( Options::getValue( 'processQueueImmediately' ) );
         if ( $immediate_mode === 1 ) {
             self::wp2staticProcessQueueAdminPost();
         } elseif ( $immediate_mode === 2 ) {
@@ -768,13 +768,13 @@ class Controller {
     }
 
     public static function emailDeployNotification(): void {
-        if ( empty( CoreOptions::getValue( 'completionEmail' ) ) ) {
+        if ( empty( Options::getValue( 'completionEmail' ) ) ) {
             return;
         }
 
         WsLog::l( 'Sending deployment notification email...' );
 
-        $to = CoreOptions::getValue( 'completionEmail' );
+        $to = Options::getValue( 'completionEmail' );
         $subject = 'WP2Static deployment complete on site: ' .
             $site_title = get_bloginfo( 'name' );
         $body = 'WP2Static deployment complete!';
@@ -788,7 +788,7 @@ class Controller {
     }
 
     public static function webhookDeployNotification(): void {
-        $webhook_url = CoreOptions::getValue( 'completionWebhook' );
+        $webhook_url = Options::getValue( 'completionWebhook' );
 
         if ( empty( $webhook_url ) ) {
             return;
@@ -796,7 +796,7 @@ class Controller {
 
         WsLog::l( 'Sending deployment notification webhook...' );
 
-        $http_method = CoreOptions::getValue( 'completionWebhookMethod' );
+        $http_method = Options::getValue( 'completionWebhookMethod' );
 
         $body = $http_method === 'POST' ? 'WP2Static deployment complete!' :
             [ 'message' => 'WP2Static deployment complete!' ];
@@ -804,7 +804,7 @@ class Controller {
         $webhook_response = wp_remote_request(
             $webhook_url,
             [
-                'method' => CoreOptions::getValue( 'completionWebhookMethod' ),
+                'method' => Options::getValue( 'completionWebhookMethod' ),
                 'timeout' => 30,
                 'user-agent' =>
                     apply_filters(

@@ -33,14 +33,14 @@ class SimpleRewriter {
     public function __construct() {
         $this->destination_url = apply_filters(
             Controller::getHookName( 'set_destination_url' ),
-            CoreOptions::getValue( 'deploymentURL' )
+            Options::getValue( 'deploymentURL' )
         );
-        $this->hosts_to_rewrite = CoreOptions::getLineDelimitedBlobValue( 'hostsToRewrite' );
+        $this->hosts_to_rewrite = Options::getLineDelimitedBlobValue( 'hostsToRewrite' );
         $this->site_url = apply_filters(
             Controller::getHookName( 'set_wordpress_site_url' ),
             untrailingslashit( SiteInfo::getUrl( 'site' ) )
         );
-        $url_rewrite = (int) CoreOptions::getValue( 'skipURLRewrite' );
+        $url_rewrite = (int) Options::getValue( 'skipURLRewrite' );
         $this->skip_url_rewrite = $url_rewrite === 1 ? true : false;
     }
 

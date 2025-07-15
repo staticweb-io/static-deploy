@@ -413,7 +413,7 @@ class Controller {
 
         $secret_access_key =
             $_POST['s3SecretAccessKey'] ?
-            \WP2Static\CoreOptions::encrypt_decrypt(
+            \WP2Static\Options::encrypt_decrypt(
                 'encrypt',
                 sanitize_text_field( $_POST['s3SecretAccessKey'] )
             ) : '';
@@ -432,7 +432,7 @@ class Controller {
 
         $secret_access_key =
             $_POST['cfSecretAccessKey'] ?
-            \WP2Static\CoreOptions::encrypt_decrypt(
+            \WP2Static\Options::encrypt_decrypt(
                 'encrypt',
                 sanitize_text_field( $_POST['cfSecretAccessKey'] )
             ) : '';

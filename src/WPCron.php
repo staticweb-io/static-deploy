@@ -83,8 +83,8 @@ class WPCron {
      * @return mixed[] WP-Cron request
      */
     public static function wp2static_cron_with_http_basic_auth( array $cron_request ): array {
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
-        $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
+        $auth_user = Options::getValue( 'basicAuthUser' );
+        $auth_password = Options::getValue( 'basicAuthPassword' );
 
         if ( ! $auth_user || ! $auth_password ) {
             return $cron_request;

@@ -74,7 +74,7 @@ class WsLog {
     ): void {
         if ( $level === 'debug' ) {
             if ( $option_lookups && ! isset( self::$debug_logging ) ) {
-                self::$debug_logging = CoreOptions::getValue( 'debugLogging' );
+                self::$debug_logging = Options::getValue( 'debugLogging' );
             }
 
             if ( ( ! isset( self::$debug_logging )
@@ -170,7 +170,7 @@ class WsLog {
             return 0;
         }
 
-        $max_log_rows = intval( CoreOptions::getValue( 'maxLogRows' ) );
+        $max_log_rows = intval( Options::getValue( 'maxLogRows' ) );
 
         if ( $max_log_rows < 1 ) {
             return 0;

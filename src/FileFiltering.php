@@ -4,7 +4,7 @@ namespace WP2Static;
 
 use PHLAK\Splat\Anchors;
 use PHLAK\Splat\Pattern;
-use WP2Static\CoreOptions;
+use WP2Static\Options;
 use WP2Static\FileIgnorePattern;
 use WP2Static\SiteInfo;
 
@@ -19,7 +19,7 @@ class FileFiltering {
     public function __construct() {
         $this->patterns_to_ignore = [];
 
-        $paths_to_ignore = CoreOptions::getLineDelimitedBlobValue( 'pathsToIgnore' );
+        $paths_to_ignore = Options::getLineDelimitedBlobValue( 'pathsToIgnore' );
 
         foreach ( $paths_to_ignore as $path_pattern ) {
             $this->patterns_to_ignore[] = new FileIgnorePattern( $path_pattern );

@@ -10,12 +10,12 @@ global $wpdb;
 WP2Static\Controller::init( __DIR__ . '/wp2static.php' );
 
 $tables_to_drop = [
-    'core_options',
     'crawled_files',
     'deploy_cache',
     'detected_files',
     'jobs',
     'log',
+    'options',
 ];
 
 foreach ( $tables_to_drop as $table ) {

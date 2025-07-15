@@ -93,7 +93,7 @@ class URLDetector {
             $iterators_to_merge[] = DetectWPIncludesAssets::detect( $filtering );
         }
 
-        if ( CoreOptions::getValue( 'detectUploads' ) ) {
+        if ( Options::getValue( 'detectUploads' ) ) {
             $iterators_to_merge[] =
                 $filtering->getListOfLocalFilesByDir(
                     SiteInfo::getPath( 'uploads' ),
@@ -123,15 +123,15 @@ class URLDetector {
             );
         }
 
-        if ( CoreOptions::getValue( 'detectPosts' ) ) {
+        if ( Options::getValue( 'detectPosts' ) ) {
             $iterators_to_merge[] = DetectPostURLs::detect();
         }
 
-        if ( CoreOptions::getValue( 'detectPages' ) ) {
+        if ( Options::getValue( 'detectPages' ) ) {
             $iterators_to_merge[] = DetectPageURLs::detect();
         }
 
-        if ( CoreOptions::getValue( 'detectCustomPostTypes' ) ) {
+        if ( Options::getValue( 'detectCustomPostTypes' ) ) {
             $iterators_to_merge[] = DetectCustomPostTypeURLs::detect();
         }
 

@@ -101,10 +101,10 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testGetListOfLocalFilesByDir() {
-        $paths_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+        $paths_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'pathsToIgnore'
         );
-        $file_extensions_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+        $file_extensions_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'fileExtensionsToIgnore'
         );
 
@@ -186,10 +186,10 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testPathLooksCrawlable() {
-        $paths_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+        $paths_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'pathsToIgnore'
         );
-        $file_extensions_to_ignore = CoreOptions::getDefaultLineDelimitedBlobValue(
+        $file_extensions_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'fileExtensionsToIgnore'
         );
 

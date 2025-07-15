@@ -3,11 +3,11 @@
 namespace WP2Static;
 
 /*
-    Simple interface to the core options DB table
+    Simple interface to the options DB table
 
 
 */
-class CoreOptions {
+class Options {
 
     /**
      * @var ?array<string, array<string, ?string>>
@@ -20,7 +20,7 @@ class CoreOptions {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'core_options' );
+        return Controller::getTableName( 'options' );
     }
 
     public static function createTable(): void {

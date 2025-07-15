@@ -22,10 +22,10 @@ class DetectSitemapsURLs {
             'verify' => false,
         ];
 
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
+        $auth_user = Options::getValue( 'basicAuthUser' );
 
         if ( $auth_user ) {
-            $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
+            $auth_password = Options::getValue( 'basicAuthPassword' );
 
             if ( $auth_password ) {
                 WsLog::d( 'Using basic auth credentials to crawl' );

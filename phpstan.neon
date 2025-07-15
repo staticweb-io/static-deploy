@@ -24,7 +24,7 @@ parameters:
           path: src/Controller.php
           count: 1
         - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
-          path: src/CoreOptions.php
+          path: src/Options.php
           count: 16
         - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/ViewRenderer.php

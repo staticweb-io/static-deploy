@@ -18,7 +18,7 @@ class ProcessedSite {
     public static function getPath(): string {
         if ( ! isset( self::$processed_site_path ) ) {
             self::$processed_site_path =
-                CoreOptions::getValue( 'processedSitePath' );
+                Options::getValue( 'processedSitePath' );
         }
 
         return SiteInfo::getPath( 'uploads' ) . self::$processed_site_path;

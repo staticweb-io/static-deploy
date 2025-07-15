@@ -11,7 +11,7 @@ use WP2Static\OptionRenderer;
 /**
  * @var array<string, mixed> $options
  */
-$options = $view['coreOptions'];
+$options = $view['options'];
 
 $row = function ( $name ) use ( $options ) {
     $opt = (array) $options[ $name ];

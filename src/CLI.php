@@ -505,7 +505,7 @@ class CLI {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
 
-        CoreOptions::init();
+        Options::init();
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
@@ -542,7 +542,7 @@ class CLI {
         if ( ! empty( $assoc_args ) ) {
             WP_CLI::error( 'No parameters are accepted for this command.' );
         }
-        CoreOptions::init();
+        Options::init();
         WsLog::deleteOldLogs();
 
         $deployer = new DirectDeployer();
@@ -619,7 +619,7 @@ class CLI {
             WP_CLI::error( 'Missing required argument: <get|set|list>' );
         }
 
-        CoreOptions::init();
+        Options::init();
 
         $plugin = Controller::getInstance();
 
@@ -631,12 +631,12 @@ class CLI {
 
             // decrypt basicAuthPassword
             if ( $option_name === 'basicAuthPassword' ) {
-                $option_value = CoreOptions::encrypt_decrypt(
+                $option_value = Options::encrypt_decrypt(
                     'decrypt',
-                    CoreOptions::getValue( $option_name )
+                    Options::getValue( $option_name )
                 );
             } else {
-                $option_value = CoreOptions::getValue( $option_name );
+                $option_value = Options::getValue( $option_name );
             }
 
             WP_CLI::line( $option_value );
@@ -650,19 +650,19 @@ class CLI {
 
             // encrypt basic auth pwd
             if ( ! empty( $value ) && $option_name === 'basicAuthPassword' ) {
-                $value = CoreOptions::encrypt_decrypt(
+                $value = Options::encrypt_decrypt(
                     'encrypt',
                     $value
                 );
             }
 
             // TODO: assert expected result
-            CoreOptions::save( $option_name, $value );
+            Options::save( $option_name, $value );
 
         }
 
         if ( $action === 'list' ) {
-            $options = CoreOptions::getAll();
+            $options = Options::getAll();
 
             WP_CLI\Utils\format_items(
                 'table',
@@ -691,7 +691,7 @@ class CLI {
         ];
 
         foreach ( $detections as $detection ) {
-            CoreOptions::save( $detection, 1 );
+            Options::save( $detection, 1 );
         }
 
         WP_CLI::line( PHP_EOL . 'Common URL detection set!' . PHP_EOL );
@@ -721,11 +721,11 @@ class CLI {
         ];
 
         foreach ( $detections as $detection ) {
-            CoreOptions::save( $detection, 0 );
+            Options::save( $detection, 0 );
         }
 
         // TODO: use filter, rm homepage option?
-        CoreOptions::save( $detection, 1 );
+        Options::save( $detection, 1 );
 
         WP_CLI::line( PHP_EOL . 'Homepage only URL detection set!' . PHP_EOL );
     }
@@ -755,7 +755,7 @@ class CLI {
         ];
 
         foreach ( $detections as $detection ) {
-            CoreOptions::save( $detection, 1 );
+            Options::save( $detection, 1 );
         }
 
         WP_CLI::line( PHP_EOL . 'Maximum URL detection set!' . PHP_EOL );
@@ -783,7 +783,7 @@ class CLI {
         if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
-        CoreOptions::init();
+        Options::init();
         Controller::wp2staticCrawl();
     }
 
@@ -791,7 +791,7 @@ class CLI {
      * Detect WordPress URLs to crawl, based on saved options
      */
     public function detect(): void {
-        CoreOptions::init();
+        Options::init();
         $detected_count = URLDetector::enqueueURLs();
     }
 
@@ -799,7 +799,7 @@ class CLI {
      * Makes a copy of crawled static site with processing applied
      */
     public function post_process(): void {
-        CoreOptions::init();
+        Options::init();
         $post_processor = new PostProcessor();
         $post_processor->processStaticSite( StaticSite::getPath() );
     }

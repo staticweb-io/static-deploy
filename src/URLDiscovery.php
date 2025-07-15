@@ -16,7 +16,7 @@ class URLDiscovery {
         $this->destination_url = untrailingslashit(
             apply_filters(
                 Controller::getHookName( 'set_destination_url' ),
-                CoreOptions::getValue( 'deploymentURL' )
+                Options::getValue( 'deploymentURL' )
             )
         );
         $this->destination_host = \Wa72\Url\Url::parse( $this->destination_url )->getHost();

@@ -5,10 +5,10 @@ namespace WP2Static;
 class ViewRenderer {
 
     public static function renderOptionsPage(): void {
-        CoreOptions::init();
+        Options::init();
 
         $view = [
-            'coreOptions' => CoreOptions::getAll(),
+            'options' => Options::getAll(),
             'nonce_action' => 'wp2static-ui-options',
         ];
 
@@ -16,10 +16,10 @@ class ViewRenderer {
     }
 
     public static function renderAdvancedOptionsPage(): void {
-        CoreOptions::init();
+        Options::init();
 
         $view = [
-            'coreOptions' => CoreOptions::getAll(),
+            'options' => Options::getAll(),
             'nonce_action' => 'wp2static-ui-advanced-options',
         ];
 
@@ -29,7 +29,7 @@ class ViewRenderer {
     public static function renderDiagnosticsPage(): void {
         $view = [];
         $view['memoryLimit'] = ini_get( 'memory_limit' );
-        $view['coreOptions'] = array_values( CoreOptions::getAll() );
+        $view['options'] = array_values( Options::getAll() );
         $view['site_info'] = SiteInfo::getAllInfo();
         $view['phpOutOfDate'] = version_compare( PHP_VERSION, '7.4', '<' );
         $view['uploadsWritable'] = SiteInfo::isUploadsWritable();
@@ -245,7 +245,7 @@ class ViewRenderer {
     }
 
     public static function renderJobsPage(): void {
-        CoreOptions::init();
+        Options::init();
         JobQueue::markFailedJobs();
         JobQueue::squashQueue();
 
@@ -254,16 +254,16 @@ class ViewRenderer {
         $view['jobs'] = JobQueue::getJobs();
 
         $view['jobOptions'] = [
-            'queueJobOnPostSave' => CoreOptions::get( 'queueJobOnPostSave' ),
-            'queueJobOnPostDelete' => CoreOptions::get( 'queueJobOnPostDelete' ),
-            'processQueueImmediately' => CoreOptions::get( 'processQueueImmediately' ),
-            'processQueueInterval' => CoreOptions::get( 'processQueueInterval' ),
-            'autoJobQueueDetection' => CoreOptions::get( 'autoJobQueueDetection' ),
-            'autoJobQueueCrawling' => CoreOptions::get( 'autoJobQueueCrawling' ),
-            'autoJobQueuePostProcessing' => CoreOptions::get( 'autoJobQueuePostProcessing' ),
-            'autoJobQueueDeployment' => CoreOptions::get( 'autoJobQueueDeployment' ),
-            'autoJobQueueDirectDeploy' => CoreOptions::get( 'autoJobQueueDirectDeploy' ),
-            'autoJobQueueDirectDeployPost' => CoreOptions::get( 'autoJobQueueDirectDeployPost' ),
+            'queueJobOnPostSave' => Options::get( 'queueJobOnPostSave' ),
+            'queueJobOnPostDelete' => Options::get( 'queueJobOnPostDelete' ),
+            'processQueueImmediately' => Options::get( 'processQueueImmediately' ),
+            'processQueueInterval' => Options::get( 'processQueueInterval' ),
+            'autoJobQueueDetection' => Options::get( 'autoJobQueueDetection' ),
+            'autoJobQueueCrawling' => Options::get( 'autoJobQueueCrawling' ),
+            'autoJobQueuePostProcessing' => Options::get( 'autoJobQueuePostProcessing' ),
+            'autoJobQueueDeployment' => Options::get( 'autoJobQueueDeployment' ),
+            'autoJobQueueDirectDeploy' => Options::get( 'autoJobQueueDirectDeploy' ),
+            'autoJobQueueDirectDeployPost' => Options::get( 'autoJobQueueDirectDeployPost' ),
         ];
 
         $view = apply_filters(
