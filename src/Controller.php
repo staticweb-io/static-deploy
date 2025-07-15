@@ -282,7 +282,7 @@ class Controller {
     }
 
     public function resetDefaultSettings(): void {
-        Options::seedOptions();
+        Options::seedOptions( Options::optionSpecs() );
     }
 
     public function deleteDeployCache(): void {

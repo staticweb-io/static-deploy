@@ -16,7 +16,7 @@ class Options {
 
     public static function init(): void {
         self::createTable();
-        self::seedOptions();
+        self::seedOptions( self::optionSpecs() );
     }
 
     public static function getTableName(): string {
@@ -344,8 +344,12 @@ class Options {
 
     /**
      * Seed options
+     *
+     * @param array<string, OptionSpec> $option_specs
      */
-    public static function seedOptions(): void {
+    public static function seedOptions(
+        array $option_specs,
+    ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -354,7 +358,7 @@ class Options {
             "INSERT IGNORE INTO $table_name (name, value, blob_value)
 VALUES (%s, %s, %s);";
 
-        foreach ( self::optionSpecs() as $os ) {
+        foreach ( $option_specs as $os ) {
             $query = $wpdb->prepare(
                 $query_string,
                 $os->name,
