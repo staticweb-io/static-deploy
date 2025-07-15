@@ -324,56 +324,6 @@ class Controller {
     public static function deactivateForSingleSite(): void {
     }
 
-    public static function deactivate( bool $network_wide = null ): void {
-        if ( $network_wide ) {
-            global $wpdb;
-
-            $query = 'SELECT blog_id FROM %s WHERE site_id = %d;';
-
-            $site_ids = $wpdb->get_col(
-                sprintf(
-                    $query,
-                    $wpdb->blogs,
-                    $wpdb->siteid
-                )
-            );
-
-            foreach ( $site_ids as $site_id ) {
-                switch_to_blog( $site_id );
-                self::deactivateForSingleSite();
-            }
-
-            restore_current_blog();
-        } else {
-            self::deactivateForSingleSite();
-        }
-    }
-
-    public static function activate( bool $network_wide = null ): void {
-        if ( $network_wide ) {
-            global $wpdb;
-
-            $query = 'SELECT blog_id FROM %s WHERE site_id = %d;';
-
-            $site_ids = $wpdb->get_col(
-                sprintf(
-                    $query,
-                    $wpdb->blogs,
-                    $wpdb->siteid
-                )
-            );
-
-            foreach ( $site_ids as $site_id ) {
-                switch_to_blog( $site_id );
-                self::activateForSingleSite();
-            }
-
-            restore_current_blog();
-        } else {
-            self::activateForSingleSite();
-        }
-    }
-
     /**
      * Add WP2Static submenu
      *
