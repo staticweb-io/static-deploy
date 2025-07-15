@@ -373,12 +373,38 @@ VALUES (%s, %s, %s);";
     }
 
     /**
-     * Get option value
+     * Get option value by name
+     * Works for core options, but doesn't recognize addon options.
      *
      * @throws WP2StaticException
      * @return string option value
      */
     public static function getValue( string $name ): string {
+        $option_lookups = ( $name !== 'debugLogging' );
+        $option_spec = self::optionSpecs()[ $name ];
+
+        if ( ! $option_spec ) {
+            WsLog::l(
+                "Unknown option: $name",
+                $level = 'error',
+                $option_lookups = $option_lookups,
+            );
+            throw new WP2StaticException( "Unknown option: $name" );
+        }
+
+        return self::getSpecValue( $option_spec );
+    }
+
+    /**
+     * Get option value for a given OptionSpec
+     *
+     * @throws WP2StaticException
+     * @return string option value
+     */
+    public static function getSpecValue(
+        OptionSpec $option_spec,
+    ): string {
+        $name = $option_spec->name;
         $option_lookups = ( $name !== 'debugLogging' );
         WsLog::l(
             "Getting value of option: $name",
@@ -387,17 +413,6 @@ VALUES (%s, %s, %s);";
         );
 
         global $wpdb;
-
-        $opt_spec = self::optionSpecs()[ $name ];
-
-        if ( ! $opt_spec ) {
-            WsLog::l(
-                "Unknown option: $name",
-                $level = 'error',
-                $option_lookups = $option_lookups,
-            );
-            throw new WP2StaticException( "Unknown option: $name" );
-        }
 
         $table_name = self::getTableName();
 
@@ -409,10 +424,10 @@ VALUES (%s, %s, %s);";
         $option_value = $wpdb->get_var( $sql );
 
         if ( ! is_string( $option_value ) ) {
-            $option_value = (string) $opt_spec->default_value;
+            $option_value = (string) $option_spec->default_value;
         }
 
-        if ( $opt_spec->type === 'password' ) {
+        if ( $option_spec->type === 'password' ) {
             $option_value = self::encrypt_decrypt( 'decrypt', $option_value );
         }
 
@@ -423,7 +438,7 @@ VALUES (%s, %s, %s);";
             }
         }
 
-        $option_value = apply_filters( (string) $opt_spec->filter_name, $option_value );
+        $option_value = apply_filters( (string) $option_spec->filter_name, $option_value );
 
         return $option_value;
     }
