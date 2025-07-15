@@ -204,7 +204,8 @@ class Options {
                 'crawlConcurrency',
                 '4',
                 'Crawl Concurrency',
-                'The maximum number of files that will be crawled at the same time.'
+                'The maximum number of files that will be crawled at the same time.',
+                min_value: 1,
             ),
             new OptionSpec(
                 'string',
@@ -323,6 +324,7 @@ class Options {
                 '500',
                 'Max Log Rows',
                 'The maximum number of log rows to retain. 0 means there is no limit.',
+                min_value: 0,
             ),
             new OptionSpec(
                 'boolean',

@@ -18,6 +18,7 @@ final class OptionSpec {
     public readonly string $description;
     public readonly ?string $default_blob_value;
     public readonly string $filter_name;
+    public readonly ?int $min_value;
 
     public function __construct(
         string $type,
@@ -26,7 +27,8 @@ final class OptionSpec {
         string $label,
         string $description,
         ?string $default_blob_value = null,
-        ?string $filter_name = null
+        ?string $filter_name = null,
+        ?int $min_value = null,
     ) {
         $this->type = $type;
         $this->name = $name;
@@ -35,6 +37,7 @@ final class OptionSpec {
         $this->description = $description;
         $this->default_blob_value = $default_blob_value;
         $this->filter_name = $filter_name ?? Controller::getHookName( "option_{$name}" );
+        $this->min_value = $min_value;
     }
 
     /**
@@ -50,6 +53,7 @@ final class OptionSpec {
             'description' => $this->description,
             'default_blob_value' => $this->default_blob_value,
             'filter_name' => $this->filter_name,
+            'min_value' => $this->min_value,
         ];
     }
 }
