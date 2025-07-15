@@ -35,35 +35,40 @@ class CrawlCache {
 
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
-            url VARCHAR(2083) NOT NULL,
+            path VARCHAR(2083) NOT NULL,
+            path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
             page_hash CHAR(32) NULL,
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             status SMALLINT DEFAULT 200 NOT NULL,
             redirect_to VARCHAR(2083) NULL,
             content_type VARCHAR(255) DEFAULT '' NOT NULL,
-            PRIMARY KEY  (id),
-            UNIQUE KEY hashed_url_idx (hashed_url)
+            PRIMARY KEY  (id)
         ) $charset_collate;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
+
+        Controller::ensureIndex(
+            $table_name,
+            'path_hash',
+            "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
+        );
     }
 
     /**
-     *  Get all Crawl Cache URLs
+     *  Get all Crawl Cache path hashes
      *
-     *  @return string[] All URLs
+     *  @return string[]
      */
     public static function getHashes(): array {
         global $wpdb;
-        $urls = [];
+        $hashes = [];
 
         $table_name = self::getTableName();
 
-        $urls = $wpdb->get_col( "SELECT hashed_url FROM $table_name" );
+        $hashes = $wpdb->get_col( "SELECT path_hash FROM $table_name" );
 
-        return $urls;
+        return $hashes;
     }
 
     public static function getTableName(): string {
@@ -97,10 +102,10 @@ class CrawlCache {
                 )
             );
             $sql = "INSERT INTO $table_name
-                    (url,content_type,redirect_to,status,page_hash,time)
+                    (path,content_type,redirect_to,status,page_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE
-                      url = VALUES(url),
+                      path = VALUES(path),
                       content_type = VALUES(content_type),
                       redirect_to = VALUES(redirect_to),
                       status = VALUES(status),
@@ -145,7 +150,7 @@ class CrawlCache {
         while ( true ) {
             $qs = "SELECT
                 cc.id,
-                cc.url AS path,
+                cc.path,
                 cc.page_hash AS content_hash,
                 cc.status,
                 cc.redirect_to,
@@ -153,7 +158,7 @@ class CrawlCache {
                 cq.filename
               FROM $table_name AS cc
               JOIN $queue_table_name AS cq
-              ON cc.hashed_url = cq.path_hash
+              ON cc.path_hash = cq.path_hash
               WHERE cc.id > %d
               ORDER BY cc.id ASC
               LIMIT %d";
@@ -246,7 +251,7 @@ class CrawlCache {
     }
 
     public static function addUrl(
-        string $url,
+        string $path,
         string $page_hash,
         int $status,
         ?string $redirect_to
@@ -254,13 +259,13 @@ class CrawlCache {
         global $wpdb;
 
         $table_name = self::getTableName();
-        $sql = "insert into {$table_name} (time, url, page_hash, status, redirect_to)
+        $sql = "insert into {$table_name} (time, path, page_hash, status, redirect_to)
                 VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY
                 UPDATE time = %s, page_hash = %s, status = %s, redirect_to = %s";
         $sql = $wpdb->prepare(
             $sql,
             current_time( 'mysql' ),
-            $url,
+            $path,
             $page_hash,
             $status,
             $redirect_to,
@@ -274,66 +279,64 @@ class CrawlCache {
     }
 
     // TODO: enable date filter as option/alternate method
-    public static function getUrl( string $url, string $page_hash ): string {
+    public static function getUrl( string $path, string $page_hash ): string {
         global $wpdb;
 
-        $hashed_url = md5( $url );
+        $path_hash = md5( $path );
 
         $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
-            "SELECT hashed_url FROM $table_name WHERE" .
-            ' hashed_url = %s and page_hash = %s  LIMIT 1',
-            [ $hashed_url, $page_hash ]
+            "SELECT path FROM $table_name WHERE" .
+            ' path_hash = %s and page_hash = %s  LIMIT 1',
+            [ $path_hash, $page_hash ]
         );
 
-        $hashed_url = $wpdb->get_var( $sql );
+        $path = $wpdb->get_var( $sql );
 
-        return (string) $hashed_url;
+        return (string) $path;
     }
 
     /**
-     *  Get all URLs in CrawlCache
+     *  Get all paths in CrawlCache
      *
      *  @return object[] {
-     *      All crawlable URLs
+     *      All crawlable paths
      *
      *      @type int      $id                   ID
-     *      @type string   $hashed_url           MD5 hashed URL
-     *      @type string   $url                  URL in plain text
+     *      @type string   $path_hash            MD5 hashed path
+     *      @type string   $path                 Path in plain text
      *      @type string   $page_hash            MD5 hashed page
      *  }
      */
     public static function getURLs(): array {
         global $wpdb;
-        $urls = [];
+        $paths = [];
 
         $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
             "
-            SELECT id, hashed_url, url, page_hash
+            SELECT id, path_hash, path, page_hash
             FROM $table_name
-            ORDER BY url
+            ORDER BY path
             "
         );
 
         foreach ( $rows as $row ) {
-            $urls[ $row->id ] = $row;
+            $paths[ $row->id ] = $row;
         }
 
-        return $urls;
+        return $paths;
     }
 
-    public static function rmUrl( string $url ): void {
+    public static function rmUrl( string $path ): void {
         global $wpdb;
 
-        $table_name = self::getTableName();
-
         $wpdb->delete(
-            $table_name,
+            self::getTableName(),
             [
-                'hashed_url' => md5( $url ),
+                'path_hash' => md5( $path ),
             ]
         );
     }
@@ -396,12 +399,12 @@ class CrawlCache {
         $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
-            "SELECT url, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
+            "SELECT path, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
         );
 
         foreach ( $rows as $row ) {
-            $redirs[ $row->url ] = [
-                'url' => $row->url,
+            $redirs[ $row->path ] = [
+                'url' => $row->path,
                 'redirect_to' => $row->redirect_to,
             ];
         }
