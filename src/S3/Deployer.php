@@ -78,7 +78,7 @@ class Deployer {
             {
             foreach ( $files as $filename => $file_object ) {
                 $base_name = basename( $filename );
-                if ( $base_name != '.' && $base_name != '..' ) {
+                if ( $base_name !== '.' && $base_name !== '..' ) {
                     yield [
                         'filename' => $filename,
                         'path' => str_replace( $processed_site_path, '', $filename ),
