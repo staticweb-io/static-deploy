@@ -2,7 +2,6 @@
 
 namespace WP2Static;
 
-use ZipArchive;
 use WP_Error;
 use WP_CLI;
 use WP_Post;
