@@ -73,7 +73,7 @@ class Controller {
             is_file( $s3_path ) ?
                 \WP2Static\SiteInfo::getUrl( 'uploads' ) . 'wp2static-processed-site.s3' : '#';
 
-        require_once __DIR__ . '/../views/s3-page.php';
+        require_once __DIR__ . '/../../views/s3/s3-options-page.php';
     }
 
 

@@ -39,8 +39,9 @@
             let base = baseNameOf path;
             in type == "directory" && base == "src"
             || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
-            == "views" || type == "regular" && pkgs.lib.hasSuffix ".php" base
-            || base == "composer.json" || base == "composer.lock";
+            == "views" || pkgs.lib.hasInfix "/views/" path || type == "regular"
+            && pkgs.lib.hasSuffix ".php" base || base == "composer.json"
+            || base == "composer.lock";
         };
         wp2staticSrcDev = pkgs.lib.cleanSourceWith {
           src = self;
@@ -48,7 +49,8 @@
             let base = baseNameOf path;
             in type == "directory" && base == "src" || type == "directory"
             && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
-            == "directory" && base == "views" || type == "regular"
+            == "directory" && base == "views"
+            || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
