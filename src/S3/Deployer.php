@@ -90,7 +90,7 @@ class Deployer {
             }
 
             foreach ( $redirects as $redirect ) {
-                $path = $redirect['url'];
+                $path = $redirect->path;
 
                 if ( mb_substr( $path, -1 ) === '/' ) {
                     $path = $path . 'index.html';
@@ -98,7 +98,7 @@ class Deployer {
 
                 yield [
                     'path' => $path,
-                    'redirect_to' => $redirect['redirect_to'],
+                    'redirect_to' => $redirect->redirect_to,
                 ];
             }
         };

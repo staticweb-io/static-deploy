@@ -368,7 +368,7 @@ class CrawledFiles {
     }
 
     /**
-     * @return mixed[] redirects
+     * @return object[] redirects
      */
     public static function listRedirects(): array {
         global $wpdb;
@@ -379,14 +379,6 @@ class CrawledFiles {
             "SELECT path, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
         );
 
-        $redirs = [];
-        foreach ( $rows as $row ) {
-            $redirs[ $row->path ] = [
-                'url' => $row->path,
-                'redirect_to' => $row->redirect_to,
-            ];
-        }
-
-        return $redirs;
+        return $rows;
     }
 }
