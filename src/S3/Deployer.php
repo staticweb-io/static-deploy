@@ -59,7 +59,7 @@ class Deployer {
         $this->s3_client = self::s3Client();
     }
 
-    public function uploadFiles( string $processed_site_path ) : void {
+    public function uploadFiles( string $processed_site_path ): void {
         // check if dir exists
         if ( ! is_dir( $processed_site_path ) ) {
             return;
@@ -73,9 +73,10 @@ class Deployer {
             )
         );
 
-        $file_arrays = function ( $files, $redirects )
-            use ( $processed_site_path )
-            {
+        $file_arrays = function (
+            $files,
+            $redirects,
+        ) use ( $processed_site_path ) {
             foreach ( $files as $filename => $file_object ) {
                 $base_name = basename( $filename );
                 if ( $base_name !== '.' && $base_name !== '..' ) {
@@ -88,7 +89,7 @@ class Deployer {
 
             foreach ( $redirects as $redirect ) {
                 $path = $redirect['url'];
-    
+
                 if ( mb_substr( $path, -1 ) === '/' ) {
                     $path = $path . 'index.html';
                 }
@@ -100,12 +101,12 @@ class Deployer {
             }
         };
 
-        $redirects = apply_filters( 'wp2static_list_redirects', []);
+        $redirects = apply_filters( 'wp2static_list_redirects', [] );
 
         self::uploadFilesIter( $file_arrays( $files, $redirects ) );
     }
 
-    public function uploadFilesIter( \Iterator $files ) : void {
+    public function uploadFilesIter( \Iterator $files ): void {
         $object_acl = Controller::getValue( 's3ObjectACL' );
         $base_put_data = [
             'Bucket' => Controller::getValue( 's3Bucket' ),
@@ -120,16 +121,16 @@ class Deployer {
         $s3_remote_path = Controller::getValue( 's3RemotePath' );
         $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
 
-        $items_by_iterKey = [];
+        $items_by_iter_key = [];
 
         $command_generator = function (
-            $iterator
-        ) use (
-            &$items_by_iterKey,
+            $iterator,
             $base_put_data,
             $s3_prefix,
+        ) use (
+            &$items_by_iter_key,
         ) {
-            $iterKey = 0;
+            $iter_key = 0;
             $last_log_time = microtime( true );
 
             foreach ( $iterator as $file ) {
@@ -138,8 +139,8 @@ class Deployer {
                 if ( $total > 0 && $now - $last_log_time >= 60 ) {
                     WsLog::l( 'Deployed ' . $file['path'] );
                     $notice = "Deploy progress: $this->deployed_ct deployed," .
-                              " $this->deploy_error_ct failed," .
-                              " $this->deploy_cache_ct skipped (cached).";
+                        " $this->deploy_error_ct failed," .
+                        " $this->deploy_cache_ct skipped (cached).";
                     WsLog::l( $notice );
                     $last_log_time = microtime( true );
                 }
@@ -177,8 +178,8 @@ class Deployer {
 
                 if ( $body !== null ) {
                     $file_hash = md5( $body, true );
-                } else if ( $filename ) {
-                    $file_hash = md5_file( $filename, true);
+                } elseif ( $filename ) {
+                    $file_hash = md5_file( $filename, true );
                 }
 
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
@@ -199,24 +200,27 @@ class Deployer {
 
                     if ( $redirect_to ) {
                         $cmd_data['WebsiteRedirectLocation'] = $redirect_to;
-                    } else if ( ! $file_hash ) {
+                    } elseif ( ! $file_hash ) {
                         WsLog::l( 'Failed to hash file ' . $filename );
                         continue;
                     } else {
                         $cmd_data['ContentMD5'] = base64_encode( $file_hash );
                         $cmd_data['ContentType'] = $content_type;
                     }
-    
+
                     $cmd_data['Key'] = $s3_key;
                     $hash = md5( $cmd_name . (string) json_encode( $cmd_data ) );
-    
+
                     if ( $body !== null ) {
                         $cmd_data['Body'] = $body;
-                    } else if ( $filename ) {
+                    } elseif ( $filename ) {
                         $cmd_data['SourceFile'] = $filename;
                     }
-    
-                    if ( ! isset( $cmd_data['Body'] ) && ! $cmd_data['SourceFile'] && ! $cmd_data['WebsiteRedirectLocation'] ) {
+
+                    if ( ! isset( $cmd_data['Body'] )
+                    && ! $cmd_data['SourceFile']
+                    && ! $cmd_data['WebsiteRedirectLocation']
+                    ) {
                         WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
                         continue;
                     }
@@ -229,25 +233,25 @@ class Deployer {
                 );
 
                 if ( $is_cached ) {
-                    $this->deploy_cache_ct++;
+                    ++$this->deploy_cache_ct;
                     continue;
                 }
 
-                // Save data so we can retrieve it by iterKey
+                // Save data so we can retrieve it by iter_key
                 // in the fulfilled handler
-                $items_by_iterKey[$iterKey] = [
+                $items_by_iter_key[ $iter_key ] = [
                     'cache_key' => $cache_key,
-                    'hash' => $hash
+                    'hash' => $hash,
                 ];
-                $iterKey++;
+                ++$iter_key;
 
-                yield $this->s3_client->getCommand($cmd_name, array_merge( [], $cmd_data ) );
+                yield $this->s3_client->getCommand( $cmd_name, array_merge( [], $cmd_data ) );
             }
         };
 
         $commands = $command_generator( $files );
 
-        $concurrency = intval ( Controller::getValue( 's3Concurrency' ) || '4' );
+        $concurrency = intval( Controller::getValue( 's3Concurrency' ) || '4' );
         $config = [
             'concurrency' => $concurrency,
         ];
@@ -256,21 +260,27 @@ class Deployer {
             $this->s3_client,
             $commands,
             [
-                'fulfilled' => function ($result, $iterKey, $promise)
-                    use ( &$items_by_iterKey ) {
-                    $item = $items_by_iterKey[$iterKey];
-                    \WP2Static\DeployCache::addFile( $item['cache_key'], $this->namespace, $item['hash'] );
+                // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+                'fulfilled' =>
+                function ( $result, $iter_key, $promise ) use ( &$items_by_iter_key ) {
+                    $item = $items_by_iter_key[ $iter_key ];
+                    \WP2Static\DeployCache::addFile(
+                        $item['cache_key'],
+                        $this->namespace,
+                        $item['hash']
+                    );
                     $this->addCfPath( $item['cache_key'] );
-                    unset($items_by_iterKey[$iterKey]);
+                    unset( $items_by_iter_key[ $iter_key ] );
                     $this->deployed_ct++;
                 },
-                'rejected' => function ( $reason, $iterKey, $promise)
-                    use ( &$items_by_iterKey ) {
-                    $item = $items_by_iterKey[$iterKey];
+                // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+                'rejected' =>
+                function ( $reason, $iter_key, $promise ) use ( &$items_by_iter_key ) {
+                    $item = $items_by_iter_key[ $iter_key ];
                     WsLog::l( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
-                    unset($items_by_iterKey[$iterKey]);
+                    unset( $items_by_iter_key[ $iter_key ] );
                     $this->deploy_error_ct++;
-                }
+                },
             ],
             $config
         );
@@ -280,8 +290,8 @@ class Deployer {
         $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
         if ( $total % 300 === 0 ) {
             $notice = "Deploy progress: $this->deployed_ct deployed," .
-                      " $this->deploy_error_ct failed," .
-                      " $this->deploy_cache_ct skipped (cached).";
+                " $this->deploy_error_ct failed," .
+                " $this->deploy_cache_ct skipped (cached).";
             WsLog::l( $notice );
         }
 
@@ -299,19 +309,19 @@ class Deployer {
         }
     }
 
-    public static function s3Client() : \Aws\S3\S3Client {
+    public static function s3Client(): \Aws\S3\S3Client {
         $client_options = [
             'version' => 'latest',
             'region' => Controller::getValue( 's3Region' ),
         ];
 
         /*
-           If no credentials option, SDK attempts to load credentials from
-           your environment in the following order:
-
-           - environment variables.
-           - a credentials .ini file.
-           - an IAM role.
+         * If no credentials option, SDK attempts to load credentials from
+         * your environment in the following order:
+         *
+         * - environment variables.
+         * - a credentials .ini file.
+         * - an IAM role.
          */
         if (
             Controller::getValue( 's3AccessKeyID' ) &&
@@ -331,14 +341,14 @@ class Deployer {
         return new \Aws\S3\S3Client( $client_options );
     }
 
-    public static function cloudfrontClient() : \Aws\CloudFront\CloudFrontClient {
+    public static function cloudfrontClient(): \Aws\CloudFront\CloudFrontClient {
         /*
-            If no credentials option, SDK attempts to load credentials from
-            your environment in the following order:
-                 - environment variables.
-                 - a credentials .ini file.
-                 - an IAM role.
-        */
+         * If no credentials option, SDK attempts to load credentials from
+         * your environment in the following order:
+         * - environment variables.
+         * - a credentials .ini file.
+         * - an IAM role.
+         */
         if (
             Controller::getValue( 'cfAccessKeyID' ) &&
             Controller::getValue( 'cfSecretAccessKey' )
@@ -380,7 +390,7 @@ class Deployer {
         return $client;
     }
 
-    public function addCfPath(String $path) : void {
+    public function addCfPath( string $path ): void {
         if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
             if ( 0 === substr_compare( $path, '/index.html', -11 ) ) {
                 $path = substr( $path, 0, -10 );
@@ -395,7 +405,7 @@ class Deployer {
      *
      * @param mixed[] $items mixed array
      */
-    public static function createInvalidation( string $distribution_id, array $items ) : string {
+    public static function createInvalidation( string $distribution_id, array $items ): string {
         $client = self::cloudfrontClient();
 
         return $client->createInvalidation(
@@ -417,7 +427,7 @@ class Deployer {
      *
      * @param mixed[] $items mixed array
      */
-    public static function invalidateItems( string $distribution_id, array $items ) : ?string {
+    public static function invalidateItems( string $distribution_id, array $items ): ?string {
         try {
             return self::createInvalidation( $distribution_id, $items );
         } catch ( AwsException $e ) {
@@ -425,5 +435,4 @@ class Deployer {
             return null;
         }
     }
-
 }

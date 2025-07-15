@@ -3,7 +3,7 @@
 namespace WP2Static\S3;
 
 class Controller {
-    public function run() : void {
+    public function run(): void {
         add_filter(
             'wp2static_add_menu_items',
             [ 'WP2Static\S3\Controller', 'addSubmenuPage' ]
@@ -47,7 +47,10 @@ class Controller {
         );
     }
 
-    public static function deployerClass( string $deployer_class, string $enabled_deployer ) : string {
+    public static function deployerClass(
+        string $deployer_class,
+        string $enabled_deployer
+    ): string {
         if ( $enabled_deployer !== 'wp2static-addon-s3' ) {
             return $deployer_class;
         }
@@ -59,7 +62,7 @@ class Controller {
      *
      *  @return mixed[] All options
      */
-    public static function getOptions() : array {
+    public static function getOptions(): array {
         global $wpdb;
         $options = [];
 
@@ -77,7 +80,7 @@ class Controller {
     /**
      * Seed options
      */
-    public static function seedOptions() : void {
+    public static function seedOptions(): void {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_addon_s3_options';
@@ -242,7 +245,7 @@ class Controller {
      *
      * @param mixed $value option value to save
      */
-    public static function saveOption( string $name, $value ) : void {
+    public static function saveOption( string $name, $value ): void {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_addon_s3_options';
@@ -254,7 +257,7 @@ class Controller {
         );
     }
 
-    public static function renderS3Page() : void {
+    public static function renderS3Page(): void {
         self::createOptionsTable();
         self::seedOptions();
 
@@ -273,7 +276,7 @@ class Controller {
     }
 
 
-    public function deploy( string $processed_site_path, string $enabled_deployer ) : void {
+    public function deploy( string $processed_site_path, string $enabled_deployer ): void {
         if ( $enabled_deployer !== 'wp2static-addon-s3' ) {
             return;
         }
@@ -284,7 +287,7 @@ class Controller {
         $s3_deployer->uploadFiles( $processed_site_path );
     }
 
-    public static function createOptionsTable() : void {
+    public static function createOptionsTable(): void {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_addon_s3_options';
@@ -318,10 +321,10 @@ class Controller {
         self::seedOptions();
     }
 
-    public static function deactivateForSingleSite() : void {
+    public static function deactivateForSingleSite(): void {
     }
 
-    public static function deactivate( bool $network_wide = null ) : void {
+    public static function deactivate( bool $network_wide = null ): void {
         if ( $network_wide ) {
             global $wpdb;
 
@@ -346,7 +349,7 @@ class Controller {
         }
     }
 
-    public static function activate( bool $network_wide = null ) : void {
+    public static function activate( bool $network_wide = null ): void {
         if ( $network_wide ) {
             global $wpdb;
 
@@ -377,13 +380,13 @@ class Controller {
      * @param mixed[] $submenu_pages array of submenu pages
      * @return mixed[] array of submenu pages
      */
-    public static function addSubmenuPage( array $submenu_pages ) : array {
+    public static function addSubmenuPage( array $submenu_pages ): array {
         $submenu_pages['s3'] = [ 'WP2Static\S3\Controller', 'renderS3Page' ];
 
         return $submenu_pages;
     }
 
-    public static function saveOptionsFromUI() : void {
+    public static function saveOptionsFromUI(): void {
         check_admin_referer( 'wp2static-s3-options' );
 
         global $wpdb;
@@ -503,7 +506,7 @@ class Controller {
      *
      * @return string option value
      */
-    public static function getValue( string $name ) : string {
+    public static function getValue( string $name ): string {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_addon_s3_options';
@@ -522,7 +525,7 @@ class Controller {
         return $option_value;
     }
 
-    public function addOptionsPage() : void {
+    public function addOptionsPage(): void {
         add_submenu_page(
             '',
             'S3 Deployment Options',
@@ -533,4 +536,3 @@ class Controller {
         );
     }
 }
-

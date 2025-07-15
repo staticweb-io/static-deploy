@@ -13,7 +13,7 @@ class MimeTypes {
      * @param string $filename filename
      * @return string mimetype
      */
-    public static function guessMimeType( string $filename ) : string {
+    public static function guessMimeType( string $filename ): string {
         static $mime_types = [
             '123' => 'application/vnd.lotus-1-2-3',
             '3dml' => 'text/vnd.in3d.3dml',
