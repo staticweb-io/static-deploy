@@ -37,10 +37,10 @@
           src = self;
           filter = path: type:
             let base = baseNameOf path;
-            in type == "directory" && base == "src" || type == "directory"
-            && base == "views" || type == "regular"
-            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock";
+            in type == "directory" && base == "src"
+            || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
+            == "views" || type == "regular" && pkgs.lib.hasSuffix ".php" base
+            || base == "composer.json" || base == "composer.lock";
         };
         wp2staticSrcDev = pkgs.lib.cleanSourceWith {
           src = self;
