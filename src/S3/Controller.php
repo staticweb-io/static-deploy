@@ -45,13 +45,6 @@ class Controller {
             'https://wp2static.com/addons/s3/',
             'Deploys to S3 with optional CloudFront cache invalidation'
         );
-
-        if ( defined( 'WP_CLI' ) ) {
-            \WP_CLI::add_command(
-                'wp2static s3',
-                [ CLI::class, 's3' ]
-            );
-        }
     }
 
     public static function deployerClass( string $deployer_class, string $enabled_deployer ) : string {
