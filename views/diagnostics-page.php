@@ -146,7 +146,7 @@
             <?php foreach ( $view['options'] as $option ) : ?>
 
             <tr>
-            <td><?php echo $option->label; ?></td>
+            <td><?php echo $option->option_spec->label; ?></td>
             <td><?php echo $option->value; ?></td>
             </tr>
 
