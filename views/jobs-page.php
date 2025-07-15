@@ -200,7 +200,7 @@ $row = function ( $name ) use ( $options ) {
 
     <h3>Job Queue/History</h3>
 
-    <p><i><a href="<?php echo admin_url( 'admin.php?page=wp2static-jobs' ); ?>">Refresh page</a> to see latest status</i><p>
+    <p><i><a href="<?php echo Controller::getAdminUrl( 'jobs' ); ?>">Refresh page</a> to see latest status</i><p>
 
     <hr>
 

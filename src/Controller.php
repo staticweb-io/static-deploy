@@ -211,8 +211,11 @@ class Controller {
         ];
 
         foreach ( $submenu_pages as $slug => $method ) {
-            $menu_slug =
-                $slug === 'run' ? 'wp2static' : 'wp2static-' . $slug;
+            if ( $slug === 'run' ) {
+                $page = 'wp2static';
+            } else {
+                $page = self::getHookName( $slug );
+            }
 
             $title = ucfirst( $slug );
 
@@ -221,7 +224,7 @@ class Controller {
                 'WP2Static ' . ucfirst( $slug ),
                 $title,
                 'manage_options',
-                $menu_slug,
+                $page,
                 $method
             );
         }
@@ -231,7 +234,7 @@ class Controller {
             'WP2Static Detected Files',
             'Detected Files',
             'manage_options',
-            'wp2static-detected-files',
+            self::getHookName( 'detected_files' ),
             [ ViewRenderer::class, 'renderDetectedFiles' ]
         );
 
@@ -240,7 +243,7 @@ class Controller {
             'WP2Static Crawled Files',
             'Crawled Files',
             'manage_options',
-            'wp2static-crawled-files',
+            self::getHookName( 'crawled_files' ),
             [ ViewRenderer::class, 'renderCrawledFiles' ]
         );
 
@@ -249,7 +252,7 @@ class Controller {
             'WP2Static Deploy Cache',
             'Deploy Cache',
             'manage_options',
-            'wp2static-deploy-cache',
+            self::getHookName( 'deploy_cache' ),
             [ ViewRenderer::class, 'renderDeployCache' ]
         );
 
@@ -258,7 +261,7 @@ class Controller {
             'WP2Static Static Site',
             'Static Site',
             'manage_options',
-            'wp2static-static-site',
+            self::getHookName( 'static_site' ),
             [ ViewRenderer::class, 'renderStaticSitePaths' ]
         );
 
@@ -267,7 +270,7 @@ class Controller {
             'WP2Static Post Processed Site',
             'Post Processed Site',
             'manage_options',
-            'wp2static-post-processed-site',
+            self::getHookName( 'post_processed_site' ),
             [ ViewRenderer::class, 'renderPostProcessedSitePaths' ]
         );
     }
@@ -277,7 +280,7 @@ class Controller {
             return true;
         }
 
-        $referred_by_admin = check_admin_referer( 'wp2static-options' );
+        $referred_by_admin = check_admin_referer( self::getHookName( 'options' ) );
         $user_can_manage_options = current_user_can( 'manage_options' );
 
         return $referred_by_admin && $user_can_manage_options;
@@ -291,6 +294,26 @@ class Controller {
         DeployCache::truncate();
     }
 
+    public static function getAdminUrl( string $slug ): string {
+        if ( $slug === 'run' ) {
+            $page = 'wp2static';
+        } else {
+            $page = self::getHookName( $slug );
+        }
+
+        return admin_url( 'admin.php?page=' . $page );
+    }
+
+    public static function getAdminPostUrl( string $slug ): string {
+        if ( $slug === 'run' ) {
+            $page = 'wp2static';
+        } else {
+            $page = self::getHookName( $slug );
+        }
+
+        return admin_url( 'admin-post.php?page=' . $page );
+    }
+
     public static function UISaveOptions(): void {
         Options::savePosted( 'core' );
 
@@ -300,7 +323,7 @@ class Controller {
 
         check_admin_referer( self::getHookName( 'ui_options' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-options' ) );
+        wp_safe_redirect( self::getAdminUrl( 'options' ) );
         exit;
     }
 
@@ -309,14 +332,14 @@ class Controller {
 
         DetectedFiles::truncate();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
     public static function adminDetectedFilesShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-detected-files' ) );
+        wp_safe_redirect( self::getAdminUrl( 'detected_files' ) );
         exit;
     }
 
@@ -325,7 +348,7 @@ class Controller {
 
         JobQueue::truncate();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
+        wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
     }
 
@@ -334,7 +357,7 @@ class Controller {
 
         self::deleteAllCaches();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
@@ -353,7 +376,7 @@ class Controller {
 
         self::processQueue();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
+        wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
     }
 
@@ -367,7 +390,7 @@ class Controller {
             DeployCache::truncate();
         }
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
@@ -375,15 +398,13 @@ class Controller {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
         $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
+        $admin_url = self::getAdminUrl( 'deploy_cache' );
         if ( $deploy_namespace !== '' ) {
             wp_safe_redirect(
-                admin_url(
-                    'admin.php?page=wp2static-deploy-cache&deploy_namespace=' .
-                    urlencode( $deploy_namespace )
-                )
+                $admin_url . '&deploy_namespace=' . urlencode( $deploy_namespace )
             );
         } else {
-            wp_safe_redirect( admin_url( 'admin.php?page=wp2static-deploy-cache' ) );
+            wp_safe_redirect( $admin_url );
         }
 
         exit;
@@ -394,14 +415,14 @@ class Controller {
 
         CrawledFiles::truncate();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
     public static function adminCrawledFilesShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawled-files' ) );
+        wp_safe_redirect( self::getAdminUrl( 'crawled_files' ) );
         exit;
     }
 
@@ -410,14 +431,14 @@ class Controller {
 
         ProcessedSite::delete();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
     public static function adminPostProcessedSiteShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-post-processed-site' ) );
+        wp_safe_redirect( self::getAdminUrl( 'post_processed_site' ) );
         exit;
     }
 
@@ -426,7 +447,7 @@ class Controller {
 
         WsLog::truncate();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-logs' ) );
+        wp_safe_redirect( self::getAdminUrl( 'logs' ) );
         exit;
     }
 
@@ -435,14 +456,14 @@ class Controller {
 
         StaticSite::delete();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
+        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
         exit;
     }
 
     public static function adminStaticSiteShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-static-site' ) );
+        wp_safe_redirect( self::getAdminUrl( 'static_site' ) );
         exit;
     }
 
@@ -455,7 +476,7 @@ class Controller {
 
         check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
+        wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
     }
 
@@ -481,7 +502,7 @@ class Controller {
 
         check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-advanced' ) );
+        wp_safe_redirect( self::getAdminUrl( 'advanced' ) );
         exit;
     }
 
@@ -554,7 +575,7 @@ class Controller {
         );
 
         if ( ! defined( 'WP_CLI' ) ) {
-            wp_safe_redirect( admin_url( 'admin.php?page=wp2static-addons' ) );
+            wp_safe_redirect( self::getAdminUrl( 'addons' ) );
         }
 
         exit;
@@ -569,7 +590,7 @@ class Controller {
 
         self::wp2staticEnqueueJobs();
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
+        wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
     }
 

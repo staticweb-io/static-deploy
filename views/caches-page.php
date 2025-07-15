@@ -2,6 +2,8 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
+use WP2Static\Controller;
+
 /**
  * @var mixed[] $view
  */
@@ -55,7 +57,7 @@ select.wp2static-select {
 </style>
 
 <div class="wrap">
-    <p><i><a href="<?php echo admin_url( 'admin.php?page=wp2static-caches' ); ?>">Refresh page</a> to see latest status</i><p>
+    <p><i><a href="<?php echo Controller::getAdminUrl( 'caches' ); ?>">Refresh page</a> to see latest status</i><p>
 
     <table class="widefat striped">
         <thead>
