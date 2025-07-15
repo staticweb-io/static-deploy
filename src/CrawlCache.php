@@ -35,7 +35,7 @@ class CrawlCache {
 
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            hashed_url CHAR(32) NOT NULL,
+            hashed_url CHAR(32) AS ( md5(url) ) PERSISTENT,
             url VARCHAR(2083) NOT NULL,
             page_hash CHAR(32) NULL,
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -93,11 +93,11 @@ class CrawlCache {
                 array_fill(
                     0,
                     count( $paths ),
-                    '(%s,%s,%s,%s,%s,%s,NOW())'
+                    '(%s,%s,%s,%s,%s,NOW())'
                 )
             );
             $sql = "INSERT INTO $table_name
-                    (hashed_url,url,content_type,redirect_to,status,page_hash,time)
+                    (url,content_type,redirect_to,status,page_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE
                       url = VALUES(url),
@@ -111,7 +111,6 @@ class CrawlCache {
             foreach ( $paths as $path ) {
                 array_push(
                     $values,
-                    md5( $path['path'] ),
                     $path['path'],
                     $path['content_type'],
                     $path['redirect_to'],
@@ -255,13 +254,12 @@ class CrawlCache {
         global $wpdb;
 
         $table_name = self::getTableName();
-        $sql = "insert into {$table_name} (time, hashed_url, url, page_hash, status, redirect_to)
-                VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY
+        $sql = "insert into {$table_name} (time, url, page_hash, status, redirect_to)
+                VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY
                 UPDATE time = %s, page_hash = %s, status = %s, redirect_to = %s";
         $sql = $wpdb->prepare(
             $sql,
             current_time( 'mysql' ),
-            md5( $url ),
             $url,
             $page_hash,
             $status,
