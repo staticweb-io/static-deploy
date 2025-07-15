@@ -70,8 +70,6 @@ select.wp2static-select {
                 <td>Detected Files</td>
                 <td><?php echo $detected_files_total; ?> files in database</td>
                 <td>
-    <!-- TODO: allow downloading zipped CSV of all lists  <a href="#"><button class="button btn-danger">Download List</button></a> -->
-
                     <form
                         name="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>"
                         method="POST"

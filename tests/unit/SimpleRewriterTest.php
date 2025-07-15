@@ -42,8 +42,6 @@ final class SimpleRewriterTest extends TestCase {
     /**
      * Test deleteDirWithFiles method
      *
-     * @todo Add test for rewriting a file that doesn't exist
-     *
      * @return void
      */
     public function testRewrite() {

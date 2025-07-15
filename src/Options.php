@@ -746,7 +746,6 @@ VALUES (%s, %s, %s);";
 
         $table_name = self::getTableName();
 
-        // TODO: some validation on save types
         $wpdb->update(
             $table_name,
             [ 'value' => $value ],

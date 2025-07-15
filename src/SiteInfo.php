@@ -46,7 +46,7 @@ class SiteInfo {
                 'includes_url' => includes_url(),
 
                 /*
-                    TODO: Q on subdir:
+                    Q on subdir:
                         Does it matter?
                     'subdirectory' => $this->isSiteInstalledInSubDirectory(),
                         A: It shouldn't, but current mechanism for rewriting URLs

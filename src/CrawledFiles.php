@@ -256,7 +256,6 @@ class CrawledFiles {
         $wpdb->query( $sql );
     }
 
-    // TODO: enable date filter as option/alternate method
     public static function getUrl( string $path, string $content_hash ): string {
         global $wpdb;
 
