@@ -680,153 +680,42 @@ VALUES (%s, %s, %s);";
                 self::saveFromAdmin( $option_specs );
                 break;
             case 'jobs':
-                $queue_on_post_save = isset( $_POST['queueJobOnPostSave'] ) ? 1 : 0;
-                $queue_on_post_delete = isset( $_POST['queueJobOnPostDelete'] ) ? 1 : 0;
-                $process_queue_immediately = isset( $_POST['processQueueImmediately'] )
-                ? intval( $_POST['processQueueImmediately'] )
-                    : 0;
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $queue_on_post_save ],
-                    [ 'name' => 'queueJobOnPostSave' ]
+                $names = [
+                    'queueJobOnPostSave',
+                    'queueJobOnPostDelete',
+                    'processQueueImmediately',
+                    'processQueueInterval',
+                    'autoJobQueueDetection',
+                    'autoJobQueueCrawling',
+                    'autoJobQueuePostProcessing',
+                    'autoJobQueueDeployment',
+                    'autoJobQueueDirectDeploy',
+                    'autoJobQueueDirectDeployPost',
+                ];
+                $option_specs = array_intersect_key(
+                    self::optionSpecs(),
+                    array_flip( $names )
                 );
+                self::saveFromAdmin( $option_specs );
 
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $queue_on_post_delete ],
-                    [ 'name' => 'queueJobOnPostDelete' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $process_queue_immediately ],
-                    [ 'name' => 'processQueueImmediately' ]
-                );
-
-                /**
-                 * @var int $process_queue_interval
-                 */
-                $process_queue_interval =
-                    isset( $_POST['processQueueInterval'] ) ?
-                    $_POST['processQueueInterval'] : 0;
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $process_queue_interval ],
-                    [ 'name' => 'processQueueInterval' ]
-                );
-
-                WPCron::setRecurringEvent( $process_queue_interval );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueueDetection'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueueDetection' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueueCrawling'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueueCrawling' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueuePostProcessing'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueuePostProcessing' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueueDeployment'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueueDeployment' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueueDirectDeploy'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueueDirectDeploy' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['autoJobQueueDirectDeployPost'] ) ? 1 : 0 ],
-                    [ 'name' => 'autoJobQueueDirectDeployPost' ]
-                );
-
+                WPCron::setRecurringEvent( self::getValue( 'processQueueInterval' ) );
                 break;
             case 'advanced':
-                $crawl_concurrency = intval( $_POST['crawlConcurrency'] );
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $crawl_concurrency < 1 ? 1 : $crawl_concurrency ],
-                    [ 'name' => 'crawlConcurrency' ]
+                $names = [
+                    'crawlConcurrency',
+                    'crawledSitePath',
+                    'debugLogging',
+                    'hostsToRewrite',
+                    'maxLogRows',
+                    'pathsToIgnore',
+                    'processedSitePath',
+                    'skipURLRewrite',
+                ];
+                $option_specs = array_intersect_key(
+                    self::optionSpecs(),
+                    array_flip( $names )
                 );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        sanitize_text_field(
-                            strval( filter_input( INPUT_POST, 'crawledSitePath' ) )
-                        ),
-                    ],
-                    [ 'name' => 'crawledSitePath' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [
-                        'value' =>
-                        sanitize_text_field(
-                            strval( filter_input( INPUT_POST, 'processedSitePath' ) )
-                        ),
-                    ],
-                    [ 'name' => 'processedSitePath' ]
-                );
-
-                $paths_to_ignore = preg_replace(
-                    '/^\s+|\s+$/m',
-                    '',
-                    strval( filter_input( INPUT_POST, 'pathsToIgnore' ) )
-                );
-                $wpdb->update(
-                    $table_name,
-                    [ 'blob_value' => $paths_to_ignore ],
-                    [ 'name' => 'pathsToIgnore' ]
-                );
-
-                $hosts_to_rewrite = preg_replace(
-                    '/^\s+|\s+$/m',
-                    '',
-                    strval( filter_input( INPUT_POST, 'hostsToRewrite' ) )
-                );
-                $wpdb->update(
-                    $table_name,
-                    [ 'blob_value' => $hosts_to_rewrite ],
-                    [ 'name' => 'hostsToRewrite' ]
-                );
-
-                $debug_logging = intval( $_POST['debugLogging'] );
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $debug_logging < 0 ? 0 : $debug_logging ],
-                    [ 'name' => 'debugLogging' ]
-                );
-
-                $max_log_rows = intval( $_POST['maxLogRows'] );
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => $max_log_rows < 0 ? 0 : $max_log_rows ],
-                    [ 'name' => 'maxLogRows' ]
-                );
-
-                $wpdb->update(
-                    $table_name,
-                    [ 'value' => isset( $_POST['skipURLRewrite'] ) ? 1 : 0 ],
-                    [ 'name' => 'skipURLRewrite' ]
-                );
+                self::saveFromAdmin( $option_specs );
                 break;
         }
     }
