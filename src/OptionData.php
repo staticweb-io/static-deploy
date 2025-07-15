@@ -23,9 +23,16 @@ final class OptionData {
         ?string $blob_value,
         string $unfiltered_value,
     ) {
+        $min_value = $option_spec->min_value;
+
         $this->blob_value = $blob_value;
         $this->option_spec = $option_spec;
         $this->unfiltered_blob_value = $blob_value;
+
+        $unfiltered_value = $unfiltered_value;
+        if ( $min_value !== null && intval( $unfiltered_value ) < $min_value ) {
+            $unfiltered_value = (string) $min_value;
+        }
         $this->unfiltered_value = $unfiltered_value;
 
         $value = $unfiltered_value;
@@ -34,10 +41,17 @@ final class OptionData {
             $value = Options::encrypt_decrypt( 'decrypt', $value );
         }
 
-        $this->value = apply_filters(
+        $value = apply_filters(
             $this->option_spec->filter_name,
             $value
         );
+
+
+        if ( $min_value !== null && intval( $value ) < $min_value ) {
+            $value = (string) $min_value;
+        }
+
+        $this->value = $value;
     }
 
     /**

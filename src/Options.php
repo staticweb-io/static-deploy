@@ -616,7 +616,14 @@ VALUES (%s, %s, %s);";
                     $value = isset( $_POST[ $name ] ) ? '1' : '0';
                     break;
                 case 'integer':
-                    $value = (string) intval( $v );
+                    $value = intval( $v );
+
+                    if ( $option_spec->min_value !== null
+                    && $value < $option_spec->min_value ) {
+                        $value = $option_spec->min_value;
+                    }
+
+                    $value = (string) $value;
                     break;
                 case 'password':
                     $value = sanitize_text_field( strval( $v ) );
