@@ -522,8 +522,14 @@ VALUES (%s, %s, %s);";
      *
      * @return array<string, OptionData> array of option name to option object
      */
-    public static function getAll() {
+    public static function getAll(
+        ?array $option_specs = null
+    ) {
         global $wpdb;
+
+        if ( $option_specs === null ) {
+            $option_specs = self::optionSpecs();
+        }
 
         $table_name = self::getTableName();
 
@@ -537,7 +543,7 @@ VALUES (%s, %s, %s);";
         }
 
         $ret = [];
-        foreach ( self::optionSpecs() as $opt_spec ) {
+        foreach ( $option_specs as $opt_spec ) {
             $name = $opt_spec->name;
             $opt = $options_map[ $name ];
             if ( $opt ) {

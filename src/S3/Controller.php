@@ -67,7 +67,7 @@ class Controller {
         $view['uploads_path'] = \WP2Static\SiteInfo::getPath( 'uploads' );
         $s3_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.s3';
 
-        $view['options'] = Options::getAll();
+        $view['options'] = Options::getAll( S3Options::optionSpecs() );
 
         $view['s3_url'] =
             is_file( $s3_path ) ?
