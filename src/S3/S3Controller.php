@@ -66,13 +66,8 @@ class S3Controller {
         $view = [];
         $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
         $view['uploads_path'] = \WP2Static\SiteInfo::getPath( 'uploads' );
-        $s3_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.s3';
 
         $view['options'] = Options::getAll( S3Options::optionSpecs() );
-
-        $view['s3_url'] =
-            is_file( $s3_path ) ?
-                \WP2Static\SiteInfo::getUrl( 'uploads' ) . 'wp2static-processed-site.s3' : '#';
 
         require_once __DIR__ . '/../../views/s3/s3-options-page.php';
     }
