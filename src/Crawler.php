@@ -96,7 +96,7 @@ class Crawler {
         WsLog::l( 'Starting crawl.' );
     }
 
-    public static function wp2staticCrawl( string $crawler_slug ): void {
+    public static function crawl( string $crawler_slug ): void {
         global $wpdb;
 
         if ( 'wp2static' === $crawler_slug ) {

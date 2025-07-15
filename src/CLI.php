@@ -397,7 +397,7 @@ class CLI {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
         Options::init();
-        Controller::wp2staticCrawl();
+        Controller::crawl();
     }
 
     /**
@@ -428,7 +428,7 @@ class CLI {
         } else {
             WP_CLI::line( ' Processing ' . $job_count . ' job' . ( $job_count > 1 ? 's' : '' ) );
 
-            Controller::wp2staticProcessQueue();
+            Controller::processQueue();
 
             WP_CLI::success( 'Done processing queue' );
         }
@@ -776,7 +776,7 @@ class CLI {
             }
 
             // TODO Output details on if addon was enabled or disabled
-            Controller::wp2staticToggleAddon( $addon_slug );
+            Controller::adminToggleAddon( $addon_slug );
         }
     }
 }

@@ -57,7 +57,7 @@ class WPCron {
      * @param mixed[] $schedules array of CRON schedules
      * @return mixed[] array of CRON schedules
      */
-    public static function wp2static_custom_cron_schedules( array $schedules ): array {
+    public static function customCronSchedules( array $schedules ): array {
         $schedules['1min'] = [
             'interval' => 1 * MINUTE_IN_SECONDS,
             'display' => 'Every minute',
@@ -82,7 +82,7 @@ class WPCron {
      * @param mixed[] $cron_request WP-Cron request
      * @return mixed[] WP-Cron request
      */
-    public static function wp2static_cron_with_http_basic_auth( array $cron_request ): array {
+    public static function cronWithBasicAuth( array $cron_request ): array {
         $auth_user = Options::getValue( 'basicAuthUser' );
         $auth_password = Options::getValue( 'basicAuthPassword' );
 

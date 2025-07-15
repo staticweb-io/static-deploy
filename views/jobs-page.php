@@ -6,6 +6,7 @@
  * @var mixed[] $view
  */
 
+use WP2Static\Controller;
 use WP2Static\OptionRenderer;
 
 /**
@@ -127,7 +128,7 @@ $row = function ( $name ) use ( $options ) {
             <tr>
                 <td style="width: 50%">
                     <?php echo $label( 'processQueueInterval', true ); ?>
-                    <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp wp2static process_queue` or call the hook `wp2staticProcessQueue` from within your own theme or plugin.</i></p>
+                    <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp wp2static process_queue` or call the hook `<?php echo Controller::getHookName( 'process_queue' ); ?>` from within your own theme or plugin.</i></p>
                 </td>
                 <td>
                     <select

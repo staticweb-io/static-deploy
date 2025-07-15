@@ -291,7 +291,7 @@ class Controller {
         DeployCache::truncate();
     }
 
-    public static function wp2staticUISaveOptions(): void {
+    public static function UISaveOptions(): void {
         Options::savePosted( 'core' );
 
         do_action(
@@ -304,7 +304,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticDetectedFilesDelete(): void {
+    public static function adminDetectedFilesDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         DetectedFiles::truncate();
@@ -313,14 +313,14 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticDetectedFilesShow(): void {
+    public static function adminDetectedFilesShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-detected-files' ) );
         exit;
     }
 
-    public static function wp2staticDeleteJobsQueue(): void {
+    public static function adminDeleteJobsQueue(): void {
         check_admin_referer( 'wp2static-ui-job-options' );
 
         JobQueue::truncate();
@@ -329,7 +329,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticDeleteAllCaches(): void {
+    public static function adminDeleteAllCaches(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         self::deleteAllCaches();
@@ -346,18 +346,18 @@ class Controller {
         DeployCache::truncate();
     }
 
-    public static function wp2staticProcessJobsQueue(): void {
+    public static function adminProcessJobsQueue(): void {
         check_admin_referer( 'wp2static-ui-job-options' );
 
         WsLog::l( 'Manually processing JobQueue' );
 
-        self::wp2staticProcessQueue();
+        self::processQueue();
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
         exit;
     }
 
-    public static function wp2staticDeployCacheDelete(): void {
+    public static function adminDeployCacheDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
@@ -371,7 +371,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticDeployCacheShow(): void {
+    public static function adminDeployCacheShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
@@ -389,7 +389,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticCrawledFilesDelete(): void {
+    public static function adminCrawledFilesDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         CrawledFiles::truncate();
@@ -398,14 +398,14 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticCrawledFilesShow(): void {
+    public static function adminCrawledFilesShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawled-files' ) );
         exit;
     }
 
-    public static function wp2staticPostProcessedSiteDelete(): void {
+    public static function adminPostProcessedSiteDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         ProcessedSite::delete();
@@ -414,14 +414,14 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticPostProcessedSiteShow(): void {
+    public static function adminPostProcessedSiteShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-post-processed-site' ) );
         exit;
     }
 
-    public static function wp2staticLogDelete(): void {
+    public static function adminLogDelete(): void {
         check_admin_referer( 'wp2static-log-page' );
 
         WsLog::truncate();
@@ -430,7 +430,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticStaticSiteDelete(): void {
+    public static function adminStaticSiteDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         StaticSite::delete();
@@ -439,14 +439,14 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticStaticSiteShow(): void {
+    public static function adminStaticSiteShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-static-site' ) );
         exit;
     }
 
-    public static function wp2staticUISaveJobOptions(): void {
+    public static function adminUISaveJobsOptions(): void {
         Options::savePosted( 'jobs' );
 
         do_action(
@@ -459,20 +459,20 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticSavePostHandler( int $post_id ): void {
+    public static function savePostHandler( int $post_id ): void {
         if ( Options::getValue( 'queueJobOnPostSave' ) &&
             get_post_status( $post_id ) === 'publish' ) {
             self::wp2staticEnqueueJobs( $post_id );
         }
     }
 
-    public static function wp2staticTrashedPostHandler(): void {
+    public static function trashedPostHandler(): void {
         if ( Options::getValue( 'queueJobOnPostDelete' ) ) {
             self::wp2staticEnqueueJobs();
         }
     }
 
-    public static function wp2staticUISaveAdvancedOptions(): void {
+    public static function adminUISaveAdvancedOptions(): void {
         Options::savePosted( 'advanced' );
 
         do_action(
@@ -504,14 +504,14 @@ class Controller {
 
         $immediate_mode = intval( Options::getValue( 'processQueueImmediately' ) );
         if ( $immediate_mode === 1 ) {
-            self::wp2staticProcessQueueAdminPost();
+            self::processQueueAdminPost();
         } elseif ( $immediate_mode === 2 ) {
             shell_exec( 'wp wp2static process_queue > /dev/null 2>&1 &' );
             usleep( 100000 ); // 100,000 microseconds = 0.1 seconds
         }
     }
 
-    public static function wp2staticToggleAddon( string $addon_slug = null ): void {
+    public static function adminToggleAddon( string $addon_slug = null ): void {
         if ( defined( 'WP_CLI' ) ) {
             if ( ! $addon_slug ) {
                 throw WsLog::ex(
@@ -560,7 +560,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticManuallyEnqueueJobs(): void {
+    public static function adminManuallyEnqueueJobs(): void {
         check_admin_referer( 'wp2static-manually-enqueue-jobs' );
 
         // TODO: consider using a transient based notifications system to
@@ -577,7 +577,7 @@ class Controller {
         Should only process at most 4 jobs here (1 per type), with
         earlier jobs of the same type having been "squashed" first
     */
-    public static function wp2staticProcessQueue(): void {
+    public static function processQueue(): void {
         global $wpdb;
 
         WsLog::deleteOldLogs();
@@ -616,7 +616,7 @@ class Controller {
                         WsLog::l( "URL detection completed ($detected_count URLs detected)" );
                         break;
                     case 'crawl':
-                        self::wp2staticCrawl();
+                        self::crawl();
                         break;
                     case 'post_process':
                         WsLog::l( 'Starting post-processing' );
@@ -687,9 +687,9 @@ class Controller {
     }
 
     /**
-     *  Make a non-blocking POST request to run wp2staticProcessQueue.
+     *  Make a non-blocking POST request to run processQueue.
      */
-    public static function wp2staticProcessQueueAdminPost(): void {
+    public static function processQueueAdminPost(): void {
         $url = admin_url( 'admin-post.php' ) . '?action=' . self::getHookName( 'process_queue' );
         $nonce = wp_create_nonce( self::getHookName( 'process_queue' ) );
         $result = wp_remote_post(
@@ -705,19 +705,19 @@ class Controller {
 
         if ( is_wp_error( $result ) ) {
             WsLog::l(
-                'Error in wp2staticProcessQueueAdminPost. Request to admin-post.php failed: ' .
+                'Error in processQueueAdminPost. Request to admin-post.php failed: ' .
                 json_encode( $result->errors )
             );
         }
     }
 
-    public static function wp2staticHeadless(): void {
+    public static function runHeadless(): void {
         WsLog::l( 'Running WP2Static in Headless mode' );
         WsLog::l( 'Starting URL detection' );
         $detected_count = URLDetector::enqueueURLs();
         WsLog::l( "URL detection completed ($detected_count URLs detected)" );
 
-        self::wp2staticCrawl();
+        self::crawl();
 
         WsLog::l( 'Starting post-processing' );
         $post_processor = new PostProcessor();
@@ -830,17 +830,17 @@ class Controller {
         );
     }
 
-    public static function wp2staticRun(): void {
+    public static function ajaxRun(): void {
         check_ajax_referer( self::getHookName( 'run_page' ), 'security' );
 
         WsLog::l( 'Running full workflow from UI' );
 
-        self::wp2staticHeadless();
+        self::runHeadless();
 
         wp_die();
     }
 
-    public static function wp2staticCrawl(): void {
+    public static function crawl(): void {
         $crawlers = Addons::getType( 'crawl' );
         $crawler_slug = empty( $crawlers ) ? 'wp2static' : $crawlers[0]->slug;
         do_action(
@@ -853,7 +853,7 @@ class Controller {
     /**
      * Give logs to UI
      */
-    public static function wp2staticPollLog(): void {
+    public static function ajaxPollLog(): void {
         check_ajax_referer( self::getHookName( 'run_page' ), 'security' );
 
         $logs = WsLog::poll();
