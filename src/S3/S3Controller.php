@@ -4,6 +4,8 @@ namespace WP2Static\S3;
 
 use WP2Static\Controller;
 use WP2Static\Options;
+use WP2Static\SiteInfo;
+use WP2Static\WsLog;
 
 class S3Controller {
     public function run(): void {
@@ -65,7 +67,7 @@ class S3Controller {
 
         $view = [];
         $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
-        $view['uploads_path'] = \WP2Static\SiteInfo::getPath( 'uploads' );
+        $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
 
         $view['options'] = Options::getAll( S3Options::optionSpecs() );
 
@@ -78,7 +80,7 @@ class S3Controller {
             return;
         }
 
-        \WP2Static\WsLog::l( 'S3 Addon deploying' );
+        WsLog::l( 'S3 Addon deploying' );
 
         $s3_deployer = new Deployer();
         $s3_deployer->uploadFiles( $processed_site_path );

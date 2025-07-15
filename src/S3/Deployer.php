@@ -10,6 +10,7 @@ use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
 use WP2Static\CrawledFiles;
+use WP2Static\DeployCache;
 use WP2Static\Options;
 use WP2Static\WsLog;
 
@@ -159,7 +160,7 @@ class Deployer {
 
                     if ( ! $real_filepath ) {
                         $err = 'Trying to deploy unknown file to S3: ' . $filename;
-                        \WP2Static\WsLog::l( $err );
+                        WsLog::l( $err );
                         continue;
                     }
 
@@ -228,7 +229,7 @@ class Deployer {
                     }
                 }
 
-                $is_cached = \WP2Static\DeployCache::fileisCached(
+                $is_cached = DeployCache::fileisCached(
                     $cache_key,
                     $this->namespace,
                     $hash,
@@ -266,7 +267,7 @@ class Deployer {
                 'fulfilled' =>
                 function ( $result, $iter_key, $promise ) use ( &$items_by_iter_key ) {
                     $item = $items_by_iter_key[ $iter_key ];
-                    \WP2Static\DeployCache::addFile(
+                    DeployCache::addFile(
                         $item['cache_key'],
                         $this->namespace,
                         $item['hash']
@@ -331,7 +332,7 @@ class Deployer {
         ) {
             $client_options['credentials'] = [
                 'key' => S3Options::getValue( 'awsAccessKeyId' ),
-                'secret' => \WP2Static\Options::encrypt_decrypt(
+                'secret' => Options::encrypt_decrypt(
                     'decrypt',
                     S3Options::getValue( 'awsSecretAccessKey' )
                 ),
@@ -358,7 +359,7 @@ class Deployer {
             // Use the supplied access keys.
             $credentials = new \Aws\Credentials\Credentials(
                 S3Options::getValue( 'awsAccessKeyId' ),
-                \WP2Static\Options::encrypt_decrypt(
+                Options::encrypt_decrypt(
                     'decrypt',
                     S3Options::getValue( 'awsSecretAccessKey' )
                 )
