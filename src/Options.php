@@ -292,7 +292,6 @@ class Options {
                         'wpallimport',
                         'wp-admin',
                         'wp-content/plugins/*/vendor',
-                        'wp-content/plugins/wp2static',
                         'wp2static-crawled-site',
                         'wp2static-processed-site',
                         'yarn-error.log',
