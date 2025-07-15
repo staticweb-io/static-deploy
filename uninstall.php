@@ -13,9 +13,9 @@ $tables_to_drop = [
     'core_options',
     'crawl_cache',
     'deploy_cache',
+    'detected_files',
     'jobs',
     'log',
-    'urls',
 ];
 
 foreach ( $tables_to_drop as $table ) {
