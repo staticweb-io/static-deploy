@@ -546,7 +546,7 @@ VALUES (%s, %s, %s);";
 
         $sql = $wpdb->prepare(
             "SELECT name, value, blob_value
-             FROM $table_name WHERE" . ' name = %s LIMIT 1',
+             FROM $table_name WHERE" . ' name = %s',
             $name
         );
 
