@@ -126,7 +126,7 @@ $paginator_last_page = $view['paginatorLastPage'];
                             </div>
                         </th>
                         <td><?php echo $record->path; ?></td>
-                        <td><?php echo $record->page_hash; ?></td>
+                        <td><?php echo $record->content_hash; ?></td>
                     </tr>
                     <?php endforeach; ?>
             </tbody>

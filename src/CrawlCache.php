@@ -37,7 +37,7 @@ class CrawlCache {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             path VARCHAR(2083) NOT NULL,
             path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
-            page_hash CHAR(32) NULL,
+            content_hash CHAR(32) NULL,
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             status SMALLINT DEFAULT 200 NOT NULL,
             redirect_to VARCHAR(2083) NULL,
@@ -102,14 +102,14 @@ class CrawlCache {
                 )
             );
             $sql = "INSERT INTO $table_name
-                    (path,content_type,redirect_to,status,page_hash,time)
+                    (path,content_type,redirect_to,status,content_hash,time)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE
                       path = VALUES(path),
                       content_type = VALUES(content_type),
                       redirect_to = VALUES(redirect_to),
                       status = VALUES(status),
-                      page_hash = VALUES(page_hash),
+                      content_hash = VALUES(content_hash),
                       time = VALUES(time)";
 
             $values = [];
@@ -151,7 +151,7 @@ class CrawlCache {
             $qs = "SELECT
                 cc.id,
                 cc.path,
-                cc.page_hash AS content_hash,
+                cc.content_hash,
                 cc.status,
                 cc.redirect_to,
                 cc.content_type,
@@ -252,25 +252,25 @@ class CrawlCache {
 
     public static function addUrl(
         string $path,
-        string $page_hash,
+        string $content_hash,
         int $status,
         ?string $redirect_to
     ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
-        $sql = "insert into {$table_name} (time, path, page_hash, status, redirect_to)
+        $sql = "insert into {$table_name} (time, path, content_hash, status, redirect_to)
                 VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY
-                UPDATE time = %s, page_hash = %s, status = %s, redirect_to = %s";
+                UPDATE time = %s, content_hash = %s, status = %s, redirect_to = %s";
         $sql = $wpdb->prepare(
             $sql,
             current_time( 'mysql' ),
             $path,
-            $page_hash,
+            $content_hash,
             $status,
             $redirect_to,
             current_time( 'mysql' ),
-            $page_hash,
+            $content_hash,
             $status,
             $redirect_to
         );
@@ -279,7 +279,7 @@ class CrawlCache {
     }
 
     // TODO: enable date filter as option/alternate method
-    public static function getUrl( string $path, string $page_hash ): string {
+    public static function getUrl( string $path, string $content_hash ): string {
         global $wpdb;
 
         $path_hash = md5( $path );
@@ -288,8 +288,8 @@ class CrawlCache {
 
         $sql = $wpdb->prepare(
             "SELECT path FROM $table_name WHERE" .
-            ' path_hash = %s and page_hash = %s  LIMIT 1',
-            [ $path_hash, $page_hash ]
+            ' path_hash = %s and content_hash = %s  LIMIT 1',
+            [ $path_hash, $content_hash ]
         );
 
         $path = $wpdb->get_var( $sql );
@@ -306,7 +306,7 @@ class CrawlCache {
      *      @type int      $id                   ID
      *      @type string   $path_hash            MD5 hashed path
      *      @type string   $path                 Path in plain text
-     *      @type string   $page_hash            MD5 hashed page
+     *      @type string   $content_hash            MD5 hashed page
      *  }
      */
     public static function getURLs(): array {
@@ -317,7 +317,7 @@ class CrawlCache {
 
         $rows = $wpdb->get_results(
             "
-            SELECT id, path_hash, path, page_hash
+            SELECT id, path_hash, path, content_hash
             FROM $table_name
             ORDER BY path
             "
