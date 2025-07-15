@@ -37,12 +37,12 @@ $addons = $view['addons'];
                 <tr>
                     <td>
                         <form
-                            name="wp2static-detected-files-delete"
+                            name="<?php echo Controller::getHookName( 'toggle_addon' ); ?>"
                             method="POST"
                             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-                        <input name="action" type="hidden" value="wp2static_toggle_addon" />
+                        <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'toggle_addon' ); ?>" />
                         <input name="addon_slug" type="hidden" value="<?php echo $addon->slug; ?>" />
 
                         <button><?php echo $addon->enabled ? 'Enabled' : 'Disabled'; ?></button>

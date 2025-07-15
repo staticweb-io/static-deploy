@@ -22,7 +22,7 @@ $row = function ( $name ) use ( $options ) {
 
 <div class="wrap">
     <form
-        name="wp2static-ui-advanced-options"
+        name="<?php echo Controller::getHookName( 'ui_advanced_options' ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
@@ -73,7 +73,7 @@ $row = function ( $name ) use ( $options ) {
     <p/>
 
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="wp2static_ui_save_advanced_options" />
+    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'ui_save_advanced_options' ); ?>" />
 
     <button class="button btn-primary" type="submit">Save options</button>
 

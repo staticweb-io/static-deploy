@@ -73,15 +73,15 @@ select.wp2static-select {
     <!-- TODO: allow downloading zipped CSV of all lists  <a href="#"><button class="button btn-danger">Download List</button></a> -->
 
                     <form
-                        name="wp2static-detected-files-delete"
+                        name="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_detected_files_show">Show URLs</option>
-                            <option value="wp2static_detected_files_delete">Delete Detected Files</option>
+                            <option value="<?php echo Controller::getHookName( 'detected_files_show' ); ?>">Show URLs</option>
+                            <option value="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>">Delete Detected Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -94,15 +94,15 @@ select.wp2static-select {
                 <td><?php echo $crawled_files_total; ?> URLs in database</td>
                 <td>
                     <form
-                        name="wp2static-crawled-files-delete"
+                        name="<?php echo Controller::getHookName( 'crawled_files_delete' ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_crawled_files_show">Show URLs</option>
-                            <option value="wp2static_crawled_files_delete">Delete Crawled Files</option>
+                            <option value="<?php echo Controller::getHookName( 'crawled_files_show' ); ?>">Show URLs</option>
+                            <option value="<?php echo Controller::getHookName( 'crawled_files_delete' ); ?>">Delete Crawled Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -120,15 +120,15 @@ select.wp2static-select {
                 </td>
                 <td>
                     <form
-                        name="wp2static-static-site-delete"
+                        name="<?php echo Controller::getHookName( 'static_site_delete' ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_static_site_show">Show Paths</option>
-                            <option value="wp2static_static_site_delete">Delete Files</option>
+                            <option value="<?php echo Controller::getHookName( 'static_site_show' ); ?>">Show Paths</option>
+                            <option value="<?php echo Controller::getHookName( 'static_site_delete' ); ?>">Delete Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -145,15 +145,15 @@ select.wp2static-select {
                 </td>
                 <td>
                     <form
-                        name="wp2static-post-processed-site-delete"
+                        name="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_post_processed_site_show">Show Paths</option>
-                            <option value="wp2static_post_processed_site_delete">Delete Files</option>
+                            <option value="<?php echo Controller::getHookName( 'post_processed_site_show' ); ?>">Show Paths</option>
+                            <option value="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>">Delete Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -173,15 +173,15 @@ select.wp2static-select {
                     <?php } ?>
                     <td>
                         <form
-                            name="wp2static-post-processed-site-delete"
+                            name="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>"
                             method="POST"
                             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                             <select name="action" class="wp2static-select">
-                                <option value="wp2static_deploy_cache_show">Show Paths</option>
-                                <option value="wp2static_deploy_cache_delete">Delete Deploy Cache</option>
+                                <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
+                                <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
                             </select>
 
                             <input name="deploy_namespace" type="hidden" value="<?php echo $namespaces[0]; ?>" />
@@ -196,15 +196,15 @@ select.wp2static-select {
                         <td><?php echo strval( $deploy_cache_total_paths[ $namespaces[ $i ] ] ); ?> Paths in database for <code><?php echo strval( $namespaces[ $i ] ); ?></code></td>
                         <td>
                             <form
-                                name="wp2static-deploy-cache-delete"
+                                name="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>"
                                 method="POST"
                                 action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                                 <select name="action" class="wp2static-select">
-                                    <option value="wp2static_deploy_cache_show">Show Paths</option>
-                                    <option value="wp2static_deploy_cache_delete">Delete Deploy Cache</option>
+                                    <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
+                                    <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
                                 </select>
 
                                 <input name="deploy_namespace" type="hidden" value="<?php echo $namespaces[ $i ]; ?>" />
@@ -221,13 +221,13 @@ select.wp2static-select {
         <br>
 
         <form
-            name="wp2static-delete-all-caches"
+            name="<?php echo Controller::getHookName( 'delete_all_caches' ); ?>"
             method="POST"
             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-            <input name="action" type="hidden" value="wp2static_delete_all_caches" />
+            <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'delete_all_caches' ); ?>" />
 
             <button class="button btn-danger">Delete all caches</button>
 

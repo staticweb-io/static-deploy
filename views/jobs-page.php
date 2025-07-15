@@ -37,7 +37,7 @@ $row = function ( $name ) use ( $options ) {
 
 <div class="wrap">
     <form
-        name="wp2static-job-options"
+        name="<?php echo Controller::getHookName( 'job_options' ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
@@ -180,7 +180,7 @@ $row = function ( $name ) use ( $options ) {
 
     <button class="button btn-primary">Save Job Automation Settings</button>
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="wp2static_ui_save_job_options" />
+    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'ui_save_job_options' ); ?>" />
     </form>
 
     <p/>
@@ -190,8 +190,8 @@ $row = function ( $name ) use ( $options ) {
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
-        <?php wp_nonce_field( 'wp2static-manually-enqueue-jobs' ); ?>
-        <input name="action" type="hidden" value="wp2static_manually_enqueue_jobs" />
+        <?php wp_nonce_field( Controller::getHookName( 'manually_enqueue_jobs' ) ); ?>
+        <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'manually_enqueue_jobs' ); ?>" />
 
         <button class="button">Manually Enqueue Jobs Now</button>
     </form>
@@ -226,12 +226,12 @@ $row = function ( $name ) use ( $options ) {
     <br>
 
     <form
-        name="wp2static-delete-jobs-queue"
+        name="<?php echo Controller::getHookName( 'delete_jobs_queue' ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
-    <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="wp2static_delete_jobs_queue" />
+    <?php wp_nonce_field( Controller::getHookName( 'delete_jobs_queue' ) ); ?>
+    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'delete_jobs_queue' ); ?>" />
 
     <button class="wp2static-button button btn-danger">Delete all Jobs from Queue</button>
 

@@ -298,14 +298,14 @@ class Controller {
             self::getHookName( 'addon_ui_save_options' )
         );
 
-        check_admin_referer( 'wp2static-ui-options' );
+        check_admin_referer( self::getHookName( 'ui_options' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-options' ) );
         exit;
     }
 
     public static function adminDetectedFilesDelete(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         DetectedFiles::truncate();
 
@@ -314,14 +314,14 @@ class Controller {
     }
 
     public static function adminDetectedFilesShow(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-detected-files' ) );
         exit;
     }
 
     public static function adminDeleteJobsQueue(): void {
-        check_admin_referer( 'wp2static-ui-job-options' );
+        check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
         JobQueue::truncate();
 
@@ -330,7 +330,7 @@ class Controller {
     }
 
     public static function adminDeleteAllCaches(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         self::deleteAllCaches();
 
@@ -347,7 +347,7 @@ class Controller {
     }
 
     public static function adminProcessJobsQueue(): void {
-        check_admin_referer( 'wp2static-ui-job-options' );
+        check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
         WsLog::l( 'Manually processing JobQueue' );
 
@@ -358,7 +358,7 @@ class Controller {
     }
 
     public static function adminDeployCacheDelete(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
         if ( $deploy_namespace !== '' ) {
@@ -372,7 +372,7 @@ class Controller {
     }
 
     public static function adminDeployCacheShow(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
         if ( $deploy_namespace !== '' ) {
@@ -390,7 +390,7 @@ class Controller {
     }
 
     public static function adminCrawledFilesDelete(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         CrawledFiles::truncate();
 
@@ -399,14 +399,14 @@ class Controller {
     }
 
     public static function adminCrawledFilesShow(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawled-files' ) );
         exit;
     }
 
     public static function adminPostProcessedSiteDelete(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         ProcessedSite::delete();
 
@@ -415,14 +415,14 @@ class Controller {
     }
 
     public static function adminPostProcessedSiteShow(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-post-processed-site' ) );
         exit;
     }
 
     public static function adminLogDelete(): void {
-        check_admin_referer( 'wp2static-log-page' );
+        check_admin_referer( self::getHookName( 'log_page' ) );
 
         WsLog::truncate();
 
@@ -431,7 +431,7 @@ class Controller {
     }
 
     public static function adminStaticSiteDelete(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         StaticSite::delete();
 
@@ -440,7 +440,7 @@ class Controller {
     }
 
     public static function adminStaticSiteShow(): void {
-        check_admin_referer( 'wp2static-caches-page' );
+        check_admin_referer( self::getHookName( 'caches_page' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-static-site' ) );
         exit;
@@ -453,7 +453,7 @@ class Controller {
             self::getHookName( 'addon_ui_save_job_options' )
         );
 
-        check_admin_referer( 'wp2static-ui-job-options' );
+        check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-jobs' ) );
         exit;
@@ -479,7 +479,7 @@ class Controller {
             self::getHookName( 'addon_ui_save_advanced_options' )
         );
 
-        check_admin_referer( 'wp2static-ui-advanced-options' );
+        check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-advanced' ) );
         exit;
@@ -521,7 +521,7 @@ class Controller {
 
             $addon_slug = sanitize_text_field( $addon_slug );
         } else {
-            check_admin_referer( 'wp2static-addons-page' );
+            check_admin_referer( self::getHookName( 'addons_page' ) );
 
             $addon_slug = sanitize_text_field( strval( filter_input( INPUT_POST, 'addon_slug' ) ) );
         }
@@ -561,7 +561,7 @@ class Controller {
     }
 
     public static function adminManuallyEnqueueJobs(): void {
-        check_admin_referer( 'wp2static-manually-enqueue-jobs' );
+        check_admin_referer( self::getHookName( 'manually_enqueue_jobs' ) );
 
         // TODO: consider using a transient based notifications system to
         // persist through wp_safe_redirect calls

@@ -9,7 +9,7 @@ class ViewRenderer {
 
         $view = [
             'options' => Options::getAll(),
-            'nonce_action' => 'wp2static-ui-options',
+            'nonce_action' => Controller::getHookName( 'ui_options' ),
         ];
 
         require_once WP2STATIC_PATH . 'views/options-page.php';
@@ -20,7 +20,7 @@ class ViewRenderer {
 
         $view = [
             'options' => Options::getAll(),
-            'nonce_action' => 'wp2static-ui-advanced-options',
+            'nonce_action' => Controller::getHookName( 'ui_advanced_options' ),
         ];
 
         require_once WP2STATIC_PATH . 'views/advanced-options-page.php';
@@ -44,7 +44,7 @@ class ViewRenderer {
 
     public static function renderLogsPage(): void {
         $view = [];
-        $view['nonce_action'] = 'wp2static-log-page';
+        $view['nonce_action'] = Controller::getHookName( 'log_page' );
         $view['logs'] = WsLog::getAll();
 
         require_once WP2STATIC_PATH . 'views/logs-page.php';
@@ -52,7 +52,7 @@ class ViewRenderer {
 
     public static function renderAddonsPage(): void {
         $view = [];
-        $view['nonce_action'] = 'wp2static-addons-page';
+        $view['nonce_action'] = Controller::getHookName( 'addons_page' );
         $view['addons'] = Addons::getAll();
 
         require_once WP2STATIC_PATH . 'views/addons-page.php';
@@ -250,7 +250,7 @@ class ViewRenderer {
         JobQueue::squashQueue();
 
         $view = [];
-        $view['nonce_action'] = 'wp2static-ui-job-options';
+        $view['nonce_action'] = Controller::getHookName( 'ui_job_options' );
         $view['jobs'] = JobQueue::getJobs();
         $view['jobOptions'] = Options::getAll();
 
@@ -346,7 +346,7 @@ class ViewRenderer {
         $view['crawledFilesTotal'] = CrawledFiles::getTotal();
         $view['deployCacheTotalPaths'] = DeployCache::getTotal();
         $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
-        $view['nonce_action'] = 'wp2static-caches-page';
+        $view['nonce_action'] = Controller::getHookName( 'caches_page' );
 
         require_once WP2STATIC_PATH . 'views/caches-page.php';
     }
