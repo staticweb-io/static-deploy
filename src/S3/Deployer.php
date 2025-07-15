@@ -9,6 +9,7 @@ use Aws\CommandPool;
 use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use WP2Static\CrawledFiles;
 use WP2Static\Options;
 use WP2Static\WsLog;
 
@@ -102,7 +103,7 @@ class Deployer {
             }
         };
 
-        $redirects = apply_filters( 'wp2static_list_redirects', [] );
+        $redirects = CrawledFiles::listRedirects();
 
         self::uploadFilesIter( $file_arrays( $files, $redirects ) );
     }

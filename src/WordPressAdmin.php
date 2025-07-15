@@ -56,11 +56,6 @@ class WordPressAdmin {
         );
 
         add_filter(
-            Controller::getHookName( 'list_redirects' ),
-            [ CrawledFiles::class, 'wp2static_list_redirects' ]
-        );
-
-        add_filter(
             'cron_request',
             [ WPCron::class, 'wp2static_cron_with_http_basic_auth' ]
         );
