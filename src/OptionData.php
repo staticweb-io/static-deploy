@@ -46,7 +46,6 @@ final class OptionData {
             $value
         );
 
-
         if ( $min_value !== null && intval( $value ) < $min_value ) {
             $value = (string) $min_value;
         }
