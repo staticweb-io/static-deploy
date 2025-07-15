@@ -43,6 +43,8 @@ class Controller {
 
         Utils::set_max_execution_time();
 
+        new S3\Controller()->run();
+
         return $plugin_instance;
     }
 
