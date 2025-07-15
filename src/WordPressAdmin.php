@@ -61,21 +61,21 @@ class WordPressAdmin {
         );
 
         add_action(
-            'wp_ajax_wp2static_run',
+            'wp_ajax_' . Controller::getHookName( 'run' ),
             [ Controller::class, 'wp2staticRun' ],
             10,
             0
         );
 
         add_action(
-            'wp_ajax_wp2static_poll_log',
+            'wp_ajax_' . Controller::getHookName( 'poll_log' ),
             [ Controller::class, 'wp2staticPollLog' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_ui_save_options',
+            'admin_post_' . Controller::getHookName( 'ui_save_options' ),
             [ Controller::class, 'wp2staticUISaveOptions' ],
             10,
             0
@@ -103,133 +103,133 @@ class WordPressAdmin {
         );
 
         add_action(
-            'admin_post_wp2static_post_processed_site_delete',
+            'admin_post_' . Controller::getHookName( 'post_processed_site_delete' ),
             [ Controller::class, 'wp2staticPostProcessedSiteDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_post_processed_site_show',
+            'admin_post_' . Controller::getHookName( 'post_processed_site_show' ),
             [ Controller::class, 'wp2staticPostProcessedSiteShow' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_log_delete',
+            'admin_post_' . Controller::getHookName( 'log_delete' ),
             [ Controller::class, 'wp2staticLogDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_delete_all_caches',
+            'admin_post_' . Controller::getHookName( 'delete_all_caches' ),
             [ Controller::class, 'wp2staticDeleteAllCaches' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_delete_jobs_queue',
+            'admin_post_' . Controller::getHookName( 'delete_jobs_queue' ),
             [ Controller::class, 'wp2staticDeleteJobsQueue' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2staticProcessJobsQueue',
+            'admin_post_' . Controller::getHookName( 'process_jobs_queue' ),
             [ Controller::class, 'wp2staticProcessJobsQueue' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_process_queue',
+            'admin_post_' . Controller::getHookName( 'process_queue' ),
             [ self::class, 'adminPostProcessQueue' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_detected_files_delete',
+            'admin_post_' . Controller::getHookName( 'detected_files_delete' ),
             [ Controller::class, 'wp2staticDetectedFilesDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_detected_files_show',
+            'admin_post_' . Controller::getHookName( 'detected_files_show' ),
             [ Controller::class, 'wp2staticDetectedFilesShow' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_deploy_cache_delete',
+            'admin_post_' . Controller::getHookName( 'deploy_cache_delete' ),
             [ Controller::class, 'wp2staticDeployCacheDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_deploy_cache_show',
+            'admin_post_' . Controller::getHookName( 'deploy_cache_show' ),
             [ Controller::class, 'wp2staticDeployCacheShow' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_crawled_files_delete',
+            'admin_post_' . Controller::getHookName( 'crawled_files_delete' ),
             [ Controller::class, 'wp2staticCrawledFilesDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_crawled_files_show',
+            'admin_post_' . Controller::getHookName( 'crawled_files_show' ),
             [ Controller::class, 'wp2staticCrawledFilesShow' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_static_site_delete',
+            'admin_post_' . Controller::getHookName( 'static_site_delete' ),
             [ Controller::class, 'wp2staticStaticSiteDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_static_site_show',
+            'admin_post_' . Controller::getHookName( 'static_site_show' ),
             [ Controller::class, 'wp2staticStaticSiteShow' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_ui_save_job_options',
+            'admin_post_' . Controller::getHookName( 'ui_save_job_options' ),
             [ Controller::class, 'wp2staticUISaveJobOptions' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_ui_save_advanced_options',
+            'admin_post_' . Controller::getHookName( 'ui_save_advanced_options' ),
             [ Controller::class, 'wp2staticUISaveAdvancedOptions' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_manually_enqueue_jobs',
+            'admin_post_' . Controller::getHookName( 'manually_enqueue_jobs' ),
             [ Controller::class, 'wp2staticManuallyEnqueueJobs' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_toggle_addon',
+            'admin_post_' . Controller::getHookName( 'toggle_addon' ),
             [ Controller::class, 'wp2staticToggleAddon' ],
             10,
             0
