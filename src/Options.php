@@ -111,7 +111,8 @@ class Options {
                 'processQueueInterval',
                 '0',
                 'Process Queue Interval',
-                'WP-Cron will attempt to process the job queue at this interval'
+                'WP-Cron will attempt to process the job queue at this interval',
+                min_value: 0,
             ),
             new OptionSpec(
                 'boolean',
