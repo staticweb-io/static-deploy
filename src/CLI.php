@@ -822,28 +822,28 @@ class CLI {
     }
 
     /**
-     * Crawl Cache
+     * Crawled Files
      *
      * <list>
      *
-     * List all URLs in the CrawlCache
+     * List all crawled files
      *
      * <count>
      *
-     * Show total number of URLs in CrawlCache
+     * Show total number of crawled files
      *
      * <delete>
      *
-     * Empty all URLs from CrawlCache
+     * Delete all crawled files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
-    public function crawl_cache( array $args, array $assoc_args ): void {
+    public function crawled_files( array $args, array $assoc_args ): void {
         $action = isset( $args[0] ) ? $args[0] : null;
 
         if ( $action === 'list' ) {
-            $urls = CrawlCache::getHashes();
+            $urls = CrawledFiles::getHashes();
 
             foreach ( $urls as $url ) {
                 WP_CLI::line( $url );
@@ -851,7 +851,7 @@ class CLI {
         }
 
         if ( $action === 'count' ) {
-            $urls = CrawlCache::getHashes();
+            $urls = CrawledFiles::getHashes();
 
             WP_CLI::line( (string) count( $urls ) );
         }
@@ -861,19 +861,19 @@ class CLI {
             if ( ! isset( $assoc_args['force'] ) ) {
                 $this->multilinePrint(
                     "no --force given. Please type 'yes' to confirm
-                    deletion of Crawl Cache"
+                    deletion of crawled files"
                 );
 
                 $userval = trim( (string) fgets( STDIN ) );
 
                 if ( $userval !== 'yes' ) {
-                    WP_CLI::error( 'Failed to delete Crawl Cache' );
+                    WP_CLI::error( 'Failed to delete crawled files' );
                 }
             }
 
-            CrawlCache::truncate();
+            CrawledFiles::truncate();
 
-            WP_CLI::success( 'Deleted Crawl Cache' );
+            WP_CLI::success( 'Deleted crawled files' );
         }
     }
 
@@ -979,7 +979,7 @@ class CLI {
      *
      * Delete all generated Static Site files from server
      *
-     *   -- also deletes the CrawlCache
+     *   -- also deletes the crawled files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command

@@ -102,14 +102,14 @@ $paginator_last_page = $view['paginatorLastPage'];
                         <label class="screen-reader-text" for="cb-select-all-1">Select All</label>
                         <input id="cb-select-all-1" type="checkbox">
                     </td>
-                    <th>URLs in Crawl Cache</th>
+                    <th>Crawled Files</th>
                     <th>Page MD5 Hash</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ( ! $view['paginatorTotalRecords'] ) : ?>
                     <tr>
-                        <td colspan="3">Crawl cache is empty.</td>
+                        <td colspan="3">There are no crawled files.</td>
                     </tr>
                 <?php endif; ?>
 

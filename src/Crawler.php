@@ -106,9 +106,9 @@ class Crawler {
             $detected = DetectedFiles::getPathsIter();
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
             $crawled = $crawler->crawlIter( $detected );
-            $crawled = CrawlCache::remove404s( $crawled );
-            $crawled = CrawlCache::writeFilesIter( $crawled );
-            $crawled = CrawlCache::addPathsIter( $crawled );
+            $crawled = CrawledFiles::remove404s( $crawled );
+            $crawled = CrawledFiles::writeFilesIter( $crawled );
+            $crawled = CrawledFiles::addPathsIter( $crawled );
             $crawled = $url_discovery->discoverURLs( $crawled );
             foreach ( $crawled as $_ ) {
                 // Intentionally empty to consume the iterator
@@ -120,8 +120,8 @@ class Crawler {
                 $detected = DetectedFiles::getPathsIter( $last_now );
                 $last_now = $wpdb->get_var( 'SELECT NOW()' );
                 $crawled = $crawler->crawlIter( $detected );
-                $crawled = CrawlCache::writeFilesIter( $crawled );
-                $crawled = CrawlCache::addPathsIter( $crawled );
+                $crawled = CrawledFiles::writeFilesIter( $crawled );
+                $crawled = CrawledFiles::addPathsIter( $crawled );
                 $crawled = $url_discovery->discoverURLs( $crawled );
                 $has_new = false;
                 foreach ( $crawled as $_ ) {

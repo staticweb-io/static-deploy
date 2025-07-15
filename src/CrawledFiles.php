@@ -2,7 +2,7 @@
 
 namespace WP2Static;
 
-class CrawlCache {
+class CrawledFiles {
 
     public static function createTable(): void {
         global $wpdb;
@@ -56,7 +56,7 @@ class CrawlCache {
     }
 
     /**
-     *  Get all Crawl Cache path hashes
+     *  Get all crawled file path hashes
      *
      *  @return string[]
      */
@@ -72,7 +72,7 @@ class CrawlCache {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'crawl_cache' );
+        return Controller::getTableName( 'crawled_files' );
     }
 
     /**
@@ -127,7 +127,7 @@ class CrawlCache {
             $result = $wpdb->query( $wpdb->prepare( $sql, ...$values ) );
 
             if ( false === $result ) {
-                WsLog::w( 'Error inserting into crawl cache: ' . $wpdb->last_error );
+                WsLog::w( 'Error inserting into crawled files: ' . $wpdb->last_error );
             }
 
             foreach ( $paths as $path ) {
@@ -184,7 +184,7 @@ class CrawlCache {
     }
 
     /**
-     * Remove 404 URLs from the detected files, crawl cache, and
+     * Remove 404 URLs from the detected files, crawled files, and
      * files written to disk.
      */
     public static function remove404s( \Iterator $paths ): \Iterator {
@@ -298,7 +298,7 @@ class CrawlCache {
     }
 
     /**
-     *  Get all paths in CrawlCache
+     *  Get all crawled files
      *
      *  @return object[] {
      *      All crawlable paths
@@ -358,10 +358,10 @@ class CrawlCache {
     }
 
     /**
-     *  Clear CrawlCache via truncation
+     *  Clear crawled files via truncation
      */
     public static function truncate(): void {
-        WsLog::l( 'Deleting CrawlCache' );
+        WsLog::l( 'Deleting crawled files' );
 
         global $wpdb;
 
@@ -369,15 +369,15 @@ class CrawlCache {
 
         $wpdb->query( "TRUNCATE TABLE $table_name" );
 
-        $totalcrawl_cache = self::getTotal();
+        $total_crawled_files = self::getTotal();
 
-        if ( $totalcrawl_cache > 0 ) {
-            WsLog::l( 'Failed to truncate CrawlCache: try deleting instead' );
+        if ( $total_crawled_files > 0 ) {
+            WsLog::l( 'Failed to truncate crawled files: try deleting instead' );
         }
     }
 
     /**
-     *  Count URLs in Crawl Cache
+     *  Count crawled files
      */
     public static function getTotal(): int {
         global $wpdb;

@@ -57,7 +57,7 @@ class WordPressAdmin {
 
         add_filter(
             Controller::getHookName( 'list_redirects' ),
-            [ CrawlCache::class, 'wp2static_list_redirects' ]
+            [ CrawledFiles::class, 'wp2static_list_redirects' ]
         );
 
         add_filter(
@@ -185,15 +185,15 @@ class WordPressAdmin {
         );
 
         add_action(
-            'admin_post_wp2static_crawl_cache_delete',
-            [ Controller::class, 'wp2staticCrawlCacheDelete' ],
+            'admin_post_wp2static_crawled_files_delete',
+            [ Controller::class, 'wp2staticCrawledFilesDelete' ],
             10,
             0
         );
 
         add_action(
-            'admin_post_wp2static_crawl_cache_show',
-            [ Controller::class, 'wp2staticCrawlCacheShow' ],
+            'admin_post_wp2static_crawled_files_show',
+            [ Controller::class, 'wp2staticCrawledFilesShow' ],
             10,
             0
         );

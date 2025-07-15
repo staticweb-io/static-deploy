@@ -100,7 +100,7 @@ class ViewRenderer {
         require_once WP2STATIC_PATH . 'views/detected-files-page.php';
     }
 
-    public static function renderCrawlCache(): void {
+    public static function renderCrawledFiles(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
@@ -113,10 +113,10 @@ class ViewRenderer {
         $url_id = filter_input( INPUT_GET, 'id' );
 
         if ( $action === 'remove' && is_array( $url_id ) ) {
-            CrawlCache::rmUrlsById( $url_id );
+            CrawledFiles::rmUrlsById( $url_id );
         }
 
-        $urls = CrawlCache::getURLs();
+        $urls = CrawledFiles::getURLs();
         // Apply search
         $search_term = strval( filter_input( INPUT_GET, 's' ) );
         if ( $search_term !== '' ) {
@@ -139,7 +139,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/crawl-cache-page.php';
+        require_once WP2STATIC_PATH . 'views/crawled-files-page.php';
     }
 
     public static function renderPostProcessedSitePaths(): void {
@@ -355,7 +355,7 @@ class ViewRenderer {
         }
 
         $view['DetectedFilesTotal'] = DetectedFiles::getTotal();
-        $view['crawlCacheTotalURLs'] = CrawlCache::getTotal();
+        $view['crawledFilesTotal'] = CrawledFiles::getTotal();
         $view['deployCacheTotalPaths'] = DeployCache::getTotal();
         $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
         $view['nonce_action'] = 'wp2static-caches-page';

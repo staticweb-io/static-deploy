@@ -105,7 +105,7 @@ class Controller {
         // prepare DB tables
         WsLog::createTable();
         CoreOptions::init();
-        CrawlCache::createTable();
+        CrawledFiles::createTable();
         DetectedFiles::createTable();
         DeployCache::createTable();
         JobQueue::createTable();
@@ -234,11 +234,11 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Crawl Cache',
-            'Crawl Cache',
+            'WP2Static Crawled Files',
+            'Crawled Files',
             'manage_options',
-            'wp2static-crawl-cache',
-            [ ViewRenderer::class, 'renderCrawlCache' ]
+            'wp2static-crawled-files',
+            [ ViewRenderer::class, 'renderCrawledFiles' ]
         );
 
         add_submenu_page(
@@ -337,7 +337,7 @@ class Controller {
 
     public static function deleteAllCaches(): void {
         DetectedFiles::truncate();
-        CrawlCache::truncate();
+        CrawledFiles::truncate();
         StaticSite::delete();
         ProcessedSite::delete();
         DeployCache::truncate();
@@ -386,19 +386,19 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticCrawlCacheDelete(): void {
+    public static function wp2staticCrawledFilesDelete(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
-        CrawlCache::truncate();
+        CrawledFiles::truncate();
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-caches' ) );
         exit;
     }
 
-    public static function wp2staticCrawlCacheShow(): void {
+    public static function wp2staticCrawledFilesShow(): void {
         check_admin_referer( 'wp2static-caches-page' );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawl-cache' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-crawled-files' ) );
         exit;
     }
 
@@ -764,7 +764,7 @@ class Controller {
             $permalink
         );
 
-        CrawlCache::rmUrl( $url );
+        CrawledFiles::rmUrl( $url );
     }
 
     public static function emailDeployNotification(): void {

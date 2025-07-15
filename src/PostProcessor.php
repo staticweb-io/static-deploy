@@ -54,7 +54,7 @@ class PostProcessor {
             return;
         }
 
-        $crawled = CrawlCache::getPathsIter();
+        $crawled = CrawledFiles::getPathsIter();
         $processed = $this->processIter( $crawled );
 
         foreach ( $processed as $path ) {

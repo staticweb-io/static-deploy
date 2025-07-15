@@ -11,7 +11,7 @@ WP2Static\Controller::init( __DIR__ . '/wp2static.php' );
 
 $tables_to_drop = [
     'core_options',
-    'crawl_cache',
+    'crawled_files',
     'deploy_cache',
     'detected_files',
     'jobs',

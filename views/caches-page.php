@@ -12,9 +12,9 @@
 $detected_files_total = $view['DetectedFilesTotal'];
 
 /**
- * @var int $crawl_cache_total_urls
+ * @var int $crawled_files_total
  */
-$crawl_cache_total_urls = $view['crawlCacheTotalURLs'];
+$crawled_files_total = $view['crawledFilesTotal'];
 
 /**
  * @var int $exported_site_file_count
@@ -90,19 +90,19 @@ select.wp2static-select {
                 </td>
             </tr>
             <tr>
-                <td>Crawl Cache</td>
-                <td><?php echo $crawl_cache_total_urls; ?> URLs in database</td>
+                <td>Crawled Files</td>
+                <td><?php echo $crawled_files_total; ?> URLs in database</td>
                 <td>
                     <form
-                        name="wp2static-crawl-cache-delete"
+                        name="wp2static-crawled-files-delete"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="wp2static-select">
-                            <option value="wp2static_crawl_cache_show">Show URLs</option>
-                            <option value="wp2static_crawl_cache_delete">Delete Crawl Cache</option>
+                            <option value="wp2static_crawled_files_show">Show URLs</option>
+                            <option value="wp2static_crawled_files_delete">Delete Crawled Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
