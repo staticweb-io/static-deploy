@@ -43,7 +43,7 @@ class Controller {
 
         Utils::set_max_execution_time();
 
-        new S3\Controller()->run();
+        new S3\S3Controller()->run();
 
         return $plugin_instance;
     }
@@ -75,7 +75,7 @@ class Controller {
 
     public static function deactivateForSingleSite(): void {
         WPCron::clearRecurringEvent();
-        S3\Controller::deactivateForSingleSite();
+        S3\S3Controller::deactivateForSingleSite();
     }
 
     public static function deactivate( bool $network_wide = null ): void {
@@ -112,7 +112,7 @@ class Controller {
         DeployCache::createTable();
         JobQueue::createTable();
         Addons::createTable();
-        S3\Controller::activateForSingleSite();
+        S3\S3Controller::activateForSingleSite();
     }
 
     public static function activate( bool $network_wide = null ): void {
