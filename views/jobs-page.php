@@ -19,15 +19,15 @@ $jobs = $view['jobs'];
 $options = $view['jobOptions'];
 
 $input = function ( $name ) use ( $options ) {
-    return OptionRenderer::optionInput( (array) $options[ $name ] );
+    return OptionRenderer::optionInput( $options[ $name ] );
 };
 
 $label = function ( $name, $description = false ) use ( $options ) {
-    return OptionRenderer::optionLabel( (array) $options[ $name ], $description );
+    return OptionRenderer::optionLabel( $options[ $name ], $description );
 };
 
 $row = function ( $name ) use ( $options ) {
-    $opt = (array) $options[ $name ];
+    $opt = $options[ $name ];
     return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
             '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
 }
@@ -131,8 +131,8 @@ $row = function ( $name ) use ( $options ) {
                 </td>
                 <td>
                     <select
-                        id="<?php echo $options['processQueueInterval']->name; ?>"
-                        name="<?php echo $options['processQueueInterval']->name; ?>"
+                        id="processQueueInterval"
+                        name="processQueueInterval"
                         value="<?php echo (int) $options['processQueueInterval']->value; ?>"
                     >
                     <option
@@ -156,8 +156,8 @@ $row = function ( $name ) use ( $options ) {
                 </td>
                 <td>
                     <select
-                        id="<?php echo $options['processQueueImmediately']->name; ?>"
-                        name="<?php echo $options['processQueueImmediately']->name; ?>"
+                        id="processQueueImmediately"
+                        name="processQueueImmediately"
                         value="<?php echo (int) $options['processQueueImmediately']->value; ?>"
                     >
                     <option

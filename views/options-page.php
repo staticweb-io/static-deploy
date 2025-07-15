@@ -14,7 +14,7 @@ use WP2Static\OptionRenderer;
 $options = $view['options'];
 
 $row = function ( $name ) use ( $options ) {
-    $opt = (array) $options[ $name ];
+    $opt = $options[ $name ];
     return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
             '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
 }
@@ -72,7 +72,7 @@ $row = function ( $name ) use ( $options ) {
             <?php echo $row( 'completionEmail' ); ?>
             <tr>
                 <td style="width:50%;">
-                    <?php echo OptionRenderer::optionLabel( (array) $options['completionWebhook'] ); ?>
+                    <?php echo OptionRenderer::optionLabel( $options['completionWebhook'] ); ?>
                 </td>
                 <td>
                     <input
@@ -84,8 +84,8 @@ $row = function ( $name ) use ( $options ) {
                     />
 
                     <select
-                        id="<?php echo $options['completionWebhookMethod']->name; ?>"
-                        name="<?php echo $options['completionWebhookMethod']->name; ?>"
+                        id="completionWebhookMethod"
+                        name="completionWebhookMethod"
                         >
                         <option
                             value="POST"

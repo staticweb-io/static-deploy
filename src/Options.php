@@ -514,7 +514,7 @@ VALUES (%s, %s, %s);";
     /**
      * Get all options (value, description, label, etc)
      *
-     * @return array<string, mixed> array of option name to option object
+     * @return array<string, OptionData> array of option name to option object
      */
     public static function getAll() {
         global $wpdb;
@@ -527,34 +527,27 @@ VALUES (%s, %s, %s);";
 
         $options_map = [];
         foreach ( $options as $opt ) {
-            $options_map[ $opt->name ] = (array) $opt;
+            $options_map[ $opt->name ] = $opt;
         }
 
         $ret = [];
         foreach ( self::optionSpecs() as $opt_spec ) {
             $name = $opt_spec->name;
             $opt = $options_map[ $name ];
-            if ( ! $opt ) {
-                // Make a copy so we don't modify $cached_option_specs
-                $opt = $opt_spec->toArray();
-                $opt['unfiltered_value'] = $opt_spec->default_value;
-                $opt['blob_value'] = $opt_spec->default_blob_value;
-                $opt['value'] = apply_filters(
-                    (string) $opt_spec->filter_name,
-                    $opt_spec->default_value
+            if ( $opt ) {
+                $opt = new OptionData(
+                    $opt_spec,
+                    $opt->blob_value,
+                    $opt->value,
                 );
-                $ret[ $name ] = $opt;
             } else {
-                $val = $opt['value'];
-
-                if ( $opt_spec->type === 'password' ) {
-                    $val = self::encrypt_decrypt( 'decrypt', $val );
-                }
-
-                $opt['unfiltered_value'] = $val;
-                $opt['value'] = apply_filters( (string) $opt_spec->filter_name, $val );
-                $ret[ $name ] = (object) array_merge( $opt_spec, $opt );
+                $opt = new OptionData(
+                    $opt_spec,
+                    $opt_spec->default_blob_value,
+                    $opt_spec->default_value,
+                );
             }
+            $ret[ $name ] = $opt;
         }
 
         return $ret;
