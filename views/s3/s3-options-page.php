@@ -57,6 +57,7 @@ $object_acl_name = S3Options::getName( 'objectAcl' );
         <td style="width:50%;">
             <label
                 for="<?php echo $object_acl_name; ?>"
+                style="font-weight: bold;"
             ><?php echo $view['options'][ $object_acl_name ]->option_spec->label; ?></label>
         </td>
         <td>
