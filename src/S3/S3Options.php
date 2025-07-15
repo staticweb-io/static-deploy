@@ -2,6 +2,7 @@
 
 namespace WP2Static\S3;
 
+use WP2Static\Options;
 use WP2Static\OptionSpec;
 
 /*
@@ -120,5 +121,16 @@ class S3Options {
         }
         self::$cached_option_specs = $ret;
         return $ret;
+    }
+
+    public static function getValue( string $slug ): string {
+        $name = self::getName( $slug );
+        $option_spec = self::optionSpecs()[ $name ];
+
+        if ( ! $option_spec ) {
+            throw WsLog::ex( "Unknown option: $name" );
+        }
+
+        return Options::getSpecValue( $option_spec );
     }
 }
