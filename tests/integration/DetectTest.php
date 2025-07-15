@@ -9,8 +9,8 @@ final class DetectTest extends TestCase {
     use ITTrait;
 
     public function testCount(): void {
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'count' ] )['output'];
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected_files', 'count' ] )['output'];
         $count = (int) $lines[ count( $lines ) - 1 ];
         $this->assertGreaterThan( 1000, $count );
     }
@@ -23,8 +23,8 @@ final class DetectTest extends TestCase {
         $dir = ITEnv::getTestContentDir();
         file_put_contents( $dir . '/new-content.html', 'New Content' );
 
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
         $this->assertContains(
             ITEnv::getTestContentPath() . '/new-content.html',
             $lines
@@ -35,8 +35,8 @@ final class DetectTest extends TestCase {
      * Test that the detected files list contains expected URL
      */
     public function testList(): void {
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
         $this->assertContains( '/hello-world/', $lines );
     }
 
@@ -50,8 +50,8 @@ Allow: /wp-admin/admin-ajax.php
 Sitemap: http://localhost:8888//wp-sitemap.xml';
         file_put_contents( $robotstxt, $robotstxt_content );
 
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $this->wpCli( [ 'wp2static', 'crawl' ] );
+        $this->pluginCli( [ 'detect' ] );
+        $this->pluginCli( [ 'crawl' ] );
 
         $content = $this->getCrawledFileContents( 'robots.txt' );
         $this->assertStringContainsString(

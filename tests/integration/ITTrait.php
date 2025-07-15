@@ -9,7 +9,7 @@ trait ITTrait {
     public function setUp(): void {
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
 
-        $this->wpCli( [ 'wp2static', 'delete_all_cache', '--force' ] );
+        $this->pluginCli( [ 'delete_all_cache', '--force' ] );
     }
 
     public function wpCli( array $args, array $expect_warnings = [] ): array
@@ -47,6 +47,10 @@ trait ITTrait {
         ];
     }
 
+    public function pluginCli( array $args, array $expect_warnings = [] ): array {
+        return $this->wpCli( [ 'wp2static', ...$args ], $expect_warnings );
+    }
+
     public function getCrawledFileContents( string $path ): string
     {
         $wordpress_dir = ITEnv::getWordPressDir();
@@ -70,7 +74,7 @@ trait ITTrait {
     }
 
     public function getOptionValue( string $option_name ): string {
-        $lines = $this->wpCli( [ 'wp2static', 'options', 'get', $option_name ] )['output'];
+        $lines = $this->pluginCli( [ 'options', 'get', $option_name ] )['output'];
         // Ignore extra lines from things like deprecation warnings
         return $lines[ count( $lines ) - 1 ];
     }

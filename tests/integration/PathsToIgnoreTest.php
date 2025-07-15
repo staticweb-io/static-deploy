@@ -22,8 +22,8 @@ final class PathsToIgnoreTest extends TestCase {
         mkdir( $dir . '/node_modules', 0775, true );
         file_put_contents( $dir . '/node_modules/hello.html', 'RUN' );
 
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
         $this->assertContains(
             $path . '/Dckrfile',
             $lines,
@@ -62,8 +62,8 @@ final class PathsToIgnoreTest extends TestCase {
             '<html>'
         );
 
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $lines = $this->wpCli( [ 'wp2static', 'detected_files', 'list' ] )['output'];
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
         $this->assertNotContains(
             '/wp-content/plugins/wp2static/vendor/findme.html',
             $lines,

@@ -10,9 +10,9 @@ final class PostProcessTest extends TestCase {
 
     public function testProcessedSite(): void
     {
-        $this->wpCli( [ 'wp2static', 'detect' ] );
-        $this->wpCli( [ 'wp2static', 'crawl' ] );
-        $this->wpCli( [ 'wp2static', 'post_process' ] );
+        $this->pluginCli( [ 'detect' ] );
+        $this->pluginCli( [ 'crawl' ] );
+        $this->pluginCli( [ 'post_process' ] );
 
         $content = $this->getProcessedFileContents( 'index.html' );
         $this->assertStringContainsString( 'Welcome to WordPress', $content );
