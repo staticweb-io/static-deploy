@@ -9,6 +9,7 @@ use Aws\CommandPool;
 use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use WP2Static\Options;
 use WP2Static\WsLog;
 
 class Deployer {
@@ -51,7 +52,7 @@ class Deployer {
     private $s3_client;
 
     public function __construct() {
-        $cf_max_paths_str = Controller::getValue( 'cfMaxPathsToInvalidate' );
+        $cf_max_paths_str = S3Options::getValue( 'maxPathsToInvalidate' );
         if ( $cf_max_paths_str ) {
             $this->cf_max_paths = intval( $cf_max_paths_str );
         }
@@ -107,18 +108,18 @@ class Deployer {
     }
 
     public function uploadFilesIter( \Iterator $files ): void {
-        $object_acl = Controller::getValue( 's3ObjectACL' );
+        $object_acl = S3Options::getValue( 'objectAcl' );
         $base_put_data = [
-            'Bucket' => Controller::getValue( 's3Bucket' ),
+            'Bucket' => S3Options::getValue( 'bucketName' ),
             'ACL'    => $object_acl === '' ? 'public-read' : $object_acl,
         ];
 
-        $cache_control = Controller::getValue( 's3CacheControl' );
+        $cache_control = S3Options::getValue( 'headerCacheControl' );
         if ( $cache_control ) {
             $base_put_data['CacheControl'] = $cache_control;
         }
 
-        $s3_remote_path = Controller::getValue( 's3RemotePath' );
+        $s3_remote_path = S3Options::getValue( 'bucketPrefix' );
         $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
 
         $items_by_iter_key = [];
@@ -251,7 +252,7 @@ class Deployer {
 
         $commands = $command_generator( $files );
 
-        $concurrency = intval( Controller::getValue( 's3Concurrency' ) || '4' );
+        $concurrency = intval( S3Options::getValue( 'concurrency' ) || '4' );
         $config = [
             'concurrency' => $concurrency,
         ];
@@ -295,7 +296,7 @@ class Deployer {
             WsLog::l( $notice );
         }
 
-        $distribution_id = Controller::getValue( 'cfDistributionID' );
+        $distribution_id = S3Options::getValue( 'distributionId' );
         $num_stale = count( $this->cf_stale_paths );
         if ( $distribution_id && $num_stale > 0 ) {
             if ( $num_stale > $this->cf_max_paths ) {
@@ -312,7 +313,7 @@ class Deployer {
     public static function s3Client(): \Aws\S3\S3Client {
         $client_options = [
             'version' => 'latest',
-            'region' => Controller::getValue( 's3Region' ),
+            'region' => S3Options::getValue( 'awsRegion' ),
         ];
 
         /*
@@ -324,18 +325,18 @@ class Deployer {
          * - an IAM role.
          */
         if (
-            Controller::getValue( 's3AccessKeyID' ) &&
-            Controller::getValue( 's3SecretAccessKey' )
+            S3Options::getValue( 'awsAccessKeyId' ) &&
+            S3Options::getValue( 'awsSecretAccessKey' )
         ) {
             $client_options['credentials'] = [
-                'key' => Controller::getValue( 's3AccessKeyID' ),
+                'key' => S3Options::getValue( 'awsAccessKeyId' ),
                 'secret' => \WP2Static\Options::encrypt_decrypt(
                     'decrypt',
-                    Controller::getValue( 's3SecretAccessKey' )
+                    S3Options::getValue( 'awsSecretAccessKey' )
                 ),
             ];
-        } elseif ( Controller::getValue( 's3Profile' ) ) {
-            $client_options['profile'] = Controller::getValue( 's3Profile' );
+        } elseif ( S3Options::getValue( 'awsProfile' ) ) {
+            $client_options['profile'] = S3Options::getValue( 'awsProfile' );
         }
 
         return new \Aws\S3\S3Client( $client_options );
@@ -350,30 +351,30 @@ class Deployer {
          * - an IAM role.
          */
         if (
-            Controller::getValue( 'cfAccessKeyID' ) &&
-            Controller::getValue( 'cfSecretAccessKey' )
+            S3Options::getValue( 'awsAccessKeyId' ) &&
+            S3Options::getValue( 'awsSecretAccessKey' )
         ) {
             // Use the supplied access keys.
             $credentials = new \Aws\Credentials\Credentials(
-                Controller::getValue( 'cfAccessKeyID' ),
+                S3Options::getValue( 'awsAccessKeyId' ),
                 \WP2Static\Options::encrypt_decrypt(
                     'decrypt',
-                    Controller::getValue( 'cfSecretAccessKey' )
+                    S3Options::getValue( 'awsSecretAccessKey' )
                 )
             );
             $client = \Aws\CloudFront\CloudFrontClient::factory(
                 [
-                    'region' => Controller::getValue( 'cfRegion' ),
+                    'region' => S3Options::getValue( 'awsRegion' ),
                     'version' => 'latest',
                     'credentials' => $credentials,
                 ]
             );
-        } elseif ( Controller::getValue( 'cfProfile' ) ) {
+        } elseif ( S3Options::getValue( 'awsProfile' ) ) {
             // Use the specified profile.
             $client = \Aws\CloudFront\CloudFrontClient::factory(
                 [
-                    'profile' => Controller::getValue( 'cfProfile' ),
-                    'region' => Controller::getValue( 'cfRegion' ),
+                    'profile' => S3Options::getValue( 'awsProfile' ),
+                    'region' => S3Options::getValue( 'awsRegion' ),
                     'version' => 'latest',
                 ]
             );
@@ -381,7 +382,7 @@ class Deployer {
             // Use the IAM role.
             $client = \Aws\CloudFront\CloudFrontClient::factory(
                 [
-                    'region' => Controller::getValue( 'cfRegion' ),
+                    'region' => S3Options::getValue( 'awsRegion' ),
                     'version' => 'latest',
                 ]
             );
