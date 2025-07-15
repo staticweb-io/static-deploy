@@ -46,7 +46,7 @@ $object_acl_name = S3Options::getName( 'objectAcl' );
     action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
     <?php wp_nonce_field( $view['nonce_action'] ); ?>
-    <input name="action" type="hidden" value="wp2static_s3_save_options" />
+    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 's3_save_options' ); ?>" />
 
 <table class="widefat striped">
     <tbody>

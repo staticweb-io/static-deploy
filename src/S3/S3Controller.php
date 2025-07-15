@@ -2,31 +2,32 @@
 
 namespace WP2Static\S3;
 
+use WP2Static\Controller;
 use WP2Static\Options;
 
 class S3Controller {
     public function run(): void {
         add_filter(
-            'wp2static_add_menu_items',
+            Controller::getHookName( 'add_menu_items' ),
             [ 'WP2Static\S3\S3Controller', 'addSubmenuPage' ]
         );
 
         add_filter(
-            'wp2static_deployer_class',
+            Controller::getHookName( 'deployer_class' ),
             [ $this, 'deployerClass' ],
             10,
             2
         );
 
         add_action(
-            'admin_post_wp2static_s3_save_options',
+            'admin_post_' . Controller::getHookName( 's3_save_options' ),
             [ $this, 'saveOptionsFromUI' ],
             15,
             1
         );
 
         add_action(
-            'wp2static_deploy',
+            Controller::getHookName( 'deploy' ),
             [ $this, 'deploy' ],
             15,
             2
@@ -40,7 +41,7 @@ class S3Controller {
         );
 
         do_action(
-            'wp2static_register_addon',
+            Controller::getHookName( 'register_addon' ),
             'wp2static-addon-s3',
             'deploy',
             'S3 Deployment',
@@ -63,7 +64,7 @@ class S3Controller {
         Options::seedOptions( S3Options::optionSpecs() );
 
         $view = [];
-        $view['nonce_action'] = 'wp2static-s3-options';
+        $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
         $view['uploads_path'] = \WP2Static\SiteInfo::getPath( 'uploads' );
         $s3_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.s3';
 
@@ -108,7 +109,7 @@ class S3Controller {
     }
 
     public static function saveOptionsFromUI(): void {
-        check_admin_referer( 'wp2static-s3-options' );
+        check_admin_referer( Controller::getHookName( 's3_save_options' ) );
 
         Options::saveFromAdmin( S3Options::optionSpecs() );
 
