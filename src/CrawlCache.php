@@ -38,7 +38,7 @@ class CrawlCache {
             path VARCHAR(2083) NOT NULL,
             path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
             content_hash CHAR(32) NULL,
-            time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+            crawled_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             status SMALLINT DEFAULT 200 NOT NULL,
             redirect_to VARCHAR(2083) NULL,
             content_type VARCHAR(255) DEFAULT '' NOT NULL,
@@ -102,7 +102,7 @@ class CrawlCache {
                 )
             );
             $sql = "INSERT INTO $table_name
-                    (path,content_type,redirect_to,status,content_hash,time)
+                    (path,content_type,redirect_to,status,content_hash,crawled_at)
                     VALUES $placeholders ON DUPLICATE KEY
                     UPDATE
                       path = VALUES(path),
@@ -110,7 +110,7 @@ class CrawlCache {
                       redirect_to = VALUES(redirect_to),
                       status = VALUES(status),
                       content_hash = VALUES(content_hash),
-                      time = VALUES(time)";
+                      crawled_at = VALUES(crawled_at)";
 
             $values = [];
             foreach ( $paths as $path ) {
@@ -259,9 +259,9 @@ class CrawlCache {
         global $wpdb;
 
         $table_name = self::getTableName();
-        $sql = "insert into {$table_name} (time, path, content_hash, status, redirect_to)
+        $sql = "insert into {$table_name} (crawled_at, path, content_hash, status, redirect_to)
                 VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY
-                UPDATE time = %s, content_hash = %s, status = %s, redirect_to = %s";
+                UPDATE crawled_at = %s, content_hash = %s, status = %s, redirect_to = %s";
         $sql = $wpdb->prepare(
             $sql,
             current_time( 'mysql' ),
