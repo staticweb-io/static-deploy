@@ -5,9 +5,38 @@
 /**
  * @var mixed[] $view
  */
+
+use WP2Static\OptionRenderer;
+use WP2Static\S3\S3Options;
+
+/**
+ * @var array<string, mixed> $options
+ */
+$options = $view['options'];
+
+$row = function ( $slug ) use ( $options ) {
+    $name = S3Options::getName( $slug );
+    $opt = $options[ $name ];
+    return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
+            '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
+};
+
+$object_acl_name = S3Options::getName( 'objectAcl' );
+
 ?>
 
 <h2>S3 Deployment Options</h2>
+
+<h3>AWS Credentials</h3>
+
+<table class="widefat striped">
+    <tbody>
+    <?php echo $row( 'awsAccessKeyId' ); ?>
+    <?php echo $row( 'awsSecretAccessKey' ); ?>
+    <?php echo $row( 'awsRegion' ); ?>
+    <?php echo $row( 'awsProfile' ); ?>
+    </tbody>
+</table>
 
 <h3>S3</h3>
 
@@ -21,266 +50,41 @@
 
 <table class="widefat striped">
     <tbody>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3Bucket']->name; ?>"
-                ><?php echo $view['options']['s3Bucket']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3Bucket']->name; ?>"
-                    name="<?php echo $view['options']['s3Bucket']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3Bucket']->value !== '' ? $view['options']['s3Bucket']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3Region']->name; ?>"
-                ><?php echo $view['options']['s3Region']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3Region']->name; ?>"
-                    name="<?php echo $view['options']['s3Region']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3Region']->value !== '' ? $view['options']['s3Region']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3AccessKeyID']->name; ?>"
-                ><?php echo $view['options']['s3AccessKeyID']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3AccessKeyID']->name; ?>"
-                    name="<?php echo $view['options']['s3AccessKeyID']->name; ?>"
-                    value="<?php echo $view['options']['s3AccessKeyID']->value !== '' ? $view['options']['s3AccessKeyID']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3SecretAccessKey']->name; ?>"
-                ><?php echo $view['options']['s3SecretAccessKey']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3SecretAccessKey']->name; ?>"
-                    name="<?php echo $view['options']['s3SecretAccessKey']->name; ?>"
-                    type="password"
-                    value="<?php echo $view['options']['s3SecretAccessKey']->value !== '' ?
-                        \WP2Static\CoreOptions::encrypt_decrypt( 'decrypt', $view['options']['s3SecretAccessKey']->value ) :
-                        ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3Profile']->name; ?>"
-                ><?php echo $view['options']['s3Profile']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3Profile']->name; ?>"
-                    name="<?php echo $view['options']['s3Profile']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3Profile']->value !== '' ? $view['options']['s3Profile']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3RemotePath']->name; ?>"
-                ><?php echo $view['options']['s3RemotePath']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3RemotePath']->name; ?>"
-                    name="<?php echo $view['options']['s3RemotePath']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3RemotePath']->value !== '' ? $view['options']['s3RemotePath']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3CacheControl']->name; ?>"
-                ><?php echo $view['options']['s3CacheControl']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3CacheControl']->name; ?>"
-                    name="<?php echo $view['options']['s3CacheControl']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3CacheControl']->value !== '' ? $view['options']['s3CacheControl']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3ObjectACL']->name; ?>"
-                ><?php echo $view['options']['s3ObjectACL']->label; ?></label>
-            </td>
-            <td>
-                <select
-                    id="<?php echo $view['options']['s3ObjectACL']->name; ?>"
-                    name="<?php echo $view['options']['s3ObjectACL']->name; ?>"
-                >
-                    <option
-                        <?php if ( $view['options']['s3ObjectACL']->value === 'public-read' ) {
-                            echo 'selected'; } ?>
-                        value="public-read">public-read</option>
-                    <option
-                        <?php if ( $view['options']['s3ObjectACL']->value === 'private' ) {
-                            echo 'selected'; } ?>
-                        value="private">private</option>
-                </select>
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['s3Concurrency']->name; ?>"
-                ><?php echo $view['options']['s3Concurrency']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['s3Concurrency']->name; ?>"
-                    name="<?php echo $view['options']['s3Concurrency']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['s3Concurrency']->value !== '' ? $view['options']['s3Concurrency']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
+    <?php echo $row( 'bucketName' ); ?>
+    <?php echo $row( 'bucketPrefix' ); ?>
+    <?php echo $row( 'headerCacheControl' ); ?>
+    <tr>
+        <td style="width:50%;">
+            <label
+                for="<?php echo $object_acl_name; ?>"
+            ><?php echo $view['options'][ $object_acl_name ]->option_spec->label; ?></label>
+        </td>
+        <td>
+            <select
+                id="<?php echo $object_acl_name; ?>"
+                name="<?php echo $object_acl_name; ?>"
+            >
+                <option
+                    <?php if ( $view['options'][ $object_acl_name ]->value === 'public-read' ) {
+                        echo 'selected'; } ?>
+                    value="public-read">public-read</option>
+                <option
+                    <?php if ( $view['options'][ $object_acl_name ]->value === 'private' ) {
+                        echo 'selected'; } ?>
+                    value="private">private</option>
+            </select>
+        </td>
+    </tr>
+    <?php echo $row( 'concurrency' ); ?>
     </tbody>
 </table>
-
 
 <h3>CloudFront</h3>
 
 <table class="widefat striped">
     <tbody>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfRegion']->name; ?>"
-                ><?php echo $view['options']['cfRegion']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfRegion']->name; ?>"
-                    name="<?php echo $view['options']['cfRegion']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['cfRegion']->value !== '' ? $view['options']['cfRegion']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfAccessKeyID']->name; ?>"
-                ><?php echo $view['options']['cfAccessKeyID']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfAccessKeyID']->name; ?>"
-                    name="<?php echo $view['options']['cfAccessKeyID']->name; ?>"
-                    value="<?php echo $view['options']['cfAccessKeyID']->value !== '' ? $view['options']['cfAccessKeyID']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfSecretAccessKey']->name; ?>"
-                ><?php echo $view['options']['cfSecretAccessKey']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfSecretAccessKey']->name; ?>"
-                    name="<?php echo $view['options']['cfSecretAccessKey']->name; ?>"
-                    type="password"
-                    value="<?php echo $view['options']['cfSecretAccessKey']->value !== '' ?
-                        \WP2Static\CoreOptions::encrypt_decrypt( 'decrypt', $view['options']['cfSecretAccessKey']->value ) :
-                        ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfProfile']->name; ?>"
-                ><?php echo $view['options']['cfProfile']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfProfile']->name; ?>"
-                    name="<?php echo $view['options']['cfProfile']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['cfProfile']->value !== '' ? $view['options']['cfProfile']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfDistributionID']->name; ?>"
-                ><?php echo $view['options']['cfDistributionID']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfDistributionID']->name; ?>"
-                    name="<?php echo $view['options']['cfDistributionID']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['cfDistributionID']->value !== '' ? $view['options']['cfDistributionID']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
-        <tr>
-            <td style="width:50%;">
-                <label
-                    for="<?php echo $view['options']['cfMaxPathsToInvalidate']->name; ?>"
-                ><?php echo $view['options']['cfMaxPathsToInvalidate']->label; ?></label>
-            </td>
-            <td>
-                <input
-                    id="<?php echo $view['options']['cfMaxPathsToInvalidate']->name; ?>"
-                    name="<?php echo $view['options']['cfMaxPathsToInvalidate']->name; ?>"
-                    type="text"
-                    value="<?php echo $view['options']['cfMaxPathsToInvalidate']->value !== '' ? $view['options']['cfMaxPathsToInvalidate']->value : ''; ?>"
-                />
-            </td>
-        </tr>
-
+    <?php echo $row( 'distributionId' ); ?>
+    <?php echo $row( 'maxPathsToInvalidate' ); ?>
     </tbody>
 </table>
 
