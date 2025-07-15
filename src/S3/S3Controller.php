@@ -8,6 +8,8 @@ use WP2Static\SiteInfo;
 use WP2Static\WsLog;
 
 class S3Controller {
+    const ADDON_NAME = 'wp2static-addon-s3';
+
     public function run(): void {
         add_filter(
             Controller::getHookName( 'add_menu_items' ),
@@ -44,7 +46,7 @@ class S3Controller {
 
         do_action(
             Controller::getHookName( 'register_addon' ),
-            'wp2static-addon-s3',
+            self::ADDON_NAME,
             'deploy',
             'S3 Deployment',
             'https://wp2static.com/addons/s3/',
@@ -56,7 +58,7 @@ class S3Controller {
         string $deployer_class,
         string $enabled_deployer
     ): string {
-        if ( $enabled_deployer !== 'wp2static-addon-s3' ) {
+        if ( $enabled_deployer !== self::ADDON_NAME ) {
             return $deployer_class;
         }
         return Deployer::class;
@@ -76,7 +78,7 @@ class S3Controller {
 
 
     public function deploy( string $processed_site_path, string $enabled_deployer ): void {
-        if ( $enabled_deployer !== 'wp2static-addon-s3' ) {
+        if ( $enabled_deployer !== self::ADDON_NAME ) {
             return;
         }
 
@@ -110,7 +112,7 @@ class S3Controller {
 
         Options::saveFromAdmin( S3Options::optionSpecs() );
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-addon-s3' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=' . self::ADDON_NAME ) );
         exit;
     }
 
@@ -120,7 +122,7 @@ class S3Controller {
             'S3 Deployment Options',
             'S3 Deployment Options',
             'manage_options',
-            'wp2static-addon-s3',
+            self::ADDON_NAME,
             [ $this, 'renderS3Page' ]
         );
     }
