@@ -211,14 +211,14 @@ class Options {
             new OptionSpec(
                 'string',
                 'crawledSitePath',
-                'wp2static-crawled-site',
+                'static-deploy-crawled-site',
                 'Crawled Site Path',
                 'Path to the crawled site files.'
             ),
             new OptionSpec(
                 'string',
                 'processedSitePath',
-                'wp2static-processed-site',
+                'static-deploy-processed-site',
                 'Processed Site Path',
                 'Path to the processed site files.'
             ),
