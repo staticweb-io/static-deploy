@@ -28,15 +28,10 @@ class JobQueue {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        // There was an improper unique index which we must be sure to remove
-        if ( 1 === $wpdb->query( "SHOW INDEX FROM $table_name WHERE KEY_NAME = 'status'" ) ) {
-            $wpdb->query( "DROP INDEX status ON $table_name" );
-        }
-
         Controller::ensureIndex(
             $table_name,
-            'status2',
-            "CREATE INDEX status2 ON $table_name (status)"
+            'status',
+            "CREATE INDEX status ON $table_name (status)"
         );
     }
 
@@ -52,15 +47,6 @@ class JobQueue {
         global $wpdb;
 
         $table_name = self::getTableName();
-
-        // Add triggering_post_id column if it doesn't exist already
-        $triggering_post_id_row = $wpdb->get_row(
-            "SHOW COLUMNS FROM $table_name WHERE Field = 'triggering_post_id'"
-        );
-
-        if ( ! $triggering_post_id_row ) {
-            self::createTable();
-        }
 
         // TODO: squash any of same job_types with 'waiting' status
         // setting this one to be the one that runs next
