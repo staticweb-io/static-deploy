@@ -186,7 +186,7 @@ $row = function ( $name ) use ( $options ) {
     <p/>
 
     <form
-        name="wp2static-manually-enqueue-jobs"
+        name="<?php echo Controller::getHookName( 'manually_enqueue_jobs' ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 

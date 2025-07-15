@@ -41,7 +41,7 @@ $object_acl_name = S3Options::getName( 'objectAcl' );
 <h3>S3</h3>
 
 <form
-    name="wp2static-s3-save-options"
+    name="<?php echo Controller::getHookName( 's3_save_options' ); ?>"
     method="POST"
     action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 

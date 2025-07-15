@@ -23,7 +23,7 @@ $row = function ( $name ) use ( $options ) {
 
 <div class="wrap">
     <form
-        name="wp2static-ui-options"
+        name="<?php echo Controller::getHookName( 'ui_options' ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
