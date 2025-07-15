@@ -10,7 +10,7 @@ namespace WP2Static;
 class Options {
 
     /**
-     * @var ?array<string, array<string, ?string>>
+     * @var ?array<string, OptionSpec>
      */
     private static $cached_option_specs = null;
 
@@ -65,30 +65,7 @@ class Options {
     }
 
     /**
-     * @return array<string, ?string>
-     */
-    public static function makeOptionSpec(
-        string $type,
-        string $name,
-        string $default_value,
-        string $label,
-        string $description,
-        ?string $default_blob_value = null,
-        ?string $filter_name = null
-    ): array {
-        return [
-            'type' => $type,
-            'name' => $name,
-            'default_value' => $default_value,
-            'label' => $label,
-            'description' => $description,
-            'default_blob_value' => $default_blob_value,
-            'filter_name' => $filter_name ? $filter_name : "wp2static_option_$name",
-        ];
-    }
-
-    /**
-     * @return array<string, array<string, ?string>>
+     * @return array<string, OptionSpec>
      */
     public static function optionSpecs(): array {
         if ( self::$cached_option_specs ) {
@@ -96,140 +73,140 @@ class Options {
         }
 
         $specs = [
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'detectCustomPostTypes',
                 '1',
                 'Detect Custom Post Types',
                 'Include Custom Post Types in URL Detection.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'detectPages',
                 '1',
                 'Detect Pages',
                 'Include Pages in URL Detection.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'detectPosts',
                 '1',
                 'Detect Posts',
                 'Include Posts in URL Detection.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'detectUploads',
                 '1',
                 'Detect Uploads',
                 'Include Uploads in URL Detection.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'queueJobOnPostSave',
                 '1',
                 'Post Save',
                 'Queues a new job every time a Post or Page is saved.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'queueJobOnPostDelete',
                 '1',
                 'Post Delete',
                 'Queues a new job every time a Post or Page is deleted.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'processQueueImmediately',
                 '0',
                 'Process Queue Immediately',
                 'Begin processing the queue as soon as a job is added, without waiting for WP-Cron.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'integer',
                 'processQueueInterval',
                 '0',
                 'Process Queue Interval',
                 'WP-Cron will attempt to process the job queue at this interval'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueueDetection',
                 '1',
                 'Detect URLs',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueueCrawling',
                 '1',
                 'Crawl Site',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueuePostProcessing',
                 '1',
                 'Post-Process',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueueDeployment',
                 '1',
                 'Deploy',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueueDirectDeploy',
                 '0',
                 'Direct Deploy',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'autoJobQueueDirectDeployPost',
                 '0',
                 'Direct Deploy Post',
                 ''
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'basicAuthUser',
                 '',
                 'Basic Auth User',
                 'Username for basic authentication.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'deploymentURL',
                 'https://example.com',
                 'Deployment URL',
                 'URL your static site will be hosted at.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'password',
                 'basicAuthPassword',
                 '',
                 'Basic Auth Password',
                 'Password for basic authentication.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'completionEmail',
                 '',
                 'Completion Email',
                 'Email to send deployment completion notification to.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'completionWebhook',
                 '',
                 'Completion Webhook',
                 'Webhook to send deployment completion notification to.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'completionWebhookMethod',
                 'POST',
@@ -238,28 +215,28 @@ class Options {
             ),
 
             // Advanced options
-            self::makeOptionSpec(
+            new OptionSpec(
                 'integer',
                 'crawlConcurrency',
                 '4',
                 'Crawl Concurrency',
                 'The maximum number of files that will be crawled at the same time.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'crawledSitePath',
                 'wp2static-crawled-site',
                 'Crawled Site Path',
                 'Path to the crawled site files.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'string',
                 'processedSitePath',
                 'wp2static-processed-site',
                 'Processed Site Path',
                 'Path to the processed site files.'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'array',
                 'pathsToIgnore',
                 '1',
@@ -341,7 +318,7 @@ class Options {
                     ]
                 )
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'array',
                 'hostsToRewrite',
                 '1',
@@ -349,21 +326,21 @@ class Options {
                 'Hosts to rewrite to the deployment URL.',
                 'localhost'
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'debugLogging',
                 '0',
                 'Debug Logging',
                 'Enable debug logging.',
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'integer',
                 'maxLogRows',
                 '500',
                 'Max Log Rows',
                 'The maximum number of log rows to retain. 0 means there is no limit.',
             ),
-            self::makeOptionSpec(
+            new OptionSpec(
                 'boolean',
                 'skipURLRewrite',
                 '0',
@@ -375,7 +352,7 @@ class Options {
 
         $ret = [];
         foreach ( $specs as $s ) {
-            $ret[ $s['name'] ] = $s;
+            $ret[ $s->name ] = $s;
         }
         self::$cached_option_specs = $ret;
         return $ret;
@@ -396,9 +373,9 @@ VALUES (%s, %s, %s);";
         foreach ( self::optionSpecs() as $os ) {
             $query = $wpdb->prepare(
                 $query_string,
-                $os['name'],
-                $os['default_value'],
-                $os['default_blob_value']
+                $os->name,
+                $os->default_value,
+                $os->default_blob_value
             );
             $wpdb->query( $query );
         }
@@ -441,10 +418,10 @@ VALUES (%s, %s, %s);";
         $option_value = $wpdb->get_var( $sql );
 
         if ( ! is_string( $option_value ) ) {
-            $option_value = (string) $opt_spec['default_value'];
+            $option_value = (string) $opt_spec->default_value;
         }
 
-        if ( $opt_spec['type'] === 'password' ) {
+        if ( $opt_spec->type === 'password' ) {
             $option_value = self::encrypt_decrypt( 'decrypt', $option_value );
         }
 
@@ -455,7 +432,7 @@ VALUES (%s, %s, %s);";
             }
         }
 
-        $option_value = apply_filters( (string) $opt_spec['filter_name'], $option_value );
+        $option_value = apply_filters( (string) $opt_spec->filter_name, $option_value );
 
         return $option_value;
     }
@@ -513,8 +490,8 @@ VALUES (%s, %s, %s);";
      * @throws WP2StaticException
      * @return string option default BLOB value
      */
-    public static function getDefaultBlobValue( string $name ): string {
-        $val = self::optionSpecs()[ $name ]['default_blob_value'];
+    public static function getdefault_blob_value( string $name ): string {
+        $val = self::optionSpecs()[ $name ]->default_blob_value;
         return $val ? $val : '';
     }
 
@@ -524,7 +501,7 @@ VALUES (%s, %s, %s);";
     public static function getDefaultLineDelimitedBlobValue( string $name ): array {
         $vals = preg_split(
             '/\r\n|\r|\n/',
-            self::getDefaultBlobValue( $name )
+            self::getdefault_blob_value( $name )
         );
 
         if ( ! $vals ) {
@@ -555,27 +532,27 @@ VALUES (%s, %s, %s);";
 
         $ret = [];
         foreach ( self::optionSpecs() as $opt_spec ) {
-            $name = $opt_spec['name'];
+            $name = $opt_spec->name;
             $opt = $options_map[ $name ];
             if ( ! $opt ) {
                 // Make a copy so we don't modify $cached_option_specs
-                $opt = array_merge( $opt_spec );
-                $opt['unfiltered_value'] = $opt_spec['default_value'];
-                $opt['blob_value'] = $opt_spec['default_blob_value'];
+                $opt = $opt_spec->toArray();
+                $opt['unfiltered_value'] = $opt_spec->default_value;
+                $opt['blob_value'] = $opt_spec->default_blob_value;
                 $opt['value'] = apply_filters(
-                    (string) $opt_spec['filter_name'],
-                    $opt_spec['default_value']
+                    (string) $opt_spec->filter_name,
+                    $opt_spec->default_value
                 );
                 $ret[ $name ] = $opt;
             } else {
                 $val = $opt['value'];
 
-                if ( $opt_spec['type'] === 'password' ) {
+                if ( $opt_spec->type === 'password' ) {
                     $val = self::encrypt_decrypt( 'decrypt', $val );
                 }
 
                 $opt['unfiltered_value'] = $val;
-                $opt['value'] = apply_filters( (string) $opt_spec['filter_name'], $val );
+                $opt['value'] = apply_filters( (string) $opt_spec->filter_name, $val );
                 $ret[ $name ] = (object) array_merge( $opt_spec, $opt );
             }
         }
