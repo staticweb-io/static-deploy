@@ -110,7 +110,7 @@ class Controller {
     public static function saveOptionsFromUI(): void {
         check_admin_referer( 'wp2static-s3-options' );
 
-        Options::saveFromUI( S3Options::optionSpecs() );
+        Options::saveFromAdmin( S3Options::optionSpecs() );
 
         wp_safe_redirect( admin_url( 'admin.php?page=wp2static-addon-s3' ) );
         exit;
