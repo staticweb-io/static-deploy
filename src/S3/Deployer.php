@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2StaticS3;
+namespace WP2Static\S3;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;

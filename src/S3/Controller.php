@@ -1,12 +1,12 @@
 <?php
 
-namespace WP2StaticS3;
+namespace WP2Static\S3;
 
 class Controller {
     public function run() : void {
         add_filter(
             'wp2static_add_menu_items',
-            [ 'WP2StaticS3\Controller', 'addSubmenuPage' ]
+            [ 'WP2Static\S3\Controller', 'addSubmenuPage' ]
         );
 
         add_filter(
@@ -385,7 +385,7 @@ class Controller {
      * @return mixed[] array of submenu pages
      */
     public static function addSubmenuPage( array $submenu_pages ) : array {
-        $submenu_pages['s3'] = [ 'WP2StaticS3\Controller', 'renderS3Page' ];
+        $submenu_pages['s3'] = [ 'WP2Static\S3\Controller', 'renderS3Page' ];
 
         return $submenu_pages;
     }
