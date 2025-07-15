@@ -51,7 +51,7 @@ $processed_site_disk_space = $view['processedSiteDiskSpace'];
 ?>
 
 <style>
-select.wp2static-select {
+select.static-deploy-select {
     width: 165px;
 }
 </style>
@@ -79,7 +79,7 @@ select.wp2static-select {
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                        <select name="action" class="wp2static-select">
+                        <select name="action" class="static-deploy-select">
                             <option value="<?php echo Controller::getHookName( 'detected_files_show' ); ?>">Show URLs</option>
                             <option value="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>">Delete Detected Files</option>
                         </select>
@@ -100,7 +100,7 @@ select.wp2static-select {
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                        <select name="action" class="wp2static-select">
+                        <select name="action" class="static-deploy-select">
                             <option value="<?php echo Controller::getHookName( 'crawled_files_show' ); ?>">Show URLs</option>
                             <option value="<?php echo Controller::getHookName( 'crawled_files_delete' ); ?>">Delete Crawled Files</option>
                         </select>
@@ -126,7 +126,7 @@ select.wp2static-select {
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                        <select name="action" class="wp2static-select">
+                        <select name="action" class="static-deploy-select">
                             <option value="<?php echo Controller::getHookName( 'static_site_show' ); ?>">Show Paths</option>
                             <option value="<?php echo Controller::getHookName( 'static_site_delete' ); ?>">Delete Files</option>
                         </select>
@@ -151,7 +151,7 @@ select.wp2static-select {
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                        <select name="action" class="wp2static-select">
+                        <select name="action" class="static-deploy-select">
                             <option value="<?php echo Controller::getHookName( 'post_processed_site_show' ); ?>">Show Paths</option>
                             <option value="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>">Delete Files</option>
                         </select>
@@ -179,7 +179,7 @@ select.wp2static-select {
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                            <select name="action" class="wp2static-select">
+                            <select name="action" class="static-deploy-select">
                                 <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
                                 <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
                             </select>
@@ -202,7 +202,7 @@ select.wp2static-select {
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-                                <select name="action" class="wp2static-select">
+                                <select name="action" class="static-deploy-select">
                                     <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
                                     <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
                                 </select>

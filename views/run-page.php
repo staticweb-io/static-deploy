@@ -24,8 +24,8 @@ jQuery(document).ready(function($){
     };
 
     function responseErrorHandler( jqXHR, textStatus, errorThrown ) {
-        $("#wp2static-spinner").removeClass("is-active");
-        $("#wp2static-run" ).prop('disabled', false);
+        $("#static-deploy-spinner").removeClass("is-active");
+        $("#static-deploy-run" ).prop('disabled', false);
 
         console.log(errorThrown);
         console.log(jqXHR.responseText);
@@ -37,14 +37,14 @@ More information of the error may be logged in your browser's console.`);
 
     function pollLogs() {
         $.post(ajaxurl, log_data, function(response) {
-            $('#wp2static-run-log').val(response);
-            $("#wp2static-poll-logs" ).prop('disabled', false);
+            $('#static-deploy-run-log').val(response);
+            $("#static-deploy-poll-logs" ).prop('disabled', false);
         });
     }
 
-    $( "#wp2static-run" ).click(function() {
-        $("#wp2static-spinner").addClass("is-active");
-        $("#wp2static-run" ).prop('disabled', true);
+    $( "#static-deploy-run" ).click(function() {
+        $("#static-deploy-spinner").addClass("is-active");
+        $("#static-deploy-run" ).prop('disabled', true);
 
         $.ajax({
             url: ajaxurl,
@@ -52,8 +52,8 @@ More information of the error may be logged in your browser's console.`);
             data: run_data,
             timeout: 0,
             success: function() {
-                $("#wp2static-spinner").removeClass("is-active");
-                $("#wp2static-run" ).prop('disabled', false);
+                $("#static-deploy-spinner").removeClass("is-active");
+                $("#static-deploy-run" ).prop('disabled', false);
                 pollLogs();
             },
             error: responseErrorHandler
@@ -61,8 +61,8 @@ More information of the error may be logged in your browser's console.`);
 
     });
 
-    $( "#wp2static-poll-logs" ).click(function() {
-        $("#wp2static-poll-logs" ).prop('disabled', true);
+    $( "#static-deploy-poll-logs" ).click(function() {
+        $("#static-deploy-poll-logs" ).prop('disabled', true);
         pollLogs();
     });
 });
@@ -71,17 +71,17 @@ More information of the error may be logged in your browser's console.`);
 <div class="wrap">
     <br>
 
-    <button class="button button-primary" id="wp2static-run">Generate static site</button>
+    <button class="button button-primary" id="static-deploy-run">Generate static site</button>
 
-    <div id="wp2static-spinner" class="spinner" style="padding:2px;float:none;"></div>
+    <div id="static-deploy-spinner" class="spinner" style="padding:2px;float:none;"></div>
 
     <br>
     <br>
 
-    <button class="button" id="wp2static-poll-logs">Refresh logs</button>
+    <button class="button" id="static-deploy-poll-logs">Refresh logs</button>
     <br>
     <br>
-    <textarea id="wp2static-run-log" rows=30 style="width:99%;">
+    <textarea id="static-deploy-run-log" rows=30 style="width:99%;">
     Logs will appear here on completion or click "Refresh logs" to check progress
     </textarea>
 </div>

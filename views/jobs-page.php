@@ -233,7 +233,7 @@ $row = function ( $name ) use ( $options ) {
     <?php wp_nonce_field( Controller::getHookName( 'delete_jobs_queue' ) ); ?>
     <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'delete_jobs_queue' ); ?>" />
 
-    <button class="wp2static-button button btn-danger">Delete all Jobs from Queue</button>
+    <button class="static-deploy-button button btn-danger">Delete all Jobs from Queue</button>
 
     </form>
 </div>

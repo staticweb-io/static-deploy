@@ -49,7 +49,7 @@ $logs = $view['logs'];
         <?php wp_nonce_field( $view['nonce_action'] ); ?>
         <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'log_delete' ); ?>" />
 
-        <button class="wp2static-button button btn-danger">Delete Log</button>
+        <button class="static-deploy-button button btn-danger">Delete Log</button>
 
         </form>
     <?php endif; ?>
