@@ -47,7 +47,7 @@ class S3Options {
             new OptionSpec(
                 'string',
                 self::getName( 'awsRegion' ),
-                '',
+                'us-east-1',
                 'AWS Region',
                 'Region'
             ),
