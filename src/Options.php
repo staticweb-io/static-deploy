@@ -284,7 +284,6 @@ class Options {
                         'pb_backupbuddy',
                         'previous-export',
                         'README',
-                        'static-html-output-plugin',
                         '/tests/',
                         'thumbs.db',
                         'tinymce',
@@ -294,11 +293,8 @@ class Options {
                         'wp-admin',
                         'wp-content/plugins/*/vendor',
                         'wp-content/plugins/wp2static',
-                        'wp-static-html-output', // exclude earlier version exports
-                        'wp2static-addon',
                         'wp2static-crawled-site',
                         'wp2static-processed-site',
-                        'wp2static-working-files',
                         'yarn-error.log',
                         'yarn.lock',
                     ]
