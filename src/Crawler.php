@@ -142,7 +142,7 @@ class Crawler {
             'cache_hits' => $this->cache_hits,
         ];
 
-        do_action( 'wp2static_crawling_complete', $args );
+        do_action( Controller::getHookName( 'crawling_complete' ), $args );
     }
 
     public function crawlPath( array $detected, array $site_urls ): PromiseInterface {
