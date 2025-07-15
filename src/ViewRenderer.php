@@ -252,19 +252,7 @@ class ViewRenderer {
         $view = [];
         $view['nonce_action'] = 'wp2static-ui-job-options';
         $view['jobs'] = JobQueue::getJobs();
-
-        $view['jobOptions'] = [
-            'queueJobOnPostSave' => Options::get( 'queueJobOnPostSave' ),
-            'queueJobOnPostDelete' => Options::get( 'queueJobOnPostDelete' ),
-            'processQueueImmediately' => Options::get( 'processQueueImmediately' ),
-            'processQueueInterval' => Options::get( 'processQueueInterval' ),
-            'autoJobQueueDetection' => Options::get( 'autoJobQueueDetection' ),
-            'autoJobQueueCrawling' => Options::get( 'autoJobQueueCrawling' ),
-            'autoJobQueuePostProcessing' => Options::get( 'autoJobQueuePostProcessing' ),
-            'autoJobQueueDeployment' => Options::get( 'autoJobQueueDeployment' ),
-            'autoJobQueueDirectDeploy' => Options::get( 'autoJobQueueDirectDeploy' ),
-            'autoJobQueueDirectDeployPost' => Options::get( 'autoJobQueueDirectDeployPost' ),
-        ];
+        $view['jobOptions'] = Options::getAll();
 
         $view = apply_filters(
             Controller::getHookName( 'render_jobs_page_vars' ),

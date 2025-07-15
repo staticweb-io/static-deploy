@@ -535,53 +535,6 @@ VALUES (%s, %s, %s);";
     }
 
     /**
-     * Get option (value, description, label, etc)
-     *
-     * @return mixed option
-     */
-    public static function get( string $name ) {
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
-        $sql = $wpdb->prepare(
-            "SELECT name, value, blob_value
-             FROM $table_name WHERE" . ' name = %s',
-            $name
-        );
-
-        $option = $wpdb->get_row( $sql );
-        $opt_spec = self::optionSpecs() [ $name ];
-
-        // decrypt password fields
-        if ( $opt_spec['type'] === 'password' ) {
-            $option->value =
-                self::encrypt_decrypt( 'decrypt', $option->value );
-        }
-
-        if ( $option ) {
-            $option->unfiltered_value = $option->value;
-            $option->value = apply_filters( (string) $opt_spec['filter_name'], $option->value );
-            /** @phpstan-ignore-next-line */
-        } elseif ( $opt_spec ) {
-            $opt = array_merge( $opt_spec ); // Make a copy so we don't modify $cached_option_specs
-            $opt['unfiltered_value'] = $opt_spec['default_value'];
-            $opt['blob_value'] = $opt_spec['default_blob_value'];
-            if ( $opt_spec['filter_name'] ) {
-                $opt['value'] = apply_filters(
-                    $opt_spec['filter_name'],
-                    $opt_spec['default_value']
-                );
-            } else {
-                $opt['value'] = $opt_spec['default_value'];
-            }
-            return $opt;
-        }
-
-        return (object) array_merge( $opt_spec, (array) $option );
-    }
-
-    /**
      * Get all options (value, description, label, etc)
      *
      * @return array<string, mixed> array of option name to option object
