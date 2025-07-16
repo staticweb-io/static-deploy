@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix max_execution_time being set to 30 instead of 0.
+
 ## Static Deploy 9.0.0 (2025-07-16)
 
 This is the first release under the name Static Deploy.
