@@ -1,5 +1,51 @@
 ## Unreleased
 
+## Static Deploy 9.0.0 (2025-07-16)
+
+This is the first release under the name Static Deploy.
+The main changes include:
+
+- Crawling and processing static assets (such as images and CSS) is
+  now much faster.
+- `import_wp2static_options` command added for migrating options from WP2Static.
+- A `direct_deploy` command was added that does detection, crawling,
+  processing, and deployment in parallel. It avoids writing files to
+  disk, which makes it faster than the `full_workflow` command.
+- `direct_deploy` can take a post ID as an argument for quickly
+  deploying a single page.
+- New settings were added for enqueuing "Direct Deploy" and
+  "Direct Deploy Post" jobs when a post is updated.
+- URLs can now be detected while crawling the website. This is
+  helpful if you have addons that add custom URLs which aren't
+  found by the `detect` step.
+- The S3 addon was merged into the core plugin.
+- A new "pathsToIgnore" option was added which supports glob patterns
+  like * and **.
+  See [Splat](https://github.com/PHLAK/Splat?tab=readme-ov-file#patterns)
+  for syntax.
+  This option replaces the old filenamesToIgnore and
+  fileExtensionsToIgnore options.
+- Added log levels to the logs table. The levels are "debug",
+  "info", "warning", and "error".
+- Debug logging was added. This can be enabled all the time with
+  an option, or on a per-invocation basis with the WP CLI
+  `--debug` flag.
+- Updates pull directly from GitHub.
+- The build and testing process were improved.
+- Various bugfixes and small improvements.
+- Some rarely used code was removed.
+
+## 8.x series and 7.x forks
+
+After Elementor ceased development of WP2Static and shuttered
+the website, we continued work on a fork.
+We made several releases with 8.x and 7.x version numbers.
+[These releases](https://github.com/staticweb-io/wp2static/releases)
+were unstable releases that were only used internally.
+The combined changes are detailed in the 9.0.0 release notes.
+
+## WP2Static 7.2 (2023-01-31)
+
  - [#876](https://github.com/WP2Static/wp2static/pull/876): Fix #240: ignore SSL errors when fetching sitemap from local site with self-signed certificate. @timothylcooke
  - [d3977eab](d3977eab6be24c4985d998a7f4bf07409ef4a71b): Create an index on `wp2static_jobs.status`. @john-shaffer
  - [#785](https://github.com/leonstafford/wp2static/issues/785): Accept self-signed certs during sitemap crawling. @working-name, @john-shaffer
