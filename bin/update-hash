@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Usage: Change a single Hash = \"...\" to Hash = \"\""
+echo "and run this to insert the correct hash."
+
+FILENAME="flake.nix"
+PLACEHOLDER_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+
+echo "🔄 Running 'om ci'..."
+OUTPUT=$(om ci 2>&1 || true)
+
+# Extract actual hash from output
+ACTUAL_HASH=$(echo "$OUTPUT" | grep -oE 'got:\s+sha256-[a-zA-Z0-9+/=]+' | awk '{ print $2 }')
+
+if [[ -z "$ACTUAL_HASH" ]]; then
+  echo "❌ No hash mismatch found. Exiting."
+  exit 1
+fi
+
+echo "✅ Found replacement hash: $ACTUAL_HASH"
+echo "✏️ Replacing placeholder hash in $FILENAME..."
+
+# Replace placeholder hash (with optional whitespace)
+sed -i -E "s|Hash[[:space:]]*=[[:space:]]*\"$PLACEHOLDER_HASH\"|Hash = \"$ACTUAL_HASH\"|" "$FILENAME"
+
+# Replace empty string (interpreted by Nix as sha256-AAAAAAAA…)
+sed -i -E "s|Hash[[:space:]]*=[[:space:]]*\"\"|Hash = \"$ACTUAL_HASH\"|" "$FILENAME"
+
+echo "✅ Updated $FILENAME with new hash."
