@@ -722,11 +722,18 @@ class CLI {
             foreach ( Options::optionSpecs() as $option_spec ) {
                 Options::importFromWP2Static( $option_spec );
             }
+            foreach ( S3\S3Options::optionSpecs() as $option_spec ) {
+                Options::importFromWP2Static( $option_spec );
+            }
             return;
         }
 
         foreach ( $args as $option_name ) {
             $option_spec = Options::optionSpecs()[ $option_name ] ?? null;
+
+            if ( ! $option_spec ) {
+                $option_spec = S3\S3Options::optionSpecs()[ $option_name ] ?? null;
+            }
 
             if ( ! $option_spec ) {
                 WP_CLI::error(

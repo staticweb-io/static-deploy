@@ -763,41 +763,86 @@ VALUES (%s, %s, %s);";
     ): void {
         global $wpdb;
 
-        $wp2static_table_name = $wpdb->prefix . 'wp2static_core_options';
-
-        $wp2static_option = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT value, blob_value FROM $wp2static_table_name WHERE name = %s;",
-                $option_spec->name
-            )
-        );
-
-        if ( ! $wp2static_option ) {
-            WsLog::l( "Option $option_spec->name not found in WP2Static options" );
-            return;
+        if ( $option_spec->wp2static_table ) {
+            $wp2static_table_name = $wpdb->prefix . $option_spec->wp2static_table;
+        } else {
+            $wp2static_table_name = $wpdb->prefix . 'wp2static_core_options';
         }
 
-        $opt = new OptionData(
-            $option_spec,
-            $wp2static_option->blob_value,
-            $wp2static_option->value,
-        );
+        $wp2static_name = $option_spec->wp2static_name ?? $option_spec->name;
 
-        WsLog::l(
-            "Imported option $option_spec->name from WP2Static" .
-            'with value: ' . $opt->value .
-            ' and blob value: ' . $opt->blob_value
-        );
+        $blob = false;
+        if ( $option_spec->type === 'array' ) {
+            $blob = true;
+        }
 
-        $table_name = self::getTableName();
+        if ( $blob ) {
 
-        $wpdb->update(
-            $table_name,
-            [
-                'blob_value' => $opt->blob_value,
-                'value' => $opt->value,
-            ],
-            [ 'name' => $option_spec->name ]
-        );
+            $wp2static_option = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT value, blob_value FROM $wp2static_table_name WHERE name = %s;",
+                    $wp2static_name
+                )
+            );
+
+            if ( ! $wp2static_option ) {
+                WsLog::l( "Option $option_spec->name not found in WP2Static options" );
+                return;
+            }
+
+            $opt = new OptionData(
+                $option_spec,
+                $wp2static_option->blob_value,
+                $wp2static_option->value,
+            );
+
+            WsLog::l(
+                "Imported option $option_spec->name from WP2Static" .
+                ' with value: ' . $opt->value .
+                ' and blob value: ' . $opt->blob_value
+            );
+
+            $table_name = self::getTableName();
+
+            $wpdb->update(
+                $table_name,
+                [
+                    'blob_value' => $opt->blob_value,
+                    'value' => $opt->value,
+                ],
+                [ 'name' => $option_spec->name ]
+            );
+        } else {
+            $wp2static_option = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT value FROM $wp2static_table_name WHERE name = %s;",
+                    $wp2static_name
+                )
+            );
+
+            if ( ! $wp2static_option ) {
+                WsLog::l( "Option $option_spec->name not found in WP2Static options" );
+                return;
+            }
+
+            $opt = new OptionData(
+                $option_spec,
+                null,
+                $wp2static_option->value,
+            );
+
+            WsLog::l(
+                "Imported option $option_spec->name from WP2Static" .
+                ' with value: ' . $opt->value
+            );
+
+            $table_name = self::getTableName();
+
+            $wpdb->update(
+                $table_name,
+                [ 'value' => $opt->value ],
+                [ 'name' => $option_spec->name ]
+            );
+        }
     }
 }
