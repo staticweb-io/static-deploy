@@ -128,10 +128,10 @@ class Deployer {
 
         $command_generator = function (
             $iterator,
-            $base_put_data,
-            $s3_prefix,
         ) use (
             &$items_by_iter_key,
+            $base_put_data,
+            $s3_prefix,
         ) {
             $iter_key = 0;
             $last_log_time = microtime( true );
