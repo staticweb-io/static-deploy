@@ -24,12 +24,17 @@ class DeployCache {
             path VARCHAR(2083) NOT NULL,
             file_hash CHAR(32) NOT NULL,
             namespace VARCHAR(128) NOT NULL,
-            PRIMARY KEY  (id),
-            UNIQUE KEY path_hash_ns_idx (path_hash, namespace)
+            PRIMARY KEY  (id)
         ) $charset_collate;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
+
+        Controller::ensureIndex(
+            $table_name,
+            'path_hash_ns_idx',
+            "CREATE UNIQUE INDEX path_hash_ns_idx ON $table_name (path_hash, namespace)"
+        );
     }
 
     public static function addFile(
