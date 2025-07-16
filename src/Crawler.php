@@ -74,7 +74,7 @@ class Crawler {
             'timeout' => 600,
             'headers' => [
                 'User-Agent' => apply_filters(
-                    'wp2static_curl_user_agent',
+                    Controller::getHookName( 'curl_user_agent' ),
                     'staticdeploy.com',
                 ),
             ],
