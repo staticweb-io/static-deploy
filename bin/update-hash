@@ -11,7 +11,7 @@ echo "🔄 Running 'om ci'..."
 OUTPUT=$(om ci 2>&1 || true)
 
 # Extract actual hash from output
-ACTUAL_HASH=$(echo "$OUTPUT" | grep -oE 'got:\s+sha256-[a-zA-Z0-9+/=]+' | awk '{ print $2 }')
+ACTUAL_HASH=$( (echo "$OUTPUT" | grep -oE 'got:\s+sha256-[a-zA-Z0-9+/=]+' | awk '{ print $2 }') || true )
 
 if [[ -z "$ACTUAL_HASH" ]]; then
   echo "❌ No hash mismatch found. Exiting."
