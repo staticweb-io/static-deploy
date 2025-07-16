@@ -2,7 +2,7 @@
 /*
     WordPressAdmin
 
-    WP2Static's interface to WordPress Admin functions
+    Interface to WordPress Admin functions
 
     Used for registering hooks, Admin UI components, ...
 */
@@ -27,14 +27,14 @@ class WordPressAdmin {
     public static function buildUpdateChecker( string $bootstrap_file ): void {
         PucFactory::buildUpdateChecker(
             // phpcs:disable Generic.Files.LineLength
-            'https://raw.githubusercontent.com/staticweb-io/wp2static/refs/heads/develop/update.json',
+            'https://raw.githubusercontent.com/staticweb-io/static-deploy/refs/heads/develop/update.json',
             $bootstrap_file,
-            'wp2static'
+            'static-deploy'
         );
     }
 
     /**
-     * Register hooks for WordPress and WP2Static actions
+     * Register hooks for WordPress and plugin actions
      *
      * @param string $bootstrap_file main plugin filepath
      */
@@ -328,7 +328,7 @@ class WordPressAdmin {
     }
 
     /**
-     * Add WP2Static elements to WordPress Admin UI
+     * Add plugin elements to WordPress Admin UI
      */
     public static function addAdminUIElements(): void {
         if ( is_admin() ) {

@@ -96,7 +96,7 @@ class S3Controller {
     }
 
     /**
-     * Add WP2Static submenu
+     * Add submenu
      *
      * @param mixed[] $submenu_pages array of submenu pages
      * @return mixed[] array of submenu pages

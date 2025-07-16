@@ -20,7 +20,7 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems_2"
+        "systems": "systems"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -87,11 +87,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1748162331,
-        "narHash": "sha256-rqc2RKYTxP3tbjA+PB3VMRQNnjesrT0pEofXQTrMsS8=",
+        "lastModified": 1752308619,
+        "narHash": "sha256-pzrVLKRQNPrii06Rm09Q0i0dq3wt2t2pciT/GNq5EZQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7c43f080a7f28b2774f3b3f43234ca11661bf334",
+        "rev": "650e572363c091045cdbc5b36b0f4c1f614d3058",
         "type": "github"
       },
       "original": {
@@ -103,11 +103,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1752308619,
-        "narHash": "sha256-pzrVLKRQNPrii06Rm09Q0i0dq3wt2t2pciT/GNq5EZQ=",
+        "lastModified": 1748162331,
+        "narHash": "sha256-rqc2RKYTxP3tbjA+PB3VMRQNnjesrT0pEofXQTrMsS8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "650e572363c091045cdbc5b36b0f4c1f614d3058",
+        "rev": "7c43f080a7f28b2774f3b3f43234ca11661bf334",
         "type": "github"
       },
       "original": {
@@ -138,9 +138,9 @@
         "nixpkgs": "nixpkgs",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",
-        "systems": "systems",
-        "wordpress-flake": "wordpress-flake",
-        "wp2static": "wp2static"
+        "static-deploy": "static-deploy",
+        "systems": "systems_2",
+        "wordpress-flake": "wordpress-flake"
       }
     },
     "services-flake": {
@@ -157,6 +157,21 @@
         "repo": "services-flake",
         "type": "github"
       }
+    },
+    "static-deploy": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "path": "..",
+        "type": "path"
+      },
+      "original": {
+        "path": "..",
+        "type": "path"
+      },
+      "parent": []
     },
     "systems": {
       "locked": {
@@ -205,8 +220,8 @@
     },
     "wordpress-flake": {
       "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs_2"
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
         "lastModified": 1752601383,
@@ -221,21 +236,6 @@
         "repo": "wordpress-flake",
         "type": "github"
       }
-    },
-    "wp2static": {
-      "inputs": {
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "path": "..",
-        "type": "path"
-      },
-      "original": {
-        "path": "..",
-        "type": "path"
-      },
-      "parent": []
     }
   },
   "root": "root",

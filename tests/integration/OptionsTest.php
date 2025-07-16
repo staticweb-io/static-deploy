@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 function processQueueImmediately_filter ( $val ) {
     return '1';
 }
-add_filter( 'wp2static_option_processQueueImmediately', 'processQueueImmediately_filter' );
+add_filter( 'static_deploy_option_processQueueImmediately', 'processQueueImmediately_filter' );
 PHP;
     }
 }

@@ -31,7 +31,7 @@ $row = function ( $name ) use ( $options ) {
 
     <h4>Control Detected URLs</h4>
 
-    <p>WP2Static will crawl these WordPress URLs to generate a static site.</p>
+    <p>Static Deploy will crawl these WordPress URLs to generate a static site.</p>
 
     <table class="striped widefat">
         <thead>

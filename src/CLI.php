@@ -18,7 +18,7 @@ class CLI {
      */
     public function diagnostics(): void {
         WP_CLI::line(
-            PHP_EOL . 'WP2Static' . PHP_EOL
+            PHP_EOL . 'Static Deploy' . PHP_EOL
         );
 
         $environmental_info = [

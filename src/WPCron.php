@@ -77,7 +77,7 @@ class WPCron {
     }
 
     /**
-     * Override WP-Cron to use WP2Static's http basic auth creds if set
+     * Override WP-Cron to use http basic auth creds if set
      *
      * @param mixed[] $cron_request WP-Cron request
      * @return mixed[] WP-Cron request

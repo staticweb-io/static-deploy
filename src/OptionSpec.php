@@ -2,7 +2,7 @@
 /**
  * OptionSpec
  *
- * Specifies a configurable option for WP2Static
+ * Specifies a configurable option
  */
 
 declare(strict_types=1);

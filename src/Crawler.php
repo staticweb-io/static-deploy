@@ -99,7 +99,7 @@ class Crawler {
     public static function crawl( string $crawler_slug ): void {
         global $wpdb;
 
-        if ( 'wp2static' === $crawler_slug ) {
+        if ( 'static-deploy' === $crawler_slug ) {
             $crawler = new Crawler();
             $url_discovery = new URLDiscovery();
 

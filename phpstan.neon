@@ -9,7 +9,7 @@ parameters:
     paths:
         - %currentWorkingDirectory%/src/
         - %currentWorkingDirectory%/views/
-        - %currentWorkingDirectory%/wp2static.php
+        - %currentWorkingDirectory%/static-deploy.php
     scanFiles:
         - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
         - %currentWorkingDirectory%/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

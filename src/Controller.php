@@ -13,7 +13,7 @@ class Controller {
     public $bootstrap_file;
 
     /**
-     * Main controller of WP2Static
+     * Main controller
      *
      * @var \StaticDeploy\Controller Instance.
      */
@@ -22,8 +22,6 @@ class Controller {
     protected function __construct() {}
 
     /**
-     * Returns instance of WP2Static Controller
-     *
      * @return \StaticDeploy\Controller Instance of self.
      */
     public static function getInstance(): Controller {
@@ -66,8 +64,7 @@ class Controller {
 
         $order = [
             'index.php',
-            'wp2static',
-            'statichtmloutput',
+            'static-deploy',
         ];
 
         return $order;
@@ -179,21 +176,21 @@ class Controller {
     }
 
     public static function getHookName( string $hook_slug ): string {
-        return 'wp2static_' . $hook_slug;
+        return 'static_deploy_' . $hook_slug;
     }
 
     public static function getTableName( string $table_slug ): string {
         global $wpdb;
 
-        return $wpdb->prefix . 'wp2static_' . $table_slug;
+        return $wpdb->prefix . 'static_deploy_' . $table_slug;
     }
 
     public static function registerOptionsPage(): void {
         add_menu_page(
-            'WP2Static',
-            'WP2Static',
+            'Static Deploy',
+            'Static Deploy',
             'manage_options',
-            'wp2static',
+            'static-deploy',
             [ ViewRenderer::class, 'renderRunPage' ],
             'dashicons-shield-alt'
         );
@@ -212,7 +209,7 @@ class Controller {
 
         foreach ( $submenu_pages as $slug => $method ) {
             if ( $slug === 'run' ) {
-                $page = 'wp2static';
+                $page = 'static-deploy';
             } else {
                 $page = self::getHookName( $slug );
             }
@@ -220,8 +217,8 @@ class Controller {
             $title = ucfirst( $slug );
 
             add_submenu_page(
-                'wp2static',
-                'WP2Static ' . ucfirst( $slug ),
+                'static-deploy',
+                'Static Deploy ' . ucfirst( $slug ),
                 $title,
                 'manage_options',
                 $page,
@@ -231,7 +228,7 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Detected Files',
+            'Static Deploy Detected Files',
             'Detected Files',
             'manage_options',
             self::getHookName( 'detected_files' ),
@@ -240,7 +237,7 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Crawled Files',
+            'Static Deploy Crawled Files',
             'Crawled Files',
             'manage_options',
             self::getHookName( 'crawled_files' ),
@@ -249,7 +246,7 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Deploy Cache',
+            'Static Deploy Deploy Cache',
             'Deploy Cache',
             'manage_options',
             self::getHookName( 'deploy_cache' ),
@@ -258,7 +255,7 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Static Site',
+            'Static Deploy Static Site',
             'Static Site',
             'manage_options',
             self::getHookName( 'static_site' ),
@@ -267,7 +264,7 @@ class Controller {
 
         add_submenu_page(
             '',
-            'WP2Static Post Processed Site',
+            'Static Deploy Post Processed Site',
             'Post Processed Site',
             'manage_options',
             self::getHookName( 'post_processed_site' ),
@@ -296,7 +293,7 @@ class Controller {
 
     public static function getAdminUrl( string $slug ): string {
         if ( $slug === 'run' ) {
-            $page = 'wp2static';
+            $page = 'static-deploy';
         } else {
             $page = self::getHookName( $slug );
         }
@@ -306,7 +303,7 @@ class Controller {
 
     public static function getAdminPostUrl( string $slug ): string {
         if ( $slug === 'run' ) {
-            $page = 'wp2static';
+            $page = 'static-deploy';
         } else {
             $page = self::getHookName( $slug );
         }
@@ -483,13 +480,13 @@ class Controller {
     public static function savePostHandler( int $post_id ): void {
         if ( Options::getValue( 'queueJobOnPostSave' ) &&
             get_post_status( $post_id ) === 'publish' ) {
-            self::wp2staticEnqueueJobs( $post_id );
+            self::enqueueJobs( $post_id );
         }
     }
 
     public static function trashedPostHandler(): void {
         if ( Options::getValue( 'queueJobOnPostDelete' ) ) {
-            self::wp2staticEnqueueJobs();
+            self::enqueueJobs();
         }
     }
 
@@ -506,7 +503,7 @@ class Controller {
         exit;
     }
 
-    public static function wp2staticEnqueueJobs( ?int $post_id = null ): void {
+    public static function enqueueJobs( ?int $post_id = null ): void {
         // check each of these in order we want to enqueue
         $job_types = [
             'autoJobQueueDirectDeployPost' => 'direct_deploy_post',
@@ -588,7 +585,7 @@ class Controller {
         // persist through wp_safe_redirect calls
         // ie, https://github.com/wpscholar/wp-transient-admin-notices/blob/master/TransientAdminNotices.php
 
-        self::wp2staticEnqueueJobs();
+        self::enqueueJobs();
 
         wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
@@ -733,7 +730,7 @@ class Controller {
     }
 
     public static function runHeadless(): void {
-        WsLog::l( 'Running WP2Static in Headless mode' );
+        WsLog::l( 'Running in headless mode' );
         WsLog::l( 'Starting URL detection' );
         $detected_count = URLDetector::enqueueURLs();
         WsLog::l( "URL detection completed ($detected_count URLs detected)" );
@@ -799,9 +796,9 @@ class Controller {
         WsLog::l( 'Sending deployment notification email...' );
 
         $to = Options::getValue( 'completionEmail' );
-        $subject = 'WP2Static deployment complete on site: ' .
+        $subject = 'Static Deploy deployment complete on site: ' .
             $site_title = get_bloginfo( 'name' );
-        $body = 'WP2Static deployment complete!';
+        $body = 'Static Deploy deployment complete!';
         $headers = [];
 
         if ( wp_mail( $to, $subject, $body, $headers ) ) {
@@ -822,8 +819,8 @@ class Controller {
 
         $http_method = Options::getValue( 'completionWebhookMethod' );
 
-        $body = $http_method === 'POST' ? 'WP2Static deployment complete!' :
-            [ 'message' => 'WP2Static deployment complete!' ];
+        $body = $http_method === 'POST' ? 'Static Deploy deployment complete!' :
+            [ 'message' => 'Static Deploy deployment complete!' ];
 
         $webhook_response = wp_remote_request(
             $webhook_url,
@@ -863,7 +860,7 @@ class Controller {
 
     public static function crawl(): void {
         $crawlers = Addons::getType( 'crawl' );
-        $crawler_slug = empty( $crawlers ) ? 'wp2static' : $crawlers[0]->slug;
+        $crawler_slug = empty( $crawlers ) ? 'static-deploy' : $crawlers[0]->slug;
         do_action(
             self::getHookName( 'crawl' ),
             $crawler_slug

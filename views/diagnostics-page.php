@@ -37,7 +37,7 @@
                     <?php echo $view['memoryLimit']; ?>
 
                 </td>
-                <td>WP2Static will use as much memory as is available to it during processing. Allocating more of your system RAM to PHP should improve performance.</td>
+                <td>Static Deploy will use as much memory as is available to it during processing. Allocating more of your system RAM to PHP should improve performance.</td>
             </tr>
             <tr>
                 <td>Uploads directory writable</td>
@@ -49,7 +49,7 @@
                         style="color: <?php echo $view['uploadsWritable'] ? 'green' : 'red'; ?>;"
                     ></span>
                 </td>
-                <td>By default WP2Static writes the generated static site under wp-content/uploads directory. Make sure WP2Static has the permission to do so.</td>
+                <td>By default Static Deploy writes the generated static site under wp-content/uploads directory. Make sure Static Deploy has the permission to do so.</td>
             </tr>
             <tr>
                 <td>PHP version</td>
@@ -64,7 +64,7 @@
                 <td>
                 <p>The current officially supported PHP versions can be found on <a href="http://php.net/supported-versions.php" target="_blank">PHP.net</a></p>
 
-                <p>WP2Static now requires a minimum of PHP 8.1.</p>
+                <p>Static Deploy now requires a minimum of PHP 8.1.</p>
                 </td>
             </tr>
             <tr>
@@ -132,7 +132,7 @@
         </tbody>
     </table>
 
-    <h4>WP2Static Core Options</h4>
+    <h4>Static Deploy Core Options</h4>
 
     <table class="widefat striped">
         <thead>

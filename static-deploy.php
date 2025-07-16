@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: WP2Static
+ * Plugin Name: Static Deploy
  * Plugin URI:  https://github.com/staticweb-io/static-deploy
  * Description: Static site generator functionality for WordPress.
  * Version:     8.4.0
  * Author:      StaticWeb.io
  * Author URI:  https://github.com/staticweb-io/static-deploy
- * Text Domain: wp2static
+ * Text Domain: static-deploy
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
         require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
 
         throw new StaticDeploy\StaticDeployException(
-            'Looks like you\'re trying to activate WP2Static from source code' .
+            'Looks like you\'re trying to activate Static Deploy from source code' .
             ', without compiling it first.'
         );
     }
@@ -41,7 +41,7 @@ StaticDeploy\Controller::init( __FILE__ );
  */
 function plugin_action_links( $links ) {
     $settings_link =
-        '<a href="admin.php?page=wp2static">' .
+        '<a href="admin.php?page=static-deploy">' .
         __( 'Settings', 'static-html-output-plugin' ) .
         '</a>';
     array_unshift( $links, $settings_link );
@@ -59,14 +59,14 @@ add_filter(
  * Prevent WP scripts from loading which aren't useful
  * on a statically exported site
  */
-function wp2static_deregister_scripts(): void {
+function static_deploy_deregister_scripts(): void {
     wp_dequeue_script( 'wp-embed' );
     wp_deregister_script( 'wp-embed' );
     wp_dequeue_script( 'comment-reply' );
     wp_deregister_script( 'comment-reply' );
 }
 
-add_action( 'wp_footer', 'wp2static_deregister_scripts' );
+add_action( 'wp_footer', 'static_deploy_deregister_scripts' );
 
 // TODO: move into own plugin for WP cleanup, don't belong in core
 remove_action( 'wp_head', 'wlwmanifest_link' );

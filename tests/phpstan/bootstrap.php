@@ -5,6 +5,6 @@ define( 'WPINC', '' );
 define( 'WP_CONTENT_DIR', '' );
 define( 'WP_PLUGIN_DIR', '' );
 
-// WP2Static constants
+// Plugin constants
 define( 'STATIC_DEPLOY_VERSION', '' );
 define( 'STATIC_DEPLOY_PATH', '' );

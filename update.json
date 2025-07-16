@@ -1,7 +1,7 @@
 {
-  "name": "WP2Static",
+  "name": "Static Deploy",
   "version": "8.4.0",
-  "download_url": "https://github.com/staticweb-io/wp2static/releases/download/v8.4.0/plugin.zip",
+  "download_url": "https://github.com/staticweb-io/static-deploy/releases/download/v8.4.0/plugin.zip",
   "requires": "6.4",
   "tested": "6.8",
   "last_updated": "2025-07-11 14:29:09 -0500"

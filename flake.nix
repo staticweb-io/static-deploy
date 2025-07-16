@@ -1,5 +1,5 @@
 {
-  description = "WP2Static";
+  description = "Static Deploy plugin for WordPress";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -11,7 +11,7 @@
       with import nixpkgs { inherit system; };
       with pkgs;
       let
-        name = "wp2static";
+        name = "static-deploy";
         version = "8.4.0";
         composerSrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -33,17 +33,17 @@
           src = composerSrc;
           vendorHash = "sha256-yg0k8tOVbi6LAzZLuDQq+GY0afVnxDbHGyr6gAGDMa0=";
         });
-        wp2staticSrc = pkgs.lib.cleanSourceWith {
+        staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
             let base = baseNameOf path;
             in type == "directory" && base == "src"
             || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
             == "views" || pkgs.lib.hasInfix "/views/" path || type == "regular"
-            && pkgs.lib.hasSuffix ".php" base || base == "composer.json"
-            || base == "composer.lock";
+            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
+            == "composer.lock";
         };
-        wp2staticSrcDev = pkgs.lib.cleanSourceWith {
+        staticDeploySrcDev = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
             let base = baseNameOf path;
@@ -54,11 +54,11 @@
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
-        wp2static = runCommand "wp2static" { } ''
+        staticDeploy = runCommand "static-deploy" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
           cp -r "${composerVendor}/vendor" "$PLUGIN_DIR"
-          cp -r "${wp2staticSrc}"/* "$PLUGIN_DIR"
+          cp -r "${staticDeploySrc}"/* "$PLUGIN_DIR"
           cd "$PLUGIN_DIR"
           chmod 600 vendor/composer/autoload_*.php
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
@@ -67,11 +67,11 @@
           cd "$PLUGIN_DIR"/..
           ${zip}/bin/zip -r -9 $out/static-deploy.zip "$(basename "$PLUGIN_DIR")"
         '';
-        wp2staticCheck = stdenv.mkDerivation {
-          pname = "wp2static-check";
+        staticDeployCheck = stdenv.mkDerivation {
+          pname = "static-deploy-check";
           version = version;
 
-          src = wp2staticSrcDev;
+          src = staticDeploySrcDev;
 
           nativeBuildInputs = [ bash php ];
 
@@ -92,11 +92,11 @@
           '';
         };
       in {
-        checks = { inherit wp2staticCheck; };
-        lib = { inherit wp2staticSrcDev wp2staticSrc; };
+        checks = { inherit staticDeployCheck; };
+        lib = { inherit staticDeploySrcDev staticDeploySrc; };
         packages = {
-          inherit composerVendorDev composerVendor wp2static;
-          plugin = wp2static;
+          inherit composerVendorDev composerVendor staticDeploy;
+          plugin = staticDeploy;
         };
       });
 }

@@ -415,7 +415,7 @@ class Deployer {
             [
                 'DistributionId' => $distribution_id,
                 'InvalidationBatch' => [
-                    'CallerReference' => 'WP2Static S3 Add-on ' . time(),
+                    'CallerReference' => 'Static Deploy S3 Add-on ' . time(),
                     'Paths' => [
                         'Items' => $items,
                         'Quantity' => count( $items ),

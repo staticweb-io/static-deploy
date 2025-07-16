@@ -220,7 +220,7 @@ final class SimpleRewriterTest extends TestCase {
             ->andReturn( 'https://foo.com/' );
 
         // Test a deployment URL on a subdirectory
-        \WP_Mock::onFilter( 'wp2static_set_destination_url' )
+        \WP_Mock::onFilter( 'static_deploy_set_destination_url' )
             ->with( 'https://bar.com' )
             ->reply( 'https://bar.com/somepath' );
 
@@ -249,7 +249,7 @@ final class SimpleRewriterTest extends TestCase {
             ->andReturn( 'https://foo.com/' );
 
         // Test a deployment URL on a subdirectory
-        \WP_Mock::onFilter( 'wp2static_set_wordpress_site_url' )
+        \WP_Mock::onFilter( 'static_deploy_set_wordpress_site_url' )
             ->with( 'https://foo.com' )
             ->reply( 'https://foo.com/somepath/' );
 

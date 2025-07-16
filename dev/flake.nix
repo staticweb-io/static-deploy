@@ -6,7 +6,7 @@
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake.url = "github:staticweb-io/wordpress-flake";
-    wp2static.url = ./..;
+    static-deploy.url = ./..;
   };
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
@@ -31,9 +31,9 @@
               enabled ++ (with all; [ imagick memcached ]);
           };
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
-          wp2staticLib = inputs.wp2static.lib.${system};
-          wp2staticPkgs = inputs.wp2static.packages.${system};
-          wp2static = wp2staticPkgs.plugin;
+          staticDeployLib = inputs.static-deploy.lib.${system};
+          staticDeployPkgs = inputs.static-deploy.packages.${system};
+          staticDeploy = staticDeployPkgs.plugin;
         in {
           # `process-compose.foo` will add a flake package output called "foo".
           # Therefore, this will add a default package that you can build using
@@ -127,8 +127,8 @@
                     echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${
                       toString dbPort
                     }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
-                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticPkgs.composerVendorDev}/. .
-                    ${pkgs.rsync}/bin/rsync -a --copy-links ${wp2staticLib.wp2staticSrcDev}/. .
+                    ${pkgs.rsync}/bin/rsync -a --copy-links ${staticDeployPkgs.composerVendorDev}/. .
+                    ${pkgs.rsync}/bin/rsync -a --copy-links ${staticDeployLib.staticDeploySrcDev}/. .
                     chmod ug+w -R ./vendor
                     ${phpPackages.composer}/bin/composer dump-autoload
                     WORDPRESS_DIR="$(realpath ./data/wordpress1)"
@@ -212,8 +212,8 @@
                 cd ./data/wordpress1
                 ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
                 ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
-                rm -rf "./wp-content/plugins/wp2static"
-                ${pkgs.wp-cli}/bin/wp plugin install --activate ${wp2static}/static-deploy.zip
+                rm -rf "./wp-content/plugins/staticDeploy"
+                ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
               '';
               depends_on."mysql1-configure".condition = "process_completed";
             };
