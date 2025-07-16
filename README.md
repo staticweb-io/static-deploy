@@ -49,12 +49,9 @@ you can build the plugin with your changes by running
 This will create a zip file at `result/static-deploy.zip`.
 
 If you make changes to composer.json, or composer.lock,
-you will need to update the vendorHashes in flake.nix.
-You can do this by changing each `vendorHash = "..."`
-to `vendorHash = ""` and running
-`nix develop ./dev -c bin/update-hash`.
-Only change one vendorHash at a time to ensure
-that the correct hash is updated.
+you will need to update the vendorHashes in flake.nix
+by running
+`nix develop ./dev -c bin/update-hashes`.
 
 You can run the development environment via
 `cd dev && nix run`.

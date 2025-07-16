@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FILENAME="flake.nix"
+PLACEHOLDER_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+
+echo "📄 Processing $FILENAME..."
+
+HASHES=$(grep -oE 'Hash[[:space:]]*=[[:space:]]*"sha256-[a-zA-Z0-9+/=]+"' "$FILENAME" \
+         | sed -E 's/.*"(.+)"/\1/' | sort -u)
+
+if [[ -z "$HASHES" ]]; then
+    echo "✅ No hashes to update."
+    exit 0
+fi
+
+escape_for_sed() {
+    printf '%s\n' "$1" | sed -e 's/[][\/.^$*+?(){}|]/\\&/g'
+}
+
+for ORIGINAL_HASH in $HASHES; do
+    echo ""
+    echo "🔄 Replacing: $ORIGINAL_HASH"
+
+    # Temporarily replace with placeholder
+    ESCAPED_HASH=$(escape_for_sed "$ORIGINAL_HASH")
+    sed -i -E "s|Hash[[:space:]]*=[[:space:]]*\"$ESCAPED_HASH\"|Hash = \"$PLACEHOLDER_HASH\"|" "$FILENAME"
+
+    echo "▶️ Running 'om ci' to get new hash..."
+    OUTPUT=$(om ci 2>&1 || true)
+
+    ACTUAL_HASH=$(echo "$OUTPUT" | grep -oE 'got:\s+sha256-[a-zA-Z0-9+/=]+' | awk '{ print $2 }' || true)
+
+    if [[ -z "$ACTUAL_HASH" ]]; then
+        echo "❌ Could not find new hash for: $ORIGINAL_HASH"
+        exit 1
+    fi
+
+    echo "✅ Found new hash: $ACTUAL_HASH"
+    echo "✏️ Updating placeholder to new hash..."
+
+    # Replace placeholder with actual
+    sed -i -E "s|Hash[[:space:]]*=[[:space:]]*\"$PLACEHOLDER_HASH\"|Hash = \"$ACTUAL_HASH\"|" "$FILENAME"
+done
+
+echo ""
+echo "🎉 All hashes updated in $FILENAME!"
