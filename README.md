@@ -1,41 +1,73 @@
-# WP2Static
+# Static Deploy
 
-A WordPress plugin for static site generation and deployment.
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/staticweb-io/static-deploy)
 
-**Latest: WP2Static joins Strattic, the leading WordPress to headless and static site end-to-end publishing platform!**
-
-Strattic is generously keeping the WP2Static plugin available and maintained for open source users!
-
-[Read Announcement](https://www.strattic.com/wp2static-joins-strattic/)
-
-## Installation options
-
- - from this source code `git clone https://github.com/wp2static/wp2static.git` (run `composer install` afterwards)
- - via [Composer](https://github.com/composer/composer) `composer require wp2static/wp2static`
- - get installer zip from [wp2static.com](https://wp2static.com/download/)
- - [compile your own installer zip from source code](https://wp2static.com/compiling-from-source/)
+A WordPress plugin for static site generation and
+deployment.
 
 
-## [Docs](https://wp2static.com)
+Static Deploy is a fork of
+[Leon Stafford's](https://github.com/leonstafford)
+[WP2Static](https://github.com/elementor/wp2static)
+with many improvements.
+After development of WP2Static stalled for several
+years, we forked it and continue to maintain it.
 
-## [Support Forum](https://staticword.press/c/wordpress-static-site-generators/wp2static/)
+## Installation
 
-### Contributing
+Download a zip file from the
+[releases page](https://github.com/staticweb-io/static-deploy/releases).
+and install it in your WordPress site.
 
-[See `CONTRIBUTING.md`](./CONTRIBUTING.md)
+**Advanced:** If you have
+[Nix](https://docs.determinate.systems/determinate-nix/#getting-started)
+installed, you can build from source via
+`nix build github:staticweb-io/static-deploy#plugin`.
+This will create a zip file at `result/static-deploy.zip`
+which you can then install in your WordPress site.
+
+## Support
+
+Please
+[open an issue](https://github.com/staticweb-io/static-deploy/issues/new)
+for new support questions.
+
+## Documentation
+
+A
+[DeepWiki](https://deepwiki.com/staticweb-io/static-deploy)
+is available.
+
+## Development
+
+Development requires installing
+[Nix](https://docs.determinate.systems/determinate-nix/#getting-started).
+
+After checking out this repository and making changes,
+you can build the plugin with your changes by running
+`nix build .#plugin`.
+This will create a zip file at `result/static-deploy.zip`.
+
+If you make changes to composer.json, or composer.lock,
+you will need to update the vendorHashes in flake.nix.
+You can do this by changing each `vendorHash = "..."`
+to `vendorHash = ""` and running
+`nix develop ./dev -c bin/update-hash`.
+Only change one vendorHash at a time to ensure
+that the correct hash is updated.
+
+You can run the development environment via
+`cd dev && nix run`.
+This starts MySQL, PHP-FPM, and Nginx running WordPress
+with this plugin installed.
+The WordPress site is available at
+`http://localhost:8888`
+with credentials "user" and "pass".
 
 ### Testing
 
-WP2Static includes various types of code quality and functionality tests.
+To run the tests, run `nix flake check ./dev` from
+within this repository.
 
-Tests are defined as Composer scripts within the `composer.json` file.
-
-`composer run-script test` will run the main linting, static analysis and unit tests. It will not run code coverage by default. To run code coverage, use `composer run-script coverage`, this will require XDebug installed.
-
-`composer run-script test-integration` will run end to end tests. This requires that you have the `nix-shell` command available from [NixOS](https://nixos.org/download.html). More info on the intgration tests can be found in the README within the `integration-tests` directory.
-
-You can run individual test stages by specifying any of the defined scripts within `composer.json` with a command like `composer run-script phpunit`. You can pass arguments, such as to skip slow external request making phpunit tests, run `composer run-script phpunit -- --exclude-group ExternalRequests`.
-
-Continuous Integration is provided by GitHub Actions, which run code quality, unit and end to end tests.
-
-
+Test results are available on the
+[actions page](https://github.com/staticweb-io/static-deploy/actions).
