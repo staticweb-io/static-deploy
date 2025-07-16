@@ -39,7 +39,7 @@ StaticDeploy\Controller::init( __FILE__ );
  * @param string[] $links array of links
  * @return string[] modified array of links
  */
-function plugin_action_links( $links ) {
+function static_deploy_plugin_action_links( $links ) {
     $settings_link =
         '<a href="admin.php?page=static-deploy">' .
         __( 'Settings', 'static-html-output-plugin' ) .
@@ -52,7 +52,7 @@ function plugin_action_links( $links ) {
 add_filter(
     'plugin_action_links_' .
     plugin_basename( __FILE__ ),
-    'plugin_action_links'
+    'static_deploy_plugin_action_links'
 );
 
 /**
