@@ -33,7 +33,7 @@ class ViewRenderer {
         $view['site_info'] = SiteInfo::getAllInfo();
         $view['phpOutOfDate'] = version_compare( PHP_VERSION, '8.1', '<' );
         $view['uploadsWritable'] = SiteInfo::isUploadsWritable();
-        $view['maxExecutionTime'] = ini_get( 'max_execution_time' );
+        $view['maxExecutionTime'] = intval( ini_get( 'max_execution_time' ) );
         $view['curlSupported'] = SiteInfo::hasCURLSupport();
         $view['permalinksAreCompatible'] = SiteInfo::permalinksAreCompatible();
         $view['domDocumentAvailable'] = class_exists( 'DOMDocument' );
