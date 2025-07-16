@@ -2,12 +2,13 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded
 // phpcs:disable Generic.Files.LineLength.TooLong
 
+use StaticDeploy\Controller;
+use StaticDeploy\OptionRenderer;
+use StaticDeploy\S3\S3Options;
+
 /**
  * @var mixed[] $view
  */
-
-use StaticDeploy\OptionRenderer;
-use StaticDeploy\S3\S3Options;
 
 /**
  * @var array<string, mixed> $options

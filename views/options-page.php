@@ -2,11 +2,12 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
+use StaticDeploy\Controller;
+use StaticDeploy\OptionRenderer;
+
 /**
  * @var mixed[] $view
  */
-
-use StaticDeploy\OptionRenderer;
 
 /**
  * @var array<string, mixed> $options
