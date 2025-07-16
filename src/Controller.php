@@ -301,6 +301,16 @@ class Controller {
         return admin_url( 'admin.php?page=' . $page );
     }
 
+    public static function getAdminAjaxUrl( string $slug ): string {
+        if ( $slug === 'run' ) {
+            $action = 'static-deploy';
+        } else {
+            $action = self::getHookName( $slug );
+        }
+
+        return admin_url( 'admin-ajax.php?action=' . $action );
+    }
+
     public static function getAdminPostUrl( string $slug ): string {
         if ( $slug === 'run' ) {
             $page = 'static-deploy';
