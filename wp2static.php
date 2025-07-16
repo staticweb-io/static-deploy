@@ -13,16 +13,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
 
-define( 'WP2STATIC_VERSION', '8.4.0' );
-define( 'WP2STATIC_PATH', plugin_dir_path( __FILE__ ) );
+define( 'STATIC_DEPLOY_VERSION', '8.4.0' );
+define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
-if ( file_exists( WP2STATIC_PATH . 'vendor/autoload.php' ) ) {
-    require_once WP2STATIC_PATH . 'vendor/autoload.php';
+if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {
+    require_once STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 }
 
 if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
-    if ( file_exists( WP2STATIC_PATH . 'src/StaticDeployException.php' ) ) {
-        require_once WP2STATIC_PATH . 'src/StaticDeployException.php';
+    if ( file_exists( STATIC_DEPLOY_PATH . 'src/StaticDeployException.php' ) ) {
+        require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
 
         throw new StaticDeploy\StaticDeployException(
             'Looks like you\'re trying to activate WP2Static from source code' .

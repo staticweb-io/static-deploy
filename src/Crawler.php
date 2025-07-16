@@ -19,7 +19,7 @@ use WP2StaticGuzzleHttp\Promise;
 use WP2StaticGuzzleHttp\Promise\FulfilledPromise;
 use WP2StaticGuzzleHttp\Promise\PromiseInterface;
 
-define( 'WP2STATIC_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
+define( 'STATIC_DEPLOY_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
 
 class Crawler {
 
@@ -166,7 +166,7 @@ class Crawler {
 
                 $body = null;
                 $redirect_to = null;
-                if ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
+                if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
                     $redirect_history =
                         $response->getHeaderLine( 'X-Guzzle-Redirect-History' );
 

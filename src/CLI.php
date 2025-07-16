@@ -24,7 +24,7 @@ class CLI {
         $environmental_info = [
             [
                 'key' => 'PLUGIN VERSION',
-                'value' => WP2STATIC_VERSION,
+                'value' => STATIC_DEPLOY_VERSION,
             ],
             [
                 'key' => 'PHP_VERSION',

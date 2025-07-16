@@ -12,7 +12,7 @@ class ViewRenderer {
             'nonce_action' => Controller::getHookName( 'ui_options' ),
         ];
 
-        require_once WP2STATIC_PATH . 'views/options-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/options-page.php';
     }
 
     public static function renderAdvancedOptionsPage(): void {
@@ -23,7 +23,7 @@ class ViewRenderer {
             'nonce_action' => Controller::getHookName( 'ui_advanced_options' ),
         ];
 
-        require_once WP2STATIC_PATH . 'views/advanced-options-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/advanced-options-page.php';
     }
 
     public static function renderDiagnosticsPage(): void {
@@ -39,7 +39,7 @@ class ViewRenderer {
         $view['domDocumentAvailable'] = class_exists( 'DOMDocument' );
         $view['extensions'] = get_loaded_extensions();
 
-        require_once WP2STATIC_PATH . 'views/diagnostics-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/diagnostics-page.php';
     }
 
     public static function renderLogsPage(): void {
@@ -47,7 +47,7 @@ class ViewRenderer {
         $view['nonce_action'] = Controller::getHookName( 'log_page' );
         $view['logs'] = WsLog::getAll();
 
-        require_once WP2STATIC_PATH . 'views/logs-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/logs-page.php';
     }
 
     public static function renderAddonsPage(): void {
@@ -55,7 +55,7 @@ class ViewRenderer {
         $view['nonce_action'] = Controller::getHookName( 'addons_page' );
         $view['addons'] = Addons::getAll();
 
-        require_once WP2STATIC_PATH . 'views/addons-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/addons-page.php';
     }
 
     public static function renderDetectedFiles(): void {
@@ -97,7 +97,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/detected-files-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/detected-files-page.php';
     }
 
     public static function renderCrawledFiles(): void {
@@ -139,7 +139,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/crawled-files-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/crawled-files-page.php';
     }
 
     public static function renderPostProcessedSitePaths(): void {
@@ -172,7 +172,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/post-processed-site-paths-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/post-processed-site-paths-page.php';
     }
 
     public static function renderStaticSitePaths(): void {
@@ -205,7 +205,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/static-site-paths-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/static-site-paths-page.php';
     }
 
     public static function renderDeployCache(): void {
@@ -241,7 +241,7 @@ class ViewRenderer {
             'paginatorTotalRecords' => $paginator->totalRecords(),
         ];
 
-        require_once WP2STATIC_PATH . 'views/deploy-cache-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/deploy-cache-page.php';
     }
 
     public static function renderJobsPage(): void {
@@ -259,13 +259,13 @@ class ViewRenderer {
             $view
         );
 
-        require_once WP2STATIC_PATH . 'views/jobs-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/jobs-page.php';
     }
 
     public static function renderRunPage(): void {
         $view = [];
 
-        require_once WP2STATIC_PATH . 'views/run-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/run-page.php';
     }
 
 
@@ -348,6 +348,6 @@ class ViewRenderer {
         $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
         $view['nonce_action'] = Controller::getHookName( 'caches_page' );
 
-        require_once WP2STATIC_PATH . 'views/caches-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/caches-page.php';
     }
 }

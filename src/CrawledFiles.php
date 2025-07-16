@@ -207,7 +207,7 @@ class CrawledFiles {
 
             if ( $status === 404 ) {
                 $is_cacheable = false;
-            } elseif ( in_array( $status, WP2STATIC_REDIRECT_CODES ) ) {
+            } elseif ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
                 $is_cacheable = false;
             }
 
