@@ -40,7 +40,7 @@ class URLDiscovery {
                     continue;
                 }
                 $placeholders = array_fill( 0, count( $urls ), '(%s)' );
-                $sql = "INSERT IGNORE INTO $table_name (url)
+                $sql = "INSERT IGNORE INTO $table_name (path)
                   VALUES " . implode( ',', $placeholders );
                 $result = $wpdb->query( $wpdb->prepare( $sql, ...array_keys( $urls ) ) );
                 if ( false === $result ) {
