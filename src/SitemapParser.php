@@ -21,7 +21,7 @@ class SitemapParser {
     /**
      * Default User-Agent
      */
-    const DEFAULT_USER_AGENT = 'WP2Static.com';
+    const DEFAULT_USER_AGENT = 'staticdeploy.com';
 
     /**
      * XML file extension

@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WP2Static
- * Plugin URI:  https://wp2static.com
+ * Plugin URI:  https://github.com/staticweb-io/static-deploy
  * Description: Static site generator functionality for WordPress.
  * Version:     8.4.0
- * Author:      WP2Static
- * Author URI:  https://wp2static.com
+ * Author:      StaticWeb.io
+ * Author URI:  https://github.com/staticweb-io/static-deploy
  * Text Domain: wp2static
  */
 
@@ -26,8 +26,7 @@ if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
 
         throw new StaticDeploy\StaticDeployException(
             'Looks like you\'re trying to activate WP2Static from source code' .
-            ', without compiling it first. Please see' .
-            ' https://wp2static.com/compiling-from-source for assistance.'
+            ', without compiling it first.'
         );
     }
 }

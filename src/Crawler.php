@@ -75,7 +75,7 @@ class Crawler {
             'headers' => [
                 'User-Agent' => apply_filters(
                     'wp2static_curl_user_agent',
-                    'WP2Static.com',
+                    'staticdeploy.com',
                 ),
             ],
         ];

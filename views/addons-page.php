@@ -28,7 +28,7 @@ $addons = $view['addons'];
         <tbody>
             <?php if ( ! $addons ) : ?>
                 <tr>
-                    <td colspan="4">No addons are installed. <a href="https://wp2static.com/download">Get Add-Ons</a></td>
+                    <td colspan="4">No addons are installed.</td>
                 </tr>
             <?php endif; ?>
 

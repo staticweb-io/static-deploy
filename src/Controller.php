@@ -833,7 +833,7 @@ class Controller {
                 'user-agent' =>
                     apply_filters(
                         self::getHookName( 'deploy_webhook_user_agent' ),
-                        'WP2Static.com'
+                        'staticdeploy.com'
                     ),
                 'body' => apply_filters(
                     self::getHookName( 'deploy_webhook_body' ),

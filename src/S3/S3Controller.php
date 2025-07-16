@@ -49,7 +49,7 @@ class S3Controller {
             self::ADDON_NAME,
             'deploy',
             'S3 Deployment',
-            'https://wp2static.com/addons/s3/',
+            'https://github.com/staticweb-io/static-deploy',
             'Deploys to S3 with optional CloudFront cache invalidation'
         );
     }

@@ -34,7 +34,7 @@ class DetectSitemapsURLs {
         }
 
         $parser = new SitemapParser(
-            'WP2Static.com',
+            'staticdeploy.com',
             [
                 'guzzle' => $opts,
                 'strict' => false,
@@ -68,7 +68,7 @@ class DetectSitemapsURLs {
                 'headers' => [
                     'User-Agent' => apply_filters(
                         Controller::getHookName( 'curl_user_agent' ),
-                        'WP2Static.com',
+                        'staticdeploy.com',
                     ),
                 ],
             ]
