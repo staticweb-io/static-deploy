@@ -7,8 +7,6 @@
  * Author:      WP2Static
  * Author URI:  https://wp2static.com
  * Text Domain: wp2static
- *
- * @package     WP2Static
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

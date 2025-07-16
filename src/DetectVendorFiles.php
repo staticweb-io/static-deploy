@@ -4,11 +4,6 @@ namespace StaticDeploy;
 
 use StaticDeploy\FileFiltering;
 
-/**
- * Class DetectVendorFiles
- *
- * @package WP2Static
- */
 class DetectVendorFiles {
 
     /**
