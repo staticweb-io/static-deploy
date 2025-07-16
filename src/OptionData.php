@@ -12,11 +12,13 @@ namespace StaticDeploy;
 
 final class OptionData {
 
-    public readonly ?string $blob_value;
-    public readonly OptionSpec $option_spec;
-    public readonly ?string $unfiltered_blob_value;
-    public readonly string $unfiltered_value;
-    public readonly string $value;
+    // TODO: Add readonly keyword to all properties
+    // once we can strictly require PHP 8.1
+    public ?string $blob_value;
+    public OptionSpec $option_spec;
+    public ?string $unfiltered_blob_value;
+    public string $unfiltered_value;
+    public string $value;
 
     public function __construct(
         OptionSpec $option_spec,

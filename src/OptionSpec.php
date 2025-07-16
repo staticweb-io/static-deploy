@@ -11,14 +11,16 @@ namespace StaticDeploy;
 
 final class OptionSpec {
 
-    public readonly string $type;
-    public readonly string $name;
-    public readonly string $default_value;
-    public readonly string $label;
-    public readonly string $description;
-    public readonly ?string $default_blob_value;
-    public readonly string $filter_name;
-    public readonly ?int $min_value;
+    // TODO: Add readonly keyword to all properties
+    // once we can strictly require PHP 8.1
+    public string $type;
+    public string $name;
+    public string $default_value;
+    public string $label;
+    public string $description;
+    public ?string $default_blob_value;
+    public string $filter_name;
+    public ?int $min_value;
 
     public function __construct(
         string $type,
