@@ -10,7 +10,8 @@ echo "Getting wordpress_* packages from $FLAKE_REF for system $SYSTEM..."
 wordpress_packages=$(nix eval --json --impure \
   --expr "builtins.attrNames (builtins.getFlake \"$FLAKE_REF\").packages.\"$SYSTEM\"" \
   | jq -r '.[]' | grep '^wordpress_' \
-  | sort -t_ -k2,2nr -k3,3nr -k4,4nr)
+  | sort -t_ -k2,2nr -k3,3nr -k4,4nr\
+  | awk -F_ '!seen[$2"_"$3]++')
 
 if [[ -z "$wordpress_packages" ]]; then
   echo "No wordpress_* packages found."
