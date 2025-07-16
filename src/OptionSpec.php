@@ -22,6 +22,10 @@ final class OptionSpec {
     public string $filter_name;
     public ?int $min_value;
 
+    // Used to import from WP2Static options
+    public ?string $wp2static_name;
+    public ?string $wp2static_table;
+
     public function __construct(
         string $type,
         string $name,
@@ -31,6 +35,8 @@ final class OptionSpec {
         ?string $default_blob_value = null,
         ?string $filter_name = null,
         ?int $min_value = null,
+        ?string $wp2static_name = null,
+        ?string $wp2static_table = null,
     ) {
         $this->type = $type;
         $this->name = $name;
@@ -40,6 +46,8 @@ final class OptionSpec {
         $this->default_blob_value = $default_blob_value;
         $this->filter_name = $filter_name ?? Controller::getHookName( "option_{$name}" );
         $this->min_value = $min_value;
+        $this->wp2static_name = $wp2static_name;
+        $this->wp2static_table = $wp2static_table;
     }
 
     /**
