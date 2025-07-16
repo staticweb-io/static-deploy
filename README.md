@@ -38,6 +38,15 @@ A
 [DeepWiki](https://deepwiki.com/staticweb-io/static-deploy)
 is available.
 
+## Migrating from WP2Static
+
+Install the plugin and run
+`wp static-deploy import_wp2static_options --all`.
+This will import all the core plugin options and the S3
+addon options. You will still need to enable deployment
+addons and import options for any other deployment addons
+if you have them.
+
 ## Development
 
 Development requires installing
