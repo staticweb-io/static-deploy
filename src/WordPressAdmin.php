@@ -338,6 +338,7 @@ class WordPressAdmin {
             );
             add_filter( 'custom_menu_order', '__return_true' );
             add_filter( 'menu_order', [ Controller::class, 'setMenuOrder' ] );
+            AdminBar::registerHooks();
         }
     }
 
