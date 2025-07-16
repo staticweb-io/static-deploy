@@ -16,7 +16,7 @@ use WP2Static\WsLog;
 
 class Deployer {
 
-    const DEFAULT_NAMESPACE = 'wp2static-addon-s3/default';
+    const DEFAULT_NAMESPACE = 'static-deploy-addon-s3/default';
 
     /**
      * @var integer

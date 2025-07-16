@@ -8,7 +8,7 @@ use WP2Static\SiteInfo;
 use WP2Static\WsLog;
 
 class S3Controller {
-    const ADDON_NAME = 'wp2static-addon-s3';
+    const ADDON_NAME = 'static-deploy-addon-s3';
 
     public function run(): void {
         add_filter(
