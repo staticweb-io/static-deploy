@@ -8,16 +8,16 @@
 
 namespace StaticDeploy;
 
-use WP2StaticGuzzleHttp\Client;
-use WP2StaticGuzzleHttp\Psr7\Request;
-use WP2StaticGuzzleHttp\Psr7\Response;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use WP2StaticGuzzleHttp\Exception\RequestException;
-use WP2StaticGuzzleHttp\Exception\TooManyRedirectsException;
-use WP2StaticGuzzleHttp\Pool;
-use WP2StaticGuzzleHttp\Promise;
-use WP2StaticGuzzleHttp\Promise\FulfilledPromise;
-use WP2StaticGuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\PromiseInterface;
 
 define( 'STATIC_DEPLOY_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
 

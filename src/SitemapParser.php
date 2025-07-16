@@ -2,7 +2,7 @@
 
 namespace StaticDeploy;
 
-use WP2StaticGuzzleHttp;
+use GuzzleHttp;
 use SimpleXMLElement;
 
 /**
@@ -239,7 +239,7 @@ class SitemapParser {
             if ( ! isset( $this->config['guzzle']['headers']['User-Agent'] ) ) {
                 $this->config['guzzle']['headers']['User-Agent'] = $this->user_agent;
             }
-            $client = new WP2StaticGuzzleHttp\Client( [ 'verify' => false ] );
+            $client = new GuzzleHttp\Client( [ 'verify' => false ] );
 
             if ( ! is_array( $this->config['guzzle'] ) ) {
                 WsLog::w( 'Guzzle config is not in expected array format' );
@@ -255,10 +255,10 @@ class SitemapParser {
                 );
                 return null;
             }
-        } catch ( WP2StaticGuzzleHttp\Exception\TransferException $e ) {
+        } catch ( GuzzleHttp\Exception\TransferException $e ) {
             throw WsLog::ex( 'Unable to fetch URL contents', 0, $e );
-        } catch ( WP2StaticGuzzleHttp\Exception\GuzzleException $e ) {
-            throw WsLog::ex( 'WP2StaticGuzzleHttp exception', 0, $e );
+        } catch ( GuzzleHttp\Exception\GuzzleException $e ) {
+            throw WsLog::ex( 'GuzzleHttp exception', 0, $e );
         }
     }
 

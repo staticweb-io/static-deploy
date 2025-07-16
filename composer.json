@@ -22,15 +22,9 @@
         "docs": "https://deepwiki.com/staticweb-io/static-deploy",
         "source": "https://github.com/staticweb-io/static-deploy"
     },
-    "replace": {
-        "guzzlehttp/guzzle":"*",
-        "guzzlehttp/promises":"*",
-        "guzzlehttp/psr7":"*"
-    },
     "require": {
         "php": ">=7.4",
         "wa72/url": "^0.7.1",
-        "leonstafford/wp2staticguzzle": "^7.2.0",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
         "lib-libxml": "*",
@@ -38,7 +32,9 @@
         "masterminds/html5": "^2.9",
         "phlak/splat": "^5.0",
         "symfony/finder": "=6.0.3",
-        "aws/aws-sdk-php": "3.166.1"
+        "aws/aws-sdk-php": "3.166.1",
+        "guzzlehttp/guzzle": "^7.8",
+        "symfony/deprecation-contracts": "3.0"
     },
     "require-dev": {
         "thecodingmachine/phpstan-strict-rules": "*",
