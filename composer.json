@@ -1,21 +1,26 @@
 {
-    "name": "leonstafford/wp2static",
-    "description": "Security & Performance via static website publishing.",
-    "homepage": "https://wp2static.com",
+    "name": "staticweb-io/static-deploy",
+    "description": "WordPress plugin for deploying static websites.",
+    "homepage": "https://github.com/staticweb-io/static-deploy",
     "license": "UNLICENSE",
     "authors": [
         {
             "name": "Leon Stafford",
             "email": "me@ljs.dev",
             "homepage": "https://ljs.dev"
+        },
+        {
+            "name": "John Shaffer",
+            "email": "jdsha@pm.me",
+            "homepage": "https://john.shaffe.rs"
         }
     ],
     "type": "wordpress-plugin",
     "support": {
-        "issues": "https://github.com/WP2Static/wp2static/issues",
-        "forum": "https://wp2static.com/community",
-        "docs": "https://wp2static.com/documentation",
-        "source": "https://github.com/WP2Static/wp2static"
+        "issues": "https://github.com/staticweb-io/static-deploy/issues",
+        "forum": "https://github.com/staticweb-io/static-deploy/issues",
+        "docs": "https://deepwiki.com/staticweb-io/static-deploy",
+        "source": "https://github.com/staticweb-io/static-deploy"
     },
     "replace": {
         "guzzlehttp/guzzle":"*",
