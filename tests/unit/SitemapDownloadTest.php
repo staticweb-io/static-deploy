@@ -13,7 +13,7 @@ class SitemapDownloadTest extends TestCase {
      */
     public function testDownload( $url ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
         $parser->parse( $url );
         $this->assertTrue( is_array( $parser->getSitemaps() ) );
         $this->assertTrue( is_array( $parser->getURLs() ) );

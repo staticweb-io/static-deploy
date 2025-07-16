@@ -15,7 +15,7 @@ class SitemapURLSetTest extends TestCase {
      */
     public function testURLSet( $url, $body, $result ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( [], $parser->getSitemaps() );
         $this->assertEquals( $result, $parser->getURLs() );

@@ -15,7 +15,7 @@ class SitemapRobotsTxtTest extends TestCase {
      */
     public function testRobotsTxt( $url, $body, $result ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( $result, $parser->getSitemaps() );
         $this->assertEquals( [], $parser->getURLs() );

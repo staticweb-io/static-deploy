@@ -42,7 +42,7 @@ class WsLog {
      * @param string $message
      * @param int $code (default 0)
      * @param \Throwable $previous (default null)
-     * @return \WP2Static\StaticDeployException
+     * @return \StaticDeploy\StaticDeployException
      */
     public static function ex(
         string $message,

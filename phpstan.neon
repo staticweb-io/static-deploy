@@ -20,13 +20,13 @@ parameters:
     ignoreErrors:
         # TODO I should really develop a tiny Request Handler.
         # https://gist.github.com/nicolas-grekas/1028251#improving-native-php-interface
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(COOKIE|GET|POST) superglobal#'
+        - message: '#^In method "StaticDeploy\\\S+::\S+", you should not use the \$_(COOKIE|GET|POST) superglobal#'
           path: src/Controller.php
           count: 1
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+        - message: '#^In method "StaticDeploy\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/Options.php
           count: 16
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+        - message: '#^In method "StaticDeploy\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/ViewRenderer.php
           count: 10
         - message: "#^Cannot access property \\$value on mixed\\.$#"

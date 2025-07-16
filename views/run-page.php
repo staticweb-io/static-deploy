@@ -2,9 +2,9 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
-WP2Static\Controller::init( __DIR__ . '/wp2static.php' );
+StaticDeploy\Controller::init( __DIR__ . '/wp2static.php' );
 
-$run_nonce = wp_create_nonce( WP2Static\Controller::getHookName( 'run_page' ) );
+$run_nonce = wp_create_nonce( StaticDeploy\Controller::getHookName( 'run_page' ) );
 ?>
 
 <script type="text/javascript">
@@ -12,13 +12,13 @@ var latest_log_row = 0;
 
 jQuery(document).ready(function($){
     var run_data = {
-        action: "<?php echo WP2Static\Controller::getHookName( 'run' ); ?>",
+        action: "<?php echo StaticDeploy\Controller::getHookName( 'run' ); ?>",
         security: '<?php echo $run_nonce; ?>',
     };
 
     var log_data = {
         dataType: 'text',
-        action: "<?php echo WP2Static\Controller::getHookName( 'poll_log' ); ?>",
+        action: "<?php echo StaticDeploy\Controller::getHookName( 'poll_log' ); ?>",
         startRow: latest_log_row,
         security: '<?php echo $run_nonce; ?>',
     };
