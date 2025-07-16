@@ -12,7 +12,7 @@ class DetectSitemapsURLs {
      * Detect Authors URLs
      *
      * @return \Iterator<array> list of URLs
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function detect( string $wp_site_url ): \Iterator {
         WsLog::d( 'Detecting sitemap URLs' );
@@ -148,7 +148,7 @@ class DetectSitemapsURLs {
                     }
                 }
             }
-        } catch ( WP2StaticException $e ) {
+        } catch ( StaticDeployException $e ) {
             throw WsLog::ex( $e->getMessage(), 0, $e );
         }
     }

@@ -35,7 +35,7 @@ class URLHelper {
      * @param array<string|int> $changes  List of querystring params to set
      * @param string $url             A complete URL. Leave empty to use current URL
      * @return string                 The new URL
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function modifyUrl( array $changes, string $url = '' ): string {
         // If $url wasn't passed in, use the current url

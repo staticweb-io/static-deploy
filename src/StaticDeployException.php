@@ -4,5 +4,5 @@ namespace StaticDeploy;
 
 use Exception;
 
-class WP2StaticException extends Exception {
+class StaticDeployException extends Exception {
 }

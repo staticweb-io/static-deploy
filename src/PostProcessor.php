@@ -37,7 +37,7 @@ class PostProcessor {
      * Iterates on each file, not directory
      *
      * @param string $static_site_path Static site path
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public function processStaticSite(
         string $static_site_path

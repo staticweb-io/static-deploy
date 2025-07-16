@@ -12,7 +12,7 @@ class SitemapInvalidURLTest extends TestCase {
      * @param string $url URL
      */
     public function testInvalidURL( $url ) {
-        $this->expectException( 'WP2Static\WP2StaticException' );
+        $this->expectException( 'WP2Static\StaticDeployException' );
         $parser = new SitemapParser( 'SitemapParser' );
         $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
         $parser->parse( $url );

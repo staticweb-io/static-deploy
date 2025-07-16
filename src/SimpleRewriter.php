@@ -48,7 +48,7 @@ class SimpleRewriter {
      * Rewrite URLs in file to destination_url
      *
      * @param string $filename file to rewrite URLs in
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function rewrite( string $filename ): void {
         $rewriter = new SimpleRewriter();

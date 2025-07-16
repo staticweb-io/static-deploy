@@ -23,7 +23,7 @@ class URL {
      *
      * @param string $parent_page_url URL optional parent page to make
      * absolute URL from
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public function __construct( string $urlstr, ?string $parent_page_url = null ) {
         $url = new \Wa72\Url\Url( $urlstr );

@@ -42,15 +42,15 @@ class WsLog {
      * @param string $message
      * @param int $code (default 0)
      * @param \Throwable $previous (default null)
-     * @return \WP2Static\WP2StaticException
+     * @return \WP2Static\StaticDeployException
      */
     public static function ex(
         string $message,
         int $code = 0,
         ?Throwable $previous = null
-    ): WP2StaticException {
+    ): StaticDeployException {
         self::l( $message, 'error' );
-        return new WP2StaticException(
+        return new StaticDeployException(
             $message,
             $code,
             $previous

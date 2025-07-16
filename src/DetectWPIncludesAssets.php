@@ -10,7 +10,7 @@ class DetectWPIncludesAssets {
      * Detect assets within wp-includes path
      *
      * @return \Iterator<array>
-     * @throw WP2StaticException
+     * @throw StaticDeployException
      */
     public static function detect(
         FileFiltering $filtering,

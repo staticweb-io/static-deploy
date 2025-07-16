@@ -23,10 +23,10 @@ if ( file_exists( WP2STATIC_PATH . 'vendor/autoload.php' ) ) {
 }
 
 if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
-    if ( file_exists( WP2STATIC_PATH . 'src/WP2StaticException.php' ) ) {
-        require_once WP2STATIC_PATH . 'src/WP2StaticException.php';
+    if ( file_exists( WP2STATIC_PATH . 'src/StaticDeployException.php' ) ) {
+        require_once WP2STATIC_PATH . 'src/StaticDeployException.php';
 
-        throw new StaticDeploy\WP2StaticException(
+        throw new StaticDeploy\StaticDeployException(
             'Looks like you\'re trying to activate WP2Static from source code' .
             ', without compiling it first. Please see' .
             ' https://wp2static.com/compiling-from-source for assistance.'

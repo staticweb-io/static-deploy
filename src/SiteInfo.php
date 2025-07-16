@@ -80,7 +80,7 @@ class SiteInfo {
     /**
      * Get Path via name
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function getPath( string $name ): string {
         if ( self::$instance === null ) {
@@ -109,7 +109,7 @@ class SiteInfo {
     /**
      * Get URL via name
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function getUrl( string $name ): string {
         if ( self::$instance === null ) {
@@ -183,7 +183,7 @@ class SiteInfo {
     /**
      * Get Site URL host
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function getSiteURLHost(): string {
         if ( self::$instance === null ) {

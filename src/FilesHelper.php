@@ -9,7 +9,7 @@ class FilesHelper {
     /**
      * Recursively delete a directory
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function deleteDirWithFiles( string $dir ): void {
         if ( is_dir( $dir ) ) {
@@ -38,7 +38,7 @@ class FilesHelper {
      *
      * @param string $urls list of absolute or relative URLs
      * @return string|null list of relative URLs
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function cleanDetectedURL( string &$home_url, string &$url ): ?string {
         if ( ! $url ) {
@@ -84,7 +84,7 @@ class FilesHelper {
      *
      * @param string[] $urls list of absolute or relative URLs
      * @return string[]|null[] list of relative URLs
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function cleanDetectedURLs( array $urls ): array {
         $home_url = SiteInfo::getUrl( 'home' );

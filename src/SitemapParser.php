@@ -125,7 +125,7 @@ class SitemapParser {
 
             try {
                 $this->parse( strval( array_shift( $todo ) ) );
-            } catch ( WP2StaticException $e ) {
+            } catch ( StaticDeployException $e ) {
                 WsLog::w( $e->getMessage() );
                 // Keep crawling
                 continue;
@@ -176,7 +176,7 @@ class SitemapParser {
      * @param string $url URL to parse
      * @param string|null $url_content URL body content (provide to skip download)
      * @return void
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public function parse( $url, $url_content = null ) {
         $this->clean();
@@ -225,7 +225,7 @@ class SitemapParser {
      * Request the body content of an URL
      *
      * @return ?string Raw body content
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     protected function getContent() {
         $this->current_url =
@@ -362,7 +362,7 @@ class SitemapParser {
      *
      * @param string $xml
      * @return \SimpleXMLElement|bool
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     protected function generateXMLObject( $xml ) {
         // strip XML comments from files

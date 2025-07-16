@@ -645,7 +645,7 @@ class CLI {
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public function addons( array $args, array $assoc_args ): void {
         // We don't accept any parameters for this command
@@ -680,7 +680,7 @@ class CLI {
             $addon_slug = isset( $args[1] ) ? $args[1] : null;
 
             if ( ! $addon_slug ) {
-                throw new WP2StaticException(
+                throw new StaticDeployException(
                     'No addon slug given for CLI toggling'
                 );
 

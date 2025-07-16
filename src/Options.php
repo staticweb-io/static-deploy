@@ -371,7 +371,7 @@ VALUES (%s, %s, %s);";
      * Get option value by name
      * Works for core options, but doesn't recognize addon options.
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      * @return string option value
      */
     public static function getValue( string $name ): string {
@@ -384,7 +384,7 @@ VALUES (%s, %s, %s);";
                 $level = 'error',
                 $option_lookups = $option_lookups,
             );
-            throw new WP2StaticException( "Unknown option: $name" );
+            throw new StaticDeployException( "Unknown option: $name" );
         }
 
         return self::getSpecValue( $option_spec );
@@ -393,7 +393,7 @@ VALUES (%s, %s, %s);";
     /**
      * Get option value for a given OptionSpec
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      * @return string option value
      */
     public static function getSpecValue(
@@ -441,7 +441,7 @@ VALUES (%s, %s, %s);";
     /**
      * Get option BLOB value
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      * @return string option BLOB value
      */
     public static function getBlobValue( string $name ): string {
@@ -488,7 +488,7 @@ VALUES (%s, %s, %s);";
     /**
      * Get option default BLOB value
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      * @return string option default BLOB value
      */
     public static function getdefault_blob_value( string $name ): string {
@@ -563,7 +563,7 @@ VALUES (%s, %s, %s);";
     /*
      * Naive encypting/decrypting
      *
-     * @throws WP2StaticException
+     * @throws StaticDeployException
      */
     public static function encrypt_decrypt( string $action, string $str ): string {
         $encrypt_method = 'AES-256-CBC';
