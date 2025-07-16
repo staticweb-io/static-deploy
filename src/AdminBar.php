@@ -77,7 +77,8 @@ class AdminBar {
         crawl: "Crawling Site",
         post_process: "Post-Processing",
         deploy: "Deploying",
-        direct_deploy: "Deploying (Direct)"
+        direct_deploy: "Deploying (Direct)",
+        direct_deploy_post: "Deploying (Single Post)",
     };
     var static_deploy_idle = false;
 
