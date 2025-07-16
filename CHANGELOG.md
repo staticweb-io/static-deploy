@@ -1,5 +1,7 @@
 ## Unreleased
 
+## Static Deploy 9.0.1 (2025-07-16)
+
 - Fix max_execution_time being set to 30 instead of 0.
 - Fix Diagnostics page showing 0 max_execution_time as too low
   rather than unlimited.

@@ -3,7 +3,7 @@
  * Plugin Name: Static Deploy
  * Plugin URI:  https://github.com/staticweb-io/static-deploy
  * Description: Static site generator functionality for WordPress.
- * Version:     9.0.0
+ * Version:     9.0.1
  * Author:      StaticWeb.io
  * Author URI:  https://github.com/staticweb-io/static-deploy
  * Text Domain: static-deploy
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
 
-define( 'STATIC_DEPLOY_VERSION', '9.0.0' );
+define( 'STATIC_DEPLOY_VERSION', '9.0.1' );
 define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
 if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {
