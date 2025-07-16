@@ -213,7 +213,7 @@
                 ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
                 ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
                 rm -rf "./wp-content/plugins/wp2static"
-                ${pkgs.wp-cli}/bin/wp plugin install --activate ${wp2static}/wp2static.zip
+                ${pkgs.wp-cli}/bin/wp plugin install --activate ${wp2static}/static-deploy.zip
               '';
               depends_on."mysql1-configure".condition = "process_completed";
             };

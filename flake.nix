@@ -65,7 +65,7 @@
           rm composer.json composer.lock
           mkdir -p $out
           cd "$PLUGIN_DIR"/..
-          ${zip}/bin/zip -r -9 $out/wp2static.zip "$(basename "$PLUGIN_DIR")"
+          ${zip}/bin/zip -r -9 $out/static-deploy.zip "$(basename "$PLUGIN_DIR")"
         '';
         wp2staticCheck = stdenv.mkDerivation {
           pname = "wp2static-check";

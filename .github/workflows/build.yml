@@ -37,8 +37,8 @@ jobs:
 
       - name: Build plugin zip
         run: |
-          nix build .#wp2static
-          cp result/wp2static.zip plugin.zip
+          nix build .#plugin
+          cp result/static-deploy.zip plugin.zip
 
       - name: Upload plugin as artifact
         uses: actions/upload-artifact@v4
