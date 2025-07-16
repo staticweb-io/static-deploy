@@ -5,11 +5,11 @@
 A WordPress plugin for static site generation and
 deployment.
 
-
 Static Deploy is a fork of
 [Leon Stafford's](https://github.com/leonstafford)
 [WP2Static](https://github.com/elementor/wp2static)
-with many improvements.
+with many
+[improvements.](https://github.com/staticweb-io/static-deploy/blob/develop/CHANGELOG.md)
 After development of WP2Static stalled for several
 years, we forked it and continue to maintain it.
 
