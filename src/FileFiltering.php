@@ -1,12 +1,12 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use PHLAK\Splat\Anchors;
 use PHLAK\Splat\Pattern;
-use WP2Static\Options;
-use WP2Static\FileIgnorePattern;
-use WP2Static\SiteInfo;
+use StaticDeploy\Options;
+use StaticDeploy\FileIgnorePattern;
+use StaticDeploy\SiteInfo;
 
 class FileFiltering {
 

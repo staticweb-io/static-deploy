@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 final class OptionSpec {
 

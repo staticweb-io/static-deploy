@@ -5,7 +5,7 @@
     Processes each file in StaticSite, saving to ProcessedSite
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;

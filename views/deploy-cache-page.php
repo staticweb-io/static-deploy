@@ -2,7 +2,7 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
-use WP2Static\URLHelper;
+use StaticDeploy\URLHelper;
 
 /**
  * @var mixed[] $view

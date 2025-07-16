@@ -5,7 +5,7 @@
     Crawls, processes and deploys files all in one pass.
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 class DirectDeployer {
     private $crawler;

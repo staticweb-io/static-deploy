@@ -6,8 +6,8 @@
  * @var mixed[] $view
  */
 
-use WP2Static\Controller;
-use WP2Static\OptionRenderer;
+use StaticDeploy\Controller;
+use StaticDeploy\OptionRenderer;
 
 /**
  * @var mixed[] $jobs

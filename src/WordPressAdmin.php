@@ -7,7 +7,7 @@
     Used for registering hooks, Admin UI components, ...
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 

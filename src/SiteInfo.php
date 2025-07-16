@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 /*
     Singleton instance to allow instantiating once and allow reading
@@ -39,7 +39,7 @@ class SiteInfo {
 
                 /*
                     Note:  'home_path' => get_home_path(),
-                    // errors trying to find it in WP2Static\get_home_path()...
+                    // errors trying to find it in StaticDeploy\get_home_path()...
                 */
                 'home_url' => trailingslashit( get_home_url() ),
                 'includes_path' => trailingslashit( ABSPATH . WPINC ),

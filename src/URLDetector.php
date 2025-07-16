@@ -10,9 +10,9 @@
 
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
-use WP2Static\FileFiltering;
+use StaticDeploy\FileFiltering;
 
 class URLDetector {
 

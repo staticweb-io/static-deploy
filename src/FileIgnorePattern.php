@@ -1,10 +1,10 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use PHLAK\Splat\Pattern;
-use WP2Static\Utils;
-use WP2Static\WsLog;
+use StaticDeploy\Utils;
+use StaticDeploy\WsLog;
 
 class FileIgnorePattern {
     /**

@@ -2,7 +2,7 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
-use WP2Static\Controller;
+use StaticDeploy\Controller;
 
 /**
  * @var mixed[] $view
@@ -115,7 +115,7 @@ select.static-deploy-select {
                 <td><?php echo $exported_site_file_count; ?> files, using <?php echo $exported_site_disk_space; ?>
                     <br>
 
-                    <a href="file://<?php echo \WP2Static\StaticSite::getPath(); ?>" />Path</a>
+                    <a href="file://<?php echo \StaticDeploy\StaticSite::getPath(); ?>" />Path</a>
 
                 </td>
                 <td>
@@ -141,7 +141,7 @@ select.static-deploy-select {
                 <td><?php echo $processed_site_file_count; ?> files, using <?php echo $processed_site_disk_space; ?>
                     <br>
 
-                    <a href="file://<?php echo \WP2Static\ProcessedSite::getPath(); ?>" />Path</a>
+                    <a href="file://<?php echo \StaticDeploy\ProcessedSite::getPath(); ?>" />Path</a>
                 </td>
                 <td>
                     <form

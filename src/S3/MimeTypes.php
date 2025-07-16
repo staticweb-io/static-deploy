@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static\S3;
+namespace StaticDeploy\S3;
 
 class MimeTypes {
     /*

@@ -1,9 +1,9 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
-use WP2Static\FileFiltering;
-use WP2Static\ParseHTML;
+use StaticDeploy\FileFiltering;
+use StaticDeploy\ParseHTML;
 
 class URLDiscovery {
     private string $destination_host;

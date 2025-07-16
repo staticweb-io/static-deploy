@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use WP_Error;
 use WP_CLI;
@@ -15,7 +15,7 @@ class Controller {
     /**
      * Main controller of WP2Static
      *
-     * @var \WP2Static\Controller Instance.
+     * @var \StaticDeploy\Controller Instance.
      */
     protected static $plugin_instance = null;
 
@@ -24,7 +24,7 @@ class Controller {
     /**
      * Returns instance of WP2Static Controller
      *
-     * @return \WP2Static\Controller Instance of self.
+     * @return \StaticDeploy\Controller Instance of self.
      */
     public static function getInstance(): Controller {
         if ( null === self::$plugin_instance ) {

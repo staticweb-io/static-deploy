@@ -1,11 +1,11 @@
 <?php
 
-namespace WP2Static\S3;
+namespace StaticDeploy\S3;
 
-use WP2Static\Controller;
-use WP2Static\Options;
-use WP2Static\SiteInfo;
-use WP2Static\WsLog;
+use StaticDeploy\Controller;
+use StaticDeploy\Options;
+use StaticDeploy\SiteInfo;
+use StaticDeploy\WsLog;
 
 class S3Controller {
     const ADDON_NAME = 'static-deploy-addon-s3';
@@ -13,7 +13,7 @@ class S3Controller {
     public function run(): void {
         add_filter(
             Controller::getHookName( 'add_menu_items' ),
-            [ 'WP2Static\S3\S3Controller', 'addSubmenuPage' ]
+            [ 'StaticDeploy\S3\S3Controller', 'addSubmenuPage' ]
         );
 
         add_filter(
@@ -102,7 +102,7 @@ class S3Controller {
      * @return mixed[] array of submenu pages
      */
     public static function addSubmenuPage( array $submenu_pages ): array {
-        $submenu_pages['s3'] = [ 'WP2Static\S3\S3Controller', 'renderS3Page' ];
+        $submenu_pages['s3'] = [ 'StaticDeploy\S3\S3Controller', 'renderS3Page' ];
 
         return $submenu_pages;
     }

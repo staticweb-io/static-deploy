@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 /*
     Simple interface to the options DB table

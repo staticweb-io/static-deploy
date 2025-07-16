@@ -5,7 +5,7 @@
     uses https://github.com/wasinger/url
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 class URL {
 

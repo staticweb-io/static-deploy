@@ -7,7 +7,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-WP2Static\Controller::init( __DIR__ . '/wp2static.php' );
+StaticDeploy\Controller::init( __DIR__ . '/wp2static.php' );
 
 $tables_to_drop = [
     'crawled_files',
@@ -19,7 +19,7 @@ $tables_to_drop = [
 ];
 
 foreach ( $tables_to_drop as $table ) {
-    $table_name = WP2Static\Controller::getTableName( $table );
+    $table_name = StaticDeploy\Controller::getTableName( $table );
 
     $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 }

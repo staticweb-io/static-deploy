@@ -5,7 +5,7 @@
     Takes a crawled file and processes it
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 class FileProcessor {
 

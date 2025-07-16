@@ -6,7 +6,7 @@
  * @var mixed[] $view
  */
 
-use WP2Static\OptionRenderer;
+use StaticDeploy\OptionRenderer;
 
 /**
  * @var array<string, mixed> $options

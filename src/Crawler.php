@@ -6,7 +6,7 @@
 
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use WP2StaticGuzzleHttp\Client;
 use WP2StaticGuzzleHttp\Psr7\Request;

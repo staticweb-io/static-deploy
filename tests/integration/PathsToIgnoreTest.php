@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use PHPUnit\Framework\TestCase;
 

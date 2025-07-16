@@ -7,7 +7,7 @@
     Site URLs are all made absolute for easier rewriting during deployment
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;

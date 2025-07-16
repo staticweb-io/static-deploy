@@ -1,9 +1,9 @@
 <?php
 
-namespace WP2Static\S3;
+namespace StaticDeploy\S3;
 
-use WP2Static\Options;
-use WP2Static\OptionSpec;
+use StaticDeploy\Options;
+use StaticDeploy\OptionSpec;
 
 /*
  * Options for the S3 deployer

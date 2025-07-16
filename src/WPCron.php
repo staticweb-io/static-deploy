@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 /*
     Manage WP Cron schedules for processing job queue

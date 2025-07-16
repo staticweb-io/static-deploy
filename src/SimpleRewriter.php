@@ -6,7 +6,7 @@
     and other modifications made to prepare it for a Deployer
 */
 
-namespace WP2Static;
+namespace StaticDeploy;
 
 class SimpleRewriter {
 

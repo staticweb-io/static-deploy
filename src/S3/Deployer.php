@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static\S3;
+namespace StaticDeploy\S3;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -9,10 +9,10 @@ use Aws\CommandPool;
 use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
-use WP2Static\CrawledFiles;
-use WP2Static\DeployCache;
-use WP2Static\Options;
-use WP2Static\WsLog;
+use StaticDeploy\CrawledFiles;
+use StaticDeploy\DeployCache;
+use StaticDeploy\Options;
+use StaticDeploy\WsLog;
 
 class Deployer {
 

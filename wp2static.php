@@ -22,11 +22,11 @@ if ( file_exists( WP2STATIC_PATH . 'vendor/autoload.php' ) ) {
     require_once WP2STATIC_PATH . 'vendor/autoload.php';
 }
 
-if ( ! class_exists( 'WP2Static\Controller' ) ) {
+if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
     if ( file_exists( WP2STATIC_PATH . 'src/WP2StaticException.php' ) ) {
         require_once WP2STATIC_PATH . 'src/WP2StaticException.php';
 
-        throw new WP2Static\WP2StaticException(
+        throw new StaticDeploy\WP2StaticException(
             'Looks like you\'re trying to activate WP2Static from source code' .
             ', without compiling it first. Please see' .
             ' https://wp2static.com/compiling-from-source for assistance.'
@@ -34,7 +34,7 @@ if ( ! class_exists( 'WP2Static\Controller' ) ) {
     }
 }
 
-WP2Static\Controller::init( __FILE__ );
+StaticDeploy\Controller::init( __FILE__ );
 
 /**
  * Define Settings link for plugin
@@ -77,5 +77,5 @@ remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
 if ( defined( 'WP_CLI' ) ) {
-    WP_CLI::add_command( 'wp2static', WP2Static\CLI::class );
+    WP_CLI::add_command( 'wp2static', StaticDeploy\CLI::class );
 }

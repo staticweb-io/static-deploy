@@ -50,12 +50,12 @@
     },
     "autoload": {
         "psr-4": {
-            "WP2Static\\": "src/"
+            "StaticDeploy\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WP2Static\\": "tests/integration/"
+            "StaticDeploy\\": "tests/integration/"
         }
     },
     "config": {
