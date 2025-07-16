@@ -690,4 +690,51 @@ class CLI {
             Controller::adminToggleAddon( $addon_slug );
         }
     }
+
+    /**
+     * Import options from WP2Static
+     *
+     * <option-name>
+     *
+     * Option name to import or --all to import
+     * all available options.
+     *
+     * @param string[] $args Arguments after command
+     * @param string[] $assoc_args Parameters after command
+     * @throws StaticDeployException
+     */
+    public function import_wp2static_options( array $args, array $assoc_args ): void {
+        global $wpdb;
+
+        $all = isset( $assoc_args['all'] );
+
+        if ( ! $all && ! isset( $args [0] ) ) {
+            WP_CLI::error( 'No option name given for import. Specify an option name or "--all".' );
+        }
+
+        $wp2static_table_name = $wpdb->prefix . 'wp2static_core_options';
+
+        if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$wp2static_table_name'" ) ) {
+            WP_CLI::error( 'WP2Static options table not found.' );
+        }
+
+        if ( $all ) {
+            foreach ( Options::optionSpecs() as $option_spec ) {
+                Options::importFromWP2Static( $option_spec );
+            }
+            return;
+        }
+
+        foreach ( $args as $option_name ) {
+            $option_spec = Options::optionSpecs()[ $option_name ] ?? null;
+
+            if ( ! $option_spec ) {
+                WP_CLI::error(
+                    'Unknown option: ' . $option_name
+                );
+            }
+
+            Options::importFromWP2Static( $option_spec );
+        }
+    }
 }

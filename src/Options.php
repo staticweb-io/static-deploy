@@ -752,4 +752,52 @@ VALUES (%s, %s, %s);";
             [ 'name' => $name ]
         );
     }
+
+    /**
+     * Import option value from WP2Static
+     *
+     * @param OptionSpec $option_spec
+     */
+    public static function importFromWP2Static(
+        OptionSpec $option_spec,
+    ): void {
+        global $wpdb;
+
+        $wp2static_table_name = $wpdb->prefix . 'wp2static_core_options';
+
+        $wp2static_option = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT value, blob_value FROM $wp2static_table_name WHERE name = %s;",
+                $option_spec->name
+            )
+        );
+
+        if ( ! $wp2static_option ) {
+            WsLog::l( "Option $option_spec->name not found in WP2Static options" );
+            return;
+        }
+
+        $opt = new OptionData(
+            $option_spec,
+            $wp2static_option->blob_value,
+            $wp2static_option->value,
+        );
+
+        WsLog::l(
+            "Imported option $option_spec->name from WP2Static" .
+            'with value: ' . $opt->value .
+            ' and blob value: ' . $opt->blob_value
+        );
+
+        $table_name = self::getTableName();
+
+        $wpdb->update(
+            $table_name,
+            [
+                'blob_value' => $opt->blob_value,
+                'value' => $opt->value,
+            ],
+            [ 'name' => $option_spec->name ]
+        );
+    }
 }
