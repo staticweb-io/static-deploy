@@ -74,5 +74,5 @@ remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
 if ( defined( 'WP_CLI' ) ) {
-    WP_CLI::add_command( 'wp2static', StaticDeploy\CLI::class );
+    WP_CLI::add_command( 'static-deploy', StaticDeploy\CLI::class );
 }

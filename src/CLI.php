@@ -197,20 +197,20 @@ class CLI {
      *
      * List all options
      *
-     *     wp wp2static options list
+     *     wp static-deploy options list
      *
      * List all options (revealing sensitive values)
      *
-     *     wp wp2static options list --reveal_sensitive_values
+     *     wp static-deploy options list --reveal_sensitive_values
      *
      * Get option
      *
-     *     wp wp2static options get detectPages
+     *     wp static-deploy options get detectPages
      *
      * Set option
      *
-     *     wp wp2static options set detectPages 1
-     *     wp wp2static options set queueJobOnPostSave 1
+     *     wp static-deploy options set detectPages 1
+     *     wp static-deploy options set queueJobOnPostSave 1
      *
      * @param string[] $args CLI args
      * @param string[] $assoc_args CLI args

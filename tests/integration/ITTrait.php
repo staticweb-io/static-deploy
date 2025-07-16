@@ -48,7 +48,7 @@ trait ITTrait {
     }
 
     public function pluginCli( array $args, array $expect_warnings = [] ): array {
-        return $this->wpCli( [ 'wp2static', ...$args ], $expect_warnings );
+        return $this->wpCli( [ 'static-deploy', ...$args ], $expect_warnings );
     }
 
     public function getCrawledFileContents( string $path ): string

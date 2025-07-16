@@ -527,7 +527,7 @@ class Controller {
         if ( $immediate_mode === 1 ) {
             self::processQueueAdminPost();
         } elseif ( $immediate_mode === 2 ) {
-            shell_exec( 'wp wp2static process_queue > /dev/null 2>&1 &' );
+            shell_exec( 'wp static-deploy process_queue > /dev/null 2>&1 &' );
             usleep( 100000 ); // 100,000 microseconds = 0.1 seconds
         }
     }
