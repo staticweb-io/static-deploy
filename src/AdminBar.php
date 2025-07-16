@@ -133,7 +133,8 @@ class AdminBar {
                     text = "Queued";
                 }
             } else {
-                text = static_deploy_job_type_labels[data.jobs[0].job_type];
+                let type = data.jobs[0].job_type;
+                text = static_deploy_job_type_labels[type] || type;
             }
 
             static_deploy_update_status_button(text, bgcolor);
