@@ -103,6 +103,32 @@ class AdminBar {
         }
     }
 
+    function static_deploy_process_job_queue_data(data) {
+        static_deploy_last_interval = 30000;
+        setTimeout(static_deploy_update_status, 30000);
+
+        let bgcolor = "";
+        let text;
+
+        if (data.jobs.length === 0) {
+            if (data.job_count === 0) {
+                if (data.invalidations) {
+                    text = "Refreshing CDN cache";
+                } else {
+                    bgcolor = "green";
+                    text = "Deployed";
+                }
+            } else {
+                text = "Queued";
+            }
+        } else {
+            let type = data.jobs[0].job_type;
+            text = static_deploy_job_type_labels[type] || type;
+        }
+
+        static_deploy_update_status_button(text, bgcolor);
+    }
+
     function static_deploy_update_status() {
         if ( document.visibilityState != 'visible' ) {
             static_deploy_idle = true;
@@ -117,31 +143,7 @@ class AdminBar {
             method: "GET",
         })
         .then(response => response.json())
-        .then(data => {
-            static_deploy_last_interval = 30000;
-            setTimeout(static_deploy_update_status, 30000);
-
-            let bgcolor = "";
-            let text;
-
-            if (data.jobs.length === 0) {
-                if (data.job_count === 0) {
-                    if (data.invalidations) {
-                        text = "Refreshing CDN cache";
-                    } else {
-                        bgcolor = "green";
-                        text = "Deployed";
-                    }
-                } else {
-                    text = "Queued";
-                }
-            } else {
-                let type = data.jobs[0].job_type;
-                text = static_deploy_job_type_labels[type] || type;
-            }
-
-            static_deploy_update_status_button(text, bgcolor);
-        })
+        .then(static_deploy_process_job_queue_data)
         .catch(error => {
             console.error(error);
             static_deploy_last_interval *= 2;
