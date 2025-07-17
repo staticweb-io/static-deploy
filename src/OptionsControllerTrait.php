@@ -7,6 +7,13 @@ namespace StaticDeploy;
  * and an options page.
  */
 trait OptionsControllerTrait {
+    public static function activateForSingleSite(): void {
+        Options::seedOptions( self::getSpecs() );
+    }
+
+    public static function deactivateForSingleSite(): void {
+    }
+
     public static function registerHooks(): void {
         add_action(
             'admin_post_' . self::getAdminAction(),
