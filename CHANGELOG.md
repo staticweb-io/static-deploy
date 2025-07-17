@@ -13,6 +13,8 @@
 - Fix an optimization check where if the post-processor doesn't
   need to make any changes to a file, the original file content
   would be hashed again unnecessarily.
+- Change awsRegion default to blank from "us-east-1". This allows
+  the region to be inherited from the environment variables.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 
