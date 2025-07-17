@@ -540,6 +540,57 @@ class Controller {
         }
     }
 
+    public static function adminSetAddonState(
+        string $addon_slug = null,
+        bool $enabled = null,
+    ): void {
+        if ( defined( 'WP_CLI' ) ) {
+            if ( ! $addon_slug ) {
+                throw WsLog::ex( 'No addon slug given' );
+            }
+
+            $addon_slug = sanitize_text_field( $addon_slug );
+        } else {
+            check_admin_referer( self::getHookName( 'addons_page' ) );
+
+            $addon_slug = sanitize_text_field( strval( filter_input( INPUT_POST, 'addon_slug' ) ) );
+        }
+
+        global $wpdb;
+
+        $table_name = Addons::getTableName();
+
+        $addon_type =
+            $wpdb->get_var( "SELECT type FROM $table_name WHERE slug = '$addon_slug'" );
+
+        // if deploy type, disable other deployers when enabling this one
+        if ( $enabled && $addon_type === 'deploy' ) {
+            $wpdb->update(
+                $table_name,
+                [ 'enabled' => 0 ],
+                [
+                    'enabled' => 1,
+                    'type' => 'deploy',
+                ]
+            );
+        }
+
+        // toggle the target addon's state
+        $wpdb->update(
+            $table_name,
+            [ 'enabled' => $enabled ],
+            [ 'slug' => $addon_slug ]
+        );
+
+        $enabled_str = $enabled ? 'enabled' : 'disabled';
+        WsLog::l( "Addon {$addon_slug} {$enabled_str}" );
+
+        if ( ! defined( 'WP_CLI' ) ) {
+            wp_safe_redirect( self::getAdminUrl( 'addons' ) );
+            exit;
+        }
+    }
+
     public static function adminToggleAddon( string $addon_slug = null ): void {
         if ( defined( 'WP_CLI' ) ) {
             if ( ! $addon_slug ) {

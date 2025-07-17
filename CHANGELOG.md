@@ -3,6 +3,8 @@
 - Prevent an error that could occur if no AWS
   credentials were set when the admin bar checked
   for invalidation status.
+- Add "addons enable <addon>" and "addons disable <addon>"
+  commands.
 
 ## 9.1.0 (2025-07-17)
 
