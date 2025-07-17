@@ -41,6 +41,8 @@ class Controller {
 
         Utils::set_max_execution_time();
 
+        Local\LocalDeployer::registerHooks();
+        Local\LocalOptions::registerHooks();
         S3\Deployer::registerHooks();
         S3\S3Options::registerHooks();
 
@@ -73,6 +75,7 @@ class Controller {
 
     public static function deactivateForSingleSite(): void {
         WPCron::clearRecurringEvent();
+        Local\LocalOptions::deactivateForSingleSite();
         S3\S3Options::deactivateForSingleSite();
     }
 
@@ -110,6 +113,7 @@ class Controller {
         DeployCache::createTable();
         JobQueue::createTable();
         Addons::createTable();
+        Local\LocalOptions::activateForSingleSite();
         S3\S3Options::activateForSingleSite();
     }
 

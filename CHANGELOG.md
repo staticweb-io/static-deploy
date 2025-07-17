@@ -7,6 +7,10 @@
   commands.
 - Print resulting state when using the "addons toggle <addon>"
   command.
+- Add a deployer that writes files to a local directory.
+  This is useful for cases where you are serving files
+  directly from your web server or when you want full
+  control over the upload process.
 
 ## 9.1.0 (2025-07-17)
 
