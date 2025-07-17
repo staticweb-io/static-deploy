@@ -20,5 +20,6 @@ trait OptionsControllerTrait {
             'title' => $page['title'],
         ];
 
-        require_once __DIR__ . '/../views/render-options-page.php';    }
+        require_once __DIR__ . '/../views/render-options-page.php';
+    }
 }

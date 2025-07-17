@@ -2,7 +2,9 @@
 
 namespace StaticDeploy\S3;
 
+use StaticDeploy\Controller;
 use StaticDeploy\Options;
+use StaticDeploy\OptionsControllerTrait;
 use StaticDeploy\OptionSpec;
 
 /*
@@ -10,10 +12,16 @@ use StaticDeploy\OptionSpec;
 */
 class S3Options {
 
+    use OptionsControllerTrait;
+
     /**
      * @var array<string, OptionSpec>
      */
     private static $cached_option_specs;
+
+    public static function getAdminAction(): string {
+        return Controller::getHookName( 's3_save_options' );
+    }
 
     /**
      * Returns namespaced option name from a slug
@@ -163,5 +171,39 @@ class S3Options {
         }
 
         return Options::getOption( $option_spec )->value;
+    }
+
+    public static function getPageData(): array {
+        return [
+            'title' => 'S3 Deployment Options',
+            'sections' => [
+                [
+                    'title' => 'AWS Credentials',
+                    'options' => [
+                        self::getName( 'awsAccessKeyId' ),
+                        self::getName( 'awsSecretAccessKey' ),
+                        self::getName( 'awsRegion' ),
+                        self::getName( 'awsProfile' ),
+                    ],
+                ],
+                [
+                    'title' => 'S3',
+                    'options' => [
+                        self::getName( 'bucketName' ),
+                        self::getName( 'bucketPrefix' ),
+                        self::getName( 'headerCacheControl' ),
+                        self::getName( 'objectAcl' ),
+                        self::getName( 'concurrency' ),
+                    ],
+                ],
+                [
+                    'title' => 'CloudFront',
+                    'options' => [
+                        self::getName( 'distributionId' ),
+                        self::getName( 'maxPathsToInvalidate' ),
+                    ],
+                ],
+            ],
+        ];
     }
 }

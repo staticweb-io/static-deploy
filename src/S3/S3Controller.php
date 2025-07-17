@@ -64,47 +64,6 @@ class S3Controller {
         return Deployer::class;
     }
 
-    public static function renderS3Page(): void {
-        Options::seedOptions( S3Options::getSpecs() );
-
-        $view = [];
-        $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
-        $view['options'] = Options::getAll( S3Options::getSpecs() );
-        $view['title'] = 'S3 Deployment Options';
-
-        $view['sections'] = [
-            [
-                'title' => 'AWS Credentials',
-                'options' => [
-                    S3Options::getName( 'awsAccessKeyId' ),
-                    S3Options::getName( 'awsSecretAccessKey' ),
-                    S3Options::getName( 'awsRegion' ),
-                    S3Options::getName( 'awsProfile' ),
-                ],
-            ],
-            [
-                'title' => 'S3',
-                'options' => [
-                    S3Options::getName( 'bucketName' ),
-                    S3Options::getName( 'bucketPrefix' ),
-                    S3Options::getName( 'headerCacheControl' ),
-                    S3Options::getName( 'objectAcl' ),
-                    S3Options::getName( 'concurrency' ),
-                ],
-            ],
-            [
-                'title' => 'CloudFront',
-                'options' => [
-                    S3Options::getName( 'distributionId' ),
-                    S3Options::getName( 'maxPathsToInvalidate' ),
-                ],
-            ],
-        ];
-
-        require_once __DIR__ . '/../../views/render-options-page.php';
-    }
-
-
     public function deploy( string $processed_site_path, string $enabled_deployer ): void {
         if ( $enabled_deployer !== self::ADDON_NAME ) {
             return;
@@ -130,7 +89,7 @@ class S3Controller {
      * @return mixed[] array of submenu pages
      */
     public static function addSubmenuPage( array $submenu_pages ): array {
-        $submenu_pages['s3'] = [ 'StaticDeploy\S3\S3Controller', 'renderS3Page' ];
+        $submenu_pages['s3'] = [ S3Options::class, 'renderPage' ];
 
         return $submenu_pages;
     }
@@ -151,7 +110,7 @@ class S3Controller {
             'S3 Deployment Options',
             'manage_options',
             self::ADDON_NAME,
-            [ $this, 'renderS3Page' ]
+            [ S3Options::class, 'renderPage' ]
         );
     }
 }
