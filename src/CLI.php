@@ -654,40 +654,51 @@ class CLI {
         }
         $action = isset( $args[0] ) ? $args[0] : null;
 
-        if ( $action === 'list' ) {
-            $addons = Addons::getAll();
-
-            $pretty_addons = [];
-
-            foreach ( $addons as $addon ) {
-                $pretty_addons[] = [
-                    'Enabled' => $addon->enabled,
-                    'Slug' => $addon->slug,
-                    'Name' => $addon->name,
-                    'Description' => $addon->description,
-                    'Docs' => $addon->docs_url,
-                ];
-            }
-
-            WP_CLI\Utils\format_items(
-                'table',
-                $pretty_addons,
-                [ 'Enabled', 'Slug', 'Name', 'Description', 'Docs' ]
-            );
-        }
-
-        if ( $action === 'toggle' ) {
-            $addon_slug = isset( $args[1] ) ? $args[1] : null;
-
-            if ( ! $addon_slug ) {
-                throw new StaticDeployException(
-                    'No addon slug given for CLI toggling'
+        switch ( $action ) {
+            case 'disable':
+            case 'enable':
+                $addon_slug = isset( $args[1] ) ? $args[1] : null;
+                Controller::adminSetAddonState(
+                    $addon_slug,
+                    $action === 'enable'
                 );
+                break;
+            case 'list':
+                $addons = Addons::getAll();
 
-            }
+                $pretty_addons = [];
 
-            // TODO Output details on if addon was enabled or disabled
-            Controller::adminToggleAddon( $addon_slug );
+                foreach ( $addons as $addon ) {
+                    $pretty_addons[] = [
+                        'Enabled' => $addon->enabled,
+                        'Slug' => $addon->slug,
+                        'Name' => $addon->name,
+                        'Description' => $addon->description,
+                        'Docs' => $addon->docs_url,
+                    ];
+                }
+
+                WP_CLI\Utils\format_items(
+                    'table',
+                    $pretty_addons,
+                    [ 'Enabled', 'Slug', 'Name', 'Description', 'Docs' ]
+                );
+                break;
+            case 'toggle':
+                $addon_slug = isset( $args[1] ) ? $args[1] : null;
+
+                if ( ! $addon_slug ) {
+                    throw new StaticDeployException(
+                        'No addon slug given for CLI toggling'
+                    );
+
+                }
+
+                // TODO Output details on if addon was enabled or disabled
+                Controller::adminToggleAddon( $addon_slug );
+                break;
+            default:
+                WP_CLI::error( 'Unknown subcommand: ' . $action );
         }
     }
 
