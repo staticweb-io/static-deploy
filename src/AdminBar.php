@@ -46,27 +46,27 @@ class AdminBar {
         ];
         $wp_admin_bar->add_node( $node );
 
-        $node = [
-            'id' => 'static-deploy-github',
-            'parent' => 'static-deploy-status',
-            'title' => '<a href="https://github.com/staticweb-io/static-deploy" ' .
-            ' target="_blank">GitHub</a>',
-        ];
-        $wp_admin_bar->add_node( $node );
+        $menu_items = Options::getBlobValue( 'adminBarMenuItems' );
+        $menu_items = (array) json_decode( $menu_items );
 
-        $node = [
-            'id' => 'static-deploy-news',
-            'parent' => 'static-deploy-status',
-            'title' => '<a href="https://staticweb.io/news/" target="_blank">News</a>',
-        ];
-        $wp_admin_bar->add_node( $node );
+        // Sort alphabetically by label
+        uasort(
+            $menu_items,
+            function ( $a, $b ) {
+                return strcmp( $a->label, $b->label );
+            }
+        );
 
-        $node = [
-            'id' => 'static-deploy-platform',
-            'parent' => 'static-deploy-status',
-            'title' => '<a href="https://staticweb.io/platform/" target="_blank">Platform</a>',
-        ];
-        $wp_admin_bar->add_node( $node );
+        foreach ( $menu_items as $id => $item ) {
+            $label = sanitize_text_field( $item->label );
+            $href = esc_url( $item->href );
+            $node = [
+                'id' => $id,
+                'parent' => 'static-deploy-status',
+                'title' => '<a href="' . $href . '" target="_blank">' . $label . '</a>',
+            ];
+            $wp_admin_bar->add_node( $node );
+        }
     }
 
     public static function afterAdminBarRender(): void {

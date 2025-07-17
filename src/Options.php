@@ -56,7 +56,30 @@ class Options {
             return self::$cached_option_specs;
         }
 
+        $default_admin_bar_menu_items = [
+            'static-deploy-github' => [
+                'href' => 'https://github.com/staticweb-io/static-deploy',
+                'label' => 'GitHub',
+            ],
+            'static-deploy-news' => [
+                'href' => 'https://staticweb.io/news/',
+                'label' => 'News',
+            ],
+            'static-deploy-platform' => [
+                'href' => 'https://staticweb.io/platform/',
+                'label' => 'Platform',
+            ],
+        ];
+
         $specs = [
+            new OptionSpec(
+                'object',
+                'adminBarMenuItems',
+                '1',
+                'Admin Bar Menu Items',
+                '',
+                json_encode( $default_admin_bar_menu_items ),
+            ),
             new OptionSpec(
                 'boolean',
                 'detectCustomPostTypes',
@@ -730,6 +753,7 @@ VALUES (%s, %s, %s);";
                 break;
             case 'advanced':
                 $names = [
+                    'adminBarMenuItems',
                     'crawlConcurrency',
                     'crawledSitePath',
                     'debugLogging',

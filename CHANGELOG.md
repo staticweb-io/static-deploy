@@ -4,6 +4,11 @@
 - Fix an error when applying an option's default blob_value.
 - Fix a missing import on the logs-page that was breaking the
   "Delete Logs" button.
+- Add an "object" option type.
+  This is used for the new "adminBarMenuItems" option.
+- Add a new "adminBarMenuItems" option.
+  This is a JSON object that defines the menu items to display in the
+  admin bar.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 

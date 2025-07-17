@@ -74,6 +74,16 @@ $row = function ( $name ) use ( $options ) {
 
     <p/>
 
+    <h2>UI Options</h2>
+
+    <table class="widefat striped">
+        <tbody>
+            <?php echo $row( 'adminBarMenuItems' ); ?>
+        </tbody>
+    </table>
+
+    <p/>
+
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
     <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'ui_save_advanced_options' ); ?>" />
 
