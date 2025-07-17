@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.1.0 (2025-07-17)
+
 - Add admin bar that displays job status and links.
 - Fix an error when applying an option's default blob_value.
 - Fix a missing import on the logs-page that was breaking the
