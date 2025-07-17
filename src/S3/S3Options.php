@@ -23,6 +23,10 @@ class S3Options {
         return Controller::getHookName( 's3_save_options' );
     }
 
+    public static function getOptionsPageSlug(): string {
+        return 'static-deploy-addon-s3';
+    }
+
     /**
      * Returns namespaced option name from a slug
      *

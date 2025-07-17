@@ -11,10 +11,7 @@ class S3Controller {
     const ADDON_NAME = 'static-deploy-addon-s3';
 
     public function run(): void {
-        add_filter(
-            Controller::getHookName( 'add_menu_items' ),
-            [ 'StaticDeploy\S3\S3Controller', 'addSubmenuPage' ]
-        );
+        S3Options::registerHooks();
 
         add_filter(
             Controller::getHookName( 'deployer_class' ),
@@ -24,24 +21,10 @@ class S3Controller {
         );
 
         add_action(
-            'admin_post_' . Controller::getHookName( 's3_save_options' ),
-            [ $this, 'saveOptionsFromUI' ],
-            15,
-            1
-        );
-
-        add_action(
             Controller::getHookName( 'deploy' ),
             [ $this, 'deploy' ],
             15,
             2
-        );
-
-        add_action(
-            'admin_menu',
-            [ $this, 'addOptionsPage' ],
-            15,
-            1
         );
 
         do_action(
@@ -80,37 +63,5 @@ class S3Controller {
     }
 
     public static function deactivateForSingleSite(): void {
-    }
-
-    /**
-     * Add submenu
-     *
-     * @param mixed[] $submenu_pages array of submenu pages
-     * @return mixed[] array of submenu pages
-     */
-    public static function addSubmenuPage( array $submenu_pages ): array {
-        $submenu_pages['s3'] = [ S3Options::class, 'renderPage' ];
-
-        return $submenu_pages;
-    }
-
-    public static function saveOptionsFromUI(): void {
-        check_admin_referer( Controller::getHookName( 's3_save_options' ) );
-
-        Options::saveFromAdmin( S3Options::getSpecs() );
-
-        wp_safe_redirect( admin_url( 'admin.php?page=' . self::ADDON_NAME ) );
-        exit;
-    }
-
-    public function addOptionsPage(): void {
-        add_submenu_page(
-            '',
-            'S3 Deployment Options',
-            'S3 Deployment Options',
-            'manage_options',
-            self::ADDON_NAME,
-            [ S3Options::class, 'renderPage' ]
-        );
     }
 }
