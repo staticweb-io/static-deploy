@@ -114,6 +114,7 @@ class S3Options {
                 'Object ACL',
                 '',
                 '',
+                allowed_values: [ 'private', 'public-read' ],
                 wp2static_name: 's3ObjectACL',
                 wp2static_table: $wp2static_table,
             ),
