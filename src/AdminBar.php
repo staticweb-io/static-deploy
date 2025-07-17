@@ -27,9 +27,12 @@ class AdminBar {
 
         $title = '<div class="static-deploy-deploy-status-container" ' .
             'style="border-radius: 5px; link-color: #fff;">' .
-            '<a style="color: white" href="' . $deployment_url .
-            '" target="_blank"><div class="static-deploy-deploy-status" ' .
-            'style="margin: 0 5px">Static Deploy: Checking status...</div></a></div>';
+            '<a style="color: white; display: flex; align-items: center;" ' .
+            'href="' . $deployment_url . '" target="_blank">' .
+            '<span class="wp-menu-image dashicons-before dashicons-shield-alt" aria-hidden="true" ' .
+            'style="display: flex; align-items: center;"></span>' .
+            '<span class="static-deploy-deploy-status" ' .
+            'style="margin: 0 5px">Static Deploy: Checking status...</span></a></div>';
 
         $group = [
             'id' => 'static-deploy-group',
