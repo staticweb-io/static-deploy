@@ -107,6 +107,15 @@ class AdminBar {
         static_deploy_last_interval = 30000;
         setTimeout(static_deploy_update_status, 30000);
 
+        // Cache data to localStorage so we can show it immediately
+        // when page is loaded or refreshed
+        data.timestamp = Date.now();
+        try {
+            localStorage.setItem('static_deploy_job_queue', JSON.stringify(data));
+        } catch (e) {
+            console.warn('Could not write to localStorage:', e);
+        }
+
         let bgcolor = "";
         let text;
 
@@ -151,9 +160,26 @@ class AdminBar {
         });
     }
 
+    function static_deploy_init() {
+        // Apply cached data
+        try {
+            const cached = JSON.parse(localStorage.getItem('static_deploy_job_queue'));
+            // Don't use cached data older than one week
+            const millis_in_week = 7 * 86400 * 1000;
+            const millis_since = Date.now() - cached.timestamp; // NaN if no cached data
+            if (cached && millis_since < millis_in_week) {
+                static_deploy_process_job_queue_data(cached);
+            }
+        } catch (e) {
+            console.warn('Could not read from localStorage:', e);
+        }
+
+        static_deploy_update_status();
+    }
+
     window.onload = (event) => {
         setInterval(static_deploy_check_idle, 1000);
-        setTimeout(static_deploy_update_status, 100);
+        setTimeout(static_deploy_init, 1);
     };
     </script>
         <?php
