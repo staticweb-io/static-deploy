@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Add admin bar that displays job status and links.
+- Fix an error when applying an option's default blob_value.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 

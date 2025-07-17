@@ -463,7 +463,7 @@ VALUES (%s, %s, %s);";
             if ( ! $os ) {
                 return '';
             }
-            $option_value = (string) $os['default_blob_value'];
+            $option_value = $os->default_blob_value;
         }
 
         return $option_value;
