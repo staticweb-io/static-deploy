@@ -11,10 +11,13 @@ use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
 use StaticDeploy\CrawledFiles;
 use StaticDeploy\DeployCache;
+use StaticDeploy\DeployerTrait;
 use StaticDeploy\Options;
 use StaticDeploy\WsLog;
 
 class Deployer {
+
+    use DeployerTrait;
 
     const DEFAULT_NAMESPACE = 'static-deploy-addon-s3/default';
 
@@ -60,6 +63,18 @@ class Deployer {
         }
 
         $this->s3_client = self::s3Client();
+    }
+
+    public static function getDeployerSlug(): string {
+        return 'static-deploy-addon-s3';
+    }
+
+    public static function getDeployerData(): array {
+        return [
+            'description' => 'Deploys to Amazon S3',
+            'name' => 'S3 Deployment',
+            'url' => 'https://github.com/staticweb-io/static-deploy',
+        ];
     }
 
     public function uploadFiles( string $processed_site_path ): void {
