@@ -8,6 +8,7 @@ class OptionRenderer {
         'array' => 'optionInputArray',
         'boolean' => 'optionInputBoolean',
         'integer' => 'optionInputInteger',
+        'object' => 'optionInputObject',
         'password' => 'optionInputPassword',
         'string' => 'optionInputString',
     ];
@@ -42,6 +43,13 @@ class OptionRenderer {
         return '<input class="widefat" id="' . $option->option_spec->name .
             '" name="' . $option->option_spec->name .
             '" type="number" value="' . esc_html( strval( $option->unfiltered_value ) ) . '">';
+    }
+
+    public static function optionInputObject( OptionData $option ): string {
+        return '<textarea class="widefat" cols=30 rows=10 id="' . $option->option_spec->name .
+            '" name="' . $option->option_spec->name . '">' .
+            $option->blob_value .
+            '</textarea>';
     }
 
     public static function optionInputPassword( OptionData $option ): string {

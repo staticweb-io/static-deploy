@@ -644,6 +644,16 @@ VALUES (%s, %s, %s);";
 
                     $value = (string) $value;
                     break;
+                case 'object':
+                    $column = 'blob_value';
+                    $json = json_decode( stripcslashes( strval( $v ) ) );
+                    if ( ! is_object( $json ) ) {
+                        throw WsLog::ex(
+                            'Option ' . $option_spec->name . ' must be an object.'
+                        );
+                    }
+                    $value = json_encode( $json );
+                    break;
                 case 'password':
                     $value = sanitize_text_field( strval( $v ) );
                     $value = self::encrypt_decrypt( 'encrypt', $value );
