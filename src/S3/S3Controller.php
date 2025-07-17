@@ -65,11 +65,11 @@ class S3Controller {
     }
 
     public static function renderS3Page(): void {
-        Options::seedOptions( S3Options::optionSpecs() );
+        Options::seedOptions( S3Options::getSpecs() );
 
         $view = [];
         $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
-        $view['options'] = Options::getAll( S3Options::optionSpecs() );
+        $view['options'] = Options::getAll( S3Options::getSpecs() );
         $view['title'] = 'S3 Deployment Options';
 
         $view['sections'] = [
@@ -117,7 +117,7 @@ class S3Controller {
     }
 
     public static function activateForSingleSite(): void {
-        Options::seedOptions( S3Options::optionSpecs() );
+        Options::seedOptions( S3Options::getSpecs() );
     }
 
     public static function deactivateForSingleSite(): void {
@@ -138,7 +138,7 @@ class S3Controller {
     public static function saveOptionsFromUI(): void {
         check_admin_referer( Controller::getHookName( 's3_save_options' ) );
 
-        Options::saveFromAdmin( S3Options::optionSpecs() );
+        Options::saveFromAdmin( S3Options::getSpecs() );
 
         wp_safe_redirect( admin_url( 'admin.php?page=' . self::ADDON_NAME ) );
         exit;

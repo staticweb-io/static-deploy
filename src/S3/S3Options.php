@@ -22,7 +22,7 @@ class S3Options {
     /**
      * @return array<string, OptionSpec>
      */
-    public static function optionSpecs(): array {
+    public static function getSpecs(): array {
         if ( isset( self::$cached_option_specs ) ) {
             return self::$cached_option_specs;
         }
@@ -150,7 +150,7 @@ class S3Options {
 
     public static function getValue( string $slug ): string {
         $name = self::getName( $slug );
-        $option_spec = self::optionSpecs()[ $name ];
+        $option_spec = self::getSpecs()[ $name ];
 
         if ( ! $option_spec ) {
             throw WsLog::ex( "Unknown option: $name" );

@@ -722,7 +722,7 @@ class CLI {
             foreach ( Options::optionSpecs() as $option_spec ) {
                 Options::importFromWP2Static( $option_spec );
             }
-            foreach ( S3\S3Options::optionSpecs() as $option_spec ) {
+            foreach ( S3\S3Options::getSpecs() as $option_spec ) {
                 Options::importFromWP2Static( $option_spec );
             }
             return;
@@ -732,7 +732,7 @@ class CLI {
             $option_spec = Options::optionSpecs()[ $option_name ] ?? null;
 
             if ( ! $option_spec ) {
-                $option_spec = S3\S3Options::optionSpecs()[ $option_name ] ?? null;
+                $option_spec = S3\S3Options::getSpecs()[ $option_name ] ?? null;
             }
 
             if ( ! $option_spec ) {
