@@ -23,9 +23,17 @@ final class OptionData {
     public function __construct(
         OptionSpec $option_spec,
         ?string $blob_value,
-        string $unfiltered_value,
+        ?string $unfiltered_value,
     ) {
         $min_value = $option_spec->min_value;
+
+        if ( $blob_value === null ) {
+            $blob_value = $option_spec->default_blob_value;
+        }
+
+        if ( $unfiltered_value === null ) {
+            $unfiltered_value = $option_spec->default_value;
+        }
 
         $this->blob_value = $blob_value;
         $this->option_spec = $option_spec;
