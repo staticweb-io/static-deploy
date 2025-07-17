@@ -620,6 +620,8 @@ VALUES (%s, %s, %s);";
             $v = isset( $_POST[ $name ] ) ? $_POST[ $name ] : '';
             $column = 'value';
 
+            WsLog::d( 'Saving option ' . $name . ' with value ' . $v );
+
             switch ( $option_spec->type ) {
                 case 'array':
                     $column = 'blob_value';
