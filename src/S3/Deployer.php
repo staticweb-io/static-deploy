@@ -9,7 +9,6 @@ use Aws\CommandPool;
 use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
-use StaticDeploy\CrawledFiles;
 use StaticDeploy\DeployCache;
 use StaticDeploy\DeployerTrait;
 use StaticDeploy\Options;
@@ -70,53 +69,6 @@ class Deployer {
             'name' => 'S3 Deployment',
             'url' => 'https://github.com/staticweb-io/static-deploy',
         ];
-    }
-
-    public function uploadFiles( string $processed_site_path ): void {
-        // check if dir exists
-        if ( ! is_dir( $processed_site_path ) ) {
-            return;
-        }
-
-        // iterate each file in ProcessedSite
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
-                $processed_site_path,
-                RecursiveDirectoryIterator::SKIP_DOTS
-            )
-        );
-
-        $file_arrays = function (
-            $files,
-            $redirects,
-        ) use ( $processed_site_path ) {
-            foreach ( $files as $filename => $file_object ) {
-                $base_name = basename( $filename );
-                if ( $base_name !== '.' && $base_name !== '..' ) {
-                    yield [
-                        'filename' => $filename,
-                        'path' => str_replace( $processed_site_path, '', $filename ),
-                    ];
-                }
-            }
-
-            foreach ( $redirects as $redirect ) {
-                $path = $redirect->path;
-
-                if ( mb_substr( $path, -1 ) === '/' ) {
-                    $path = $path . 'index.html';
-                }
-
-                yield [
-                    'path' => $path,
-                    'redirect_to' => $redirect->redirect_to,
-                ];
-            }
-        };
-
-        $redirects = CrawledFiles::listRedirects();
-
-        self::uploadFilesIter( $file_arrays( $files, $redirects ) );
     }
 
     public function uploadFilesIter( \Iterator $files ): void {
