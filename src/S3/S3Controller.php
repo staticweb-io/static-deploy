@@ -70,8 +70,38 @@ class S3Controller {
         $view = [];
         $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
         $view['options'] = Options::getAll( S3Options::optionSpecs() );
+        $view['title'] = 'S3 Deployment Options';
 
-        require_once __DIR__ . '/../../views/s3/s3-options-page.php';
+        $view['sections'] = [
+            [
+                'title' => 'AWS Credentials',
+                'options' => [
+                    S3Options::getName( 'awsAccessKeyId' ),
+                    S3Options::getName( 'awsSecretAccessKey' ),
+                    S3Options::getName( 'awsRegion' ),
+                    S3Options::getName( 'awsProfile' ),
+                ],
+            ],
+            [
+                'title' => 'S3',
+                'options' => [
+                    S3Options::getName( 'bucketName' ),
+                    S3Options::getName( 'bucketPrefix' ),
+                    S3Options::getName( 'headerCacheControl' ),
+                    S3Options::getName( 'objectAcl' ),
+                    S3Options::getName( 'concurrency' ),
+                ],
+            ],
+            [
+                'title' => 'CloudFront',
+                'options' => [
+                    S3Options::getName( 'distributionId' ),
+                    S3Options::getName( 'maxPathsToInvalidate' ),
+                ],
+            ],
+        ];
+
+        require_once __DIR__ . '/../../views/render-options-page.php';
     }
 
 
