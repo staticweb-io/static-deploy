@@ -447,55 +447,7 @@ VALUES (%s, %s, %s);";
             throw new StaticDeployException( "Unknown option: $name" );
         }
 
-        return self::getSpecValue( $option_spec );
-    }
-
-    /**
-     * Get option value for a given OptionSpec
-     *
-     * @throws StaticDeployException
-     * @return string option value
-     */
-    public static function getSpecValue(
-        OptionSpec $option_spec,
-    ): string {
-        $name = $option_spec->name;
-        $option_lookups = ( $name !== 'debugLogging' );
-        WsLog::l(
-            "Getting value of option: $name",
-            $level = 'debug',
-            $option_lookups = $option_lookups,
-        );
-
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
-        $sql = $wpdb->prepare(
-            "SELECT value FROM $table_name WHERE" . ' name = %s LIMIT 1',
-            $name
-        );
-
-        $option_value = $wpdb->get_var( $sql );
-
-        if ( ! is_string( $option_value ) ) {
-            $option_value = (string) $option_spec->default_value;
-        }
-
-        if ( $option_spec->type === 'password' ) {
-            $option_value = self::encrypt_decrypt( 'decrypt', $option_value );
-        }
-
-        // default deploymentURL is '/', else remove trailing slash
-        if ( $name === 'deploymentURL' ) {
-            if ( $option_value !== '/' ) {
-                $option_value = untrailingslashit( $option_value );
-            }
-        }
-
-        $option_value = apply_filters( (string) $option_spec->filter_name, $option_value );
-
-        return $option_value;
+        return self::getOption( $option_spec )->value;
     }
 
     /**
@@ -507,26 +459,13 @@ VALUES (%s, %s, %s);";
     public static function getBlobValue( string $name ): string {
         WsLog::d( "Getting blob value of option: $name" );
 
-        global $wpdb;
+        $option_spec = self::optionSpecs()[ $name ];
 
-        $table_name = self::getTableName();
-
-        $sql = $wpdb->prepare(
-            "SELECT blob_value FROM $table_name WHERE" . ' name = %s LIMIT 1',
-            $name
-        );
-
-        $option_value = $wpdb->get_var( $sql );
-
-        if ( ! is_string( $option_value ) ) {
-            $os = self::optionSpecs()[ $name ];
-            if ( ! $os ) {
-                return '';
-            }
-            $option_value = $os->default_blob_value;
+        if ( ! $option_spec ) {
+            throw WsLog::ex( "Unknown option: $name" );
         }
 
-        return $option_value;
+        return self::getOption( $option_spec )->blob_value;
     }
 
     /**

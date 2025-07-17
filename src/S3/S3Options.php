@@ -155,6 +155,6 @@ class S3Options {
             throw WsLog::ex( "Unknown option: $name" );
         }
 
-        return Options::getSpecValue( $option_spec );
+        return Options::getOption( $option_spec )->value;
     }
 }
