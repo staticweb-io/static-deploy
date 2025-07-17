@@ -17,6 +17,7 @@ final class OptionSpec {
     public string $name;
     public string $default_value;
     public string $label;
+    public ?array $allowed_values;
     public string $description;
     public ?string $default_blob_value;
     public string $filter_name;
@@ -35,15 +36,23 @@ final class OptionSpec {
         string $description,
         ?string $default_blob_value = null,
         ?string $filter_name = null,
+        ?array $allowed_values = null,
         ?string $input_type = null,
         ?int $min_value = null,
         ?string $wp2static_name = null,
         ?string $wp2static_table = null,
     ) {
+        if ( $allowed_values !== null && ! in_array( $default_value, $allowed_values ) ) {
+            throw WsLog::ex(
+                "Default value $default_value not in allowed values for option $name"
+            );
+        }
+
         $this->type = $type;
         $this->name = $name;
         $this->default_value = $default_value;
         $this->label = $label;
+        $this->allowed_values = $allowed_values;
         $this->description = $description;
         $this->default_blob_value = $default_blob_value;
         $this->filter_name = $filter_name ?? Controller::getHookName( "option_{$name}" );

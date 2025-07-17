@@ -39,6 +39,17 @@ final class OptionData {
         $this->option_spec = $option_spec;
         $this->unfiltered_blob_value = $blob_value;
 
+        // If value is not in allowed values, set to default value
+        $allowed_values = $this->option_spec->allowed_values;
+        if ( $allowed_values !== null && ! in_array( $unfiltered_value, $allowed_values, true ) ) {
+            WsLog::w(
+                "Value $unfiltered_value not in allowed values" .
+                " for option {$this->option_spec->name}." .
+                " Setting to default value {$this->option_spec->default_value}",
+            );
+            $unfiltered_value = $this->option_spec->default_value;
+        }
+
         $unfiltered_value = $unfiltered_value;
         if ( $min_value !== null && intval( $unfiltered_value ) < $min_value ) {
             $unfiltered_value = (string) $min_value;
