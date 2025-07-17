@@ -611,33 +611,10 @@ class Controller {
         $table_name = Addons::getTableName();
 
         // get target addon's current state
-        $addon =
-            $wpdb->get_row( "SELECT enabled, type FROM $table_name WHERE slug = '$addon_slug'" );
+        $enabled =
+            $wpdb->get_var( "SELECT enabled FROM $table_name WHERE slug = '$addon_slug'" );
 
-        // if deploy type, disable other deployers when enabling this one
-        if ( $addon->type === 'deploy' ) {
-            $wpdb->update(
-                $table_name,
-                [ 'enabled' => 0 ],
-                [
-                    'enabled' => 1,
-                    'type' => 'deploy',
-                ]
-            );
-        }
-
-        // toggle the target addon's state
-        $wpdb->update(
-            $table_name,
-            [ 'enabled' => ! $addon->enabled ],
-            [ 'slug' => $addon_slug ]
-        );
-
-        if ( ! defined( 'WP_CLI' ) ) {
-            wp_safe_redirect( self::getAdminUrl( 'addons' ) );
-        }
-
-        exit;
+        self::adminSetAddonState( $addon_slug, ! $enabled );
     }
 
     public static function adminManuallyEnqueueJobs(): void {

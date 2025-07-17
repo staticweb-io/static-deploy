@@ -5,6 +5,8 @@
   for invalidation status.
 - Add "addons enable <addon>" and "addons disable <addon>"
   commands.
+- Print resulting state when using the "addons toggle <addon>"
+  command.
 
 ## 9.1.0 (2025-07-17)
 
