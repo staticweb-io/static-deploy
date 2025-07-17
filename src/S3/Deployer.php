@@ -47,11 +47,6 @@ class Deployer {
     private $deploy_error_ct = 0;
 
     /**
-     * @var string
-     */
-    private $namespace = self::DEFAULT_NAMESPACE;
-
-    /**
      * @var S3Client
      */
     private $s3_client;
