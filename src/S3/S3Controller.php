@@ -57,11 +57,4 @@ class S3Controller {
         $s3_deployer = new Deployer();
         $s3_deployer->uploadFiles( $processed_site_path );
     }
-
-    public static function activateForSingleSite(): void {
-        Options::seedOptions( S3Options::getSpecs() );
-    }
-
-    public static function deactivateForSingleSite(): void {
-    }
 }

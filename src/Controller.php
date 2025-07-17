@@ -72,7 +72,7 @@ class Controller {
 
     public static function deactivateForSingleSite(): void {
         WPCron::clearRecurringEvent();
-        S3\S3Controller::deactivateForSingleSite();
+        S3\S3Options::deactivateForSingleSite();
     }
 
     public static function deactivate( bool $network_wide = null ): void {
@@ -109,7 +109,7 @@ class Controller {
         DeployCache::createTable();
         JobQueue::createTable();
         Addons::createTable();
-        S3\S3Controller::activateForSingleSite();
+        S3\S3Options::activateForSingleSite();
     }
 
     public static function activate( bool $network_wide = null ): void {
