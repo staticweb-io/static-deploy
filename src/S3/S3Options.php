@@ -15,6 +15,12 @@ class S3Options {
      */
     private static $cached_option_specs;
 
+    /**
+     * Returns namespaced option name from a slug
+     *
+     * @var string $slug
+     */
+
     public static function getName( string $slug ): string {
         return 's3_' . $slug;
     }
