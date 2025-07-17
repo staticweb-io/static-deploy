@@ -10,6 +10,7 @@ class OptionRenderer {
         'integer' => 'optionInputInteger',
         'object' => 'optionInputObject',
         'password' => 'optionInputPassword',
+        'select' => 'optionInputSelect',
         'string' => 'optionInputString',
     ];
 
@@ -57,6 +58,20 @@ class OptionRenderer {
         return '<input class="widefat" id="' . $option->option_spec->name .
             '" name="' . $option->option_spec->name .
             '" type="password" value="' . esc_html( strval( $decrypted ) ) . '">';
+    }
+
+    public static function optionInputSelect( OptionData $option ): string {
+        $options = [];
+        foreach ( $option->option_spec->allowed_values as $value ) {
+            $options[] = '<option value="' . $value . '"' .
+                ( $value === $option->unfiltered_value ? ' selected' : '' ) .
+                '>' . $value . '</option>';
+        }
+
+        return '<select id="' . $option->option_spec->name .
+            '" name="' . $option->option_spec->name . '">' .
+            implode( '', $options ) .
+            '</select>';
     }
 
     public static function optionInputString( OptionData $option ): string {
