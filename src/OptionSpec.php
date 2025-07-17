@@ -48,6 +48,10 @@ final class OptionSpec {
             );
         }
 
+        if ( $input_type === null && $allowed_values !== null ) {
+            $input_type = 'select';
+        }
+
         $this->type = $type;
         $this->name = $name;
         $this->default_value = $default_value;
