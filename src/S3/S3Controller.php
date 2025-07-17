@@ -69,8 +69,6 @@ class S3Controller {
 
         $view = [];
         $view['nonce_action'] = Controller::getHookName( 's3_save_options' );
-        $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
-
         $view['options'] = Options::getAll( S3Options::optionSpecs() );
 
         require_once __DIR__ . '/../../views/s3/s3-options-page.php';
