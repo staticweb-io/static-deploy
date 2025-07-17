@@ -15,6 +15,7 @@
   would be hashed again unnecessarily.
 - Change awsRegion default to blank from "us-east-1". This allows
   the region to be inherited from the environment variables.
+- Add a dropdown selector for the AWS region.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 
