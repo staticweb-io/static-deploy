@@ -1,6 +1,8 @@
 <?php
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
-// phpcs:disable Generic.Files.LineLength.TooLong                                  
+// phpcs:disable Generic.Files.LineLength.TooLong        
+
+use StaticDeploy\Controller;
 
 /**
  * @var mixed[] $view

@@ -2,6 +2,8 @@
 
 - Add admin bar that displays job status and links.
 - Fix an error when applying an option's default blob_value.
+- Fix a missing import on the logs-page that was breaking the
+  "Delete Logs" button.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 
