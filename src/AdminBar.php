@@ -26,7 +26,7 @@ class AdminBar {
         $deployment_url = Options::getValue( 'deploymentURL' );
 
         $title = '<div class="static-deploy-deploy-status-container" ' .
-            'style="border-radius: 5px; link-color: #fff;">' .
+            'style="border-radius: 5px; link-color: #fff; visibility: hidden">' .
             '<a style="color: white; display: flex; align-items: center;" ' .
             'href="' . $deployment_url . '" target="_blank">' .
             '<span class="wp-menu-image dashicons-before dashicons-shield-alt" aria-hidden="true" ' .
@@ -173,6 +173,10 @@ class AdminBar {
         } catch (e) {
             console.warn('Could not read from localStorage:', e);
         }
+
+        document.querySelectorAll(".static-deploy-deploy-status-container").forEach(el => {
+            el.style.visibility = "visible";
+        });
 
         static_deploy_update_status();
     }
