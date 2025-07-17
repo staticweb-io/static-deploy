@@ -10,6 +10,9 @@
   This is a JSON object that defines the menu items to display in the
   admin bar.
 - Add a new options page rendering system.
+- Fix an optimization check where if the post-processor doesn't
+  need to make any changes to a file, the original file content
+  would be hashed again unnecessarily.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 

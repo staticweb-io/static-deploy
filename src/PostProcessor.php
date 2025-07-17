@@ -91,7 +91,7 @@ class PostProcessor {
                 if ( $content_type && $this->processContentType( $content_type ) ) {
                     if ( $crawled['body'] ?? null ) {
                         $rewritten = $rewriter->rewriteFileContents( $crawled['body'] );
-                        if ( $rewritten !== $file_contents ) {
+                        if ( $rewritten !== $crawled['body'] ) {
                             $crawled['body'] = $rewritten;
                             unset( $crawled['content_hash'] );
                         }
