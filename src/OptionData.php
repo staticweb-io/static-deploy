@@ -52,6 +52,10 @@ final class OptionData {
 
         $unfiltered_value = $unfiltered_value;
         if ( $min_value !== null && intval( $unfiltered_value ) < $min_value ) {
+            WsLog::w(
+                "Value $unfiltered_value below min_value for option {$this->option_spec->name}." .
+                " Setting to min_value $min_value",
+            );
             $unfiltered_value = (string) $min_value;
         }
         $this->unfiltered_value = $unfiltered_value;
