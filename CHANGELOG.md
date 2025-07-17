@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Prevent an error that could occur if no AWS
+  credentials were set when the admin bar checked
+  for invalidation status.
+
 ## 9.1.0 (2025-07-17)
 
 - Add admin bar that displays job status and links.

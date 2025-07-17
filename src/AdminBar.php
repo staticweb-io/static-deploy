@@ -224,7 +224,6 @@ class AdminBar {
     }
 
     public static function listInvalidations( int $max_items = 5 ) {
-        $cloudfront = S3\Deployer::cloudfrontClient();
         $distribution_id = S3\S3Options::getValue( 'distributionId' );
 
         if ( ! $distribution_id ) {
@@ -232,6 +231,7 @@ class AdminBar {
         }
 
         try {
+            $cloudfront = S3\Deployer::cloudfrontClient();
             return $cloudfront->listInvalidations(
                 [
                     'DistributionId' => $distribution_id,
