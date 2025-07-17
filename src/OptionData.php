@@ -43,6 +43,13 @@ final class OptionData {
             $value = Options::encrypt_decrypt( 'decrypt', $value );
         }
 
+        // default deploymentURL is '/', else remove trailing slash
+        if ( $this->option_spec->name === 'deploymentURL' ) {
+            if ( $value !== '/' ) {
+                $value = untrailingslashit( $value );
+            }
+        }
+
         $value = apply_filters(
             $this->option_spec->filter_name,
             $value
