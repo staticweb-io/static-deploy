@@ -390,6 +390,43 @@ VALUES (%s, %s, %s);";
         }
     }
 
+    public static function getOption(
+        OptionSpec $option_spec,
+    ): OptionData {
+        $name = $option_spec->name;
+        $option_lookups = ( $name !== 'debugLogging' );
+        WsLog::l(
+            "Getting value of option: $name",
+            $level = 'debug',
+            $option_lookups = $option_lookups,
+        );
+
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        $sql = $wpdb->prepare(
+            "SELECT value,blob_value FROM $table_name WHERE name=%s",
+            $name
+        );
+
+        $row = $wpdb->get_row( $sql );
+
+        if ( $row ) {
+            return new OptionData(
+                $option_spec,
+                $row->blob_value,
+                $row->value,
+            );
+        } else {
+            return new OptionData(
+                $option_spec,
+                null,
+                null,
+            );
+        }
+    }
+
     /**
      * Get option value by name
      * Works for core options, but doesn't recognize addon options.
