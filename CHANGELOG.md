@@ -9,6 +9,7 @@
 - Add a new "adminBarMenuItems" option.
   This is a JSON object that defines the menu items to display in the
   admin bar.
+- Add a new options page rendering system.
 
 ## Static Deploy 9.0.1 (2025-07-16)
 
