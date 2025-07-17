@@ -3,7 +3,6 @@
 namespace StaticDeploy\S3;
 
 use StaticDeploy\Controller;
-use StaticDeploy\Options;
 use StaticDeploy\OptionsControllerTrait;
 use StaticDeploy\OptionSpec;
 
@@ -202,17 +201,6 @@ class S3Options {
         }
         self::$cached_option_specs = $ret;
         return $ret;
-    }
-
-    public static function getValue( string $slug ): string {
-        $name = self::getName( $slug );
-        $option_spec = self::getSpecs()[ $name ];
-
-        if ( ! $option_spec ) {
-            throw WsLog::ex( "Unknown option: $name" );
-        }
-
-        return Options::getOption( $option_spec )->value;
     }
 
     public static function getPageData(): array {

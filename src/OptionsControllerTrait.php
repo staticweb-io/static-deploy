@@ -62,6 +62,17 @@ trait OptionsControllerTrait {
         return $submenu_pages;
     }
 
+    public static function getValue( string $slug ): string {
+        $name = self::getName( $slug );
+        $option_spec = self::getSpecs()[ $name ];
+
+        if ( ! $option_spec ) {
+            throw WsLog::ex( "Unknown option: $name" );
+        }
+
+        return Options::getOption( $option_spec )->value;
+    }
+
     public static function renderPage(): void {
         $option_specs = self::getSpecs();
         Options::seedOptions( $option_specs );
