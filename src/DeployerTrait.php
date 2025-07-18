@@ -73,6 +73,7 @@ trait DeployerTrait {
             $redirects,
         ) use ( $processed_site_path ) {
             foreach ( $files as $filename => $file_object ) {
+                WsLog::d( 'Deploying file ' . $filename );
                 $base_name = basename( $filename );
                 if ( $base_name !== '.' && $base_name !== '..' ) {
                     yield [
@@ -84,6 +85,8 @@ trait DeployerTrait {
 
             foreach ( $redirects as $redirect ) {
                 $path = $redirect->path;
+
+                WsLog::d( 'Deploying redirect ' . $path . ' to ' . $redirect->redirect_to );
 
                 if ( mb_substr( $path, -1 ) === '/' ) {
                     $path = $path . 'index.html';
