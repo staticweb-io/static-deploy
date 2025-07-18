@@ -11,6 +11,7 @@
   This is useful for cases where you are serving files
   directly from your web server or when you want full
   control over the upload process.
+- Fix an error in the "options list" command.
 
 ## 9.1.0 (2025-07-17)
 

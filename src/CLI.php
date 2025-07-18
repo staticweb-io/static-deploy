@@ -277,9 +277,17 @@ class CLI {
         if ( $action === 'list' ) {
             $options = Options::getAll();
 
+            $arr_options = [];
+            foreach ( $options as $option ) {
+                $arr_options[] = [
+                    'name' => $option->option_spec->name,
+                    'value' => $option->value,
+                ];
+            }
+
             WP_CLI\Utils\format_items(
                 'table',
-                $options,
+                $arr_options,
                 [ 'name', 'value' ]
             );
         }

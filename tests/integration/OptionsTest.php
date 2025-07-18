@@ -8,6 +8,42 @@ final class OptionsTest extends TestCase {
 
     use ITTrait;
 
+    public function testCliCommands(): void {
+        $output = $this->pluginCli( [ 'options', 'list' ] )['output'];
+
+        $basic_auth_password = 0;
+        $deployment_url = 0;
+        $process_queue_immediately = 0;
+        foreach ( $output as $line ) {
+            if ( strpos( $line, 'basicAuthPassword' ) !== false ) {
+                ++$basic_auth_password;
+            }
+            if ( strpos( $line, 'deploymentURL' ) !== false
+            && strpos( $line, 'https://example.com' ) !== false ) {
+                ++$deployment_url;
+            }
+            if ( strpos( $line, 'processQueueImmediately' ) !== false
+            && strpos( $line, '0' ) !== false ) {
+                ++$process_queue_immediately;
+            }
+        }
+        $this->assertEquals(
+            1,
+            $basic_auth_password,
+            'basicAuthPassword option is shown with blank value'
+        );
+        $this->assertEquals(
+            1,
+            $deployment_url,
+            'deploymentURL option is shown with default value'
+        );
+        $this->assertEquals(
+            1,
+            $process_queue_immediately,
+            'processQueueImmediately option is shown with default value'
+        );
+    }
+
     public function testOptionFilters(): void
     {
         $plugin_dir = ITEnv::getWordPressDir() . '/wp-content/plugins/options-test';
