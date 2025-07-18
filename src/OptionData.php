@@ -95,4 +95,91 @@ final class OptionData {
             'value' => $this->value,
         ];
     }
+
+    public function save(): void {
+        global $wpdb;
+
+        $table_name = Options::getTableName();
+
+        $value = $this->value;
+
+        if ( ! empty( $value ) && $this->option_spec->type === 'password' ) {
+            $value = Options::encrypt_decrypt( 'encrypt', $value );
+        }
+
+        $updates = [
+            'value' => $value,
+            'blob_value' => $this->blob_value,
+        ];
+
+        WsLog::d(
+            'Saving option ' . $this->option_spec->name .
+            ' with values ' . $value . ' and blob_value ' . $this->blob_value
+        );
+
+        $wpdb->update(
+            $table_name,
+            $updates,
+            [ 'name' => $this->option_spec->name ],
+        );
+    }
+
+    public static function fromUserInput(
+        OptionSpec $option_spec,
+        string $user_input,
+    ) {
+        $blob_value = null;
+
+        switch ( $option_spec->type ) {
+            case 'array':
+                $blob_value = preg_replace(
+                    '/^\s+|\s+$/m',
+                    '',
+                    strval( $user_input )
+                );
+                $value = '1';
+                break;
+            case 'boolean':
+                if ( empty( $user_input )
+                || $user_input === '0'
+                || $user_input === 'false'
+                ) {
+                    $value = '0';
+                } else {
+                    $value = '1';
+                }
+                break;
+            case 'integer':
+                $value = (string) intval( $user_input );
+                break;
+            case 'object':
+                $json = json_decode( stripcslashes( strval( $user_input ) ) );
+                if ( ! is_object( $json ) ) {
+                    throw WsLog::ex(
+                        'Option ' . $option_spec->name . ' must be an object.'
+                    );
+                }
+                $blob_value = json_encode( $json );
+                $value = '1';
+                break;
+            case 'password':
+            case 'string':
+                $value = sanitize_text_field( strval( $user_input ) );
+                break;
+            case 'url':
+                $value = esc_url_raw( strval( $user_input ) );
+                break;
+            default:
+                throw WsLog::ex(
+                    'Unknown option type: ' . $option_spec->type
+                    . ' for option: ' . $option_spec->name
+                );
+        }
+
+        return new self(
+            $option_spec,
+            $blob_value,
+            $value,
+        );
+    }
 }

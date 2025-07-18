@@ -643,64 +643,7 @@ VALUES (%s, %s, %s);";
         foreach ( $option_specs as $option_spec ) {
             $name = $option_spec->name;
             $v = isset( $_POST[ $name ] ) ? $_POST[ $name ] : '';
-            $column = 'value';
-
-            WsLog::d( 'Saving option ' . $name . ' with value ' . $v );
-
-            switch ( $option_spec->type ) {
-                case 'array':
-                    $column = 'blob_value';
-                    $value = preg_replace(
-                        '/^\s+|\s+$/m',
-                        '',
-                        strval( $v )
-                    );
-                    break;
-                case 'boolean':
-                    $value = isset( $_POST[ $name ] ) ? '1' : '0';
-                    break;
-                case 'integer':
-                    $value = intval( $v );
-
-                    if ( $option_spec->min_value !== null
-                    && $value < $option_spec->min_value ) {
-                        $value = $option_spec->min_value;
-                    }
-
-                    $value = (string) $value;
-                    break;
-                case 'object':
-                    $column = 'blob_value';
-                    $json = json_decode( stripcslashes( strval( $v ) ) );
-                    if ( ! is_object( $json ) ) {
-                        throw WsLog::ex(
-                            'Option ' . $option_spec->name . ' must be an object.'
-                        );
-                    }
-                    $value = json_encode( $json );
-                    break;
-                case 'password':
-                    $value = sanitize_text_field( strval( $v ) );
-                    $value = self::encrypt_decrypt( 'encrypt', $value );
-                    break;
-                case 'string':
-                    $value = sanitize_text_field( strval( $v ) );
-                    break;
-                case 'url':
-                    $value = esc_url_raw( strval( $v ) );
-                    break;
-                default:
-                    throw WsLog::ex(
-                        'Unknown option type: ' . $option_spec->type
-                        . ' for option: ' . $option_spec->name
-                    );
-            }
-
-            $wpdb->update(
-                $table_name,
-                [ $column => $value ],
-                [ 'name' => $name ]
-            );
+            OptionData::fromUserInput( $option_spec, $v )->save();
         }
     }
 
