@@ -259,6 +259,8 @@ class CLI {
 
             if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
                 WP_CLI::log( '********' );
+            } elseif ( $option->blob_value ) {
+                WP_CLI::log( $option->blob_value );
             } else {
                 WP_CLI::log( $option->value );
             }

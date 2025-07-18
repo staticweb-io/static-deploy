@@ -36,6 +36,8 @@
 - Support setting options with blob_values via "options set".
   This includes the hostsToRewrite and pathsToIgnore options.
   Previously, CLI commands had no effect on these options.
+- Support blob_value options in "options get". Previously,
+  these always showed a meaningless "1" for the value.
 
 ## 9.1.0 (2025-07-17)
 
