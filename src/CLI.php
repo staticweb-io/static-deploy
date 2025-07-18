@@ -159,6 +159,9 @@ class CLI {
         WsLog::deleteOldLogs();
 
         $deployer = new DirectDeployer();
+        if ( ! $deployer->ready ) {
+            return;
+        }
 
         if ( isset( $args[0] ) ) {
             $post_id = intval( $args[0] );

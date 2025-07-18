@@ -11,6 +11,7 @@ class DirectDeployer {
     private $crawler;
     private $deployer;
     private $processor;
+    public bool $ready = false;
     private $url_discovery;
 
     public function __construct() {
@@ -36,6 +37,7 @@ class DirectDeployer {
         $this->crawler = new Crawler();
         $this->url_discovery = new URLDiscovery();
         $this->processor = new PostProcessor();
+        $this->ready = true;
     }
 
     public function deploy(): void {
