@@ -40,14 +40,14 @@ trait DeployerTrait {
         return self::class;
     }
 
-    public function deploy( string $processed_site_path, string $enabled_deployer ): void {
-        $name = self::getDeployerData()['name'];
+    public static function deploy( string $processed_site_path, string $enabled_deployer ): void {
+        $slug = self::getDeployerSlug();
 
-        if ( $enabled_deployer !== $name ) {
+        if ( $enabled_deployer !== $slug ) {
             return;
         }
 
-        WsLog::l( $name . ' deploying' );
+        WsLog::l( $slug . ' deploying' );
 
         $deployer = new self();
         $deployer->uploadFiles( $processed_site_path );
@@ -60,10 +60,10 @@ trait DeployerTrait {
         }
 
         // iterate each file in ProcessedSite
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
                 $processed_site_path,
-                RecursiveDirectoryIterator::SKIP_DOTS
+                \RecursiveDirectoryIterator::SKIP_DOTS
             )
         );
 
