@@ -1,5 +1,10 @@
 ## Unreleased
 
+- (breaking) Use PHP 8.1+ features. Although the
+  plugin previously said that it required PHP 8.1, it
+  did run successfully on PHP 8.0. It will no longer
+  work on PHP 8.0 at all. Note that PHP 8.0 has been
+  EOL since 2023-11-26.
 - Prevent an error that could occur if no AWS
   credentials were set when the admin bar checked
   for invalidation status.
