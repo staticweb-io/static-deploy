@@ -17,7 +17,7 @@ class CLI {
      * Display system information and health check
      */
     public function diagnostics(): void {
-        WP_CLI::line(
+        WP_CLI::log(
             PHP_EOL . 'Static Deploy' . PHP_EOL
         );
 
@@ -68,18 +68,18 @@ class CLI {
 
         $active_plugins = (array) get_option( 'active_plugins' );
 
-        WP_CLI::line( PHP_EOL . 'Active plugins:' . PHP_EOL );
+        WP_CLI::log( PHP_EOL . 'Active plugins:' . PHP_EOL );
 
         foreach ( $active_plugins as $active_plugin ) {
             /**
              * @var string $active_plugin
              */
-            WP_CLI::line( $active_plugin );
+            WP_CLI::log( $active_plugin );
         }
 
-        WP_CLI::line( PHP_EOL );
+        WP_CLI::log( PHP_EOL );
 
-        WP_CLI::line(
+        WP_CLI::log(
             'There are a total of ' . count( $active_plugins ) .
             ' active plugins on this site.' . PHP_EOL
         );
@@ -122,7 +122,7 @@ class CLI {
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
-            WP_CLI::line( 'No deployment add-ons are enabled, skipping deployment.' );
+            WP_CLI::log( 'No deployment add-ons are enabled, skipping deployment.' );
         } else {
             WsLog::l( 'Starting deployment' );
             do_action(
@@ -258,9 +258,9 @@ class CLI {
             }
 
             if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
-                WP_CLI::line( '********' );
+                WP_CLI::log( '********' );
             } else {
-                WP_CLI::line( $option->value );
+                WP_CLI::log( $option->value );
             }
         } elseif ( $action === 'list' ) {
             $options = Options::getAll( $option_specs );
@@ -295,7 +295,7 @@ class CLI {
 
         $msg = preg_replace( '!\s+!', ' ', $msg );
 
-        WP_CLI::line( PHP_EOL . $msg . PHP_EOL );
+        WP_CLI::log( PHP_EOL . $msg . PHP_EOL );
     }
 
     /**
@@ -339,7 +339,7 @@ class CLI {
         if ( $job_count === 0 ) {
             WP_CLI::success( 'No jobs in queue' );
         } else {
-            WP_CLI::line( ' Processing ' . $job_count . ' job' . ( $job_count > 1 ? 's' : '' ) );
+            WP_CLI::log( ' Processing ' . $job_count . ' job' . ( $job_count > 1 ? 's' : '' ) );
 
             Controller::processQueue();
 
@@ -372,14 +372,14 @@ class CLI {
             $urls = CrawledFiles::getHashes();
 
             foreach ( $urls as $url ) {
-                WP_CLI::line( $url );
+                WP_CLI::log( $url );
             }
         }
 
         if ( $action === 'count' ) {
             $urls = CrawledFiles::getHashes();
 
-            WP_CLI::line( (string) count( $urls ) );
+            WP_CLI::log( (string) count( $urls ) );
         }
 
         if ( $action === 'delete' ) {
@@ -428,14 +428,14 @@ class CLI {
             $urls = DetectedFiles::getCrawlablePaths();
 
             foreach ( $urls as $url ) {
-                WP_CLI::line( $url );
+                WP_CLI::log( $url );
             }
         }
 
         if ( $action === 'count' ) {
             $count = DetectedFiles::getTotalCrawlableURLs();
 
-            WP_CLI::line( (string) $count );
+            WP_CLI::log( (string) $count );
         }
 
         if ( $action === 'delete' ) {
@@ -564,12 +564,12 @@ class CLI {
             $paths = DeployCache::getPaths();
 
             foreach ( $paths as $url ) {
-                WP_CLI::line( $url );
+                WP_CLI::log( $url );
             }
         }
 
         if ( $action === 'count' ) {
-            WP_CLI::line( (string) count( DeployCache::getTotal() ) );
+            WP_CLI::log( (string) count( DeployCache::getTotal() ) );
         }
 
         if ( $action === 'delete' ) {
