@@ -275,6 +275,16 @@ class CLI {
                     $value = '********';
                 }
 
+                if ( $option->blob_value !== null ) {
+                    if ( empty( $option->blob_value ) ) {
+                        $value = '(Empty BLOB value)';
+                    } else {
+                        $value = '(' .
+                        count( explode( PHP_EOL, $option->blob_value ) ) .
+                        '-line BLOB value)';
+                    }
+                }
+
                 $arr_options[] = [
                     'name' => $option->option_spec->name,
                     'value' => $value,
