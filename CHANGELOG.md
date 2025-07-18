@@ -24,6 +24,8 @@
 - Show a message if an "options" subcommand is invalid
   instead of doing nothing.
 - Support addon options in "options get" and "options set"
+- Specify a minimum value of one for the s3_concurrency
+  option.
 
 ## 9.1.0 (2025-07-17)
 

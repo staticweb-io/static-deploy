@@ -149,6 +149,7 @@ class S3Options {
                 '4',
                 'Maximum number of files that will be uploaded at the same time',
                 '',
+                min_value: 1,
                 wp2static_name: 's3Concurrency',
                 wp2static_table: $wp2static_table,
             ),
