@@ -51,26 +51,33 @@ trait ITTrait {
         return $this->wpCli( [ 'static-deploy', ...$args ], $expect_warnings );
     }
 
+    public function getFileContents(
+        string $base_dir,
+        string $path,
+    ): string {
+        $content = file_get_contents( "{$base_dir}/$path" );
+        $this->assertNotFalse( $content, "Failed to read file: {$base_dir}/$path" );
+        return $content;
+    }
+
     public function getCrawledFileContents( string $path ): string
     {
-        $wordpress_dir = ITEnv::getWordPressDir();
-        $crawled_site_dir = $wordpress_dir .
+        return $this->getFileContents(
+            ITEnv::getWordPressDir() .
             '/wp-content/uploads/' .
-            $this->getOptionValue( 'crawledSitePath' );
-        $content = file_get_contents( "{$crawled_site_dir}/$path" );
-        $this->assertNotFalse( $content, "Failed to read file: {$crawled_site_dir}/$path" );
-        return $content;
+            $this->getOptionValue( 'crawledSitePath' ),
+            $path
+        );
     }
 
     public function getProcessedFileContents( string $path ): string
     {
-        $wordpress_dir = ITEnv::getWordPressDir();
-        $processed_site_dir = $wordpress_dir .
+        return $this->getFileContents(
+            ITEnv::getWordPressDir() .
             '/wp-content/uploads/' .
-            $this->getOptionValue( 'processedSitePath' );
-        $content = file_get_contents( "{$processed_site_dir}/$path" );
-        $this->assertNotFalse( $content, "Failed to read file: {$processed_site_dir}/$path" );
-        return $content;
+            $this->getOptionValue( 'processedSitePath' ),
+            $path
+        );
     }
 
     public function getOptionValue( string $option_name ): string {
