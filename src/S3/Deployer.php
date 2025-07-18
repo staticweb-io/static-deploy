@@ -242,7 +242,7 @@ class Deployer {
                 'rejected' =>
                 function ( $reason, $iter_key, $promise ) use ( &$items_by_iter_key ) {
                     $item = $items_by_iter_key[ $iter_key ];
-                    WsLog::l( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
+                    WsLog::e( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
                     unset( $items_by_iter_key[ $iter_key ] );
                     $this->deploy_error_ct++;
                 },
