@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.2.0 (2025-07-18)
+
 - (breaking) Use PHP 8.1+ features. Although the
   plugin previously said that it required PHP 8.1, it
   did run successfully on PHP 8.0. It will no longer
