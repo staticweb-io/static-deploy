@@ -40,6 +40,7 @@
   these always showed a meaningless "1" for the value.
 - Show line count of BLOB values in "options list" instead
   of always showing "1".
+- Show total deployed files after S3 deployer finishes.
 
 ## 9.1.0 (2025-07-17)
 

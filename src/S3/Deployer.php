@@ -254,13 +254,10 @@ class Deployer {
 
         $cmd_pool->promise()->wait();
 
-        $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
-        if ( $total % 300 === 0 ) {
-            $notice = "Deploy progress: $this->deployed_ct deployed," .
-                " $this->deploy_error_ct failed," .
-                " $this->deploy_cache_ct skipped (cached).";
-            WsLog::l( $notice );
-        }
+        $notice = "Deployed $this->deployed_ct files," .
+            " $this->deploy_error_ct failed," .
+            " $this->deploy_cache_ct skipped (cached).";
+        WsLog::l( $notice );
 
         $distribution_id = S3Options::getValue( 'distributionId' );
         $num_stale = count( $this->cf_stale_paths );
