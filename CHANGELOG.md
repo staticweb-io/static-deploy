@@ -5,6 +5,9 @@
   did run successfully on PHP 8.0. It will no longer
   work on PHP 8.0 at all. Note that PHP 8.0 has been
   EOL since 2023-11-26.
+- (breaking) Fix that "--reveal-sensitive-values" did nothing
+  with options CLI commands and that passwords were always
+  shown. Password values will now be hidden by default.
 - Prevent an error that could occur if no AWS
   credentials were set when the admin bar checked
   for invalidation status.

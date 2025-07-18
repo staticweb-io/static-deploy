@@ -204,7 +204,7 @@ class CLI {
      *
      * List all options (revealing sensitive values)
      *
-     *     wp static-deploy options list --reveal_sensitive_values
+     *     wp static-deploy options list --reveal-sensitive-values
      *
      * Get option
      *
@@ -222,14 +222,10 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
-        // We don't accept any parameters for this command
-        if ( ! empty( $assoc_args ) ) {
-            WP_CLI::error( 'No parameters are accepted for this command.' );
-        }
         $action = isset( $args[0] ) ? $args[0] : null;
         $option_name = isset( $args[1] ) ? $args[1] : null;
         $value = isset( $args[2] ) ? $args[2] : null;
-        $reveal_sensitive_values = false;
+        $reveal_sensitive_values = isset( $assoc_args['reveal-sensitive-values'] );
 
         if ( ! in_array( $action, [ 'get', 'set', 'list' ] ) ) {
             WP_CLI::error( 'Missing required argument: <get|set|list>' );
@@ -257,7 +253,11 @@ class CLI {
 
         if ( $action === 'get' ) {
             $option = Options::getOption( $option_spec );
-            WP_CLI::line( $option->value );
+            if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
+                WP_CLI::line( '********' );
+            } else {
+                WP_CLI::line( $option->value );
+            }
         }
 
         if ( $action === 'set' ) {
@@ -271,7 +271,11 @@ class CLI {
 
             Options::save( $option_name, $value );
             $option = Options::getOption( $option_spec );
-            WP_CLI::line( $option->value );
+            if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
+                WP_CLI::line( '********' );
+            } else {
+                WP_CLI::line( $option->value );
+            }
         }
 
         if ( $action === 'list' ) {
@@ -287,7 +291,7 @@ class CLI {
 
                 $arr_options[] = [
                     'name' => $option->option_spec->name,
-                    'value' => $option->value,
+                    'value' => $value,
                 ];
             }
 
