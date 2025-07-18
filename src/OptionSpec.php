@@ -11,22 +11,20 @@ namespace StaticDeploy;
 
 final class OptionSpec {
 
-    // TODO: Add readonly keyword to all properties
-    // once we can strictly require PHP 8.1
-    public string $type;
-    public string $name;
-    public string $default_value;
-    public string $label;
-    public ?array $allowed_values;
-    public string $description;
-    public ?string $default_blob_value;
-    public string $filter_name;
-    public string $input_type;
-    public ?int $min_value;
+    public readonly string $type;
+    public readonly string $name;
+    public readonly string $default_value;
+    public readonly string $label;
+    public readonly ?array $allowed_values;
+    public readonly string $description;
+    public readonly ?string $default_blob_value;
+    public readonly string $filter_name;
+    public readonly string $input_type;
+    public readonly ?int $min_value;
 
     // Used to import from WP2Static options
-    public ?string $wp2static_name;
-    public ?string $wp2static_table;
+    public readonly ?string $wp2static_name;
+    public readonly ?string $wp2static_table;
 
     public function __construct(
         string $type,
