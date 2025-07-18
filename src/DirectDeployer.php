@@ -18,7 +18,7 @@ class DirectDeployer {
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
-            WsLog::l( 'No deployment add-ons are enabled, skipping direct deployment.' );
+            WsLog::w( 'No deployment add-ons are enabled, skipping direct deployment.' );
             return;
         }
 
@@ -29,7 +29,7 @@ class DirectDeployer {
         );
 
         if ( empty( $deployer_class ) ) {
-            WsLog::l( 'No deployer class found, skipping direct deployment.' );
+            WsLog::w( 'No deployer class found, skipping direct deployment.' );
             return;
         }
 
