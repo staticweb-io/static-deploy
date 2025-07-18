@@ -26,6 +26,10 @@
 - Support addon options in "options get" and "options set"
 - Specify a minimum value of one for the s3_concurrency
   option.
+- Print current option value when using "options set".
+  This makes it obvious when a validation rule prohibits
+  the value being set and causes warning messages to be
+  shown.
 
 ## 9.1.0 (2025-07-17)
 

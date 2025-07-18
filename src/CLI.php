@@ -269,9 +269,9 @@ class CLI {
                 );
             }
 
-            // TODO: assert expected result
             Options::save( $option_name, $value );
-
+            $option = Options::getOption( $option_spec );
+            WP_CLI::line( $option->value );
         }
 
         if ( $action === 'list' ) {
@@ -279,6 +279,12 @@ class CLI {
 
             $arr_options = [];
             foreach ( $options as $option ) {
+                $value = $option->value;
+
+                if ( ! $reveal_sensitive_values && $option->option_spec->type === 'password' ) {
+                    $value = '********';
+                }
+
                 $arr_options[] = [
                     'name' => $option->option_spec->name,
                     'value' => $option->value,

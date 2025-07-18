@@ -78,4 +78,14 @@ trait ITTrait {
         // Ignore extra lines from things like deprecation warnings
         return $lines[ count( $lines ) - 1 ];
     }
+
+    public function setOptionValue(
+        string $option_name,
+        string $option_value,
+    ): string {
+        $args = [ 'options', 'set', $option_name, $option_value ];
+        $lines = $this->pluginCli( $args )['output'];
+        // Ignore extra lines from things like deprecation warnings
+        return $lines[ count( $lines ) - 1 ];
+    }
 }

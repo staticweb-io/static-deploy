@@ -51,6 +51,48 @@ final class OptionsTest extends TestCase {
             $process_queue_immediately,
             'processQueueImmediately option is shown with default value'
         );
+
+        $this->assertEquals(
+            '4',
+            $this->getOptionValue( 'crawlConcurrency' ),
+            'Can get options'
+        );
+        $this->assertEquals(
+            '16',
+            $this->setOptionValue( 'crawlConcurrency', '16' ),
+            'Can set options to valid values'
+        );
+        $this->assertEquals(
+            '1',
+            $this->setOptionValue( 'crawlConcurrency', '0' ),
+            'Validation changes invalid value to min_value'
+        );
+        $this->assertEquals(
+            '1',
+            $this->setOptionValue( 'crawlConcurrency', 'x' ),
+            'Validation changes invalid value to min_value'
+        );
+        $this->assertEquals(
+            '4',
+            $this->setOptionValue( 'crawlConcurrency', '4' ),
+            'Can set options back to default'
+        );
+
+        $this->assertEquals(
+            '4',
+            $this->getOptionValue( 's3_concurrency' ),
+            'Can get addon options'
+        );
+        $this->assertEquals(
+            '16',
+            $this->setOptionValue( 's3_concurrency', '16' ),
+            'Can set addon options to a valid value'
+        );
+        $this->assertEquals(
+            '4',
+            $this->setOptionValue( 's3_concurrency', '4' ),
+            'Can set addon options back to default'
+        );
     }
 
     public function testOptionFilters(): void
