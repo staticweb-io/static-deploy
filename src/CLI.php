@@ -249,36 +249,20 @@ class CLI {
                 WP_CLI::error( 'Unknown option: ' . $option_name );
                 return;
             }
-        }
 
-        if ( $action === 'get' ) {
-            $option = Options::getOption( $option_spec );
+            if ( $action === 'set' ) {
+                $option = OptionData::fromUserInput( $option_spec, $value );
+                $option->save();
+            } else {
+                $option = Options::getOption( $option_spec );
+            }
+
             if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
                 WP_CLI::line( '********' );
             } else {
                 WP_CLI::line( $option->value );
             }
-        }
-
-        if ( $action === 'set' ) {
-            // encrypt passwords
-            if ( ! empty( $value ) && $option_spec->type === 'password' ) {
-                $value = Options::encrypt_decrypt(
-                    'encrypt',
-                    $value
-                );
-            }
-
-            Options::save( $option_name, $value );
-            $option = Options::getOption( $option_spec );
-            if ( ! $reveal_sensitive_values && $option_spec->type === 'password' ) {
-                WP_CLI::line( '********' );
-            } else {
-                WP_CLI::line( $option->value );
-            }
-        }
-
-        if ( $action === 'list' ) {
+        } elseif ( $action === 'list' ) {
             $options = Options::getAll( $option_specs );
 
             $arr_options = [];

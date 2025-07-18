@@ -33,6 +33,9 @@
   This makes it obvious when a validation rule prohibits
   the value being set and causes warning messages to be
   shown.
+- Support setting options with blob_values via "options set".
+  This includes the hostsToRewrite and pathsToIgnore options.
+  Previously, CLI commands had no effect on these options.
 
 ## 9.1.0 (2025-07-17)
 
