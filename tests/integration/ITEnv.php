@@ -37,4 +37,10 @@ class ITEnv {
         }
         return self::$wordpress_dir;
     }
+
+    public static function getLocalDeployDir(): string {
+        $dir = self::getWordPressDir() . '/../localdeploy';
+        mkdir( $dir, 0775, true );
+        return realpath( $dir );
+    }
 }

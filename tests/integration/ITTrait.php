@@ -7,6 +7,7 @@ namespace StaticDeploy;
  */
 trait ITTrait {
     public function setUp(): void {
+        exec( 'rm -rf ' . escapeshellarg( ITEnv::getLocalDeployDir() ) );
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
 
         $this->pluginCli( [ 'delete_all_cache', '--force' ] );
@@ -66,6 +67,13 @@ trait ITTrait {
             ITEnv::getWordPressDir() .
             '/wp-content/uploads/' .
             $this->getOptionValue( 'crawledSitePath' ),
+            $path
+        );
+    }
+
+    public function getLocalDeployFileContents( string $path ): string {
+        return $this->getFileContents(
+            ITEnv::getLocalDeployDir(),
             $path
         );
     }
