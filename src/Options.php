@@ -14,6 +14,11 @@ class Options {
      */
     private static $cached_option_specs = null;
 
+    /**
+     * @var ?array<string, OptionSpec>
+     */
+    private static $cached_core_option_specs = null;
+
     public static function init(): void {
         self::createTable();
         self::seedOptions( self::optionSpecs() );
@@ -49,11 +54,32 @@ class Options {
     }
 
     /**
+     * All OptionSpecs including core options and addon options
+     *
+     * @return array<string, OptionSpec>
+     */
+    public static function getSpecs(): array {
+        if ( self::$cached_option_specs ) {
+            return self::$cached_option_specs;
+        }
+
+        self::$cached_option_specs = array_merge(
+            self::optionSpecs(),
+            Local\LocalOptions::getSpecs(),
+            S3\S3Options::getSpecs(),
+        );
+
+        return self::$cached_option_specs;
+    }
+
+    /**
+     * Core OptionSpecs only without addon options
+     *
      * @return array<string, OptionSpec>
      */
     public static function optionSpecs(): array {
-        if ( self::$cached_option_specs ) {
-            return self::$cached_option_specs;
+        if ( self::$cached_core_option_specs ) {
+            return self::$cached_core_option_specs;
         }
 
         $default_admin_bar_menu_items = [
