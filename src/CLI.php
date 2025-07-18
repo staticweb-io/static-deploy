@@ -231,7 +231,7 @@ class CLI {
         $value = isset( $args[2] ) ? $args[2] : null;
         $reveal_sensitive_values = false;
 
-        if ( empty( $action ) ) {
+        if ( ! in_array( $action, [ 'get', 'set', 'list' ] ) ) {
             WP_CLI::error( 'Missing required argument: <get|set|list>' );
         }
 

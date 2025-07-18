@@ -21,6 +21,8 @@
   with no deployers enabled.
 - Remove unused function Controller->resetDefaultSettings.
 - Show addon options in the "options list" command.
+- Show a message if an "options" subcommand is invalid
+  instead of doing nothing.
 
 ## 9.1.0 (2025-07-17)
 
