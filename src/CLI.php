@@ -242,33 +242,27 @@ class CLI {
 
         $plugin = Controller::getInstance();
 
-        if ( $action === 'get' ) {
+        if ( $action === 'get' || $action === 'set' ) {
             if ( empty( $option_name ) ) {
                 WP_CLI::error( 'Missing required argument: <option-name>' );
                 return;
             }
 
-            // decrypt basicAuthPassword
-            if ( $option_name === 'basicAuthPassword' ) {
-                $option_value = Options::encrypt_decrypt(
-                    'decrypt',
-                    Options::getValue( $option_name )
-                );
-            } else {
-                $option_value = Options::getValue( $option_name );
+            $option_spec = $option_specs[ $option_name ];
+            if ( ! $option_spec ) {
+                WP_CLI::error( 'Unknown option: ' . $option_name );
+                return;
             }
+        }
 
-            WP_CLI::line( $option_value );
+        if ( $action === 'get' ) {
+            $option = Options::getOption( $option_spec );
+            WP_CLI::line( $option->value );
         }
 
         if ( $action === 'set' ) {
-            if ( empty( $option_name ) ) {
-                WP_CLI::error( 'Missing required argument: <option-name>' );
-                return;
-            }
-
-            // encrypt basic auth pwd
-            if ( ! empty( $value ) && $option_name === 'basicAuthPassword' ) {
+            // encrypt passwords
+            if ( ! empty( $value ) && $option_spec->type === 'password' ) {
                 $value = Options::encrypt_decrypt(
                     'encrypt',
                     $value

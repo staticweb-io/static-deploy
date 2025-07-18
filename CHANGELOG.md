@@ -23,6 +23,7 @@
 - Show addon options in the "options list" command.
 - Show a message if an "options" subcommand is invalid
   instead of doing nothing.
+- Support addon options in "options get" and "options set"
 
 ## 9.1.0 (2025-07-17)
 
