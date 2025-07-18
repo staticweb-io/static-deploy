@@ -20,6 +20,7 @@
 - Fix an error that occurred when running "direct_deploy"
   with no deployers enabled.
 - Remove unused function Controller->resetDefaultSettings.
+- Show addon options in the "options list" command.
 
 ## 9.1.0 (2025-07-17)
 

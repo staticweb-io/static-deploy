@@ -235,7 +235,10 @@ class CLI {
             WP_CLI::error( 'Missing required argument: <get|set|list>' );
         }
 
+        $option_specs = Options::getSpecs();
+
         Options::init();
+        Options::seedOptions( $option_specs );
 
         $plugin = Controller::getInstance();
 
@@ -278,7 +281,7 @@ class CLI {
         }
 
         if ( $action === 'list' ) {
-            $options = Options::getAll();
+            $options = Options::getAll( $option_specs );
 
             $arr_options = [];
             foreach ( $options as $option ) {

@@ -13,6 +13,7 @@ final class OptionsTest extends TestCase {
 
         $basic_auth_password = 0;
         $deployment_url = 0;
+        $local_dir_path = 0;
         $process_queue_immediately = 0;
         foreach ( $output as $line ) {
             if ( strpos( $line, 'basicAuthPassword' ) !== false ) {
@@ -21,6 +22,9 @@ final class OptionsTest extends TestCase {
             if ( strpos( $line, 'deploymentURL' ) !== false
             && strpos( $line, 'https://example.com' ) !== false ) {
                 ++$deployment_url;
+            }
+            if ( strpos( $line, 'local_dirPath' ) !== false ) {
+                ++$local_dir_path;
             }
             if ( strpos( $line, 'processQueueImmediately' ) !== false
             && strpos( $line, '0' ) !== false ) {
@@ -36,6 +40,11 @@ final class OptionsTest extends TestCase {
             1,
             $deployment_url,
             'deploymentURL option is shown with default value'
+        );
+        $this->assertEquals(
+            1,
+            $local_dir_path,
+            'Options from addons are listed'
         );
         $this->assertEquals(
             1,
