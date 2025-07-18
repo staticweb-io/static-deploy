@@ -288,10 +288,6 @@ class Controller {
         return $referred_by_admin && $user_can_manage_options;
     }
 
-    public function resetDefaultSettings(): void {
-        Options::seedOptions( Options::optionSpecs() );
-    }
-
     public function deleteDeployCache(): void {
         DeployCache::truncate();
     }

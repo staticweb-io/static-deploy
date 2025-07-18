@@ -19,6 +19,7 @@
 - Fix an error in the "options list" command.
 - Fix an error that occurred when running "direct_deploy"
   with no deployers enabled.
+- Remove unused function Controller->resetDefaultSettings.
 
 ## 9.1.0 (2025-07-17)
 
