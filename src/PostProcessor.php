@@ -44,9 +44,7 @@ class PostProcessor {
         );
 
         if ( ! is_dir( $static_site_path ) ) {
-            WsLog::l(
-                'No static site directory to process.'
-            );
+            WsLog::w( 'No static site directory to process.' );
 
             return;
         }

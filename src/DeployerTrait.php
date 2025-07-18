@@ -56,6 +56,7 @@ trait DeployerTrait {
     public function uploadFiles( string $processed_site_path ): void {
         // check if dir exists
         if ( ! is_dir( $processed_site_path ) ) {
+            WsLog::w( 'Processed site path does not exist: ' . $processed_site_path );
             return;
         }
 
