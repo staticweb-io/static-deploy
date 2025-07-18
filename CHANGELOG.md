@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.2.1 (2025-07-18)
+
 - Fix an issue where 404s encountered during crawling
   did not cause removal of the URL from the database.
 
