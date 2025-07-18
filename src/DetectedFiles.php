@@ -242,9 +242,7 @@ class DetectedFiles {
 
         $wpdb->delete(
             $table_name,
-            [
-                'path' => md5( $url ),
-            ]
+            [ 'path_hash' => md5( $url ) ],
         );
     }
 

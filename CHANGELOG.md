@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Fix an issue where 404s encountered during crawling
+  did not cause removal of the URL from the database.
+
 ## 9.2.0 (2025-07-18)
 
 - (breaking) Use PHP 8.1+ features. Although the
