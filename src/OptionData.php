@@ -33,6 +33,25 @@ final class OptionData {
             $unfiltered_value = $option_spec->default_value;
         }
 
+        if ( $option_spec->hasBlobValue() ) {
+            if ( $blob_value === null ) {
+                throw WsLog::ex(
+                    'Option ' . $option_spec->name .
+                    ' must have a blob value, but a blob value was not provided.'
+                );
+            }
+        } else {
+            if ( $blob_value !== null && $blob_value !== '' ) {
+                throw WsLog::ex(
+                    'Option ' . $option_spec->name .
+                    ' cannot have a blob value, but a blob value was provided.'
+                );
+            }
+            // We get blank strings instead of null from MySQL,
+            // so we have to set null ourselves.
+            $blob_value = null;
+        }
+
         $this->blob_value = $blob_value;
         $this->option_spec = $option_spec;
         $this->unfiltered_blob_value = $blob_value;

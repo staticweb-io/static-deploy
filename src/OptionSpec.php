@@ -64,6 +64,10 @@ final class OptionSpec {
         $this->wp2static_table = $wp2static_table;
     }
 
+    public function hasBlobValue(): bool {
+        return $this->type === 'array' || $this->type === 'object';
+    }
+
     /**
      * @return array<string, ?string>
      */
