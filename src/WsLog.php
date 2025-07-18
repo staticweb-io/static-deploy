@@ -37,6 +37,13 @@ class WsLog {
     }
 
     /**
+     * Log an error message
+     */
+    public static function e( string $text ): void {
+        self::l( $text, 'error' );
+    }
+
+    /**
      * Log an error message and return a throwable exception
      *
      * @param string $message
@@ -49,7 +56,7 @@ class WsLog {
         int $code = 0,
         ?Throwable $previous = null
     ): StaticDeployException {
-        self::l( $message, 'error' );
+        self::e( $message );
         return new StaticDeployException(
             $message,
             $code,
