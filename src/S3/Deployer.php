@@ -2,8 +2,6 @@
 
 namespace StaticDeploy\S3;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 use Aws\CloudFront\CloudFrontClient;
 use Aws\CommandPool;
 use Aws\Credentials\Credentials;

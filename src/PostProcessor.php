@@ -7,9 +7,6 @@
 
 namespace StaticDeploy;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-
 class PostProcessor {
     private int $processed = 0;
     private int $skipped = 0;

@@ -2,8 +2,6 @@
 
 namespace StaticDeploy\Local;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 use StaticDeploy\CrawledFiles;
 use StaticDeploy\DeployerTrait;
 use StaticDeploy\SiteInfo;
