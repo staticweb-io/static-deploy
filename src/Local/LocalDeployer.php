@@ -58,6 +58,22 @@ class LocalDeployer {
         }
         $out_dir = realpath( $out_dir );
         $out_dir = trailingslashit( $out_dir );
+
+        // Deployment inside the WP path is just too
+        // error-prone to allow.
+        // It's very easy to overwrite WordPress files
+        // or to have files duplicated by crawling the
+        // deployment directory.
+        $site_dir = SiteInfo::getPath( 'site' );
+        $site_dir = trailingslashit( realpath( $site_dir ) );
+
+        WsLog::d( 'Site dir: ' . $site_dir );
+        if ( mb_strpos( $out_dir, $site_dir ) === 0 ) {
+            throw WsLog::ex(
+                'Local deployment directory must be outside of the WordPress directory: ' . $out_dir
+            );
+        }
+
         WsLog::l( 'Deploying to ' . $out_dir );
 
         $last_log_time = microtime( true );
@@ -78,13 +94,6 @@ class LocalDeployer {
             $cache_key = $file['path'];
             $filename = $file['filename'] ?? null;
             $status = $file['status'] ?? null;
-
-            // If filename is in $out_dir, skip it.
-            // Otherwise we will end up with many copies
-            // of the site.
-            if ( $filename && mb_strpos( $filename, $out_dir ) === 0 ) {
-                continue;
-            }
 
             // Remove 404s
             if ( $status === 404 ) {

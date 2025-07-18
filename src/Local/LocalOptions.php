@@ -51,7 +51,7 @@ class LocalOptions {
                 '',
                 'Directory path',
                 'Path to a local directory where static files will be written.' .
-                ' It is recommended to use a directory outside of the WordPress installation.',
+                ' It must be a directory outside of the WordPress installation.',
             ),
         ];
 
