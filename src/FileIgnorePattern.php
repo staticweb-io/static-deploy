@@ -2,6 +2,7 @@
 
 namespace StaticDeploy;
 
+use PHLAK\Splat\Anchors;
 use PHLAK\Splat\Pattern;
 
 class FileIgnorePattern {
@@ -49,14 +50,14 @@ class FileIgnorePattern {
             $pattern = '/' . $pattern;
         }
 
-        $regex = Pattern::make( $pattern )->toRegex( Pattern::BOTH_ANCHORS );
+        $regex = Pattern::make( $pattern )->toRegex( Anchors::BOTH );
         // Make it case-insensitive
         $this->regex = $regex . 'i';
 
         // URL paths can match with or without trailing /
         // We add a .* to make directory patterns also match
         // child paths
-        $url_regex = Pattern::make( $pattern )->toRegex( Pattern::START_ANCHOR );
+        $url_regex = Pattern::make( $pattern )->toRegex( Anchors::START );
         $this->url_regex = substr( $url_regex, 0, -1 ) . '(/.*)?$#i';
     }
 

@@ -30,7 +30,7 @@
         "lib-libxml": "*",
         "yahnis-elsts/plugin-update-checker": "*",
         "masterminds/html5": "*",
-        "phlak/splat": "^5.0",
+        "phlak/splat": "*",
         "symfony/finder": "*",
         "aws/aws-sdk-php": "*",
         "guzzlehttp/guzzle": "*",
