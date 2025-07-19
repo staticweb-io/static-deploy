@@ -15,7 +15,9 @@ class DetectThemeAssets {
         FileFiltering $filtering,
         string $theme_type,
     ): \Iterator {
-        WsLog::d( 'Detecting theme assets' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting theme assets' );
+        }
 
         $template_path = '';
         $site_path = SiteInfo::getPath( 'site' );

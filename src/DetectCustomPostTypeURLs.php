@@ -10,7 +10,9 @@ class DetectCustomPostTypeURLs {
      * @return Iterator<array>
      */
     public static function detect(): \Iterator {
-        WsLog::d( 'Detecting custom post type URLs' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting custom post type URLs' );
+        }
 
         global $wpdb;
 

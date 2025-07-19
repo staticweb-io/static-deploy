@@ -10,7 +10,9 @@ class DetectPageURLs {
      * @return \Iterator<array> list of URLs
      */
     public static function detect(): \Iterator {
-        WsLog::d( 'Detecting page URLs' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting page URLs' );
+        }
 
         global $wpdb;
 

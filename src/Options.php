@@ -357,13 +357,6 @@ class Options {
                 'localhost'
             ),
             new OptionSpec(
-                'boolean',
-                'debugLogging',
-                '0',
-                'Debug Logging',
-                'Enable debug logging.',
-            ),
-            new OptionSpec(
                 'integer',
                 'maxLogRows',
                 '500',
@@ -420,12 +413,9 @@ VALUES (%s, %s, %s);";
         OptionSpec $option_spec,
     ): OptionData {
         $name = $option_spec->name;
-        $option_lookups = ( $name !== 'debugLogging' );
-        WsLog::l(
-            "Getting value of option: $name",
-            $level = 'debug',
-            $option_lookups = $option_lookups,
-        );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( "Getting value of option: $name", );
+        }
 
         global $wpdb;
 
@@ -461,15 +451,10 @@ VALUES (%s, %s, %s);";
      * @return string option value
      */
     public static function getValue( string $name ): string {
-        $option_lookups = ( $name !== 'debugLogging' );
         $option_spec = self::optionSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            WsLog::l(
-                "Unknown option: $name",
-                $level = 'error',
-                $option_lookups = $option_lookups,
-            );
+            WsLog::d( "Unknown option: $name" );
             throw new StaticDeployException( "Unknown option: $name" );
         }
 
@@ -483,7 +468,9 @@ VALUES (%s, %s, %s);";
      * @return string option BLOB value
      */
     public static function getBlobValue( string $name ): string {
-        WsLog::d( "Getting blob value of option: $name" );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( "Getting blob value of option: $name" );
+        }
 
         $option_spec = self::optionSpecs()[ $name ];
 
@@ -701,7 +688,6 @@ VALUES (%s, %s, %s);";
                     'adminBarMenuItems',
                     'crawlConcurrency',
                     'crawledSitePath',
-                    'debugLogging',
                     'hostsToRewrite',
                     'maxLogRows',
                     'pathsToIgnore',

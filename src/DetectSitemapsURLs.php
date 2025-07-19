@@ -15,7 +15,9 @@ class DetectSitemapsURLs {
      * @throws StaticDeployException
      */
     public static function detect( string $wp_site_url ): \Iterator {
-        WsLog::d( 'Detecting sitemap URLs' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting sitemap URLs' );
+        }
 
         $opts = [
             'http_errors' => false,
@@ -28,7 +30,9 @@ class DetectSitemapsURLs {
             $auth_password = Options::getValue( 'basicAuthPassword' );
 
             if ( $auth_password ) {
-                WsLog::d( 'Using basic auth credentials to crawl' );
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'Using basic auth credentials to crawl' );
+                }
                 $opts['auth'] = [ $auth_user, $auth_password ];
             }
         }
@@ -91,19 +95,23 @@ class DetectSitemapsURLs {
 
             // if robots exists, parse for possible sitemaps
             if ( $robots_exists ) {
-                WsLog::d( 'Parsing robots.txt for sitemaps' );
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'Parsing robots.txt for sitemaps' );
+                }
                 $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
                 foreach ( $robotsmaps as $map ) {
                     $sitemaps[ $map ] = [];
                 }
-                if ( count( $sitemaps ) > 0 ) {
+                if ( STATIC_DEPLOY_DEBUG && count( $sitemaps ) > 0 ) {
                     WsLog::d( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
                 }
             }
 
             // if no sitemaps add known sitemaps
             if ( $sitemaps === [] ) {
-                WsLog::d( 'No sitemaps found in robots.txt. Using default sitemaps.' );
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'No sitemaps found in robots.txt. Using default sitemaps.' );
+                }
                 $sitemaps = [
                     // we're assigning empty arrays to match sitemaps library
                     'sitemap.xml' => [], // normal sitemap
@@ -123,7 +131,9 @@ class DetectSitemapsURLs {
                     $sitemap
                 );
 
-                WsLog::d( 'Detecting URLs from sitemap: ' . $sitemap );
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'Detecting URLs from sitemap: ' . $sitemap );
+                }
 
                 $request = new Request( 'GET', $base_uri . $sitemap, $headers );
 

@@ -15,7 +15,9 @@ class DetectVendorFiles {
         FileFiltering $filtering,
         string $wp_site_url,
     ): \Iterator {
-        WsLog::d( 'Detecting vendor files' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting vendor files' );
+        }
 
         $content_path = SiteInfo::getPath( 'content' );
         $site_url = SiteInfo::getUrl( 'site' );

@@ -4,8 +4,6 @@ namespace StaticDeploy;
 
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {
-    private static bool $debug_logging;
-
     public static function getTableName(): string {
         return Controller::getTableName( 'log' );
     }
@@ -70,31 +68,11 @@ class WsLog {
      * @param string $text The message to log
      * @param string $level The level to log at. One of
      *   [ 'debug', 'info', 'warn', 'error' ]
-     * @param bool $option_lookups Whether option values
-     *   can be looked up. Option value functions set this
-     *   to false to prevent infinite recursion.
      */
     public static function l(
         string $text,
         string $level = 'info',
-        bool $option_lookups = true,
     ): void {
-        if ( $level === 'debug' ) {
-            if ( $option_lookups && ! isset( self::$debug_logging ) ) {
-                self::$debug_logging = Options::getValue( 'debugLogging' );
-            }
-
-            if ( ( ! isset( self::$debug_logging )
-            || ! self::$debug_logging ) && defined( 'WP_CLI' ) ) {
-                $date = current_time( 'c' );
-                $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
-                // --debug will show debug messages even if
-                // debugLogging is not enabled
-                \WP_CLI::debug( $colorized );
-                return;
-            }
-        }
-
         global $wpdb;
 
         $table_name = self::getTableName();
@@ -112,10 +90,7 @@ class WsLog {
             $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
             switch ( $level ) {
                 case 'debug':
-                    // WP_CLI hides debug level messages unless
-                    // --debug is passed, so we use ::log when
-                    // debugLogging is enabled.
-                    \WP_CLI::log( $colorized );
+                    \WP_CLI::debug( $colorized );
                     break;
                 case 'error':
                     \WP_CLI::error_multi_line( [ $colorized ] );

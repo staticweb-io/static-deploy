@@ -10,7 +10,9 @@ class DetectAuthorsURLs {
      * @return \Iterator<array> list of URLs
      */
     public static function detect(): \Iterator {
-        WsLog::d( 'Detecting author URLs' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting author URLs' );
+        }
 
         global $wp_rewrite, $wpdb;
 

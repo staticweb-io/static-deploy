@@ -1,5 +1,10 @@
 ## Unreleased
 
+- Remove "debugLogging" option. Instead, debug logs are enabled
+  when WP_DEBUG is true or when the "--debug" flag is passed to
+  the WP CLI. This improves performance when debug logs are
+  disabled by allowing us to skip the debug calls entirely.
+
 ## 9.2.1 (2025-07-18)
 
 - Fix an issue where 404s encountered during crawling

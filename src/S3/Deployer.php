@@ -197,7 +197,9 @@ class Deployer {
 
                 if ( $is_cached ) {
                     ++$this->deploy_cache_ct;
-                    WsLog::d( 'Skipping deploy of cached file ' . $cache_key );
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d( 'Skipping deploy of cached file ' . $cache_key );
+                    }
                     continue;
                 }
 
@@ -235,7 +237,9 @@ class Deployer {
                     );
                     $this->addCfPath( $item['cache_key'] );
                     unset( $items_by_iter_key[ $iter_key ] );
-                    WsLog::d( 'Deployed ' . $item['cache_key'] );
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d( 'Deployed ' . $item['cache_key'] );
+                    }
                     $this->deployed_ct++;
                 },
                 // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter

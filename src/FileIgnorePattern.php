@@ -80,7 +80,9 @@ class FileIgnorePattern {
         string $path,
     ): bool {
         if ( preg_match( $this->url_regex, $path ) ) {
-            WsLog::d( "Ignoring $path with regex $this->url_regex" );
+            if ( STATIC_DEPLOY_DEBUG ) {
+                WsLog::d( "Ignoring $path with regex $this->url_regex" );
+            }
             return true;
         }
 

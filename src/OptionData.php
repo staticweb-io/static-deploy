@@ -131,10 +131,12 @@ final class OptionData {
             'blob_value' => $this->blob_value,
         ];
 
-        WsLog::d(
-            'Saving option ' . $this->option_spec->name .
-            ' with values ' . $value . ' and blob_value ' . $this->blob_value
-        );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d(
+                'Saving option ' . $this->option_spec->name .
+                ' with values ' . $value . ' and blob_value ' . $this->blob_value
+            );
+        }
 
         $wpdb->update(
             $table_name,

@@ -10,7 +10,9 @@ class DetectCategoryPaginationURLs {
      * @return \Iterator<array> list of URLs
      */
     public static function detect(): \Iterator {
-        WsLog::d( 'Detecting category pagination URLs' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting category pagination URLs' );
+        }
 
         global $wp_rewrite, $wpdb;
 

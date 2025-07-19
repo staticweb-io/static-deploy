@@ -22,7 +22,9 @@ class DetectVendorCache {
         string $path_to_trim,
         string $prefix,
     ): \Iterator {
-        WsLog::d( 'Detecting vendor cache' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting vendor cache' );
+        }
 
         $directory = $cache_dir;
 

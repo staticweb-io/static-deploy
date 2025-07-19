@@ -65,7 +65,10 @@ class LocalDeployer {
         $site_dir = SiteInfo::getPath( 'site' );
         $site_dir = trailingslashit( realpath( $site_dir ) );
 
-        WsLog::d( 'Site dir: ' . $site_dir );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Site dir: ' . $site_dir );
+        }
+
         if ( mb_strpos( $out_dir, $site_dir ) === 0 ) {
             throw WsLog::ex(
                 'Local deployment directory must be outside of the WordPress directory: ' . $out_dir

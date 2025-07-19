@@ -14,7 +14,9 @@ class DetectPluginAssets {
     public static function detect(
         FileFiltering $filtering,
     ): \Iterator {
-        WsLog::d( 'Detecting plugin assets' );
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'Detecting plugin assets' );
+        }
 
         $plugins_path = SiteInfo::getPath( 'plugins' );
         $plugins_url = SiteInfo::getUrl( 'plugins' );
@@ -43,7 +45,9 @@ class DetectPluginAssets {
             $active_plugin_dirs = array_map(
                 function ( $active_plugin ) {
                     $dir = explode( '/', $active_plugin )[0];
-                    WsLog::d( "Active plugin dir: $dir" );
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d( "Active plugin dir: $dir" );
+                    }
                     return $dir;
                 },
                 $active_plugins
