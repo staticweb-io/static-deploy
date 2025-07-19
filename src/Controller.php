@@ -35,7 +35,15 @@ class Controller {
     public static function init( string $bootstrap_file ): Controller {
         $plugin_instance = self::getInstance();
 
-        WordPressAdmin::registerActivationHooks( $bootstrap_file );
+        register_activation_hook(
+            $bootstrap_file,
+            [ self::class, 'activate' ]
+        );
+
+        register_deactivation_hook(
+            $bootstrap_file,
+            [ self::class, 'deactivate' ]
+        );
 
         if ( ! $plugin_instance->loadAdmin() ) {
             return $plugin_instance;

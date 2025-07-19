@@ -33,18 +33,6 @@ class WordPressAdmin {
         );
     }
 
-    public static function registerActivationHooks( string $bootstrap_file ): void {
-        register_activation_hook(
-            $bootstrap_file,
-            [ Controller::class, 'activate' ]
-        );
-
-        register_deactivation_hook(
-            $bootstrap_file,
-            [ Controller::class, 'deactivate' ]
-        );
-    }
-
     /**
      * Register hooks for WordPress and plugin actions
      *
