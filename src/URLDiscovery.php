@@ -2,9 +2,6 @@
 
 namespace StaticDeploy;
 
-use StaticDeploy\FileFiltering;
-use StaticDeploy\ParseHTML;
-
 class URLDiscovery {
     private string $destination_host;
     private string $destination_url;

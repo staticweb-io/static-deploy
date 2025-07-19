@@ -12,8 +12,6 @@
 
 namespace StaticDeploy;
 
-use StaticDeploy\FileFiltering;
-
 class URLDetector {
 
     public static function countURLs(): int {

@@ -3,8 +3,6 @@
 namespace StaticDeploy;
 
 use PHLAK\Splat\Pattern;
-use StaticDeploy\Utils;
-use StaticDeploy\WsLog;
 
 class FileIgnorePattern {
     /**

@@ -2,8 +2,6 @@
 
 namespace StaticDeploy;
 
-use StaticDeploy\FileFiltering;
-
 class DetectVendorCache {
     /**
      *   Autoptimize and other vendors use a cache dir one level above the

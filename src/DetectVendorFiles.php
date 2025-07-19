@@ -2,8 +2,6 @@
 
 namespace StaticDeploy;
 
-use StaticDeploy\FileFiltering;
-
 class DetectVendorFiles {
 
     /**

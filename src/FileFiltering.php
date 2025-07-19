@@ -2,12 +2,6 @@
 
 namespace StaticDeploy;
 
-use PHLAK\Splat\Anchors;
-use PHLAK\Splat\Pattern;
-use StaticDeploy\Options;
-use StaticDeploy\FileIgnorePattern;
-use StaticDeploy\SiteInfo;
-
 class FileFiltering {
 
     /**
