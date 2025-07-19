@@ -1,12 +1,16 @@
 <?php
 /**
- * Plugin Name: Static Deploy
- * Plugin URI:  https://github.com/staticweb-io/static-deploy
- * Description: Static site generator functionality for WordPress.
- * Version:     9.2.1
- * Author:      StaticWeb.io
- * Author URI:  https://github.com/staticweb-io/static-deploy
- * Text Domain: static-deploy
+ * Plugin Name:       Static Deploy
+ * Plugin URI:        https://github.com/staticweb-io/static-deploy
+ * Description:       Static site generator functionality for WordPress.
+ * Version:           9.2.1
+ * Author:            StaticWeb.io
+ * Author URI:        https://github.com/staticweb-io/static-deploy
+ * Text Domain:       static-deploy
+ * Requires at least: 6.4
+ * Requires PHP:      8.1
+ * License URI:       https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
+ * License:           Unlicense
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
