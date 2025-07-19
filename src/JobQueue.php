@@ -20,7 +20,6 @@ class JobQueue {
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             job_type VARCHAR(30) NOT NULL,
             status VARCHAR(30) NOT NULL,
-            duration SMALLINT(6) UNSIGNED NULL,
             triggering_post_id BIGINT(20) UNSIGNED NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
