@@ -35,7 +35,13 @@ class Controller {
     public static function init( string $bootstrap_file ): Controller {
         $plugin_instance = self::getInstance();
 
-        WordPressAdmin::registerHooks( $bootstrap_file );
+        WordPressAdmin::registerActivationHooks( $bootstrap_file );
+
+        if ( ! $plugin_instance->loadAdmin() ) {
+            return $plugin_instance;
+        }
+
+        WordPressAdmin::registerHooks();
         WordPressAdmin::buildUpdateChecker( $bootstrap_file );
         WordPressAdmin::addAdminUIElements();
 
@@ -277,15 +283,13 @@ class Controller {
         );
     }
 
-    public function userIsAllowed(): bool {
+    public function loadAdmin(): bool {
         if ( defined( 'WP_CLI' ) ) {
             return true;
         }
 
-        $referred_by_admin = check_admin_referer( self::getHookName( 'options' ) );
-        $user_can_manage_options = current_user_can( 'manage_options' );
-
-        return $referred_by_admin && $user_can_manage_options;
+        require_once ABSPATH . 'wp-includes/pluggable.php';
+        return is_admin();
     }
 
     public function deleteDeployCache(): void {

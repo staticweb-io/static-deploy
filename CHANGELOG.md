@@ -7,6 +7,8 @@
 - Remove unused duration column from jobs table.
 - Fix that the "Process Queue Immediately" option could not
   have the "Using WordPress CLI" value set.
+- Don't register hooks in the non-admin part of the
+  site. This avoids some unnecessary load.
 
 ## 9.2.1 (2025-07-18)
 

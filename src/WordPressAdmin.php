@@ -33,12 +33,7 @@ class WordPressAdmin {
         );
     }
 
-    /**
-     * Register hooks for WordPress and plugin actions
-     *
-     * @param string $bootstrap_file main plugin filepath
-     */
-    public static function registerHooks( string $bootstrap_file ): void {
+    public static function registerActivationHooks( string $bootstrap_file ): void {
         register_activation_hook(
             $bootstrap_file,
             [ Controller::class, 'activate' ]
@@ -48,7 +43,14 @@ class WordPressAdmin {
             $bootstrap_file,
             [ Controller::class, 'deactivate' ]
         );
+    }
 
+    /**
+     * Register hooks for WordPress and plugin actions
+     *
+     * @param string $bootstrap_file main plugin filepath
+     */
+    public static function registerHooks(): void {
         add_filter(
             // phpcs:ignore WordPress.WP.CronInterval -- namespaces not yet fully supported
             'cron_schedules',
