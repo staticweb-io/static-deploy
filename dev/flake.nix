@@ -25,8 +25,7 @@
           dbUserName = "wordpress";
           dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
           serverPort = 8888;
-          phpPackage = getEnv "PHP_PACKAGE" "php";
-          php = pkgs.${phpPackage}.buildEnv {
+          php = pkgs.php.buildEnv {
             extensions = { enabled, all }:
               enabled ++ (with all; [ imagick memcached ]);
           };
