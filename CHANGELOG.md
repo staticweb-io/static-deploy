@@ -5,6 +5,8 @@
   the WP CLI. This improves performance when debug logs are
   disabled by allowing us to skip the debug calls entirely.
 - Remove unused duration column from jobs table.
+- Fix that the "Process Queue Immediately" option could not
+  have the "Using WordPress CLI" value set.
 
 ## 9.2.1 (2025-07-18)
 

@@ -149,11 +149,13 @@ class Options {
                 'Queues a new job every time a Post or Page is deleted.'
             ),
             new OptionSpec(
-                'boolean',
+                'string',
                 'processQueueImmediately',
                 '0',
                 'Process Queue Immediately',
-                'Begin processing the queue as soon as a job is added, without waiting for WP-Cron.'
+                'Begin processing the queue as soon as a job is added, ' .
+                'without waiting for WP-Cron.',
+                allowed_values: [ '0', '1', '2' ],
             ),
             new OptionSpec(
                 'integer',
