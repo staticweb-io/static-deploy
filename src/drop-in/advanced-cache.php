@@ -12,12 +12,33 @@
  */
 
 class StaticDeployPageCache {
+    private int $status_code;
+    private string $status_header;
+
     public function capture_response(): void {
+        add_filter(
+            'status_header',
+            [ $this, 'filter_status_header' ],
+            10,
+            2
+        );
 
         $buffering = ob_start( [ $this, 'receive_output' ] );
         if ( $buffering === false ) {
             error_log( 'Output buffering failed' );
         }
+    }
+
+    /*
+     * https://developer.wordpress.org/reference/hooks/status_header/
+     */
+    public function filter_status_header(
+        string $status_header,
+        int $code
+    ): string {
+        $this->status_code = $code;
+        $this->status_header = $status_header;
+        return $status_header;
     }
 
     /**
