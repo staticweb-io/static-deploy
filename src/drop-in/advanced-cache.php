@@ -1,9 +1,43 @@
 <?php declare(strict_types=1);
+// phpcs:disable Generic.Files.OneObjectStructurePerFile
+
 interface StaticDeployCacheInterface {
     public function get( string $key ): ?string;
     public function set( string $key, string $value ): void;
 }
 
+class StaticDeployFileCache implements StaticDeployCacheInterface {
+    public string $dir;
+
+    public function __construct(
+        string $dir,
+    ) {
+        mkdir( $dir, 0700, true );
+        if ( ! is_dir( $dir ) ) {
+            die( 'Failed to create cache directory' );
+        }
+        $this->dir = $dir;
+    }
+
+    public function get(
+        string $key
+    ): ?string {
+        if ( ! file_exists( $this->dir . '/' . $key ) ) {
+            return null;
+        }
+        return file_get_contents( $this->dir . '/' . $key );
+    }
+
+    public function set(
+        string $key,
+        string $value
+    ): void {
+        file_put_contents(
+            $this->dir . '/' . $key,
+            $value
+        );
+    }
+}
 
 /**
  * Page cache for WordPress
@@ -17,8 +51,15 @@ interface StaticDeployCacheInterface {
  */
 
 class StaticDeployPageCache {
+    private StaticDeployCacheInterface $cache;
     private int $status_code;
     private string $status_header;
+
+    public function __construct(
+        StaticDeployCacheInterface $cache,
+    ) {
+        $this->cache = $cache;
+    }
 
     public function capture_response(): void {
         add_filter(
@@ -75,4 +116,9 @@ class StaticDeployPageCache {
     }
 }
 
-new StaticDeployPageCache()->capture_response();
+$static_deploy_page_cache = new StaticDeployPageCache(
+    new StaticDeployFileCache(
+        sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] )
+    )
+);
+$static_deploy_page_cache->capture_response();
