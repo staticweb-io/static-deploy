@@ -114,6 +114,18 @@ class StaticDeployPageCache {
 
         $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
 
+        $cached = $this->cache->get( $cache_key );
+        if ( $cached ) {
+            $response = json_decode( $cached, true );
+
+            header( $response['status_header'] );
+            foreach ( $response['headers'] as $header ) {
+                header( $header );
+            }
+
+            return $response['body'];
+        }
+
         $response = [
             'body' => $buffer,
             'code' => $this->status_code,
