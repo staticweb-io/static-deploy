@@ -89,6 +89,33 @@ class StaticDeployPageCache {
     }
 
     /**
+     * Returns true if the headers permit caching.
+     */
+    public static function headers_should_cache(
+        array $headers,
+    ): bool {
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
+        // Even though no-cache actually permits caching,
+        // we don't because the required validation is as
+        // much work for us as just regenerating the page.
+        foreach ( $headers as $header ) {
+            if ( stripos( $header, 'Cache-Control:' ) === 0 ) {
+                $value = substr( $header, strlen( 'Cache-Control:' ) );
+                $parts = explode( ',', $value );
+                $parts = array_map( 'trim', $parts );
+                $parts = array_map( 'strtolower', $parts );
+                $disallowed = [ 'no-cache', 'no-store', 'private' ];
+                if ( array_intersect( $disallowed, $parts ) ) {
+                    return false;
+                }
+            }
+        }
+
+        // If no headers prohibit caching, we can allow it.
+        return true;
+    }
+
+    /**
      * Receives the PHP output, which should be the body
      * of an HTTP response, and caches it.
      *
@@ -127,10 +154,16 @@ class StaticDeployPageCache {
             return $response['body'];
         }
 
+        $headers = headers_list();
+
+        if ( ! self::headers_should_cache( $headers ) ) {
+            return false;
+        }
+
         $response = [
             'body' => $buffer,
             'code' => $this->status_code,
-            'headers' => headers_list(),
+            'headers' => $headers,
             'status_header' => $this->status_header,
             'uri' => $_SERVER['REQUEST_URI'],
         ];
