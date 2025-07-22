@@ -71,6 +71,7 @@ class StaticDeployPageCache {
 
         $buffering = ob_start( [ $this, 'receive_output' ] );
         if ( $buffering === false ) {
+            // phpcs:ignore Squiz.PHP.DiscouragedFunctions
             error_log( 'Output buffering failed' );
         }
     }
