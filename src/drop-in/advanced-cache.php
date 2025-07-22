@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+interface StaticDeployCacheInterface {
+    public function get( string $key ): ?string;
+    public function set( string $key, string $value ): void;
+}
+
 
 /**
  * Page cache for WordPress
