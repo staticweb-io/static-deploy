@@ -112,6 +112,20 @@ class StaticDeployPageCache {
             return false;
         }
 
+        $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
+
+        $response = [
+            'body' => $buffer,
+            'code' => $this->status_code,
+            'headers' => headers_list(),
+            'status_header' => $this->status_header,
+            'uri' => $_SERVER['REQUEST_URI'],
+        ];
+        $this->cache->set(
+            $cache_key,
+            json_encode( $response )
+        );
+
         return false;
     }
 }
