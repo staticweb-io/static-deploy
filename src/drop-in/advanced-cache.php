@@ -48,6 +48,13 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
  * This runs before plugins and themes and most WordPress
  * code runs, so we only have access to a limited set of
  * WordPress functions.
+ *
+ * To understand the behavior of the page cache, one must
+ * understand HTTP caching.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching
+ * Note that rather than "revalidating" cached data, we simply
+ * regenerate it. Since we are the origin server as well
+ * as the cache, there is no point in revalidating.
  */
 
 class StaticDeployPageCache {
