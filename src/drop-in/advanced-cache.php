@@ -60,6 +60,12 @@ class StaticDeployPageCache {
     public function receive_output(
         string $buffer
     ): string|bool {
+        $method = $_SERVER['REQUEST_METHOD'];
+        // If not a cacheable method, return unchanged.
+        if ( $method !== 'GET' && $method !== 'HEAD' ) {
+            return false;
+        }
+
         return false;
     }
 }
