@@ -39,6 +39,10 @@
           # `nix build` and run using `nix run`.
           process-compose."default" = { config, ... }: {
             imports = [ inputs.services-flake.processComposeModules.default ];
+            services.memcached."memcached1" = {
+              enable = true;
+              startArgs = [ "--memory-limit=100M" ];
+            };
             services.mysql."mysql1" = {
               enable = true;
               ensureUsers = [{
@@ -219,6 +223,7 @@
                 rm -rf "./wp-content/plugins/staticDeploy"
                 ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
               '';
+              depends_on."memcached1".condition = "process_healthy";
               depends_on."mysql1-configure".condition = "process_completed";
             };
           };
