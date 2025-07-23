@@ -59,6 +59,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 
 class StaticDeployPageCache {
     private StaticDeployCacheInterface $cache;
+    private array $headers; // See parse_headers()
     private int $status_code;
     private string $status_header;
 
@@ -66,6 +67,7 @@ class StaticDeployPageCache {
         StaticDeployCacheInterface $cache,
     ) {
         $this->cache = $cache;
+        $this->headers = [];
     }
 
     public function capture_response(): void {
@@ -98,28 +100,40 @@ class StaticDeployPageCache {
     /**
      * Returns true if the headers permit caching.
      */
-    public static function headers_should_cache(
-        array $headers,
-    ): bool {
+    public function headers_should_cache(): bool {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
         // Even though no-cache actually permits caching,
         // we don't because the required validation is as
         // much work for us as just regenerating the page.
-        foreach ( $headers as $header ) {
-            if ( stripos( $header, 'Cache-Control:' ) === 0 ) {
-                $value = substr( $header, strlen( 'Cache-Control:' ) );
-                $parts = explode( ',', $value );
-                $parts = array_map( 'trim', $parts );
-                $parts = array_map( 'strtolower', $parts );
-                $disallowed = [ 'no-cache', 'no-store', 'private' ];
-                if ( array_intersect( $disallowed, $parts ) ) {
-                    return false;
-                }
+        $header = $this->headers['cache-control'] ?? null;
+        if ( $header ) {
+            $value = $header[1];
+            $parts = explode( ',', $value );
+            $parts = array_map( 'trim', $parts );
+            $parts = array_map( 'strtolower', $parts );
+            $disallowed = [ 'no-cache', 'no-store', 'private' ];
+            if ( array_intersect( $disallowed, $parts ) ) {
+                return false;
             }
         }
 
         // If no headers prohibit caching, we can allow it.
         return true;
+    }
+
+    /**
+     * Parse headers into an array of lowercase name to
+     * an array of [ $original_name, $value ];
+     * e.g. [ 'content-type' => [ 'Content-Type', 'text/html' ] ]
+     */
+    public function parse_headers(): void {
+        foreach ( headers_list() as $header ) {
+            $header = explode( ':', $header, 2 );
+            $this->headers[ strtolower( $header[0] ) ] = [
+                $header[0],
+                trim( $header[1] ),
+            ];
+        }
     }
 
     /**
@@ -153,28 +167,28 @@ class StaticDeployPageCache {
         if ( $cached ) {
             $response = json_decode( $cached, true );
 
-            foreach ( $response['headers'] as $header ) {
-                header( $header );
             header(
                 $response['status_header'],
                 true,
                 $response['code'],
             );
+            foreach ( $response['headers'] ?? [] as $header ) {
+                header( $header[0] . ': ' . $header[1] );
             }
 
             return $response['body'];
         }
 
-        $headers = headers_list();
+        $this->parse_headers();
 
-        if ( ! self::headers_should_cache( $headers ) ) {
+        if ( ! $this->headers_should_cache() ) {
             return false;
         }
 
         $response = [
             'body' => $buffer,
             'code' => $this->status_code,
-            'headers' => $headers,
+            'headers' => $this->headers,
             'status_header' => $this->status_header,
             'uri' => $_SERVER['REQUEST_URI'],
         ];
