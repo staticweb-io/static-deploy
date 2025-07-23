@@ -59,7 +59,22 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 
 class StaticDeployPageCache {
     private StaticDeployCacheInterface $cache;
-    private array $headers; // See parse_headers()
+
+    /**
+     * An array of headers in the format
+     * [ 'content-type' => [ 'Content-Type', 'text/html' ] ]
+     *
+     * Created by parse_headers()
+     *
+     * For efficiency, we access the array directly.
+     * If we were to create functions, they would need to
+     * ensure that the keys were lowercased. Instead we access
+     * directly via lowercased constants.
+     *
+     * @var array<string, array<string, string>>
+     */
+    private array $headers;
+
     private int $status_code;
     private string $status_header;
 
