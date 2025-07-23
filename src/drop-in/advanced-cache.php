@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 // phpcs:disable Generic.Files.OneObjectStructurePerFile
+// phpcs:disable Squiz.PHP.DiscouragedFunctions
+// Allow discouraged functions so we can use error_log here.
 
 /**
  * Plugin Name:       Static Deploy Page Cache (Drop-in)
@@ -138,6 +140,68 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         return $free > $this->min_free_space;
     }
 
+    /**
+     * Check if there is enough free disk pace. If not,
+     * attempt to free up space by randomly deleting files
+     * until the minimum free space is reached or until we
+     * can't delete any more files.
+     *
+     * Returns true if the minimum free space was reached,
+     * false otherwise.
+     */
+    private function ensure_free_space(
+        ?int $plus_bytes = 0,
+    ): bool {
+        $free_space_check = $this->check_free_space( $plus_bytes );
+        if ( $free_space_check ) {
+            return true;
+        }
+
+        $files = glob( $this->dir . '/*' );
+
+        if ( empty( $files ) ) {
+            error_log(
+                'Free disk space below ' . $this->min_free_space * 100 .
+                '%, but there are no files in the cache. Caching disabled.'
+            );
+            return false;
+        } else {
+            error_log(
+                'Free disk space below ' . $this->min_free_space * 100 .
+                '%. Deleting files from cache to free up space.'
+            );
+        }
+
+        // Start off by decimating files and increase chance
+        // by 10% each time.
+        $delete_chance = 1;
+        $files_deleted = 0;
+        while ( ! $free_space_check && $delete_chance <= 10 ) {
+            foreach ( $files as $file ) {
+                if ( ! is_file( $file ) ) {
+                    continue;
+                }
+                if ( random_int( 1, 10 ) <= $delete_chance ) {
+                    unlink( $file );
+                    ++$files_deleted;
+                }
+            }
+            ++$delete_chance;
+            $free_space_check = $this->check_free_space( $plus_bytes );
+            $files = glob( $this->dir . '/*' );
+        }
+
+        if ( $free_space_check ) {
+            error_log( 'Deleted ' . $files_deleted . ' files from cache.' );
+        } else {
+            error_log(
+                'Deleted ' . $files_deleted . ' files from cache, ' .
+                'but could not free up enough disk space. Caching disabled.'
+            );
+        }
+        return $free_space_check;
+    }
+
     public function get_response(
         string $key
     ): ?StaticDeployPageCacheResponse {
@@ -174,7 +238,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     ): void {
         $path = $this->dir . '/' . $key;
         if ( ! is_file( $path )
-            && $this->check_free_space( strlen( $value ) ) ) {
+            && $this->ensure_free_space( strlen( $value ) ) ) {
             file_put_contents( $path, $value );
         }
     }
@@ -185,7 +249,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     ): void {
         $path = $this->dir . '/' . $key;
         $value = json_encode( $response->to_array() );
-        if ( $this->check_free_space( strlen( $value ) ) ) {
+        if ( $this->ensure_free_space( strlen( $value ) ) ) {
             file_put_contents( $path, $value );
         } else {
             unlink( $path );
@@ -348,7 +412,6 @@ class StaticDeployPageCache {
 
         $buffering = ob_start( [ $this, 'receive_output' ] );
         if ( $buffering === false ) {
-            // phpcs:ignore Squiz.PHP.DiscouragedFunctions
             error_log( 'Output buffering failed' );
         }
     }
