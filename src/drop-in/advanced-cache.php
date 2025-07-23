@@ -116,15 +116,26 @@ interface StaticDeployCacheInterface {
 
 class StaticDeployFileCache implements StaticDeployCacheInterface {
     public string $dir;
+    public float $min_free_space;
 
     public function __construct(
         string $dir,
+        float $min_free_space,
     ) {
         // If the directory doesn't exist, try to create it
         if ( ! is_dir( $dir ) && ! mkdir( $dir, 0700, true ) ) {
             die( 'Failed to create cache directory' );
         }
         $this->dir = $dir;
+        $this->min_free_space = $min_free_space;
+    }
+
+    private function check_free_space(
+        ?int $plus_bytes = 0,
+    ): bool {
+        $free = ( disk_free_space( $this->dir ) - $plus_bytes )
+            / disk_total_space( $this->dir );
+        return $free > $this->min_free_space;
     }
 
     public function get_response(
@@ -162,7 +173,8 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         int $ttl,
     ): void {
         $path = $this->dir . '/' . $key;
-        if ( ! is_file( $path ) ) {
+        if ( ! is_file( $path )
+            && $this->check_free_space( strlen( $value ) ) ) {
             file_put_contents( $path, $value );
         }
     }
@@ -171,10 +183,13 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         string $key,
         StaticDeployPageCacheResponse $response
     ): void {
-        file_put_contents(
-            $this->dir . '/' . $key,
-            json_encode( $response->to_array() )
-        );
+        $path = $this->dir . '/' . $key;
+        $value = json_encode( $response->to_array() );
+        if ( $this->check_free_space( strlen( $value ) ) ) {
+            file_put_contents( $path, $value );
+        } else {
+            unlink( $path );
+        }
     }
 }
 
@@ -564,6 +579,10 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ) {
     );
 }
 
+if ( ! defined( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE' ) ) {
+    define( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE', 0.1 );
+}
+
 if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ) {
     define( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX', 'sd_pc_' );
 }
@@ -580,6 +599,7 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     new StaticDeployCombinedCache(
         new StaticDeployFileCache(
             STATIC_DEPLOY_PAGE_CACHE_DIR,
+            STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
         ),
         new StaticDeployTransientCache(
             STATIC_DEPLOY_PAGE_CACHE_PREFIX,
