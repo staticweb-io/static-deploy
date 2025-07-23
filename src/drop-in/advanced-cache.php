@@ -645,7 +645,7 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ) {
     define(
         'STATIC_DEPLOY_PAGE_CACHE_DIR',
         sys_get_temp_dir() . DIRECTORY_SEPARATOR .
-        'sd-cache-' . md5( $_SERVER['HTTP_HOST'] )
+        'sd-cache-' . md5( WP_CACHE_KEY_SALT . $_SERVER['HTTP_HOST'] )
     );
 }
 
