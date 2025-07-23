@@ -163,6 +163,53 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     }
 }
 
+class StaticDeployTransientCache implements StaticDeployCacheInterface {
+    public string $prefix;
+
+    public function __construct(
+        string $prefix,
+    ) {
+        $this->prefix = $prefix;
+    }
+
+    public function get_response(
+        string $key
+    ): ?StaticDeployPageCacheResponse {
+        $result = get_transient( $this->prefix . $key );
+        return $result === false ? null : $result;
+    }
+
+    public function get_blob(
+        string $key
+    ): ?string {
+        $result = get_transient( $this->prefix . $key );
+        return $result === false ? null : $result;
+    }
+
+    public function set_blob(
+        string $key,
+        string $value,
+        int $ttl,
+    ): void {
+        set_transient(
+            $this->prefix . $key,
+            $value,
+            $ttl,
+        );
+    }
+
+    public function set_response(
+        string $key,
+        StaticDeployPageCacheResponse $response
+    ): void {
+        set_transient(
+            $this->prefix . $key,
+            $response,
+            $response->max_age,
+        );
+    }
+}
+
 /**
  * Page cache for WordPress
  * Must be placed in wp-content/advanced-cache.php
@@ -448,8 +495,9 @@ class StaticDeployPageCache {
 }
 
 $static_deploy_page_cache = new StaticDeployPageCache(
-    new StaticDeployFileCache(
-        sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] )
+    new StaticDeployTransientCache(
+        defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ?
+        STATIC_DEPLOY_PAGE_CACHE_PREFIX : 'sd_pc_',
     ),
     defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
