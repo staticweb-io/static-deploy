@@ -86,6 +86,12 @@ interface StaticDeployCacheInterface {
         string $value
     ): void;
 
+    /*
+     * Even though we can compute the key from the response,
+     * we always have computed the key previously in order
+     * to check for cache hits. For efficiency, we pass it in
+     * rather than computing it again.
+     */
     public function set_response(
         string $key,
         StaticDeployPageCacheResponse $response
