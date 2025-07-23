@@ -6,6 +6,7 @@ class StaticDeployPageCacheResponse {
     public int $code;
     public array $headers;
     public string $status_header;
+    public int $time;
     public string $uri;
 
     public function __construct(
@@ -14,11 +15,13 @@ class StaticDeployPageCacheResponse {
         string $uri,
         array $headers,
         ?string $blob_key = null,
+        ?int $time = null,
     ) {
         $this->blob_key = $blob_key;
         $this->code = $code;
         $this->headers = $headers;
         $this->status_header = $status_header;
+        $this->time = $time ?? time();
         $this->uri = $uri;
     }
 
@@ -31,6 +34,7 @@ class StaticDeployPageCacheResponse {
             $arr['uri'],
             $arr['headers'],
             $arr['blob_key'] ?? null,
+            $arr['time'],
         );
     }
 
@@ -39,6 +43,7 @@ class StaticDeployPageCacheResponse {
             'code' => $this->code,
             'headers' => $this->headers,
             'status_header' => $this->status_header,
+            'time' => $this->time,
             'uri' => $this->uri,
         ];
 
@@ -290,6 +295,14 @@ class StaticDeployPageCache {
         $response = $this->cache->get_response( $cache_key );
         if ( $response ) {
             $request_headers = array_change_key_case( getallheaders() );
+
+            // The client should subtract age from the
+            // max-age in Cache-Control to determine freshness.
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#fresh_and_stale_based_on_age
+            $response->headers['age'] = [
+                'Age',
+                max( 0, ( time() - $response->time ) ),
+            ];
 
             // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match
             $if_none_match = $request_headers['if-none-match'] ?? null;
