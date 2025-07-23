@@ -404,16 +404,22 @@ class StaticDeployPageCache {
         }
 
         if ( $buffer ) {
-            $blob_key = md5( $buffer );
+            $etag = md5( $buffer );
         } else {
-            $blob_key = null;
+            $etag = null;
         }
 
         if ( ! isset( $this->headers['etag'] ) ) {
             $this->headers['etag'] = [
                 'ETag',
-                '"' . $blob_key . '"',
+                '"' . $etag . '"',
             ];
+        }
+
+        if ( $etag ) {
+            $blob_key = 'blob' . $etag;
+        } else {
+            $blob_key = null;
         }
 
         $response = new StaticDeployPageCacheResponse(
