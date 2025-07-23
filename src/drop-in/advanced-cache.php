@@ -341,6 +341,13 @@ class StaticDeployPageCache {
             return false;
         }
 
+        // If user is authenticated, we can't cache.
+        // WP adds no-store to all authenticated responses,
+        // so there is no point in processing further.
+        if ( is_user_logged_in() ) {
+            return false;
+        }
+
         $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
 
         $response = $this->cache->get_response( $cache_key );
