@@ -187,6 +187,7 @@ class StaticDeployPageCache {
      */
     private array $headers;
 
+    private array $headers_cache_control;
     private int $status_code;
     private string $status_header;
 
@@ -230,20 +231,16 @@ class StaticDeployPageCache {
      * Returns true if the headers permit caching.
      */
     public function headers_should_cache(): bool {
+        $cc = $this->headers_cache_control;
+
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
         // Even though no-cache actually permits caching,
         // we don't because the required validation is as
         // much work for us as just regenerating the page.
-        $header = $this->headers['cache-control'] ?? null;
-        if ( $header ) {
-            $value = $header[1];
-            $parts = explode( ',', $value );
-            $parts = array_map( 'trim', $parts );
-            $parts = array_map( 'strtolower', $parts );
-            $disallowed = [ 'no-cache', 'no-store', 'private' ];
-            if ( array_intersect( $disallowed, $parts ) ) {
-                return false;
-            }
+        if ( ( $cc['no-cache'] ?? false )
+        || ( $cc['no-store'] ?? false )
+        || ( $cc['private'] ?? false ) ) {
+            return false;
         }
 
         // If no headers prohibit caching, we can allow it.
@@ -270,6 +267,17 @@ class StaticDeployPageCache {
                 'Cache-Control',
                 $this->default_cache_control,
             ];
+        }
+
+        $this->headers_cache_control = [];
+        $header = $this->headers['cache-control'];
+        $value = $header[1];
+        $parts = explode( ',', $value );
+        foreach ( $parts as $part ) {
+            $part = explode( '=', $part, 2 );
+            $name = strtolower( trim( $part[0] ) );
+            $val = isset( $part[1] ) ? trim( $part[1] ) : true;
+            $this->headers_cache_control[ $name ] = $val;
         }
     }
 
