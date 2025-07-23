@@ -545,6 +545,8 @@ class StaticDeployPageCache {
 $static_deploy_page_cache = new StaticDeployPageCache(
     new StaticDeployCombinedCache(
         new StaticDeployFileCache(
+            defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ?
+            STATIC_DEPLOY_PAGE_CACHE_DIR :
             sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] ),
         ),
         new StaticDeployTransientCache(
