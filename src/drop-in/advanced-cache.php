@@ -102,6 +102,9 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
             return null;
         }
         $json = file_get_contents( $this->dir . '/' . $key );
+        if ( $json === false ) {
+            return null;
+        }
         $arr = json_decode( $json, true );
         return StaticDeployPageCacheResponse::from_array( $arr );
     }
