@@ -133,6 +133,7 @@ class StaticDeployPageCache {
         }
 
         // If no headers prohibit caching, we can allow it.
+        // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#heuristic_caching
         return true;
     }
 
