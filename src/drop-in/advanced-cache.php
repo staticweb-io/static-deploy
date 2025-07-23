@@ -264,6 +264,13 @@ class StaticDeployPageCache {
                 trim( $header[1] ),
             ];
         }
+
+        if ( ! isset( $this->headers['cache-control'] ) ) {
+            $this->headers['cache-control'] = [
+                'Cache-Control',
+                $this->default_cache_control,
+            ];
+        }
     }
 
     /**
@@ -329,13 +336,6 @@ class StaticDeployPageCache {
         }
 
         $this->parse_headers();
-
-        if ( ! isset( $this->headers['cache-control'] ) ) {
-            $this->headers['cache-control'] = [
-                'Cache-Control',
-                $this->default_cache_control,
-            ];
-        }
 
         if ( ! $this->headers_should_cache() ) {
             return false;
