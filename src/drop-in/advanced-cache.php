@@ -103,10 +103,11 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     public function get_response(
         string $key
     ): ?StaticDeployPageCacheResponse {
-        if ( ! file_exists( $this->dir . '/' . $key ) ) {
+        $path = $this->dir . '/' . $key;
+        if ( ! is_file( $path ) ) {
             return null;
         }
-        $json = file_get_contents( $this->dir . '/' . $key );
+        $json = file_get_contents( $path );
         if ( $json === false ) {
             return null;
         }
@@ -117,11 +118,11 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     public function get_blob(
         string $key
     ): ?string {
-        $key = 'blob' . $key;
-        if ( ! file_exists( $this->dir . '/' . $key ) ) {
+        $path = $this->dir . '/' . $key;
+        if ( ! is_file( $path ) ) {
             return null;
         }
-        $content = file_get_contents( $this->dir . '/' . $key );
+        $content = file_get_contents( $path );
         if ( $content === false ) {
             return null;
         }
@@ -132,9 +133,9 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         string $key,
         string $value
     ): void {
-        $key = 'blob' . $key;
-        if ( ! file_exists( $this->dir . '/' . $key ) ) {
-            file_put_contents( $this->dir . '/' . $key, $value );
+        $path = $this->dir . '/' . $key;
+        if ( ! is_file( $path ) ) {
+            file_put_contents( $path, $value );
         }
     }
 
