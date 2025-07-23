@@ -199,8 +199,23 @@ class StaticDeployPageCache {
 
         $cached = $this->cache->get( $cache_key );
         if ( $cached ) {
+            $request_headers = array_change_key_case( getallheaders() );
             $response = json_decode( $cached, true );
 
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match
+            $if_none_match = $request_headers['if-none-match'] ?? null;
+            if ( $if_none_match ) {
+                $etag = $response['headers']['etag'][1];
+                foreach ( explode( ',', $if_none_match ) as $match_etag ) {
+                    if ( $etag === trim( $match_etag ) ) {
+                        $this->write_response(
+                            'HTTP/1.1 304 Not Modified',
+                            304,
+                            $response['headers'],
+                        );
+                        return true;
+                    }
+                }
             }
 
             $this->write_response(
