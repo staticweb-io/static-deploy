@@ -2,20 +2,20 @@
 // phpcs:disable Generic.Files.OneObjectStructurePerFile
 
 class StaticDeployPageCacheResponse {
-    public ?string $blob;
+    public ?string $blob_key;
     public int $code;
     public array $headers;
     public string $status_header;
     public string $uri;
 
     public function __construct(
-        ?string $blob,
         int $code,
-        array $headers,
         string $status_header,
         string $uri,
+        array $headers,
+        ?string $blob_key = null,
     ) {
-        $this->blob = $blob;
+        $this->blob_key = $blob_key;
         $this->code = $code;
         $this->headers = $headers;
         $this->status_header = $status_header;
@@ -26,11 +26,11 @@ class StaticDeployPageCacheResponse {
         array $arr
     ): self {
         return new self(
-            $arr['blob'] ?? null,
             $arr['code'],
-            $arr['headers'],
             $arr['status_header'],
             $arr['uri'],
+            $arr['headers'],
+            $arr['blob_key'] ?? null,
         );
     }
 
@@ -42,8 +42,8 @@ class StaticDeployPageCacheResponse {
             'uri' => $this->uri,
         ];
 
-        if ( $this->blob ) {
-            $arr['blob'] = $this->blob;
+        if ( $this->blob_key ) {
+            $arr['blob_key'] = $this->blob_key;
         }
 
         return $arr;
@@ -66,6 +66,15 @@ interface StaticDeployCacheInterface {
     public function get_response(
         string $key
     ): ?StaticDeployPageCacheResponse;
+
+    public function get_blob(
+        string $key
+    ): ?string;
+
+    public function set_blob(
+        string $key,
+        string $value
+    ): void;
 
     public function set_response(
         string $key,
@@ -95,6 +104,30 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         $json = file_get_contents( $this->dir . '/' . $key );
         $arr = json_decode( $json, true );
         return StaticDeployPageCacheResponse::from_array( $arr );
+    }
+
+    public function get_blob(
+        string $key
+    ): ?string {
+        $key = 'blob' . $key;
+        if ( ! file_exists( $this->dir . '/' . $key ) ) {
+            return null;
+        }
+        $content = file_get_contents( $this->dir . '/' . $key );
+        if ( $content === false ) {
+            return null;
+        }
+        return $content;
+    }
+
+    public function set_blob(
+        string $key,
+        string $value
+    ): void {
+        $key = 'blob' . $key;
+        if ( ! file_exists( $this->dir . '/' . $key ) ) {
+            file_put_contents( $this->dir . '/' . $key, $value );
+        }
     }
 
     public function set_response(
@@ -269,11 +302,10 @@ class StaticDeployPageCache {
             $response->write_output();
 
             // Send no body in responses to HEAD requests
-            if ( $method === 'HEAD' ) {
-                return true;
-            } else {
-                return $response->blob;
+            if ( $response->blob_key && $method === 'GET' ) {
+                return $this->cache->get_blob( $response->blob_key );
             }
+            return true;
         }
 
         $this->parse_headers();
@@ -289,19 +321,25 @@ class StaticDeployPageCache {
             ];
         }
 
+        $blob_key = md5( $buffer );
+
         if ( ! isset( $this->headers['etag'] ) ) {
             $this->headers['etag'] = [
                 'ETag',
-                '"' . md5( $buffer ) . '"',
+                '"' . $blob_key . '"',
             ];
         }
 
         $response = new StaticDeployPageCacheResponse(
-            $buffer,
             $this->status_code,
-            $this->headers,
             $this->status_header,
             $_SERVER['REQUEST_URI'],
+            $this->headers,
+            $blob_key,
+        );
+        $this->cache->set_blob(
+            $blob_key,
+            $buffer
         );
         $this->cache->set_response(
             $cache_key,
