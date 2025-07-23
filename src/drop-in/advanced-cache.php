@@ -211,6 +211,50 @@ class StaticDeployTransientCache implements StaticDeployCacheInterface {
 }
 
 /**
+ * A cache that combines two other caches, using one for
+ * responses and one for blobs.
+ */
+class StaticDeployCombinedCache implements StaticDeployCacheInterface {
+    public StaticDeployCacheInterface $blob_cache;
+    public StaticDeployCacheInterface $response_cache;
+
+    public function __construct(
+        StaticDeployCacheInterface $blob_cache,
+        StaticDeployCacheInterface $response_cache,
+    ) {
+        $this->blob_cache = $blob_cache;
+        $this->response_cache = $response_cache;
+    }
+
+    public function get_response(
+        string $key
+    ): ?StaticDeployPageCacheResponse {
+        return $this->response_cache->get_response( $key );
+    }
+
+    public function get_blob(
+        string $key
+    ): ?string {
+        return $this->blob_cache->get_blob( $key );
+    }
+
+    public function set_blob(
+        string $key,
+        string $value,
+        int $ttl,
+    ): void {
+        $this->blob_cache->set_blob( $key, $value, $ttl );
+    }
+
+    public function set_response(
+        string $key,
+        StaticDeployPageCacheResponse $response
+    ): void {
+        $this->response_cache->set_response( $key, $response );
+    }
+}
+
+/**
  * Page cache for WordPress
  * Must be placed in wp-content/advanced-cache.php
  * It will be loaded when WP_CACHE is true
@@ -495,9 +539,14 @@ class StaticDeployPageCache {
 }
 
 $static_deploy_page_cache = new StaticDeployPageCache(
-    new StaticDeployTransientCache(
-        defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ?
-        STATIC_DEPLOY_PAGE_CACHE_PREFIX : 'sd_pc_',
+    new StaticDeployCombinedCache(
+        new StaticDeployFileCache(
+            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] ),
+        ),
+        new StaticDeployTransientCache(
+            defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ?
+            STATIC_DEPLOY_PAGE_CACHE_PREFIX : 'sd_pc_',
+        ),
     ),
     defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
