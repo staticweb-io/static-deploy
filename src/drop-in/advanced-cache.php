@@ -402,6 +402,16 @@ class StaticDeployPageCache {
         $this->headers = [];
     }
 
+    public function add_get_instance_hook(): void {
+        add_action(
+            'static_deploy_page_cache_get_instance',
+            function () {
+                return $this; },
+            10,
+            0
+        );
+    }
+
     public function capture_response(): void {
         add_filter(
             'status_header',
@@ -678,4 +688,5 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
     STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
 );
+$static_deploy_page_cache->add_get_instance_hook();
 $static_deploy_page_cache->capture_response();
