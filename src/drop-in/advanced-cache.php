@@ -4,6 +4,7 @@
 class StaticDeployPageCacheResponse {
     public ?string $blob_key;
     public int $code;
+    public string $hash_algo;
     public array $headers;
     public int $max_age;
     public string $status_header;
@@ -300,9 +301,11 @@ class StaticDeployPageCache {
     public function __construct(
         StaticDeployCacheInterface $cache,
         string $default_cache_control,
+        string $hash_algo,
     ) {
         $this->cache = $cache;
         $this->default_cache_control = $default_cache_control;
+        $this->hash_algo = $hash_algo;
         $this->headers = [];
     }
 
@@ -441,7 +444,8 @@ class StaticDeployPageCache {
             return false;
         }
 
-        $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
+        $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
+        $cache_key = $method . $uri_hash;
 
         $response = $this->cache->get_response( $cache_key );
 
@@ -495,7 +499,7 @@ class StaticDeployPageCache {
         }
 
         if ( $buffer ) {
-            $etag = md5( $buffer );
+            $etag = hash( $this->hash_algo, $buffer );
         } else {
             $etag = null;
         }
@@ -550,5 +554,7 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     ),
     defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
+    defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ?
+    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO : 'md5',
 );
 $static_deploy_page_cache->capture_response();
