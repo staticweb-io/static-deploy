@@ -1,6 +1,20 @@
 <?php declare(strict_types=1);
 // phpcs:disable Generic.Files.OneObjectStructurePerFile
 
+/**
+ * Plugin Name:       Static Deploy Page Cache (Drop-in)
+ * Plugin URI:        https://github.com/staticweb-io/static-deploy
+ * Description:       Advanced page caching and optimization.
+ * Version:           9.2.1
+ * Author:            StaticWeb.io
+ * Author URI:        https://github.com/staticweb-io/static-deploy
+ * Text Domain:       static-deploy
+ * Requires at least: 6.4
+ * Requires PHP:      8.1
+ * License URI:       https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
+ * License:           Unlicense
+ */
+
 class StaticDeployPageCacheResponse {
     public ?string $blob_key;
     public int $code;
