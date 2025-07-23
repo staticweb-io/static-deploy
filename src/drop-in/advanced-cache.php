@@ -12,8 +12,8 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     public function __construct(
         string $dir,
     ) {
-        mkdir( $dir, 0700, true );
-        if ( ! is_dir( $dir ) ) {
+        // If the directory doesn't exist, try to create it
+        if ( ! is_dir( $dir ) && ! mkdir( $dir, 0700, true ) ) {
             die( 'Failed to create cache directory' );
         }
         $this->dir = $dir;
