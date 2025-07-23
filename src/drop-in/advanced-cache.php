@@ -555,6 +555,6 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
     defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ?
-    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO : 'md5',
+    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO : 'sha256',
 );
 $static_deploy_page_cache->capture_response();
