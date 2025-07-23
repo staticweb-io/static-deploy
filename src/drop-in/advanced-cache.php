@@ -185,6 +185,20 @@ class StaticDeployPageCache {
             return false;
         }
 
+        if ( ! isset( $this->headers['content-length'] ) ) {
+            $this->headers['content-length'] = [
+                'Content-Length',
+                strlen( $buffer ),
+            ];
+        }
+
+        if ( ! isset( $this->headers['etag'] ) ) {
+            $this->headers['etag'] = [
+                'ETag',
+                '"' . md5( $buffer ) . '"',
+            ];
+        }
+
         $response = [
             'body' => $buffer,
             'code' => $this->status_code,
