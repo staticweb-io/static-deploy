@@ -235,6 +235,10 @@ class StaticDeployPageCache {
     public function headers_should_cache(): bool {
         $cc = $this->headers_cache_control;
 
+        if ( $this->max_age === 0 ) {
+            return false;
+        }
+
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
         // Even though no-cache actually permits caching,
         // we don't because the required validation is as
