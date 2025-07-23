@@ -568,13 +568,20 @@ class StaticDeployPageCache {
                 }
             }
 
-            $response->write_output();
-
             // Send no body in responses to HEAD requests
             if ( $response->blob_key && $method === 'GET' ) {
-                return $this->cache->get_blob( $response->blob_key );
+                $blob = $this->cache->get_blob( $response->blob_key );
+
+                // If we get a cache miss on the blob, we
+                // continue on to the uncached response.
+                if ( $blob !== null ) {
+                    $response->write_output();
+                    return $blob;
+                }
+            } else {
+                $response->write_output();
+                return true;
             }
-            return true;
         }
 
         $this->parse_headers();
