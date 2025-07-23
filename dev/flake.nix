@@ -100,6 +100,11 @@
                 "pm.max_children" = "5";
               };
               package = php;
+              phpOptions = ''
+                opcache.interned_strings_buffer = 16
+                opcache.jit = 1255
+                opcache.jit_buffer_size = 8M
+              '';
             };
             settings.processes."nginx1".depends_on."phpfpm1".condition =
               "process_healthy";
