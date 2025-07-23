@@ -164,6 +164,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 
 class StaticDeployPageCache {
     private StaticDeployCacheInterface $cache;
+    private string $default_cache_control;
 
     /**
      * An array of headers in the format
@@ -185,8 +186,10 @@ class StaticDeployPageCache {
 
     public function __construct(
         StaticDeployCacheInterface $cache,
+        string $default_cache_control,
     ) {
         $this->cache = $cache;
+        $this->default_cache_control = $default_cache_control;
         $this->headers = [];
     }
 
@@ -313,6 +316,13 @@ class StaticDeployPageCache {
 
         $this->parse_headers();
 
+        if ( ! isset( $this->headers['cache-control'] ) ) {
+            $this->headers['cache-control'] = [
+                'Cache-Control',
+                $this->default_cache_control,
+            ];
+        }
+
         if ( ! $this->headers_should_cache() ) {
             return false;
         }
@@ -363,6 +373,8 @@ class StaticDeployPageCache {
 $static_deploy_page_cache = new StaticDeployPageCache(
     new StaticDeployFileCache(
         sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] )
-    )
+    ),
+    defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
+    STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
 );
 $static_deploy_page_cache->capture_response();
