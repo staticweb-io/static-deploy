@@ -5,6 +5,7 @@ class StaticDeployPageCacheResponse {
     public ?string $blob_key;
     public int $code;
     public array $headers;
+    public int $max_age;
     public string $status_header;
     public int $time;
     public string $uri;
@@ -14,12 +15,14 @@ class StaticDeployPageCacheResponse {
         string $status_header,
         string $uri,
         array $headers,
+        int $max_age,
         ?string $blob_key = null,
         ?int $time = null,
     ) {
         $this->blob_key = $blob_key;
         $this->code = $code;
         $this->headers = $headers;
+        $this->max_age = $max_age;
         $this->status_header = $status_header;
         $this->time = $time ?? time();
         $this->uri = $uri;
@@ -33,6 +36,7 @@ class StaticDeployPageCacheResponse {
             $arr['status_header'],
             $arr['uri'],
             $arr['headers'],
+            $arr['max_age'],
             $arr['blob_key'] ?? null,
             $arr['time'],
         );
@@ -42,6 +46,7 @@ class StaticDeployPageCacheResponse {
         $arr = [
             'code' => $this->code,
             'headers' => $this->headers,
+            'max_age' => $this->max_age,
             'status_header' => $this->status_header,
             'time' => $this->time,
             'uri' => $this->uri,
@@ -398,6 +403,7 @@ class StaticDeployPageCache {
             $this->status_header,
             $_SERVER['REQUEST_URI'],
             $this->headers,
+            $this->max_age,
             $blob_key,
         );
         if ( $blob_key ) {
