@@ -188,6 +188,8 @@ class StaticDeployPageCache {
     private array $headers;
 
     private array $headers_cache_control;
+
+    private int $max_age;
     private int $status_code;
     private string $status_header;
 
@@ -278,6 +280,24 @@ class StaticDeployPageCache {
             $name = strtolower( trim( $part[0] ) );
             $val = isset( $part[1] ) ? trim( $part[1] ) : true;
             $this->headers_cache_control[ $name ] = $val;
+        }
+
+        // Since we are a shared cache, s-maxage overrides
+        // max-age.
+        $max_age = $this->headers_cache_control['s-maxage']
+            ?? $this->headers_cache_control['max-age']
+            ?? null;
+        if ( $max_age !== null ) {
+            // Negative and non-integer max-ages are treated as 0
+            // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control#response_directives
+            $max_age = filter_var(
+                $max_age,
+                FILTER_VALIDATE_INT,
+                [
+                    'options' => [ 'min_range' => 0 ],
+                ],
+            );
+            $this->max_age = $max_age === false ? 0 : $max_age;
         }
     }
 
