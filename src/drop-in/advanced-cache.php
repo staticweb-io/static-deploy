@@ -63,8 +63,14 @@ class StaticDeployPageCacheResponse {
 }
 
 interface StaticDeployCacheInterface {
-    public function get( string $key ): ?string;
-    public function set( string $key, string $value ): void;
+    public function get_response(
+        string $key
+    ): ?StaticDeployPageCacheResponse;
+
+    public function set_response(
+        string $key,
+        StaticDeployPageCacheResponse $response
+    ): void;
 }
 
 class StaticDeployFileCache implements StaticDeployCacheInterface {
@@ -80,22 +86,24 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         $this->dir = $dir;
     }
 
-    public function get(
+    public function get_response(
         string $key
-    ): ?string {
+    ): ?StaticDeployPageCacheResponse {
         if ( ! file_exists( $this->dir . '/' . $key ) ) {
             return null;
         }
-        return file_get_contents( $this->dir . '/' . $key );
+        $json = file_get_contents( $this->dir . '/' . $key );
+        $arr = json_decode( $json, true );
+        return StaticDeployPageCacheResponse::from_array( $arr );
     }
 
-    public function set(
+    public function set_response(
         string $key,
-        string $value
+        StaticDeployPageCacheResponse $response
     ): void {
         file_put_contents(
             $this->dir . '/' . $key,
-            $value
+            json_encode( $response->to_array() )
         );
     }
 }
@@ -213,24 +221,6 @@ class StaticDeployPageCache {
         }
     }
 
-    public static function write_response(
-        string $status_header,
-        int $code,
-        ?array $headers,
-    ): void {
-        header(
-            $status_header,
-            true,
-            $code,
-        );
-
-        if ( $headers ) {
-            foreach ( $headers as $header ) {
-                header( $header[0] . ': ' . $header[1] );
-            }
-        }
-    }
-
     /**
      * Receives the PHP output, which should be the body
      * of an HTTP response, and caches it.
@@ -258,38 +248,31 @@ class StaticDeployPageCache {
 
         $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
 
-        $cached = $this->cache->get( $cache_key );
-        if ( $cached ) {
+        $response = $this->cache->get_response( $cache_key );
+        if ( $response ) {
             $request_headers = array_change_key_case( getallheaders() );
-            $response = json_decode( $cached, true );
 
             // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match
             $if_none_match = $request_headers['if-none-match'] ?? null;
             if ( $if_none_match ) {
-                $etag = $response['headers']['etag'][1];
+                $etag = $response->headers['etag'][1];
                 foreach ( explode( ',', $if_none_match ) as $match_etag ) {
                     if ( $etag === trim( $match_etag ) ) {
-                        $this->write_response(
-                            'HTTP/1.1 304 Not Modified',
-                            304,
-                            $response['headers'],
-                        );
+                        $response->code = 304;
+                        $response->status_header = 'HTTP/1.1 304 Not Modified';
+                        $response->write_output();
                         return true;
                     }
                 }
             }
 
-            $this->write_response(
-                $response['status_header'],
-                $response['code'],
-                $response['headers'],
-            );
+            $response->write_output();
 
             // Send no body in responses to HEAD requests
             if ( $method === 'HEAD' ) {
                 return true;
             } else {
-                return $response['body'];
+                return $response->blob;
             }
         }
 
@@ -313,16 +296,16 @@ class StaticDeployPageCache {
             ];
         }
 
-        $response = [
-            'body' => $buffer,
-            'code' => $this->status_code,
-            'headers' => $this->headers,
-            'status_header' => $this->status_header,
-            'uri' => $_SERVER['REQUEST_URI'],
-        ];
-        $this->cache->set(
+        $response = new StaticDeployPageCacheResponse(
+            $buffer,
+            $this->status_code,
+            $this->headers,
+            $this->status_header,
+            $_SERVER['REQUEST_URI'],
+        );
+        $this->cache->set_response(
             $cache_key,
-            json_encode( $response )
+            $response
         );
 
         // Send no body in responses to HEAD requests
