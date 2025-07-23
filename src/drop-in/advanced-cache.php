@@ -324,7 +324,11 @@ class StaticDeployPageCache {
             ];
         }
 
-        $blob_key = md5( $buffer );
+        if ( $buffer ) {
+            $blob_key = md5( $buffer );
+        } else {
+            $blob_key = null;
+        }
 
         if ( ! isset( $this->headers['etag'] ) ) {
             $this->headers['etag'] = [
@@ -340,10 +344,12 @@ class StaticDeployPageCache {
             $this->headers,
             $blob_key,
         );
-        $this->cache->set_blob(
-            $blob_key,
-            $buffer
-        );
+        if ( $blob_key ) {
+            $this->cache->set_blob(
+                $blob_key,
+                $buffer
+            );
+        }
         $this->cache->set_response(
             $cache_key,
             $response
