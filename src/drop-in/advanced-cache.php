@@ -1,6 +1,67 @@
 <?php declare(strict_types=1);
 // phpcs:disable Generic.Files.OneObjectStructurePerFile
 
+class StaticDeployPageCacheResponse {
+    public ?string $blob;
+    public int $code;
+    public array $headers;
+    public string $status_header;
+    public string $uri;
+
+    public function __construct(
+        ?string $blob,
+        int $code,
+        array $headers,
+        string $status_header,
+        string $uri,
+    ) {
+        $this->blob = $blob;
+        $this->code = $code;
+        $this->headers = $headers;
+        $this->status_header = $status_header;
+        $this->uri = $uri;
+    }
+
+    public static function from_array(
+        array $arr
+    ): self {
+        return new self(
+            $arr['blob'] ?? null,
+            $arr['code'],
+            $arr['headers'],
+            $arr['status_header'],
+            $arr['uri'],
+        );
+    }
+
+    public function to_array(): array {
+        $arr = [
+            'code' => $this->code,
+            'headers' => $this->headers,
+            'status_header' => $this->status_header,
+            'uri' => $this->uri,
+        ];
+
+        if ( $this->blob ) {
+            $arr['blob'] = $this->blob;
+        }
+
+        return $arr;
+    }
+
+    public function write_output(): void {
+        header(
+            $this->status_header,
+            true,
+            $this->code,
+        );
+
+        foreach ( $this->headers as $header ) {
+            header( $header[0] . ': ' . $header[1] );
+        }
+    }
+}
+
 interface StaticDeployCacheInterface {
     public function get( string $key ): ?string;
     public function set( string $key, string $value ): void;
