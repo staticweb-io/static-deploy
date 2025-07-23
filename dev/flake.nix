@@ -27,7 +27,7 @@
           serverPort = 8888;
           php = pkgs.php.buildEnv {
             extensions = { enabled, all }:
-              enabled ++ (with all; [ imagick memcached ]);
+              enabled ++ (with all; [ apcu imagick memcached ]);
           };
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
