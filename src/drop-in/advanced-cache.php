@@ -338,16 +338,19 @@ class StaticDeployPageCache {
         $cache_key = $method . md5( $_SERVER['REQUEST_URI'] );
 
         $response = $this->cache->get_response( $cache_key );
+
+        if ( $response ) {
+            $age = max( 0, ( time() - $response->time ) );
+
+            if ( $age > $response->max_age ) {
+                $response = null;
+            } else {
+                $response->headers['age'] = [ 'Age', $age ];
+            }
+        }
+
         if ( $response ) {
             $request_headers = array_change_key_case( getallheaders() );
-
-            // The client should subtract age from the
-            // max-age in Cache-Control to determine freshness.
-            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#fresh_and_stale_based_on_age
-            $response->headers['age'] = [
-                'Age',
-                max( 0, ( time() - $response->time ) ),
-            ];
 
             // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match
             $if_none_match = $request_headers['if-none-match'] ?? null;
