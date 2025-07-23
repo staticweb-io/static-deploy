@@ -83,7 +83,8 @@ interface StaticDeployCacheInterface {
 
     public function set_blob(
         string $key,
-        string $value
+        string $value,
+        int $ttl,
     ): void;
 
     /*
@@ -142,7 +143,8 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 
     public function set_blob(
         string $key,
-        string $value
+        string $value,
+        int $ttl,
     ): void {
         $path = $this->dir . '/' . $key;
         if ( ! is_file( $path ) ) {
@@ -425,7 +427,8 @@ class StaticDeployPageCache {
         if ( $blob_key ) {
             $this->cache->set_blob(
                 $blob_key,
-                $buffer
+                $buffer,
+                $this->max_age,
             );
         }
         $this->cache->set_response(
