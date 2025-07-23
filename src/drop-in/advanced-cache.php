@@ -542,21 +542,36 @@ class StaticDeployPageCache {
     }
 }
 
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ) {
+    define(
+        'STATIC_DEPLOY_PAGE_CACHE_DIR',
+        sys_get_temp_dir() . DIRECTORY_SEPARATOR .
+        'sd-cache-' . md5( $_SERVER['HTTP_HOST'] )
+    );
+}
+
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ) {
+    define( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX', 'sd_pc_' );
+}
+
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ) {
+    define( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL', 'max-age=600' );
+}
+
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
+    define( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO', 'sha256' );
+}
+
 $static_deploy_page_cache = new StaticDeployPageCache(
     new StaticDeployCombinedCache(
         new StaticDeployFileCache(
-            defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ?
-            STATIC_DEPLOY_PAGE_CACHE_DIR :
-            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sd-cache-' . md5( $_SERVER['HTTP_HOST'] ),
+            STATIC_DEPLOY_PAGE_CACHE_DIR,
         ),
         new StaticDeployTransientCache(
-            defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ?
-            STATIC_DEPLOY_PAGE_CACHE_PREFIX : 'sd_pc_',
+            STATIC_DEPLOY_PAGE_CACHE_PREFIX,
         ),
     ),
-    defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ?
-    STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL : 'max-age=600',
-    defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ?
-    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO : 'sha256',
+    STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
+    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
 );
 $static_deploy_page_cache->capture_response();
