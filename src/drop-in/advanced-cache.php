@@ -153,9 +153,13 @@ class StaticDeployPageCache {
         if ( $cached ) {
             $response = json_decode( $cached, true );
 
-            header( $response['status_header'] );
             foreach ( $response['headers'] as $header ) {
                 header( $header );
+            header(
+                $response['status_header'],
+                true,
+                $response['code'],
+            );
             }
 
             return $response['body'];
