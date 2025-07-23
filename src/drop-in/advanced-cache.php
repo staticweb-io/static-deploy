@@ -152,6 +152,24 @@ class StaticDeployPageCache {
         }
     }
 
+    public static function write_response(
+        string $status_header,
+        int $code,
+        ?array $headers,
+    ): void {
+        header(
+            $status_header,
+            true,
+            $code,
+        );
+
+        if ( $headers ) {
+            foreach ( $headers as $header ) {
+                header( $header[0] . ': ' . $header[1] );
+            }
+        }
+    }
+
     /**
      * Receives the PHP output, which should be the body
      * of an HTTP response, and caches it.
@@ -183,15 +201,13 @@ class StaticDeployPageCache {
         if ( $cached ) {
             $response = json_decode( $cached, true );
 
-            header(
-                $response['status_header'],
-                true,
-                $response['code'],
-            );
-            foreach ( $response['headers'] ?? [] as $header ) {
-                header( $header[0] . ': ' . $header[1] );
             }
 
+            $this->write_response(
+                $response['status_header'],
+                $response['code'],
+                $response['headers'],
+            );
             return $response['body'];
         }
 
