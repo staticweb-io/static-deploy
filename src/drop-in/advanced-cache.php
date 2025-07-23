@@ -223,7 +223,13 @@ class StaticDeployPageCache {
                 $response['code'],
                 $response['headers'],
             );
-            return $response['body'];
+
+            // Send no body in responses to HEAD requests
+            if ( $method === 'HEAD' ) {
+                return true;
+            } else {
+                return $response['body'];
+            }
         }
 
         $this->parse_headers();
@@ -258,7 +264,8 @@ class StaticDeployPageCache {
             json_encode( $response )
         );
 
-        return false;
+        // Send no body in responses to HEAD requests
+        return $method === 'HEAD';
     }
 }
 
