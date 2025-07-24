@@ -224,7 +224,10 @@ class CLI {
         $crawl_config = new CrawlConfig(
             path_hash_prefix: $path_hash_prefix,
         );
-        $deployer = new DirectDeployer( $crawl_config );
+        $direct_deploy_config = new DirectDeployConfig(
+            $crawl_config
+        );
+        $deployer = new DirectDeployer( $direct_deploy_config );
         if ( ! $deployer->ready ) {
             return;
         }

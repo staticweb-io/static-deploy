@@ -10,14 +10,15 @@ namespace StaticDeploy;
 class DirectDeployer {
     private $crawler;
     private $deployer;
+    public DirectDeployConfig $config;
     private $processor;
     public bool $ready = false;
     private $url_discovery;
 
     public function __construct(
-        ?CrawlConfig $crawl_config = null,
+        ?DirectDeployConfig $config = null,
     ) {
-        $crawl_config = $crawl_config ?? new CrawlConfig();
+        $this->config = $config ?? new DirectDeployConfig();
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
@@ -37,7 +38,7 @@ class DirectDeployer {
         }
 
         $this->deployer = new $deployer_class();
-        $this->crawler = new Crawler( $crawl_config );
+        $this->crawler = new Crawler( $this->config->crawl_config );
         $this->url_discovery = new URLDiscovery();
         $this->processor = new PostProcessor();
         $this->ready = true;
