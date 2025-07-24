@@ -641,6 +641,15 @@ class StaticDeployPageCache {
             $blob_key = null;
         }
 
+        // If the WP filter doesn't deliver a status code,
+        // we have to abort and show the original response.
+        if ( ! isset( $this->status_code ) ) {
+            if ( WP_DEBUG ) {
+                error_log( 'No status code received for ' . $_SERVER['REQUEST_URI'] );
+            }
+            return false;
+        }
+
         $response = new StaticDeployPageCacheResponse(
             $this->status_code,
             $this->status_header,
