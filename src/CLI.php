@@ -206,10 +206,12 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
-        // We don't accept any parameters for this command
-        if ( ! empty( $assoc_args ) ) {
-            WP_CLI::error( 'No parameters are accepted for this command.' );
-        }
+        $opts = [
+            'post-id' => null,
+        ];
+        $assoc_opts = [];
+        $cfg = self::parse( $args, $assoc_args, $opts, $assoc_opts );
+
         Options::init();
         WsLog::deleteOldLogs();
 
@@ -218,8 +220,8 @@ class CLI {
             return;
         }
 
-        if ( isset( $args[0] ) ) {
-            $post_id = intval( $args[0] );
+        if ( ( $cfg['post-id'] ?? null ) !== null ) {
+            $post_id = intval( $cfg['post-id'] );
             $path = wp_make_link_relative( get_permalink( $post_id ) );
             $paths = new \ArrayIterator( [ [ 'path' => $path ] ] );
             $detected = DetectedFiles::addPathsIter( $paths );
