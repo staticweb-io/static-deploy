@@ -20,6 +20,7 @@ class JobQueue {
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             job_type VARCHAR(30) NOT NULL,
             status VARCHAR(30) NOT NULL,
+            status_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             triggering_post_id BIGINT(20) UNSIGNED NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
@@ -204,11 +205,12 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $wpdb->update(
-            $table_name,
-            [ 'status' => $status ],
-            [ 'id' => $id ]
+        $sql = $wpdb->prepare(
+            "UPDATE $table_name SET status = %s, status_updated_at = NOW() WHERE id = %d",
+            $status,
+            $id
         );
+        $wpdb->query( $sql );
     }
 
     /**

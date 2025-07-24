@@ -16,6 +16,7 @@
   Intended for dev use and benchmarking.
 - Add a "--no-detect" option to the direct_deploy
   CLI command that skips the detect step.
+- Add a status_updated_at column to the jobs table.
 
 ## 9.2.1 (2025-07-18)
 
