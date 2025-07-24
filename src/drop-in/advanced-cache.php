@@ -630,18 +630,12 @@ class StaticDeployPageCache {
 
         if ( $buffer ) {
             $etag = hash( $this->hash_algo, $buffer );
-        } else {
-            $etag = null;
-        }
-
-        if ( ! isset( $this->headers['etag'] ) ) {
-            $this->headers['etag'] = [
-                'ETag',
-                '"' . $etag . '"',
-            ];
-        }
-
-        if ( $etag ) {
+            if ( ! isset( $this->headers['etag'] ) ) {
+                $this->headers['etag'] = [
+                    'ETag',
+                    '"' . $etag . '"',
+                ];
+            }
             $blob_key = 'blob' . $etag;
         } else {
             $blob_key = null;
