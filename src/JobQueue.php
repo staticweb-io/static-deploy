@@ -205,12 +205,20 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $sql = $wpdb->prepare(
+        $query = $wpdb->prepare(
             "UPDATE $table_name SET status = %s, status_updated_at = NOW() WHERE id = %d",
             $status,
             $id
         );
-        $wpdb->query( $sql );
+        Controller::query(
+            $query,
+            // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            on_error: function ( $error ) use ( $query ) {
+                // Try to create status_update_at column
+                self::createTable();
+                return Controller::query( $query );
+            },
+        );
     }
 
     /**
