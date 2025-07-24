@@ -384,7 +384,7 @@ class Controller {
     }
 
     public static function adminDeleteJobsQueue(): void {
-        check_admin_referer( self::getHookName( 'ui_job_options' ) );
+        check_admin_referer( self::getHookName( 'delete_jobs_queue' ) );
 
         JobQueue::truncate();
 

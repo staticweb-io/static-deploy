@@ -21,6 +21,8 @@
 - Show "x time ago" for job creation time
   and status update time on jobs page.
 - Show job duration on jobs page.
+- Fix error with "Delete All Jobs from Queue"
+  button submission.
 
 ## 9.2.1 (2025-07-18)
 
