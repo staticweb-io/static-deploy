@@ -139,12 +139,15 @@ class CLI {
     }
 
     /*
-     * Crawls, processes and deploys files all in one pass.
+     * Detects, crawls, processes and deploys files
+     * all in one pass. This avoids writing files to disk
+     * and can be more efficient than running the steps
+     * separately.
      *
      * ## OPTIONS
      *
      * <post-id>
-     * Post ID to deploy. Deploys all files if omitted.
+     * : Post ID to deploy. Deploys all files if omitted.
      *
      */
     public function direct_deploy(

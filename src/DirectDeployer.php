@@ -15,7 +15,7 @@ class DirectDeployer {
     private $url_discovery;
 
     public function __construct(
-        ?CrawlConfig $crawl_config,
+        ?CrawlConfig $crawl_config = null,
     ) {
         $crawl_config = $crawl_config ?? new CrawlConfig();
         $deployer = Addons::getDeployer();
