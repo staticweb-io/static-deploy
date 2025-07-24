@@ -535,6 +535,36 @@ class StaticDeployPageCache {
         }
     }
 
+    public function get_cached_response(
+        string $method,
+        string $uri_hash,
+        int $current_time,
+    ): ?StaticDeployPageCacheResponse {
+        $cache_key = $method . $uri_hash;
+        $response = $this->cache->get_response( $cache_key );
+
+        if ( $response ) {
+            $age = max( 0, ( $current_time - $response->time ) );
+
+            if ( $age > $response->max_age ) {
+                $response = null;
+            } else {
+                $response->headers['age'] = [ 'Age', $age ];
+            }
+        }
+
+        // HEAD responses can use cached GET response headers
+        if ( ! $response && $method === 'HEAD' ) {
+            $response = $this->get_cached_response(
+                'GET',
+                $uri_hash,
+                $current_time,
+            );
+        }
+
+        return $response;
+    }
+
     /**
      * Receives the PHP output, which should be the body
      * of an HTTP response, and caches it.
@@ -569,18 +599,11 @@ class StaticDeployPageCache {
 
         $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
         $cache_key = $method . $uri_hash;
-
-        $response = $this->cache->get_response( $cache_key );
-
-        if ( $response ) {
-            $age = max( 0, ( time() - $response->time ) );
-
-            if ( $age > $response->max_age ) {
-                $response = null;
-            } else {
-                $response->headers['age'] = [ 'Age', $age ];
-            }
-        }
+        $response = $this->get_cached_response(
+            $method,
+            $uri_hash,
+            time(),
+        );
 
         if ( $response ) {
             $request_headers = array_change_key_case( getallheaders() );
