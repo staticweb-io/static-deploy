@@ -201,6 +201,10 @@ class CLI {
      * <post-id>
      * : Post ID to deploy. Deploys all files if omitted.
      *
+     * [--no-detect]
+     * : Skip detect step and crawl only previously detected
+     *   paths.
+     *
      * [--path-hash-prefix=<prefix>]
      * : Ignore paths that do not match the hash prefix.
      */
@@ -212,6 +216,7 @@ class CLI {
             'post-id' => null,
         ];
         $assoc_opts = [
+            'detect' => null,
             'path-hash-prefix' => null,
         ];
         $cfg = self::parse( $args, $assoc_args, $opts, $assoc_opts );
@@ -225,7 +230,8 @@ class CLI {
             path_hash_prefix: $path_hash_prefix,
         );
         $direct_deploy_config = new DirectDeployConfig(
-            $crawl_config
+            crawl_config: $crawl_config,
+            do_detect: ( $cfg['detect'] ?? true ) !== false,
         );
         $deployer = new DirectDeployer( $direct_deploy_config );
         if ( ! $deployer->ready ) {

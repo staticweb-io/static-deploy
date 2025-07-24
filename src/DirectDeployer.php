@@ -50,9 +50,14 @@ class DirectDeployer {
         $queue_table = DetectedFiles::getTableName();
         $last_now = $wpdb->get_var( 'SELECT NOW()' );
 
-        $detected = URLDetector::detectURLsIter();
-        $added = DetectedFiles::withPathsIter( $detected );
-        $this->deployPaths( $added );
+        if ( $this->config->do_detect ) {
+            $detected = URLDetector::detectURLsIter();
+            $detected = DetectedFiles::withPathsIter( $detected );
+        } else {
+            $detected = DetectedFiles::getPathsIter();
+        }
+
+        $this->deployPaths( $detected );
 
         while ( true ) {
             $sql = $wpdb->prepare(

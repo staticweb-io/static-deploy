@@ -14,6 +14,8 @@
   This allows restricting processing to a stable
   subset of paths.
   Intended for dev use and benchmarking.
+- Add a "--no-detect" option to the direct_deploy
+  CLI command that skips the detect step.
 
 ## 9.2.1 (2025-07-18)
 
