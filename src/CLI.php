@@ -201,6 +201,8 @@ class CLI {
      * <post-id>
      * : Post ID to deploy. Deploys all files if omitted.
      *
+     * [--path-hash-prefix=<prefix>]
+     * : Ignore paths that do not match the hash prefix.
      */
     public function direct_deploy(
         array $args,
@@ -209,13 +211,20 @@ class CLI {
         $opts = [
             'post-id' => null,
         ];
-        $assoc_opts = [];
+        $assoc_opts = [
+            'path-hash-prefix' => null,
+        ];
         $cfg = self::parse( $args, $assoc_args, $opts, $assoc_opts );
+
+        $path_hash_prefix = strval( $cfg['path-hash-prefix'] );
 
         Options::init();
         WsLog::deleteOldLogs();
 
-        $deployer = new DirectDeployer();
+        $crawl_config = new CrawlConfig(
+            path_hash_prefix: $path_hash_prefix,
+        );
+        $deployer = new DirectDeployer( $crawl_config );
         if ( ! $deployer->ready ) {
             return;
         }
@@ -370,16 +379,24 @@ class CLI {
     /**
      * Crawls site, creating or updating the static site
      *
-     * @param string[] $args Arguments after command
-     * @param string[] $assoc_args Parameters after command
+     * ## OPTIONS
+     *
+     * [--path-hash-prefix=<prefix>]
+     * : Crawl only paths whose hashes match the prefix.
      */
     public function crawl( array $args, array $assoc_args ): void {
-        // We don't accept any arguments or parameters for this command
-        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
-            WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
-        }
+        $opts = null;
+        $assoc_opts = [
+            'path-hash-prefix' => null,
+        ];
+        $cfg = self::parse( $args, $assoc_args, $opts, $assoc_opts );
+
+        $path_hash_prefix = strval( $cfg['path-hash-prefix'] );
+
         Options::init();
-        $crawl_config = new CrawlConfig();
+        $crawl_config = new CrawlConfig(
+            path_hash_prefix: $path_hash_prefix,
+        );
         Controller::crawl( $crawl_config );
     }
 

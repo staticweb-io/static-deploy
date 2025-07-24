@@ -9,6 +9,11 @@
   have the "Using WordPress CLI" value set.
 - Don't register hooks in the non-admin part of the
   site. This avoids some unnecessary load.
+- Add a "--path-hash-prefix=<prefix>" option
+  to the crawl and direct_deploy CLI commands.
+  This allows restricting processing to a stable
+  subset of paths.
+  Intended for dev use and benchmarking.
 
 ## 9.2.1 (2025-07-18)
 
