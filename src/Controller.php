@@ -910,8 +910,12 @@ class Controller {
     }
 
     public static function crawl(
-        CrawlConfig $crawl_config
+        ?CrawlConfig $crawl_config = null
     ): void {
+        if ( ! $crawl_config ) {
+            $crawl_config = new CrawlConfig();
+        }
+
         $crawlers = Addons::getType( 'crawl' );
         $crawler_slug = empty( $crawlers ) ? 'static-deploy' : $crawlers[0]->slug;
         do_action(
