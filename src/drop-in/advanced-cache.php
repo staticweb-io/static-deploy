@@ -666,6 +666,22 @@ class StaticDeployPageCache {
     }
 }
 
+// We can't rely on WP_CACHE_KEY_SALT existing and we don't want
+// to define it ourselves, so we define an alias instead.
+if ( ! defined( 'STATIC_DEPLOY_CACHE_KEY_SALT' ) ) {
+    if ( defined( 'WP_CACHE_KEY_SALT' ) ) {
+        define(
+            'STATIC_DEPLOY_CACHE_KEY_SALT',
+            WP_CACHE_KEY_SALT,
+        );
+    } else {
+        define(
+            'STATIC_DEPLOY_CACHE_KEY_SALT',
+            '',
+        );
+    }
+}
+
 if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ) {
     define(
         'STATIC_DEPLOY_PAGE_CACHE_DIR',
