@@ -243,7 +243,7 @@ class WordPressAdmin {
             Controller::getHookName( 'crawl' ),
             [ Crawler::class, 'crawl' ],
             10,
-            2
+            3
         );
 
         add_action(

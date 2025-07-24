@@ -14,7 +14,10 @@ class DirectDeployer {
     public bool $ready = false;
     private $url_discovery;
 
-    public function __construct() {
+    public function __construct(
+        ?CrawlConfig $crawl_config,
+    ) {
+        $crawl_config = $crawl_config ?? new CrawlConfig();
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
@@ -34,7 +37,7 @@ class DirectDeployer {
         }
 
         $this->deployer = new $deployer_class();
-        $this->crawler = new Crawler();
+        $this->crawler = new Crawler( $crawl_config );
         $this->url_discovery = new URLDiscovery();
         $this->processor = new PostProcessor();
         $this->ready = true;

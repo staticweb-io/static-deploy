@@ -322,7 +322,8 @@ class CLI {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
         Options::init();
-        Controller::crawl();
+        $crawl_config = new CrawlConfig();
+        Controller::crawl( $crawl_config );
     }
 
     /**

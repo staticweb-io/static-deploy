@@ -27,6 +27,9 @@ class Crawler {
      * @var Client
      */
     private $client;
+
+    public CrawlConfig $crawl_config;
+
     /**
      * @var string
      */
@@ -47,7 +50,10 @@ class Crawler {
     /**
      * Crawler constructor
      */
-    public function __construct() {
+    public function __construct(
+        CrawlConfig $crawl_config,
+    ) {
+        $this->crawl_config = $crawl_config;
         $this->site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
 
         $port_override = apply_filters(
@@ -96,11 +102,14 @@ class Crawler {
         WsLog::l( 'Starting crawl.' );
     }
 
-    public static function crawl( string $crawler_slug ): void {
+    public static function crawl(
+        string $crawler_slug,
+        CrawlConfig $crawl_config,
+    ): void {
         global $wpdb;
 
         if ( 'static-deploy' === $crawler_slug ) {
-            $crawler = new Crawler();
+            $crawler = new Crawler( $crawl_config );
             $url_discovery = new URLDiscovery();
 
             $detected = DetectedFiles::getPathsIter();

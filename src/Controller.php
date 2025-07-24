@@ -909,12 +909,15 @@ class Controller {
         wp_die();
     }
 
-    public static function crawl(): void {
+    public static function crawl(
+        CrawlConfig $crawl_config
+    ): void {
         $crawlers = Addons::getType( 'crawl' );
         $crawler_slug = empty( $crawlers ) ? 'static-deploy' : $crawlers[0]->slug;
         do_action(
             self::getHookName( 'crawl' ),
-            $crawler_slug
+            $crawler_slug,
+            $crawl_config,
         );
         WsLog::l( 'Crawling completed' );
     }
