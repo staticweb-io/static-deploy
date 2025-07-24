@@ -530,6 +530,8 @@ class StaticDeployPageCache {
                 ],
             );
             $this->max_age = $max_age === false ? 0 : $max_age;
+        } else {
+            $this->max_age = 0;
         }
     }
 
