@@ -215,6 +215,17 @@ class Crawler {
             $this->concurrency = intval( Options::getValue( 'crawlConcurrency' ) );
         }
 
+        $path_hash_prefix = $this->crawl_config->path_hash_prefix;
+        if ( $path_hash_prefix !== null && $path_hash_prefix !== '' ) {
+            $path_iter = new \CallbackFilterIterator(
+                $path_iter,
+                function ( $path ) use ( $path_hash_prefix ) {
+                    return str_starts_with( md5( $path['path'] ), $path_hash_prefix );
+                }
+            );
+            $path_iter->rewind();
+        }
+
         $site_host = parse_url( $this->site_path, PHP_URL_HOST );
         $site_port = parse_url( $this->site_path, PHP_URL_PORT );
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
