@@ -119,9 +119,11 @@ interface StaticDeployCacheInterface {
 class StaticDeployFileCache implements StaticDeployCacheInterface {
     public string $dir;
     public float $min_free_space;
+    private string $temp_dir;
 
     public function __construct(
         string $dir,
+        string $temp_dir,
         float $min_free_space,
     ) {
         // If the directory doesn't exist, try to create it
@@ -130,6 +132,11 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         }
         $this->dir = $dir;
         $this->min_free_space = $min_free_space;
+
+        if ( ! is_dir( $temp_dir ) && ! mkdir( $temp_dir, 0700, true ) ) {
+            die( 'Failed to create temp directory' );
+        }
+        $this->temp_dir = $temp_dir;
     }
 
     private function check_free_space(
@@ -236,10 +243,14 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         string $value,
         int $ttl,
     ): void {
+        $temp_path = $this->temp_dir . DIRECTORY_SEPARATOR . $key . uniqid();
         $path = $this->dir . '/' . $key;
         if ( ! is_file( $path )
-            && $this->ensure_free_space( strlen( $value ) ) ) {
-            file_put_contents( $path, $value );
+            && $this->ensure_free_space( strlen( $value ) )
+            && file_put_contents( $temp_path, $value ) !== false ) {
+            // Since writing could result in partial files,
+            // we write to a temp file and move it atomically.
+            rename( $temp_path, $path );
         }
     }
 
@@ -247,10 +258,15 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         string $key,
         StaticDeployPageCacheResponse $response
     ): void {
+        $temp_path = $this->temp_dir . DIRECTORY_SEPARATOR . $key . uniqid();
         $path = $this->dir . '/' . $key;
         $value = json_encode( $response->to_array() );
         if ( $this->ensure_free_space( strlen( $value ) ) ) {
-            file_put_contents( $path, $value );
+            if ( file_put_contents( $temp_path, $value ) !== false ) {
+                // Since writing could result in partial files,
+                // we write to a temp file and move it atomically.
+                rename( $temp_path, $path );
+            }
         } else {
             unlink( $path );
         }
@@ -659,6 +675,14 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DIR' ) ) {
     );
 }
 
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR' ) ) {
+    define(
+        'STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR',
+        sys_get_temp_dir() . DIRECTORY_SEPARATOR .
+        'sd-cache-tmp-' . md5( WP_CACHE_KEY_SALT . $_SERVER['HTTP_HOST'] )
+    );
+}
+
 if ( ! defined( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE' ) ) {
     define( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE', 0.1 );
 }
@@ -679,6 +703,7 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     new StaticDeployCombinedCache(
         new StaticDeployFileCache(
             STATIC_DEPLOY_PAGE_CACHE_DIR,
+            STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
             STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
         ),
         new StaticDeployTransientCache(
