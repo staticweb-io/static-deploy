@@ -215,9 +215,14 @@ $row = function ( $name ) use ( $options ) {
         <tbody>
             <?php foreach ( $jobs as $job ) : ?>
             <tr>
-                <td><?php echo $job->created_at; ?></td>
+                <td>
+                    <?php echo $job->created_at; ?>
+                    (<?php echo human_time_diff( new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() ); ?> ago)
+                </td>
                 <td><?php echo $job->job_type; ?></td>
-                <td><?php echo $job->status; ?></td>
+                <td><?php echo $job->status; ?>
+                (<?php echo human_time_diff( new DateTime( $job->status_updated_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() ); ?> ago)
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
