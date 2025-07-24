@@ -420,12 +420,14 @@ class StaticDeployPageCache {
     }
 
     public function add_get_instance_hook(): void {
-        add_action(
+        add_filter(
             'static_deploy_page_cache_get_instance',
-            function () {
-                return $this; },
+            // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            function ( $instance = null ) {
+                return $this;
+            },
             10,
-            0
+            1
         );
     }
 
