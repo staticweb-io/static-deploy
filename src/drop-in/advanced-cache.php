@@ -383,8 +383,9 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
  */
 
 class StaticDeployPageCache {
-    private StaticDeployCacheInterface $cache;
+    public StaticDeployCacheInterface $cache;
     private string $default_cache_control;
+    public string $hash_algo;
 
     /**
      * An array of headers in the format
