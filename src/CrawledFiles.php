@@ -102,11 +102,8 @@ class CrawledFiles {
                 );
             }
 
-            $result = $wpdb->query( $wpdb->prepare( $sql, ...$values ) );
-
-            if ( false === $result ) {
-                WsLog::w( 'Error inserting into crawled files: ' . $wpdb->last_error );
-            }
+            $query = $wpdb->prepare( $sql, ...$values );
+            Controller::query( $query );
 
             foreach ( $paths as $path ) {
                 yield $path;
