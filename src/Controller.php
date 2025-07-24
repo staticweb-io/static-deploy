@@ -194,6 +194,26 @@ class Controller {
         }
     }
 
+    public static function query(
+        string $query,
+        ?callable $on_error = null,
+    ): int|bool {
+        global $wpdb;
+
+        $result = $wpdb->query( $query );
+
+        if ( $result !== false ) {
+            return $result;
+        } elseif ( $on_error ) {
+            if ( STATIC_DEPLOY_DEBUG ) {
+                WsLog::d( 'Detected error in query: ' . $wpdb->last_error );
+            }
+            return $on_error( $wpdb->last_error ) || false;
+        } else {
+            throw WsLog::ex( 'Error in query: ' . $wpdb->last_error );
+        }
+    }
+
     public static function getHookName( string $hook_slug ): string {
         return 'static_deploy_' . $hook_slug;
     }
