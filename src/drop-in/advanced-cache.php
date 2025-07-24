@@ -566,6 +566,29 @@ class StaticDeployPageCache {
     }
 
     /**
+     * Returns false if we can rule out cacheability based on
+     * the data available to us at the start of request processing.
+     * Returns true otherwise.
+     */
+    public function initial_cacheable_heuristic(): bool {
+        $method = $_SERVER['REQUEST_METHOD'];
+        // Only check cacheable methods.
+        if ( $method !== 'GET' && $method !== 'HEAD' ) {
+            return false;
+        }
+
+        // If user is authenticated, we can't cache.
+        // WP adds no-store to all authenticated responses,
+        // so there is no point in processing further.
+        if ( is_user_logged_in() ) {
+            return false;
+        }
+
+        // Otherwise, we may be able to cache.
+        return true;
+    }
+
+    /**
      * Receives the PHP output, which should be the body
      * of an HTTP response, and caches it.
      *
@@ -585,8 +608,8 @@ class StaticDeployPageCache {
         string $buffer
     ): string|bool {
         $method = $_SERVER['REQUEST_METHOD'];
-        // If not a cacheable method, return unchanged.
-        if ( $method !== 'GET' && $method !== 'HEAD' ) {
+
+        if ( ! $this->initial_cacheable_heuristic() ) {
             return false;
         }
 
