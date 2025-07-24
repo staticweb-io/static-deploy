@@ -717,4 +717,10 @@ $static_deploy_page_cache = new StaticDeployPageCache(
     STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
 );
 $static_deploy_page_cache->add_get_instance_hook();
-$static_deploy_page_cache->capture_response();
+
+// CLI code may manually load this file in order to
+// access the cache, but we don't want to capture
+// the output buffer in that case.
+if ( ! defined( 'WP_CLI' ) ) {
+    $static_deploy_page_cache->capture_response();
+}
