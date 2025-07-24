@@ -210,6 +210,7 @@ $row = function ( $name ) use ( $options ) {
                 <th>Date</th>
                 <th>Job</th>
                 <th>Status</th>
+                <th>Duration</th>
             </tr>
         </thead>
         <tbody>
@@ -222,6 +223,19 @@ $row = function ( $name ) use ( $options ) {
                 <td><?php echo $job->job_type; ?></td>
                 <td><?php echo $job->status; ?>
                 (<?php echo human_time_diff( new DateTime( $job->status_updated_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() ); ?> ago)
+                </td>
+                <td>
+                <?php
+                if ( $job->status === 'processing' ) {
+                    echo human_time_diff( new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() );
+                    echo ' (still in progress)';
+                } elseif ( $job->status !== 'waiting' ) {
+                    echo human_time_diff(
+                        new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp(),
+                        new DateTime( $job->status_updated_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp(),
+                    );
+                }
+                ?>
                 </td>
             </tr>
             <?php endforeach; ?>

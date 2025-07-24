@@ -20,6 +20,7 @@
 - Remove unused microtime_diff functions.
 - Show "x time ago" for job creation time
   and status update time on jobs page.
+- Show job duration on jobs page.
 
 ## 9.2.1 (2025-07-18)
 
