@@ -1,8 +1,4 @@
-<?php declare(strict_types=1);
-// phpcs:disable Generic.Files.OneObjectStructurePerFile
-// phpcs:disable Squiz.PHP.DiscouragedFunctions
-// Allow discouraged functions so we can use error_log here.
-
+<?php
 /**
  * Plugin Name:       Static Deploy Page Cache (Drop-in)
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
@@ -16,6 +12,12 @@
  * License URI:       https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
  * License:           Unlicense
  */
+
+// phpcs:disable Generic.Files.OneObjectStructurePerFile
+// phpcs:disable Squiz.PHP.DiscouragedFunctions
+// Allow discouraged functions so we can use error_log here.
+
+declare(strict_types=1);
 
 class StaticDeployPageCacheResponse {
     public ?string $blob_key;
