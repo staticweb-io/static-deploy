@@ -283,6 +283,17 @@ if ( ! class_exists( 'Memcached' ) ) {
             $expire = self::to_memcache_expiration( $expire );
             return $this->mc->set( $k, $data, $expire );
         }
+
+        /**
+         * Returns true if we support the given feature.
+         *
+         * See https://developer.wordpress.org/reference/functions/wp_cache_supports/
+         */
+        public function supports(
+            string $feature,
+        ): bool {
+            return false;
+        }
     }
 
     function wp_cache_add(
@@ -379,6 +390,13 @@ if ( ! class_exists( 'Memcached' ) ) {
     ): bool {
         global $wp_object_cache;
         return $wp_object_cache->set( $key, $data, $group, $expire );
+    }
+
+    function wp_cache_supports(
+        string $feature,
+    ): bool {
+        global $wp_object_cache;
+        return $wp_object_cache->supports( $feature );
     }
 
     wp_cache_init();
