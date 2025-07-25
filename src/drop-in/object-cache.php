@@ -29,6 +29,11 @@ if ( ! class_exists( 'Memcached' ) ) {
         private array $global_groups;
         // Prefix used for cache keys in global groups
         private string $global_prefix;
+        // Temporary cache that vanishes at
+        // the end of script execution.
+        private array $local_cache;
+        // Marker object used to represent missing cache items
+        private object $local_missing_marker;
         // Prefix used for cache keys in non-global groups
         private string $non_global_prefix;
         // Array of group_name => array of keys => values
@@ -44,6 +49,8 @@ if ( ! class_exists( 'Memcached' ) ) {
             $this->cache_key_salt = $cache_key_salt;
             $this->global_groups = [];
             $this->global_prefix = $global_prefix;
+            $this->local_cache = [];
+            $this->local_missing_marker = new stdClass();
             $this->non_global_prefix = $non_global_prefix;
             $this->non_persistent_groups = [];
 
@@ -159,7 +166,14 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $expire = self::to_memcache_expiration( $expire );
-            return $this->mc->add( $k, $data, $expire );
+            if ( $this->mc->add( $k, $data, $expire ) ) {
+                $this->local_cache[ $k ] = self::maybe_clone( $data );
+                return true;
+            } else {
+                // We don't know the state of the memcached item
+                unset( $this->local_cache[ $k ] );
+                return false;
+            }
         }
 
         public function add_global_groups(
@@ -201,7 +215,11 @@ if ( ! class_exists( 'Memcached' ) ) {
             string $group = '',
         ): bool {
             $k = $this->cache_key( $key, $group );
-            return $this->mc->delete( $k );
+            if ( $this->mc->delete( $k ) ) {
+                $this->local_cache[ $k ] = $this->local_missing_marker;
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -215,6 +233,7 @@ if ( ! class_exists( 'Memcached' ) ) {
          * Removes all cache items.
          */
         public function flush_runtime(): bool {
+            $this->local_cache = [];
             $this->non_persistent_groups =
                 array_fill_keys(
                     array_keys( $this->non_persistent_groups ),
@@ -232,8 +251,9 @@ if ( ! class_exists( 'Memcached' ) ) {
          * circumstances, the $found parameter is set to true
          * if the key was found, false otherwise.
          *
-         * $force is unused since we do not cache any
-         * persistent values locally.
+         * $force determines whether we can serve the value
+         * from our local cache or if we have to retrieve
+         * the value from memcached.
          */
         public function get(
             int|string $key,
@@ -253,8 +273,25 @@ if ( ! class_exists( 'Memcached' ) ) {
                 }
             }
 
+            if ( ! $force && array_key_exists( $k, $this->local_cache ) ) {
+                $v = $this->local_cache[ $k ];
+                if ( $v === $this->local_missing_marker ) {
+                    $found = false;
+                    return false;
+                }
+                $found = true;
+                return self::maybe_clone( $v );
+            }
+
             $data = $this->mc->get( $k );
             $found = $this->mc->getResultCode() === Memcached::RES_SUCCESS;
+
+            if ( $found ) {
+                $this->local_cache[ $k ] = self::maybe_clone( $data );
+            } else {
+                $this->local_cache[ $k ] = $this->local_missing_marker;
+            }
+
             return $data;
         }
 
@@ -280,7 +317,16 @@ if ( ! class_exists( 'Memcached' ) ) {
                 return false;
             }
 
-            return $this->mc->increment( $k, $offset );
+            $result = $this->mc->increment( $k, $offset );
+
+            if ( $result === false ) {
+                // We don't know the state of the memcached item
+                unset( $this->local_cache[ $k ] );
+                return false;
+            } else {
+                $this->local_cache[ $k ] = $result;
+                return $result;
+            }
         }
 
         /**
@@ -310,7 +356,16 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $expire = self::to_memcache_expiration( $expire );
-            return $this->mc->replace( $k, $data, $expire );
+            $result = $this->mc->replace( $k, $data, $expire );
+
+            if ( $result === false ) {
+                // We don't know the state of the memcached item
+                unset( $this->local_cache[ $k ] );
+                return false;
+            } else {
+                $this->local_cache[ $k ] = self::maybe_clone( $data );
+                return true;
+            }
         }
 
         /**
@@ -338,7 +393,16 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $expire = self::to_memcache_expiration( $expire );
-            return $this->mc->set( $k, $data, $expire );
+            $result = $this->mc->set( $k, $data, $expire );
+
+            if ( $result === false ) {
+                // We don't know the state of the memcached item
+                unset( $this->local_cache[ $k ] );
+                return false;
+            } else {
+                $this->local_cache[ $k ] = self::maybe_clone( $data );
+                return true;
+            }
         }
 
         /**
