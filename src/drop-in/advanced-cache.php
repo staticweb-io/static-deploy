@@ -258,14 +258,21 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     ): ?string {
         $temp_path = $this->temp_dir . DIRECTORY_SEPARATOR . $key . uniqid();
         $path = $this->dir . '/' . $key;
-        if ( ! is_file( $path )
-            && $this->ensure_free_space( strlen( $value ) )
-            && file_put_contents( $temp_path, $value ) !== false ) {
-            // Since writing could result in partial files,
-            // we write to a temp file and move it atomically.
-            if ( ! rename( $temp_path, $path ) ) {
-                return null;
-            }
+
+        // Already stored.
+        if ( is_file( $path ) ) {
+            return $key;
+        }
+
+        // Since writing could result in partial files,
+        // we write to a temp file and move it atomically.
+        if ( ! $this->ensure_free_space( strlen( $value ) )
+            || file_put_contents( $temp_path, $value ) === false
+            || ! rename( $temp_path, $path ) ) {
+            // Unable or failed to store file.
+            // Try to clean up temp file.
+            unlink( $temp_path );
+            return null;
         }
 
         return $key;
