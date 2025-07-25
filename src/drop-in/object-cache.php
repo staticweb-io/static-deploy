@@ -629,6 +629,50 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Sets multiple items in the cache at once.
+         *
+         * $expire is ignored for non-persistent groups, because
+         * they vanish at the end of script execution.
+         */
+        public function set_multiple(
+            array $data,
+            string $group = '',
+            int $expire = 0,
+        ): array {
+            if ( empty( $data ) ) {
+                return [];
+            }
+
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                $arr = [];
+                foreach ( $data as $key => $v ) {
+                    $k = $this->cache_key( $key, $group );
+                    $data = self::maybe_clone( $data );
+                    $this->non_persistent_groups[ $group ][ $k ] = $data;
+                    $arr[ $key ] = true;
+                }
+                return $arr;
+            }
+
+            $expire = self::to_memcache_expiration( $expire );
+            $arr = [];
+            // TODO: Use Memcached::setMulti
+            foreach ( $data as $key => $v ) {
+                $k = $this->cache_key( $key, $group );
+                if ( $this->mc->set( $k, $v, $expire ) ) {
+                    $this->local_cache[ $k ] = self::maybe_clone( $v );
+                    $arr[ $key ] = true;
+                } else {
+                    // We don't know the state of the memcached item
+                    unset( $this->local_cache[ $k ] );
+                    $arr[ $key ] = false;
+                }
+            }
+
+            return $arr;
+        }
+
+        /**
          * Returns true if we support the given feature.
          *
          * See https://developer.wordpress.org/reference/functions/wp_cache_supports/
@@ -641,6 +685,7 @@ if ( ! class_exists( 'Memcached' ) ) {
                 case 'delete_multiple':
                 case 'get_multiple':
                 case 'flush_runtime':
+                case 'set_multiple':
                     return true;
                 default:
                     return false;
@@ -796,6 +841,15 @@ if ( ! class_exists( 'Memcached' ) ) {
     ): bool {
         global $wp_object_cache;
         return $wp_object_cache->set( $key, $data, $group, $expire );
+    }
+
+    function wp_cache_set_multiple(
+        array $data,
+        string $group = '',
+        int $expire = 0,
+    ): array {
+        global $wp_object_cache;
+        return $wp_object_cache->set_multiple( $data, $group, $expire );
     }
 
     function wp_cache_supports(
