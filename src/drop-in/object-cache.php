@@ -35,14 +35,14 @@ if ( ! defined( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID' ) ) {
 class StaticDeployMemcached {
     private Memcached $mc;
 
-    // Arrays of group_name => true
+    // Array of group_name => true
     private array $global_groups;
-    private array $non_persistent_groups;
-
     // Prefix used for cache keys in global groups
     private string $global_prefix;
     // Prefix used for cache keys in non-global groups
     private string $local_prefix;
+    // Array of group_name => array of keys => values
+    private array $non_persistent_groups;
 
     public function __construct(
         string $persistent_id,
@@ -132,6 +132,9 @@ class StaticDeployMemcached {
     /**
      * Adds data to the cache only if the key is not
      * already present in the cache.
+     *
+     * $expire is ignored for non-persistent groups, because
+     * they vanish at the end of script execution.
      */
     public function add(
         int|string $key,
@@ -143,8 +146,15 @@ class StaticDeployMemcached {
             return false;
         }
 
-        $expire = self::to_memcache_expiration( $expire );
         $k = $this->cache_key( $key, $group );
+
+        if ( isset( $this->non_persistent_groups[ $group ] )
+        && ! array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+            $this->non_persistent_groups[ $group ][ $k ] = $data;
+            return true;
+        }
+
+        $expire = self::to_memcache_expiration( $expire );
         return $this->mc->add( $k, $data, $expire );
     }
 
@@ -162,7 +172,7 @@ class StaticDeployMemcached {
     ): void {
         $this->non_persistent_groups = array_merge(
             $this->non_persistent_groups,
-            array_fill_keys( $groups, true ),
+            array_fill_keys( $groups, [] ),
         );
     }
 
@@ -195,6 +205,17 @@ class StaticDeployMemcached {
         ?bool &$found = null
     ): mixed {
         $k = $this->cache_key( $key, $group );
+
+        if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+            if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+                $found = true;
+                return $this->non_persistent_groups[ $group ][ $k ];
+            } else {
+                $found = false;
+                return false;
+            }
+        }
+
         $data = $this->mc->get( $k );
         $found = $this->mc->getResultCode() === Memcached::RES_SUCCESS;
         return $data;
@@ -203,6 +224,9 @@ class StaticDeployMemcached {
     /**
      * Replaces data in the cache only if the key is
      * already present in the cache.
+     *
+     * $expire is ignored for non-persistent groups, because
+     * they vanish at the end of script execution.
      */
     public function replace(
         int|string $key,
@@ -214,13 +238,23 @@ class StaticDeployMemcached {
             return false;
         }
 
-        $expire = self::to_memcache_expiration( $expire );
         $k = $this->cache_key( $key, $group );
+
+        if ( isset( $this->non_persistent_groups[ $group ] )
+        && array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+            $this->non_persistent_groups[ $group ][ $k ] = $data;
+            return true;
+        }
+
+        $expire = self::to_memcache_expiration( $expire );
         return $this->mc->replace( $k, $data, $expire );
     }
 
     /**
      * Adds data to the cache, overwriting any existing data.
+     *
+     * $expire is ignored for non-persistent groups, because
+     * they vanish at the end of script execution.
      */
     public function set(
         int|string $key,
@@ -232,8 +266,14 @@ class StaticDeployMemcached {
             return false;
         }
 
-        $expire = self::to_memcache_expiration( $expire );
         $k = $this->cache_key( $key, $group );
+
+        if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+            $this->non_persistent_groups[ $group ][ $k ] = $data;
+            return true;
+        }
+
+        $expire = self::to_memcache_expiration( $expire );
         return $this->mc->set( $k, $data, $expire );
     }
 }
