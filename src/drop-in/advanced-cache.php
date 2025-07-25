@@ -286,26 +286,26 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
     }
 }
 
-class StaticDeployTransientCache implements StaticDeployCacheInterface {
-    public string $prefix;
+class StaticDeployObjectCache implements StaticDeployCacheInterface {
+    public string $group;
 
     public function __construct(
-        string $prefix,
+        string $group,
     ) {
-        $this->prefix = $prefix;
+        $this->group = $group;
     }
 
     public function get_response(
         string $key
     ): ?StaticDeployPageCacheResponse {
-        $result = get_transient( $this->prefix . $key );
+        $result = wp_cache_get( $key, $this->group );
         return $result === false ? null : $result;
     }
 
     public function get_blob(
         string $key
     ) {
-        $result = get_transient( $this->prefix . $key );
+        $result = wp_cache_get( $key, $this->group );
         return $result === false ? null : $result;
     }
 
@@ -314,9 +314,10 @@ class StaticDeployTransientCache implements StaticDeployCacheInterface {
         string $value,
         int $ttl,
     ): void {
-        set_transient(
-            $this->prefix . $key,
+        wp_cache_add(
+            $key,
             $value,
+            $this->group,
             $ttl,
         );
     }
@@ -325,9 +326,10 @@ class StaticDeployTransientCache implements StaticDeployCacheInterface {
         string $key,
         StaticDeployPageCacheResponse $response
     ): void {
-        set_transient(
-            $this->prefix . $key,
+        wp_cache_add(
+            $key,
             $response,
+            $this->group,
             $response->max_age,
         );
     }
@@ -814,8 +816,8 @@ if ( ! defined( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE' ) ) {
     define( 'STATIC_DEPLOY_MIN_DISK_FREE_SPACE', 0.1 );
 }
 
-if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX' ) ) {
-    define( 'STATIC_DEPLOY_PAGE_CACHE_PREFIX', 'sd_pc_' );
+if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_GROUP' ) ) {
+    define( 'STATIC_DEPLOY_PAGE_CACHE_GROUP', 'sd_pc' );
 }
 
 if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL' ) ) {
@@ -833,15 +835,9 @@ $static_deploy_page_cache = new StaticDeployPageCache(
             STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
             STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
         ),
-        new StaticDeployFileCache(
-            STATIC_DEPLOY_PAGE_CACHE_DIR,
-            STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
-            STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
+        new StaticDeployObjectCache(
+            STATIC_DEPLOY_PAGE_CACHE_GROUP,
         ),
-        // TODO: transients don't work this early
-        // new StaticDeployTransientCache(
-        // STATIC_DEPLOY_PAGE_CACHE_PREFIX,
-        // ),
     ),
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
     STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
