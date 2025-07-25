@@ -296,6 +296,70 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Returns an array of items from the cache, if present.
+         *
+         * Array of return values, grouped by key. Each value is
+         * either the cache contents on success, or false on
+         * failure. If failure must be distinguished from a
+         * false value, use get() with the &$found arg.
+         *
+         * $force determines whether we can serve values
+         * from our local cache or if we have to retrieve
+         * the values from memcached. If false, the response
+         * data may include a mixture of data from the local
+         * cache and from memcached.
+         */
+        public function get_multiple(
+            array $keys,
+            string $group = '',
+            bool $force = false,
+        ): mixed {
+            if ( empty( $keys ) ) {
+                return [];
+            }
+
+            $ks = array_map(
+                fn( $k ) => $this->cache_key( $k, $group ),
+                $keys,
+            );
+
+            $arr = [];
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                foreach ( $ks as $k ) {
+                    if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+                        $arr[ $k ] = self::maybe_clone(
+                            $this->non_persistent_groups[ $group ][ $k ],
+                        );
+                    } else {
+                        $arr[ $k ] = false;
+                    }
+                }
+                return $arr;
+            }
+
+            // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
+            if ( ! $force ) {
+                // TODO: skip lookups for locally cached keys
+            }
+
+            $result = $this->mc->getMulti( $ks );
+            if ( $result === false ) {
+                return array_fill_keys( $keys, false );
+            }
+
+            foreach ( $result as $k => $v ) {
+                if ( $v === false ) {
+                    // We can't tell if the value is missing or false
+                    unset( $this->local_cache[ $k ] );
+                } else {
+                    $this->local_cache[ $k ] = self::maybe_clone( $v );
+                }
+            }
+
+            return array_combine( $keys, $result );
+        }
+
+        /**
          * Increment the value of a numeric cache item.
          * Returns false if the cache item does not exist
          * or is not numeric.
@@ -413,7 +477,13 @@ if ( ! class_exists( 'Memcached' ) ) {
         public function supports(
             string $feature,
         ): bool {
-            return $feature === 'flush_runtime';
+            switch ( $feature ) {
+                case 'get_multiple':
+                case 'flush_runtime':
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 
@@ -482,6 +552,15 @@ if ( ! class_exists( 'Memcached' ) ) {
     ): mixed {
         global $wp_object_cache;
         return $wp_object_cache->get( $key, $group, $force, $found );
+    }
+
+    function wp_cache_get_multiple(
+        array $keys,
+        string $group = '',
+        bool $force = false,
+    ): mixed {
+        global $wp_object_cache;
+        return $wp_object_cache->get_multiple( $keys, $group, $force );
     }
 
     function wp_cache_incr(
