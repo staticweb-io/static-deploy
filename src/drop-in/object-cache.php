@@ -101,6 +101,35 @@ class StaticDeployMemcached {
     }
 
     /**
+     * Convert WordPress $expire args to Memcache
+     * expiration.
+     *
+     * WordPress $expire args to cache functions are
+     * always the number of seconds that the item expires in,
+     * with 0 meaning no expiration.
+     *
+     * Memcached expiration behaves the same for 0 and values
+     * under 60*60*24*30 (number of seconds in 30 days). But if
+     * the value is larger than that, it is treated as a
+     * Unix timestamp.
+     *
+     * If $expire is under this limit, we return it unchanged.
+     * Otherwise, we convert it to a Unix timestamp.
+     *
+     * See https://www.php.net/manual/en/memcached.expiration.php
+     */
+    public static function to_memcache_expiration(
+        int $expire,
+    ): int {
+        // Number of seconds in 30 days
+        if ( $expire <= 2592000 ) {
+            return $expire;
+        } else {
+            return $expire + time();
+        }
+    }
+
+    /**
      * Adds data to the cache only if the key is not
      * already present in the cache.
      */
@@ -114,6 +143,7 @@ class StaticDeployMemcached {
             return false;
         }
 
+        $expire = self::to_memcache_expiration( $expire );
         $k = $this->cache_key( $key, $group );
         return $this->mc->add( $k, $data, $expire );
     }
@@ -172,6 +202,7 @@ class StaticDeployMemcached {
             return false;
         }
 
+        $expire = self::to_memcache_expiration( $expire );
         $k = $this->cache_key( $key, $group );
         return $this->mc->set( $k, $data, $expire );
     }
