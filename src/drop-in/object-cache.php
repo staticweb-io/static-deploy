@@ -186,7 +186,8 @@ if ( ! class_exists( 'Memcached' ) ) {
          * circumstances, the $found parameter is set to true
          * if the key was found, false otherwise.
          *
-         * $force is unused since we have no local cache.
+         * $force is unused since we do not cache any
+         * persistent values locally.
          */
         public function get(
             int|string $key,
