@@ -627,36 +627,12 @@ class StaticDeployPageCache {
     }
 
     /**
-     * Receives the PHP output, which should be the body
-     * of an HTTP response, and caches it.
-     *
-     * This can be called whenever output is flushed,
-     * and not necessarily when output is finished.
-     *
-     * This is the callback provided to ob_start
-     * https://www.php.net/manual/en/function.ob-start.php
-     *
-     * The return value determines the output that is sent
-     * to the client.
-     *  - A string value: Sent instead of the buffer
-     *  - false: Sends the original output buffer contents
-     *  - true: Sends an empty string instead of the buffer
+     * If we have a valid cached response, output its
+     * headers and body (if any).
+     * Returns true if we did any output, false otherwise.
      */
-    public function receive_output(
-        string $buffer
-    ): string|bool {
+    public function output_cache_response(): bool {
         $method = $_SERVER['REQUEST_METHOD'];
-
-        if ( ! $this->initial_cacheable_heuristic() ) {
-            return false;
-        }
-
-        // If user is authenticated, we can't cache.
-        // WP adds no-store to all authenticated responses,
-        // so there is no point in processing further.
-        if ( is_user_logged_in() ) {
-            return false;
-        }
 
         $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
         $cache_key = $method . $uri_hash;
@@ -691,7 +667,8 @@ class StaticDeployPageCache {
                 // continue on to the uncached response.
                 if ( $blob !== null ) {
                     $response->write_output();
-                    return $blob;
+                    echo $blob;
+                    return true;
                 }
             } else {
                 $response->write_output();
@@ -699,6 +676,28 @@ class StaticDeployPageCache {
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Receives the PHP output, which should be the body
+     * of an HTTP response, and caches it.
+     *
+     * This can be called whenever output is flushed,
+     * and not necessarily when output is finished.
+     *
+     * This is the callback provided to ob_start
+     * https://www.php.net/manual/en/function.ob-start.php
+     *
+     * The return value determines the output that is sent
+     * to the client.
+     *  - A string value: Sent instead of the buffer
+     *  - false: Sends the original output buffer contents
+     *  - true: Sends an empty string instead of the buffer
+     */
+    public function receive_output(
+        string $buffer
+    ): string|bool {
         $this->parse_headers();
 
         // We have to add Vary: Cookie to every response
@@ -754,6 +753,10 @@ class StaticDeployPageCache {
                 $this->max_age,
             );
         }
+
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
+        $cache_key = $method . $uri_hash;
         $this->cache->set_response(
             $cache_key,
             $response
@@ -819,9 +822,15 @@ $static_deploy_page_cache = new StaticDeployPageCache(
             STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
             STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
         ),
-        new StaticDeployTransientCache(
-            STATIC_DEPLOY_PAGE_CACHE_PREFIX,
+        new StaticDeployFileCache(
+            STATIC_DEPLOY_PAGE_CACHE_DIR,
+            STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
+            STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
         ),
+        // TODO: transients don't work this early
+        // new StaticDeployTransientCache(
+        //     STATIC_DEPLOY_PAGE_CACHE_PREFIX,
+        // ),
     ),
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
     STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
@@ -831,6 +840,11 @@ $static_deploy_page_cache->add_get_instance_hook();
 // CLI code may manually load this file in order to
 // access the cache, but we don't want to capture
 // the output buffer in that case.
-if ( ! defined( 'WP_CLI' ) ) {
-    $static_deploy_page_cache->capture_response();
+if ( ! defined( 'WP_CLI' )
+&& $static_deploy_page_cache->initial_cacheable_heuristic() ) {
+    if ( $static_deploy_page_cache->output_cache_response() ) {
+        exit( 0 );
+    } else {
+        $static_deploy_page_cache->capture_response();
+    }
 }
