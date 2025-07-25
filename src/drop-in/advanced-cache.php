@@ -829,15 +829,29 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
 }
 
 ( function () {
+    // Try to load object cache drop-in
+    $object_cache_path = WP_CONTENT_DIR . '/object-cache.php';
+
+    if ( file_exists( $object_cache_path ) ) {
+        include_once $object_cache_path;
+    }
+
     $blob_cache = new StaticDeployFileCache(
         STATIC_DEPLOY_PAGE_CACHE_DIR,
         STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
         STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
     );
 
-    $request_cache = new StaticDeployObjectCache(
-        STATIC_DEPLOY_PAGE_CACHE_GROUP,
-    );
+    // The default WP object cache is no use here because
+    // it doesn't persist across requests. An external
+    // object cache is nearly always a persistent cache.
+    if ( wp_using_ext_object_cache() ) {
+        $request_cache = new StaticDeployObjectCache(
+            STATIC_DEPLOY_PAGE_CACHE_GROUP,
+        );
+    } else {
+        $request_cache = $blob_cache;
+    }
 
     $backing_cache = new StaticDeployCombinedCache(
         $blob_cache,
