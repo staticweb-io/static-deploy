@@ -337,9 +337,31 @@ if ( ! class_exists( 'Memcached' ) ) {
                 return $arr;
             }
 
-            // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
             if ( ! $force ) {
-                // TODO: skip lookups for locally cached keys
+                // Look up as many locally cached keys as we can
+                $local = [];
+                foreach ( $ks as $k ) {
+                    if ( array_key_exists( $k, $this->local_cache ) ) {
+                        $v = $this->local_cache[ $k ];
+                        if ( $v === $this->local_missing_marker ) {
+                            $local[ $k ] = false;
+                        } else {
+                            $local[ $k ] = self::maybe_clone( $v );
+                        }
+                    }
+                }
+            } else {
+                $local = null;
+            }
+
+            // Don't hit memcached for items we found locally
+            if ( ! empty( $local ) ) {
+                $ks = array_diff( $ks, array_keys( $local ) );
+            }
+
+            // All keys were found locally
+            if ( empty( $ks ) ) {
+                return $local;
             }
 
             $result = $this->mc->getMulti( $ks );
@@ -356,7 +378,14 @@ if ( ! class_exists( 'Memcached' ) ) {
                 }
             }
 
-            return array_combine( $keys, $result );
+            $arr = array_combine( $keys, $result );
+
+            // If we found any keys locally, merge them in
+            if ( ! empty( $local ) ) {
+                $arr = array_merge( $local, $arr );
+            }
+
+            return $arr;
         }
 
         /**
