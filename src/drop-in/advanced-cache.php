@@ -698,6 +698,8 @@ class StaticDeployPageCache {
     public function receive_output(
         string $buffer
     ): string|bool {
+        $method = $_SERVER['REQUEST_METHOD'];
+
         $this->parse_headers();
 
         // We have to add Vary: Cookie to every response
@@ -709,7 +711,9 @@ class StaticDeployPageCache {
             return false;
         }
 
-        if ( ! isset( $this->headers['content-length'] ) ) {
+        // We don't want to update content-length on a HEAD
+        // because it will be 0 and not the actual length.
+        if ( $method === 'GET' && ! isset( $this->headers['content-length'] ) ) {
             $this->headers['content-length'] = [
                 'Content-Length',
                 strlen( $buffer ),
@@ -754,7 +758,6 @@ class StaticDeployPageCache {
             );
         }
 
-        $method = $_SERVER['REQUEST_METHOD'];
         $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
         $cache_key = $method . $uri_hash;
         $this->cache->set_response(
