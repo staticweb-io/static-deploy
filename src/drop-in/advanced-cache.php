@@ -96,7 +96,7 @@ interface StaticDeployCacheInterface {
 
     public function get_blob(
         string $key
-    ): ?string;
+    );
 
     public function set_blob(
         string $key,
@@ -226,7 +226,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 
     public function get_blob(
         string $key
-    ): ?string {
+    ) {
         $path = $this->dir . '/' . $key;
         if ( ! is_file( $path ) ) {
             return null;
@@ -291,7 +291,7 @@ class StaticDeployTransientCache implements StaticDeployCacheInterface {
 
     public function get_blob(
         string $key
-    ): ?string {
+    ) {
         $result = get_transient( $this->prefix . $key );
         return $result === false ? null : $result;
     }
@@ -344,7 +344,7 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
 
     public function get_blob(
         string $key
-    ): ?string {
+    ) {
         return $this->blob_cache->get_blob( $key );
     }
 
@@ -668,7 +668,12 @@ class StaticDeployPageCache {
                 // continue on to the uncached response.
                 if ( $blob !== null ) {
                     $response->write_output();
-                    echo $blob;
+                    if ( is_resource( $blob ) ) {
+                        fpassthru( $blob );
+                        fclose( $blob );
+                    } else {
+                        echo $blob;
+                    }
                     return true;
                 }
             } else {
