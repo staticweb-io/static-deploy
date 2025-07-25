@@ -600,6 +600,7 @@ class StaticDeployPageCache {
      */
     public function initial_cacheable_heuristic(): bool {
         $method = $_SERVER['REQUEST_METHOD'];
+
         // Only check cacheable methods.
         if ( $method !== 'GET' && $method !== 'HEAD' ) {
             return false;
@@ -832,7 +833,7 @@ $static_deploy_page_cache = new StaticDeployPageCache(
         ),
         // TODO: transients don't work this early
         // new StaticDeployTransientCache(
-        //     STATIC_DEPLOY_PAGE_CACHE_PREFIX,
+        // STATIC_DEPLOY_PAGE_CACHE_PREFIX,
         // ),
     ),
     STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
