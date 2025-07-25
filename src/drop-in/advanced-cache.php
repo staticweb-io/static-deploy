@@ -892,15 +892,14 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
         $request_cache = new StaticDeployObjectCache(
             STATIC_DEPLOY_PAGE_CACHE_GROUP,
         );
+        $backing_cache = new StaticDeployCombinedCache(
+            $blob_cache,
+            $request_cache,
+            large_blob_threshold: $large_blob_threshold,
+        );
     } else {
-        $request_cache = $blob_cache;
+        $backing_cache = $blob_cache;
     }
-
-    $backing_cache = new StaticDeployCombinedCache(
-        $blob_cache,
-        $request_cache,
-        large_blob_threshold: $large_blob_threshold,
-    );
 
     $page_cache = new StaticDeployPageCache(
         $backing_cache,
