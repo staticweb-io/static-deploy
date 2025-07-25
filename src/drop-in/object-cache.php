@@ -655,15 +655,25 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $expire = self::to_memcache_expiration( $expire );
-            $arr = [];
-            // TODO: Use Memcached::setMulti
+            $d = [];
             foreach ( $data as $key => $v ) {
                 $k = $this->cache_key( $key, $group );
-                if ( $this->mc->set( $k, $v, $expire ) ) {
+                $d[ $k ] = $v;
+            }
+
+            $result = $this->mc->setMulti( $d, $expire );
+
+            $arr = [];
+            if ( $result ) {
+                foreach ( $data as $key => $v ) {
+                    $k = $this->cache_key( $key, $group );
                     $this->local_cache[ $k ] = self::maybe_clone( $v );
                     $arr[ $key ] = true;
-                } else {
-                    // We don't know the state of the memcached item
+                }
+            } else {
+                foreach ( $data as $key => $v ) {
+                    $k = $this->cache_key( $key, $group );
+                    // We don't know the state of the memcached items
                     unset( $this->local_cache[ $k ] );
                     $arr[ $key ] = false;
                 }
