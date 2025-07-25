@@ -719,15 +719,6 @@ class StaticDeployPageCache {
 
         $this->parse_headers();
 
-        // We have to add Vary: Cookie to every response
-        // so that the browser knows to request new pages
-        // after a user logs in.
-        header( 'Vary: ' . $this->headers['vary'][1] );
-
-        if ( ! $this->headers_should_cache() ) {
-            return false;
-        }
-
         // We don't want to update content-length on a HEAD
         // because it will be 0 and not the actual length.
         if ( $method === 'GET' && ! isset( $this->headers['content-length'] ) ) {
@@ -748,6 +739,16 @@ class StaticDeployPageCache {
             $blob_key = 'blob' . $etag;
         } else {
             $blob_key = null;
+        }
+
+        // Make sure any updated headers such as
+        // Cache-Control, ETag, and Vary are sent.
+        foreach ( $this->headers as $header ) {
+            header( $header[0] . ': ' . $header[1] );
+        }
+
+        if ( ! $this->headers_should_cache() ) {
+            return false;
         }
 
         // If the WP filter doesn't deliver a status code,
