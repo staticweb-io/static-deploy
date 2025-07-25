@@ -576,10 +576,20 @@ class StaticDeployPageCache {
             return false;
         }
 
-        // If user is authenticated, we can't cache.
-        // WP adds no-store to all authenticated responses,
-        // so there is no point in processing further.
-        if ( is_user_logged_in() ) {
+        // WordPress expects login cookies to be usable on every
+        // page. This means that
+        // we have to set Vary: Cookie in order to prevent
+        // responses to logged-in users from getting mixed up with
+        // responses to anonymous users.
+        // Since we are going to respect the Vary: Cookie header,
+        // we might as well not waste any time on requests with
+        // any cookies whatsoever, whether login cookies or not.
+        //
+        // If a website is configured so that public pages don't
+        // see log-in cookies at all, this could be avoided.
+        // But that is very rare because it goes against
+        // how core WordPress works.
+        if ( $_SERVER['HTTP_COOKIE'] ?? false ) {
             return false;
         }
 
