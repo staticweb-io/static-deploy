@@ -535,6 +535,10 @@ class StaticDeployPageCache {
         }
 
         // Vary header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary
+        // Besides parsing the vary header,
+        // we have to add "Cookie" to it if not present so
+        // that browsers will not keep showing cached anonymous
+        // responses to a user after they have logged in.
         $vary = $this->headers['vary'] ?? null;
         if ( $vary ) {
             $this->headers_vary = [];
@@ -542,8 +546,16 @@ class StaticDeployPageCache {
                 $k = strtolower( trim( $header ) );
                 $this->headers_vary[ $k ] = true;
             }
+            // * indicates an uncacheable response, so we don't
+            // need to add "Cookie".
+            if ( ! isset( $this->headers_vary['cookie'] )
+            && ! isset( $this->headers_vary['*'] ) ) {
+                $this->headers['vary'][1] .= ', Cookie';
+                $this->headers_vary['cookie'] = true;
+            }
         } else {
-            $this->headers_vary = [];
+            $this->headers['vary'] = [ 'Vary', 'Cookie' ];
+            $this->headers_vary = [ 'cookie' => true ];
         }
     }
 
@@ -684,6 +696,11 @@ class StaticDeployPageCache {
         }
 
         $this->parse_headers();
+
+        // We have to add Vary: Cookie to every response
+        // so that the browser knows to request new pages
+        // after a user logs in.
+        header( 'Vary: ' . $this->headers['vary'][1] );
 
         if ( ! $this->headers_should_cache() ) {
             return false;
