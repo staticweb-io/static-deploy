@@ -403,6 +403,7 @@ class StaticDeployPageCache {
     private array $headers;
 
     private array $headers_cache_control;
+    private array $headers_vary;
 
     private int $max_age;
     private int $status_code;
@@ -531,6 +532,18 @@ class StaticDeployPageCache {
             $this->max_age = $max_age === false ? 0 : $max_age;
         } else {
             $this->max_age = 0;
+        }
+
+        // Vary header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary
+        $vary = $this->headers['vary'] ?? null;
+        if ( $vary ) {
+            $this->headers_vary = [];
+            foreach ( explode( ',', $vary[1] ) as $header ) {
+                $k = strtolower( trim( $header ) );
+                $this->headers_vary[ $k ] = true;
+            }
+        } else {
+            $this->headers_vary = [];
         }
     }
 
