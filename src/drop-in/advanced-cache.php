@@ -231,11 +231,22 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         if ( ! is_file( $path ) ) {
             return null;
         }
-        $content = file_get_contents( $path );
-        if ( $content === false ) {
+
+        $handle = fopen( $path, 'rb' );
+        if ( $handle === false ) {
             return null;
         }
-        return $content;
+
+        // Try to acquire a shared lock for reading
+        // Non-blocking: We prefer to recreate the response rather
+        // than attempt to wait for a lock.
+        if ( ! flock( $handle, LOCK_SH | LOCK_NB ) ) {
+            fclose( $handle );
+            return null;
+        }
+
+        // Caller is responsible for reading and closing the handle
+        return $handle;
     }
 
     public function set_blob(
