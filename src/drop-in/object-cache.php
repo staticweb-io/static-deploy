@@ -229,6 +229,48 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Deletes multiple items from the cache.
+         *
+         * Returns an array of bools grouped by key
+         * indicating successful deletion.
+         */
+        public function delete_multiple(
+            array $keys,
+            string $group = '',
+        ): array {
+            if ( empty( $keys ) ) {
+                return [];
+            }
+
+            $ks = array_map(
+                fn( $k ) => $this->cache_key( $k, $group ),
+                $keys,
+            );
+
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                foreach ( $ks as $k ) {
+                    unset( $this->non_persistent_groups[ $group ][ $k ] );
+                }
+                return array_fill_keys( $ks, true );
+            }
+
+            $results = $this->mc->deleteMulti( $ks );
+
+            foreach ( $results as $k => $v ) {
+                if ( $v === true ) {
+                    $this->local_cache[ $k ] = $this->local_missing_marker;
+                } else {
+                    // We aren't sure of the state of the item
+                    unset( $this->local_cache[ $k ] );
+                    // Turn Memcached::RES_* constants into false
+                    $results[ $k ] = false;
+                }
+            }
+
+            return $results;
+        }
+
+        /**
          * Removes all cache items.
          */
         public function flush(): bool {
@@ -513,6 +555,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             string $feature,
         ): bool {
             switch ( $feature ) {
+                case 'delete_multiple':
                 case 'get_multiple':
                 case 'flush_runtime':
                     return true;
@@ -567,6 +610,14 @@ if ( ! class_exists( 'Memcached' ) ) {
     ): bool {
         global $wp_object_cache;
         return $wp_object_cache->delete( $key, $group );
+    }
+
+    function wp_cache_delete_multiple(
+        array $keys,
+        string $group = '',
+    ): array {
+        global $wp_object_cache;
+        return $wp_object_cache->delete_multiple( $keys, $group );
     }
 
     function wp_cache_flush(): bool {
