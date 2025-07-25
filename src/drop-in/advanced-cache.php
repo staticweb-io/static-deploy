@@ -104,7 +104,7 @@ interface StaticDeployCacheInterface {
         string $key,
         string $value,
         int $ttl,
-    ): void;
+    ): ?string;
 
     /*
      * Even though we can compute the key from the response,
@@ -255,7 +255,7 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
         string $key,
         string $value,
         int $ttl,
-    ): void {
+    ): ?string {
         $temp_path = $this->temp_dir . DIRECTORY_SEPARATOR . $key . uniqid();
         $path = $this->dir . '/' . $key;
         if ( ! is_file( $path )
@@ -263,8 +263,12 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
             && file_put_contents( $temp_path, $value ) !== false ) {
             // Since writing could result in partial files,
             // we write to a temp file and move it atomically.
-            rename( $temp_path, $path );
+            if ( ! rename( $temp_path, $path ) ) {
+                return null;
+            }
         }
+
+        return $key;
     }
 
     public function set_response(
@@ -313,13 +317,14 @@ class StaticDeployObjectCache implements StaticDeployCacheInterface {
         string $key,
         string $value,
         int $ttl,
-    ): void {
-        wp_cache_add(
+    ): ?string {
+        $result = wp_cache_set(
             $key,
             $value,
             $this->group,
             $ttl,
         );
+        return $result === false ? null : $key;
     }
 
     public function set_response(
@@ -367,8 +372,8 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
         string $key,
         string $value,
         int $ttl,
-    ): void {
-        $this->blob_cache->set_blob( $key, $value, $ttl );
+    ): ?string {
+        return $this->blob_cache->set_blob( $key, $value, $ttl );
     }
 
     public function set_response(
@@ -764,6 +769,18 @@ class StaticDeployPageCache {
             return false;
         }
 
+        if ( $blob_key ) {
+            $blob_key = $this->cache->set_blob(
+                $blob_key,
+                $buffer,
+                $this->max_age,
+            );
+            // Failed to store blob
+            if ( $blob_key === null ) {
+                return false;
+            }
+        }
+
         $response = new StaticDeployPageCacheResponse(
             $this->status_code,
             $this->status_header,
@@ -772,13 +789,6 @@ class StaticDeployPageCache {
             $this->max_age,
             $blob_key,
         );
-        if ( $blob_key ) {
-            $this->cache->set_blob(
-                $blob_key,
-                $buffer,
-                $this->max_age,
-            );
-        }
 
         $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
         $cache_key = $method . $uri_hash;
