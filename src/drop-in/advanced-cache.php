@@ -828,30 +828,32 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
     define( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO', 'sha256' );
 }
 
-$static_deploy_page_cache = new StaticDeployPageCache(
-    new StaticDeployCombinedCache(
-        new StaticDeployFileCache(
-            STATIC_DEPLOY_PAGE_CACHE_DIR,
-            STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
-            STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
+( function () {
+    $cache = new StaticDeployPageCache(
+        new StaticDeployCombinedCache(
+            new StaticDeployFileCache(
+                STATIC_DEPLOY_PAGE_CACHE_DIR,
+                STATIC_DEPLOY_PAGE_CACHE_TEMP_DIR,
+                STATIC_DEPLOY_MIN_DISK_FREE_SPACE,
+            ),
+            new StaticDeployObjectCache(
+                STATIC_DEPLOY_PAGE_CACHE_GROUP,
+            ),
         ),
-        new StaticDeployObjectCache(
-            STATIC_DEPLOY_PAGE_CACHE_GROUP,
-        ),
-    ),
-    STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
-    STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
-);
-$static_deploy_page_cache->add_get_instance_hook();
+        STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL,
+        STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO,
+    );
+    $cache->add_get_instance_hook();
 
-// CLI code may manually load this file in order to
-// access the cache, but we don't want to capture
-// the output buffer in that case.
-if ( ! defined( 'WP_CLI' )
-&& $static_deploy_page_cache->initial_cacheable_heuristic() ) {
-    if ( $static_deploy_page_cache->output_cache_response() ) {
-        exit( 0 );
-    } else {
-        $static_deploy_page_cache->capture_response();
+    // CLI code may manually load this file in order to
+    // access the cache, but we don't want to capture
+    // the output buffer in that case.
+    if ( ! defined( 'WP_CLI' )
+    && $cache->initial_cacheable_heuristic() ) {
+        if ( $cache->output_cache_response() ) {
+            exit( 0 );
+        } else {
+            $cache->capture_response();
+        }
     }
-}
+} )();
