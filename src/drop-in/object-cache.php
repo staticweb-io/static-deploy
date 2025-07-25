@@ -39,13 +39,22 @@ class StaticDeployMemcached {
     private array $global_groups;
     private array $non_persistent_groups;
 
+    // Prefix used for cache keys in global groups
+    private string $global_prefix;
+    // Prefix used for cache keys in non-global groups
+    private string $local_prefix;
+
     public function __construct(
         string $persistent_id,
         array $servers,
+        string $local_prefix,
         string $cache_key_salt = '',
+        string $global_prefix = 'global',
     ) {
         $this->cache_key_salt = $cache_key_salt;
         $this->global_groups = [];
+        $this->global_prefix = $global_prefix;
+        $this->local_prefix = $local_prefix;
         $this->non_persistent_groups = [];
 
         // https://www.php.net/manual/en/memcached.construct.php
@@ -82,7 +91,13 @@ class StaticDeployMemcached {
             $group = 'default';
         }
 
-        return $this->cache_key_salt . $group . ':' . $key;
+        if ( isset( $this->global_groups[ $group ] ) ) {
+            $prefix = $this->global_prefix;
+        } else {
+            $prefix = $this->local_prefix;
+        }
+
+        return $this->cache_key_salt . $prefix . $group . ':' . $key;
     }
 
     /**
@@ -178,6 +193,7 @@ global $wp_object_cache;
 $wp_object_cache = new StaticDeployMemcached(
     STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID,
     $memcached_servers,
+    (string) get_current_blog_id(),
     WP_CACHE_KEY_SALT,
 );
 
