@@ -350,16 +350,25 @@ class StaticDeployObjectCache implements StaticDeployCacheInterface {
 /**
  * A cache that combines two other caches, using one for
  * responses and one for blobs.
+ *
+ * Smaller blobs can be stored in the response cache
+ * as well.
  */
 class StaticDeployCombinedCache implements StaticDeployCacheInterface {
     public StaticDeployCacheInterface $blob_cache;
+    // Blobs up to this size in bytes will be stored in
+    // the response cache. Larger blobs will be stored in
+    // the blob cache.
+    public int $large_blob_threshold;
     public StaticDeployCacheInterface $response_cache;
 
     public function __construct(
         StaticDeployCacheInterface $blob_cache,
         StaticDeployCacheInterface $response_cache,
+        int $large_blob_threshold = 0,
     ) {
         $this->blob_cache = $blob_cache;
+        $this->large_blob_threshold = $large_blob_threshold;
         $this->response_cache = $response_cache;
     }
 
@@ -372,6 +381,9 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
     public function get_blob(
         string $key
     ) {
+        if ( str_starts_with( $key, 's' ) ) {
+            return $this->response_cache->get_blob( $key );
+        }
         return $this->blob_cache->get_blob( $key );
     }
 
@@ -380,6 +392,12 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
         string $value,
         int $ttl,
     ): ?string {
+        if ( strlen( $value ) <= $this->large_blob_threshold ) {
+            $key = 's' . $key;
+            return $this->response_cache->set_blob( $key, $value, $ttl );
+        }
+
+        $key = 'l' . $key;
         return $this->blob_cache->set_blob( $key, $value, $ttl );
     }
 
@@ -846,6 +864,14 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
 }
 
 ( function () {
+    if ( defined( 'STATIC_DEPLOY_PAGE_CACHE_LARGE_BLOB_THRESHOLD' ) ) {
+        $large_blob_threshold = STATIC_DEPLOY_PAGE_CACHE_LARGE_BLOB_THRESHOLD;
+    } else {
+        // Note that memcached values are limited to 1 MB.
+        // 128 KB
+        $large_blob_threshold = 128 * 1024;
+    }
+
     // Try to load object cache drop-in
     $object_cache_path = WP_CONTENT_DIR . '/object-cache.php';
 
@@ -873,6 +899,7 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
     $backing_cache = new StaticDeployCombinedCache(
         $blob_cache,
         $request_cache,
+        large_blob_threshold: $large_blob_threshold,
     );
 
     $page_cache = new StaticDeployPageCache(
