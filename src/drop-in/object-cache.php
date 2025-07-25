@@ -176,6 +176,56 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
         }
 
+        /**
+         * Adds items to the cache only if the key is not
+         * already present in the cache.
+         *
+         * $expire is ignored for non-persistent groups, because
+         * they vanish at the end of script execution.
+         */
+        public function add_multiple(
+            array $data,
+            string $group = '',
+            int $expire = 0,
+        ): array {
+            if ( empty( $data ) ) {
+                return [];
+            }
+
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                $arr = [];
+                foreach ( $data as $key => $v ) {
+                    $k = $this->cache_key( $key, $group );
+                    if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+                        $arr[ $key ] = false;
+                    } else {
+                        $data = self::maybe_clone( $data );
+                        $this->non_persistent_groups[ $group ][ $k ] = $data;
+                        $arr[ $key ] = true;
+                    }
+                }
+                return $arr;
+            }
+
+            $expire = self::to_memcache_expiration( $expire );
+            $arr = [];
+            // Memcached doesn't support addMulti, so we
+            // iterater over many add() calls.
+            foreach ( $data as $key => $v ) {
+                $k = $this->cache_key( $key, $group );
+                if ( $this->mc->add( $k, $v, $expire ) ) {
+                    $this->local_cache[ $k ] = self::maybe_clone( $v );
+                    $arr[ $key ] = true;
+                } else {
+                    // We don't know the state of the memcached item
+                    unset( $this->local_cache[ $k ] );
+                    $arr[ $key ] = false;
+                }
+            }
+
+            return $arr;
+        }
+
         public function add_global_groups(
             array $groups,
         ): void {
@@ -587,6 +637,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             string $feature,
         ): bool {
             switch ( $feature ) {
+                case 'add_multiple':
                 case 'delete_multiple':
                 case 'get_multiple':
                 case 'flush_runtime':
@@ -613,6 +664,15 @@ if ( ! class_exists( 'Memcached' ) ) {
         global $wp_object_cache;
         $groups = (array) $groups;
         $wp_object_cache->add_global_groups( $groups );
+    }
+
+    function wp_cache_add_multiple(
+        array $data,
+        string $group = '',
+        int $expire = 0,
+    ): array {
+        global $wp_object_cache;
+        return $wp_object_cache->add_multiple( $data, $group, $expire );
     }
 
     function wp_cache_add_non_persistent_groups(
