@@ -120,6 +120,19 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Clone $data if it is a type that is passed
+         * by reference.
+         */
+        public static function maybe_clone(
+            mixed $data,
+        ): mixed {
+            if ( is_object( $data ) ) {
+                return clone $data;
+            }
+            return $data;
+        }
+
+        /**
          * Adds data to the cache only if the key is not
          * already present in the cache.
          *
@@ -140,6 +153,7 @@ if ( ! class_exists( 'Memcached' ) ) {
 
             if ( isset( $this->non_persistent_groups[ $group ] )
             && ! array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+                $data = self::maybe_clone( $data );
                 $this->non_persistent_groups[ $group ][ $k ] = $data;
                 return true;
             }
@@ -200,7 +214,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             if ( isset( $this->non_persistent_groups[ $group ] ) ) {
                 if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
                     $found = true;
-                    return $this->non_persistent_groups[ $group ][ $k ];
+                    return self::maybe_clone( $this->non_persistent_groups[ $group ][ $k ] );
                 } else {
                     $found = false;
                     return false;
@@ -233,6 +247,7 @@ if ( ! class_exists( 'Memcached' ) ) {
 
             if ( isset( $this->non_persistent_groups[ $group ] )
             && array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
+                $data = self::maybe_clone( $data );
                 $this->non_persistent_groups[ $group ][ $k ] = $data;
                 return true;
             }
@@ -260,6 +275,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             $k = $this->cache_key( $key, $group );
 
             if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                $data = self::maybe_clone( $data );
                 $this->non_persistent_groups[ $group ][ $k ] = $data;
                 return true;
             }
