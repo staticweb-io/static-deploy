@@ -404,12 +404,19 @@ if ( ! class_exists( 'Memcached' ) ) {
 
             // Don't hit memcached for items we found locally
             if ( ! empty( $local ) ) {
+                $ks_to_keys = array_combine( $ks, $keys );
+                $arr = [];
+                foreach ( $ks_to_keys as $k => $key ) {
+                    $arr[ $key ] = $local[ $k ];
+                }
                 $ks = array_diff( $ks, array_keys( $local ) );
-            }
 
-            // All keys were found locally
-            if ( empty( $ks ) ) {
-                return $local;
+                // All keys were found locally
+                if ( empty( $ks ) ) {
+                    return $arr;
+                }
+
+                $local = $arr;
             }
 
             $result = $this->mc->getMulti( $ks );
@@ -417,23 +424,41 @@ if ( ! class_exists( 'Memcached' ) ) {
                 return array_fill_keys( $keys, false );
             }
 
-            foreach ( $result as $k => $v ) {
-                if ( $v === false ) {
-                    // We can't tell if the value is missing or false
-                    unset( $this->local_cache[ $k ] );
-                } else {
-                    $this->local_cache[ $k ] = self::maybe_clone( $v );
+            if ( ! isset( $ks_to_keys ) ) {
+                $ks_to_keys = array_combine( $ks, $keys );
+            }
+
+            // These do essentially the same thing if $local is
+            // empty, but the then branch can skip the lookups.
+            if ( empty( $local ) ) {
+                $arr = [];
+                foreach ( $ks_to_keys as $k => $key ) {
+                    if ( isset( $result[ $k ] ) ) {
+                        $v = $result[ $k ];
+                        $this->local_cache[ $k ] = self::maybe_clone( $v );
+                        $arr[ $key ] = $v;
+                    } else {
+                        unset( $this->local_cache[ $k ] );
+                        $arr[ $key ] = false;
+                    }
                 }
+                return $arr;
+            } else {
+                $arr = [];
+                foreach ( $ks_to_keys as $k => $key ) {
+                    if ( isset( $result[ $k ] ) ) {
+                        $v = $result[ $k ];
+                        $this->local_cache[ $k ] = self::maybe_clone( $v );
+                        $arr[ $key ] = $v;
+                    } elseif ( isset( $local[ $key ] ) ) {
+                        $arr[ $key ] = $local[ $key ];
+                    } else {
+                        unset( $this->local_cache[ $k ] );
+                        $arr[ $key ] = false;
+                    }
+                }
+                return $arr;
             }
-
-            $arr = array_combine( $keys, $result );
-
-            // If we found any keys locally, merge them in
-            if ( ! empty( $local ) ) {
-                $arr = array_merge( $local, $arr );
-            }
-
-            return $arr;
         }
 
         /**
