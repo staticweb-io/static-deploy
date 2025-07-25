@@ -464,16 +464,6 @@ if ( ! class_exists( 'Memcached' ) ) {
         return $wp_object_cache->delete( $key, $group );
     }
 
-    function wp_cache_get(
-        int|string $key,
-        string $group = '',
-        bool $force = false,
-        ?bool &$found = null
-    ): mixed {
-        global $wp_object_cache;
-        return $wp_object_cache->get( $key, $group, $force, $found );
-    }
-
     function wp_cache_flush(): bool {
         global $wp_object_cache;
         return $wp_object_cache->flush();
@@ -482,6 +472,16 @@ if ( ! class_exists( 'Memcached' ) ) {
     function wp_cache_flush_runtime(): bool {
         global $wp_object_cache;
         return $wp_object_cache->flush_runtime();
+    }
+
+    function wp_cache_get(
+        int|string $key,
+        string $group = '',
+        bool $force = false,
+        ?bool &$found = null
+    ): mixed {
+        global $wp_object_cache;
+        return $wp_object_cache->get( $key, $group, $force, $found );
     }
 
     function wp_cache_incr(
