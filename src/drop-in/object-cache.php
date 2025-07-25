@@ -181,6 +181,19 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Decrement the value of a numeric cache item.
+         * Returns false if the cache item does not exist
+         * or is not numeric.
+         */
+        public function decr(
+            int|string $key,
+            int $offset = 1,
+            string $group = '',
+        ): int|false {
+            return $this->incr( $key, -$offset, $group );
+        }
+
+        /**
          * Deletes an item from the cache.
          */
         public function delete(
@@ -243,6 +256,31 @@ if ( ! class_exists( 'Memcached' ) ) {
             $data = $this->mc->get( $k );
             $found = $this->mc->getResultCode() === Memcached::RES_SUCCESS;
             return $data;
+        }
+
+        /**
+         * Increment the value of a numeric cache item.
+         * Returns false if the cache item does not exist
+         * or is not numeric.
+         */
+        public function incr(
+            int|string $key,
+            int $offset = 1,
+            string $group = '',
+        ): int|false {
+            $k = $this->cache_key( $key, $group );
+
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                $v = $this->non_persistent_groups[ $group ][ $k ] ?? null;
+                if ( is_numeric( $v ) ) {
+                    $v += $offset;
+                    $this->non_persistent_groups[ $group ][ $k ] = $v;
+                    return $v;
+                }
+                return false;
+            }
+
+            return $this->mc->increment( $k, $offset );
         }
 
         /**
@@ -345,6 +383,15 @@ if ( ! class_exists( 'Memcached' ) ) {
         return true;
     }
 
+    function wp_cache_decr(
+        int|string $key,
+        int $offset = 1,
+        string $group = '',
+    ): int|false {
+        global $wp_object_cache;
+        return $wp_object_cache->decr( $key, $offset, $group );
+    }
+
     function wp_cache_delete(
         int|string $key,
         string $group = '',
@@ -371,6 +418,15 @@ if ( ! class_exists( 'Memcached' ) ) {
     function wp_cache_flush_runtime(): bool {
         global $wp_object_cache;
         return $wp_object_cache->flush_runtime();
+    }
+
+    function wp_cache_incr(
+        int|string $key,
+        int $offset = 1,
+        string $group = '',
+    ): int|false {
+        global $wp_object_cache;
+        return $wp_object_cache->incr( $key, $offset, $group );
     }
 
     function wp_cache_init(): void {
