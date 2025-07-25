@@ -167,6 +167,17 @@ class StaticDeployMemcached {
     }
 
     /**
+     * Deletes an item from the cache.
+     */
+    public function delete(
+        int|string $key,
+        string $group = '',
+    ): bool {
+        $k = $this->cache_key( $key, $group );
+        return $this->mc->delete( $k );
+    }
+
+    /**
      * Returns data from the cache, if present.
      *
      * Returns false if the key is not found. Note that
@@ -187,6 +198,25 @@ class StaticDeployMemcached {
         $data = $this->mc->get( $k );
         $found = $this->mc->getResultCode() === Memcached::RES_SUCCESS;
         return $data;
+    }
+
+    /**
+     * Replaces data in the cache only if the key is
+     * already present in the cache.
+     */
+    public function replace(
+        int|string $key,
+        mixed $data,
+        string $group = '',
+        int $expire = 0,
+    ): bool {
+        if ( ! $this->can_add() ) {
+            return false;
+        }
+
+        $expire = self::to_memcache_expiration( $expire );
+        $k = $this->cache_key( $key, $group );
+        return $this->mc->replace( $k, $data, $expire );
     }
 
     /**
@@ -238,6 +268,14 @@ function wp_cache_close(): true {
     return true;
 }
 
+function wp_cache_delete(
+    int|string $key,
+    string $group = '',
+): bool {
+    global $wp_object_cache;
+    return $wp_object_cache->delete( $key, $group );
+}
+
 function wp_cache_get(
     int|string $key,
     string $group = '',
@@ -266,6 +304,16 @@ function wp_cache_init(): void {
         WP_CACHE_KEY_SALT,
     );
     wp_using_ext_object_cache( true );
+}
+
+function wp_cache_replace(
+    int|string $key,
+    mixed $data,
+    string $group = '',
+    int $expire = 0,
+): bool {
+    global $wp_object_cache;
+    return $wp_object_cache->replace( $key, $data, $group, $expire );
 }
 
 function wp_cache_set(
