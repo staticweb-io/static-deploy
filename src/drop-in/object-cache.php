@@ -323,8 +323,8 @@ if ( ! class_exists( 'Memcached' ) ) {
                 $keys,
             );
 
-            $arr = [];
             if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                $arr = [];
                 foreach ( $ks as $k ) {
                     if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
                         $arr[ $k ] = self::maybe_clone(
