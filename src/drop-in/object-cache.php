@@ -683,8 +683,8 @@ if ( ! class_exists( 'Memcached' ) ) {
             switch ( $feature ) {
                 case 'add_multiple':
                 case 'delete_multiple':
-                case 'get_multiple':
                 case 'flush_runtime':
+                case 'get_multiple':
                 case 'set_multiple':
                     return true;
                 default:
