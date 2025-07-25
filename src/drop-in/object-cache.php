@@ -35,12 +35,18 @@ if ( ! defined( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID' ) ) {
 class StaticDeployMemcached {
     private Memcached $mc;
 
+    // Arrays of group_name => true
+    private array $global_groups;
+    private array $non_persistent_groups;
+
     public function __construct(
         string $persistent_id,
         array $servers,
         string $cache_key_salt = '',
     ) {
         $this->cache_key_salt = $cache_key_salt;
+        $this->global_groups = [];
+        $this->non_persistent_groups = [];
 
         // https://www.php.net/manual/en/memcached.construct.php
         $mc = new Memcached( $persistent_id );
@@ -95,6 +101,24 @@ class StaticDeployMemcached {
 
         $k = $this->cache_key( $key, $group );
         return $this->mc->add( $k, $data, $expire );
+    }
+
+    public function add_global_groups(
+        array $groups,
+    ): void {
+        $this->global_groups = array_merge(
+            $this->global_groups,
+            array_fill_keys( $groups, true ),
+        );
+    }
+
+    public function add_non_persistent_groups(
+        array $groups,
+    ): void {
+        $this->non_persistent_groups = array_merge(
+            $this->non_persistent_groups,
+            array_fill_keys( $groups, true ),
+        );
     }
 
     /**
@@ -167,9 +191,20 @@ function wp_cache_add(
     return $wp_object_cache->add( $key, $data, $group, $expire );
 }
 
+function wp_cache_add_global_groups(
+    string|array $groups,
+): void {
+    global $wp_object_cache;
+    $groups = (array) $groups;
+    $wp_object_cache->add_global_groups( $groups );
+}
+
 function wp_cache_add_non_persistent_groups(
     string|array $groups,
 ): void {
+    global $wp_object_cache;
+    $groups = (array) $groups;
+    $wp_object_cache->add_non_persistent_groups( $groups );
 }
 
 function wp_cache_close(): true {
