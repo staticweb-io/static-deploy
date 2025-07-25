@@ -421,7 +421,14 @@ if ( ! class_exists( 'Memcached' ) ) {
 
             $result = $this->mc->getMulti( $ks );
             if ( $result === false ) {
-                return array_fill_keys( $keys, false );
+                if ( empty( $local ) ) {
+                    return array_fill_keys( $keys, false );
+                } else {
+                    return array_merge(
+                        array_fill_keys( $keys, false ),
+                        $local,
+                    );
+                }
             }
 
             if ( ! isset( $ks_to_keys ) ) {
