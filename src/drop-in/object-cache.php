@@ -192,6 +192,25 @@ if ( ! class_exists( 'Memcached' ) ) {
         }
 
         /**
+         * Removes all cache items.
+         */
+        public function flush(): bool {
+            return $this->mc->flush() && $this->flush_runtime();
+        }
+
+        /**
+         * Removes all cache items.
+         */
+        public function flush_runtime(): bool {
+            $this->non_persistent_groups =
+                array_fill_keys(
+                    array_keys( $this->non_persistent_groups ),
+                    []
+                );
+            return true;
+        }
+
+        /**
          * Returns data from the cache, if present.
          *
          * Returns false if the key is not found. Note that
@@ -292,7 +311,7 @@ if ( ! class_exists( 'Memcached' ) ) {
         public function supports(
             string $feature,
         ): bool {
-            return false;
+            return $feature === 'flush_runtime';
         }
     }
 
@@ -342,6 +361,16 @@ if ( ! class_exists( 'Memcached' ) ) {
     ): mixed {
         global $wp_object_cache;
         return $wp_object_cache->get( $key, $group, $force, $found );
+    }
+
+    function wp_cache_flush(): bool {
+        global $wp_object_cache;
+        return $wp_object_cache->flush();
+    }
+
+    function wp_cache_flush_runtime(): bool {
+        global $wp_object_cache;
+        return $wp_object_cache->flush_runtime();
     }
 
     function wp_cache_init(): void {
