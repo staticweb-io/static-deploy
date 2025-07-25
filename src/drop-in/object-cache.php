@@ -24,14 +24,6 @@ if ( ! class_exists( 'Memcached' ) ) {
     return;
 }
 
-if ( ! defined( 'WP_CACHE_KEY_SALT' ) ) {
-    define( 'WP_CACHE_KEY_SALT', '' );
-}
-
-if ( ! defined( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID' ) ) {
-    define( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID', 'sd-mc' );
-}
-
 class StaticDeployMemcached {
     private Memcached $mc;
 
@@ -327,6 +319,14 @@ function wp_cache_get(
 }
 
 function wp_cache_init(): void {
+    if ( ! defined( 'WP_CACHE_KEY_SALT' ) ) {
+        define( 'WP_CACHE_KEY_SALT', '' );
+    }
+
+    if ( ! defined( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID' ) ) {
+        define( 'STATIC_DEPLOY_MEMCACHED_PERSISTENT_ID', 'sd-mc' );
+    }
+
     global $memcached_servers;
 
     if ( isset( $memcached_servers ) ) {
