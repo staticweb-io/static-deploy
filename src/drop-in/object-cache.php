@@ -215,6 +215,12 @@ if ( ! class_exists( 'Memcached' ) ) {
             string $group = '',
         ): bool {
             $k = $this->cache_key( $key, $group );
+
+            if ( isset( $this->non_persistent_groups[ $group ] ) ) {
+                unset( $this->non_persistent_groups[ $group ][ $k ] );
+                return true;
+            }
+
             if ( $this->mc->delete( $k ) ) {
                 $this->local_cache[ $k ] = $this->local_missing_marker;
                 return true;
