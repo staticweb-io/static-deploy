@@ -30,21 +30,21 @@ if ( ! class_exists( 'Memcached' ) ) {
         // Prefix used for cache keys in global groups
         private string $global_prefix;
         // Prefix used for cache keys in non-global groups
-        private string $local_prefix;
+        private string $non_global_prefix;
         // Array of group_name => array of keys => values
         private array $non_persistent_groups;
 
         public function __construct(
             string $persistent_id,
             array $servers,
-            string $local_prefix,
+            string $non_global_prefix,
             string $cache_key_salt = '',
             string $global_prefix = 'global',
         ) {
             $this->cache_key_salt = $cache_key_salt;
             $this->global_groups = [];
             $this->global_prefix = $global_prefix;
-            $this->local_prefix = $local_prefix;
+            $this->non_global_prefix = $non_global_prefix;
             $this->non_persistent_groups = [];
 
             // https://www.php.net/manual/en/memcached.construct.php
@@ -84,7 +84,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             if ( isset( $this->global_groups[ $group ] ) ) {
                 $prefix = $this->global_prefix;
             } else {
-                $prefix = $this->local_prefix;
+                $prefix = $this->non_global_prefix;
             }
 
             return $this->cache_key_salt . $prefix . $group . ':' . $key;
