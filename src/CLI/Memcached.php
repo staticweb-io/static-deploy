@@ -74,6 +74,14 @@ class Memcached {
     /**
      * Dumps memcached key metadata
      *
+     * The exact keys available are subject to change, but will include at least:
+     *
+     * - key
+     * - exp (expiration time)
+     * - la (last access time)
+     * - cas
+     * - fetch (if item has been fetched before, yes or no)
+     *
      * Note: This is not guaranteed to contain all keys.
      * Memcached may move keys around during the processing.
      *
@@ -105,25 +113,31 @@ class Memcached {
         );
 
         $mc = self::getMemcached();
-        $lines = \StaticDeploy\Memcached::metadump( $mc );
+        $items = \StaticDeploy\Memcached::metadump( $mc );
 
         $output = [];
         $count = 0;
-        foreach ( $lines as $line ) {
-            $line = rtrim( $line );
+        foreach ( $items as $item ) {
             if ( $cfg['limit'] !== null && ++$count > (int) $cfg['limit'] ) {
                 break;
             }
 
-            if ( preg_match( '/key=([^ ]+)/', $line, $m ) ) {
-                $output[] = [ 'key' => $m[1] ];
-            }
+            $output[] = $item;
+        }
+
+        // The guaranteed keys
+        $keys = [ 'key', 'exp', 'la', 'cas', 'fetch' ];
+        if ( $output ) {
+            // Merge any additional keys that are present
+            $extra_keys = array_diff( array_keys( $output[0] ), $keys );
+            sort( $extra_keys );
+            $keys = array_merge( $keys, $extra_keys );
         }
 
         WP_CLI\Utils\format_items(
             $cfg['format'],
             $output,
-            [ 'key' ]
+            $keys,
         );
     }
 }

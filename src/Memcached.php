@@ -116,6 +116,17 @@ class Memcached {
         fclose( $sock );
     }
 
+    public static function parseItem( string $line ): array {
+        $line = trim( $line );
+        $pairs = explode( ' ', $line );
+        $arr = [];
+        foreach ( $pairs as $pair ) {
+            [$k, $v] = explode( '=', $pair, 2 );
+            $arr[ $k ] = $v;
+        }
+        return $arr;
+    }
+
     /**
      * Returns the output of lru_crawler metadump
      * See https://github.com/memcached/memcached/blob/master/doc/protocol.txt
@@ -123,9 +134,12 @@ class Memcached {
     public static function metadump(
         \Memcached $mc,
     ): \Iterator {
-        yield from self::doCommand(
+        $lines = self::doCommand(
             $mc,
             'lru_crawler metadump all'
         );
+        foreach ( $lines as $line ) {
+            yield self::parseItem( $line );
+        }
     }
 }
