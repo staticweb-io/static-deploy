@@ -23,7 +23,7 @@ if ( ! class_exists( 'Memcached' ) ) {
     wp_using_ext_object_cache( false );
 } else {
     class StaticDeployMemcached {
-        private Memcached $mc;
+        public Memcached $mc;
 
         private string $cache_key_salt_hash;
         // Array of group_name => true
