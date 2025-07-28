@@ -13,7 +13,6 @@
       systems = import inputs.systems;
       imports = [ inputs.process-compose-flake.flakeModule ];
       perSystem = { self', pkgs, config, lib, system, ... }:
-        with pkgs;
         let
           getEnv = name: default:
             (if "" == builtins.getEnv name then
@@ -25,15 +24,21 @@
           dbUserName = "wordpress";
           dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
           serverPort = 8888;
-          php = pkgs.php.buildEnv {
-            extensions = { enabled, all }:
-              enabled ++ (with all; [ apcu imagick memcached ]);
-          };
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
           staticDeployPkgs = inputs.static-deploy.packages.${system};
           staticDeploy = staticDeployPkgs.plugin;
-        in {
+          overlay = self: super: {
+            php = super.php.buildEnv {
+              extensions = { enabled, all }:
+                enabled ++ (with all; [ apcu imagick memcached ]);
+            };
+          };
+          finalPkgs = import pkgs.path {
+            inherit (pkgs) system;
+            overlays = [ overlay ];
+          };
+        in with finalPkgs; {
           # `process-compose.foo` will add a flake package output called "foo".
           # Therefore, this will add a default package that you can build using
           # `nix build` and run using `nix run`.
