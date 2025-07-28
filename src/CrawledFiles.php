@@ -113,6 +113,8 @@ class CrawledFiles {
 
     /**
      * Yields all paths in the table.
+     *
+     * @return \Iterator<PathInfo>
      */
     public static function getPathsIter(): \Iterator {
         global $wpdb;
@@ -125,12 +127,12 @@ class CrawledFiles {
         while ( true ) {
             $qs = "SELECT
                 cc.id,
-                cc.path,
                 cc.content_hash,
-                cc.status,
-                cc.redirect_to,
                 cc.content_type,
-                cq.filename
+                cq.filename,
+                cc.path,
+                cc.redirect_to,
+                cc.status
               FROM $table_name AS cc
               JOIN $queue_table_name AS cq
               ON cc.path_hash = cq.path_hash
@@ -138,18 +140,25 @@ class CrawledFiles {
               ORDER BY cc.id ASC
               LIMIT %d";
             $q = $wpdb->prepare( $qs, $last_id, $batch_size );
-            $rows = $wpdb->get_results( $q, ARRAY_A );
+            $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
-                if ( ! $row['filename'] ) {
-                    $xform = StaticSite::transformPath( $row['path'] );
+                if ( ! $row->filename ) {
+                    $xform = StaticSite::transformPath( $row->path );
                     $cc_path = $static_site_path . $xform;
                     if ( $xform && file_exists( $cc_path ) ) {
-                        $row['filename'] = $cc_path;
+                        $row->filename = $cc_path;
                     }
                 }
-                yield $row;
-                $last_id = $row['id'];
+                yield new PathInfo(
+                    $row->path,
+                    content_hash: $row->content_hash,
+                    content_type: $row->content_type,
+                    filename: $row->filename,
+                    redirect_to: $row->redirect_to,
+                    status: $row->status,
+                );
+                $last_id = $row->id;
             }
 
             if ( count( $rows ) < $batch_size ) {

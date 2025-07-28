@@ -76,12 +76,17 @@ class PostProcessor {
         );
     }
 
+    /**
+     * @param \Iterator<PathInfo>
+     * @return \Iterator<array>
+     */
     public function processIter(
         \Iterator $crawl_responses
     ): \Iterator {
         $rewriter = new SimpleRewriter();
         $process = function ( $crawl_responses ) use ( $rewriter ) {
             foreach ( $crawl_responses as $crawled ) {
+                $crawled = $crawled->toArray();
                 $content_type = $crawled['content_type'] ?? null;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
                     if ( $crawled['body'] ?? null ) {

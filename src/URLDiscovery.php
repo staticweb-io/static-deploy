@@ -22,7 +22,7 @@ class URLDiscovery {
 
     /**
      * @param \Iterator<PathInfo>
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public function discoverURLs( \Iterator $iterator ): \Iterator {
         global $wpdb;
@@ -30,15 +30,14 @@ class URLDiscovery {
         $table_name = DetectedFiles::getTableName();
 
         foreach ( $iterator as $path_info ) {
-            $arr = $path_info->toArray();
             if ( isset( $path_info->content_type )
             && str_starts_with( $path_info->content_type, 'text/html' ) ) {
                 $urls = [];
-                foreach ( $this->parseURLs( $arr ) as $url ) {
+                foreach ( $this->parseURLs( $path_info ) as $url ) {
                     $urls[ $url ] = true;
                 }
                 if ( empty( $urls ) ) {
-                    yield $arr;
+                    yield $path_info;
                     continue;
                 }
                 $placeholders = array_fill( 0, count( $urls ), '(%s)' );
@@ -46,9 +45,9 @@ class URLDiscovery {
                   VALUES " . implode( ',', $placeholders );
                 $query = $wpdb->prepare( $sql, ...array_keys( $urls ) );
                 Controller::query( $query );
-                yield $arr;
+                yield $path_info;
             } else {
-                yield $arr;
+                yield $path_info;
             }
         }
 
@@ -79,19 +78,19 @@ class URLDiscovery {
         return false;
     }
 
-    public function parseURLs( array $arr ): \Iterator {
+    public function parseURLs( PathInfo $path_info ): \Iterator {
         $body = null;
-        if ( isset( $arr['body'] ) ) {
-            $body = $arr['body'];
-        } elseif ( $arr['filename'] ?? null ) {
-            $body = file_get_contents( $arr['filename'] );
+        if ( isset( $path_info->body ) ) {
+            $body = $path_info->body;
+        } elseif ( $path_info->filename ) {
+            $body = file_get_contents( $path_info->filename );
         }
 
         if ( ! $body ) {
             return;
         }
 
-        $page_url = \Wa72\Url\Url::parse( $this->destination_url . $arr['path'] );
+        $page_url = \Wa72\Url\Url::parse( $this->destination_url . $path_info->path );
         foreach ( ParseHTML::parseURLsString( $body ) as $url ) {
             $discovered_url = \Wa72\Url\Url::parse( $url );
             $discovered_url->setFragment( '' );
