@@ -155,12 +155,9 @@ class Crawler {
     }
 
     public function crawlPath( PathInfo $detected, array $site_urls ): PromiseInterface {
-        $filename = $detected->filename;
-        $path = $detected->path;
-
-        $absolute_uri = ( new URL( $this->site_path . $path ) )->get();
+        $absolute_uri = ( new URL( $this->site_path . $detected->path ) )->get();
         try {
-            if ( $filename ) {
+            if ( $detected->filename ) {
                 $request = new Request( 'HEAD', $absolute_uri );
             } else {
                 $request = new Request( 'GET', $absolute_uri );
@@ -170,7 +167,7 @@ class Crawler {
         }
 
         $promise = $this->client->sendAsync( $request )->then(
-            function ( $response ) use ( &$filename, &$path, &$site_urls ) {
+            function ( $response ) use ( &$detected, &$site_urls ) {
                 $status = $response->getStatusCode();
 
                 $body = null;
@@ -186,23 +183,26 @@ class Crawler {
 
                     $redirect_to =
                         (string) str_replace( $site_urls, '', $effective_url );
-                } elseif ( ! $filename && $status !== 404 ) {
+                } elseif ( ! $detected->filename && $status !== 404 ) {
                     $body = (string) $response->getBody();
                 }
 
+                $path = new PathInfo(
+                    $detected->path,
+                    body: $body,
+                    content_type: $response->getHeaderLine( 'Content-Type' ),
+                    filename: $detected->filename,
+                    redirect_to: $redirect_to,
+                    status: $status,
+                );
                 return [
-                    'body' => $body,
-                    'content_type' => $response->getHeaderLine( 'Content-Type' ),
-                    'filename' => $filename,
-                    'redirect_to' => $redirect_to,
                     'path' => $path,
-                    'status' => $status,
                 ];
             },
-            function () use ( &$path ) {
+            function () use ( &$detected ) {
                 return [
-                    'error' => 'Error crawling ' . $path,
-                    'path' => $path,
+                    'error' => 'Error crawling ' . $detected->path,
+                    'path' => $detected,
                 ];
             }
         );
@@ -212,7 +212,7 @@ class Crawler {
 
     /**
      * @param \Iterator<PathInfo> $path_iter
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public function crawlIter( \Iterator $path_iter ): \Iterator {
         if ( ! isset( $this->concurrency ) ) {
@@ -259,13 +259,13 @@ class Crawler {
                     return;
                 }
 
-                unset( $in_flight[ $response['path'] ] );
+                unset( $in_flight[ $response['path']->path ] );
 
                 ++$this->crawled;
                 $now = microtime( true );
 
                 if ( $now - $last_log_time >= 60 ) {
-                    WsLog::l( 'Crawled ' . $response['path'] );
+                    WsLog::l( 'Crawled ' . $response['path']->path );
                     $notice = "Crawling progress: $this->crawled crawled," .
                                 " $this->cache_hits skipped (cached).";
                     WsLog::l( $notice );
@@ -275,7 +275,7 @@ class Crawler {
                 if ( $response['error'] ?? false ) {
                     WsLog::l( $response['error'] );
                 } else {
-                    yield $response;
+                    yield $response['path'];
                 }
 
                 if ( $path_iter->valid() ) {

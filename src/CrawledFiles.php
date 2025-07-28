@@ -57,8 +57,8 @@ class CrawledFiles {
      * Add an Iterator of paths to the DB,
      * returning an Iterator of the same paths.
      *
-     * @param \Iterator $paths
-     * @return \Iterator
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<PathInfo>
      */
     public static function addPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;
@@ -94,11 +94,11 @@ class CrawledFiles {
             foreach ( $paths as $path ) {
                 array_push(
                     $values,
-                    $path['path'],
-                    $path['content_type'],
-                    $path['redirect_to'],
-                    $path['status'],
-                    $path['content_hash'] ?? null,
+                    $path->path,
+                    $path->content_type,
+                    $path->redirect_to,
+                    $path->status,
+                    $path->getContentHash(),
                 );
             }
 
@@ -161,19 +161,22 @@ class CrawledFiles {
     /**
      * Remove 404 URLs from the detected files, crawled files, and
      * files written to disk.
+     *
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<PathInfo>
      */
     public static function remove404s( \Iterator $paths ): \Iterator {
         foreach ( $paths as $path ) {
-            if ( isset( $path['status'] ) && $path['status'] === 404 ) {
-                WsLog::l( '404 for URL ' . $path['path'] );
-                self::rmUrl( $path['path'] );
+            if ( isset( $path->status ) && $path->status === 404 ) {
+                WsLog::l( '404 for URL ' . $path->path );
+                self::rmUrl( $path->path );
                 // Delete from detected files to prevent crawling not found urls forever.
-                DetectedFiles::rmUrl( $path['path'] );
+                DetectedFiles::rmUrl( $path->path );
                 // Delete previously generated files under the directories,
                 // both the crawled and the processed.
                 array_map(
                     function ( $dir ) use ( $path ) {
-                        $transformed_path = StaticSite::transformPath( $path['path'] );
+                        $transformed_path = StaticSite::transformPath( $path->path );
                         $suffix = ltrim( $transformed_path, '/' );
                         $full_path = trailingslashit( $dir ) . $suffix;
                         if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
@@ -192,15 +195,15 @@ class CrawledFiles {
      * Write path contents to the crawled site dir,
      * returning an Iterator of the same paths.
      *
-     * @param \Iterator $paths
-     * @return \Iterator
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<PathInfo>
      */
     public static function writeFilesIter( \Iterator $paths ): \Iterator {
         $cache_hits = 0;
         foreach ( $paths as $path ) {
-            $body = $path['body'] ?? null;
+            $body = $path->body;
             $is_cacheable = true;
-            $status = $path['status'];
+            $status = $path->status;
 
             if ( $status === 404 ) {
                 $is_cacheable = false;
@@ -208,16 +211,11 @@ class CrawledFiles {
                 $is_cacheable = false;
             }
 
-            $content_hash = null;
-            if ( $is_cacheable && $body ) {
-                $content_hash = md5( $body );
-                $path['content_hash'] = $content_hash;
-            }
-
-            if ( $is_cacheable && $content_hash && self::getUrl( $path['path'], $content_hash ) ) {
+            $content_hash = $path->getContentHash();
+            if ( $is_cacheable && $content_hash && self::getUrl( $path->path, $content_hash ) ) {
                 ++$cache_hits;
             } elseif ( $body ) {
-                $static_path = StaticSite::transformPath( $path['path'] );
+                $static_path = StaticSite::transformPath( $path->path );
                 StaticSite::add( $static_path, $body );
             }
 

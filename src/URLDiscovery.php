@@ -20,14 +20,19 @@ class URLDiscovery {
         $this->file_filtering = new FileFiltering();
     }
 
+    /**
+     * @param \Iterator<PathInfo>
+     * @return \Iterator<array>
+     */
     public function discoverURLs( \Iterator $iterator ): \Iterator {
         global $wpdb;
 
         $table_name = DetectedFiles::getTableName();
 
-        foreach ( $iterator as $arr ) {
-            if ( isset( $arr['content_type'] )
-            && str_starts_with( $arr['content_type'], 'text/html' ) ) {
+        foreach ( $iterator as $path_info ) {
+            $arr = $path_info->toArray();
+            if ( isset( $path_info->content_type )
+            && str_starts_with( $path_info->content_type, 'text/html' ) ) {
                 $urls = [];
                 foreach ( $this->parseURLs( $arr ) as $url ) {
                     $urls[ $url ] = true;
