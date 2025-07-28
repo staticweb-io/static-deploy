@@ -34,7 +34,19 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            yield new PathInfo( $permalink );
+            $url = \Wa72\Url\Url::parse( $permalink );
+
+            if ( $url->getQuery() !== '' ) {
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'Skipping detected URL with query string: ' . $url->write() );
+                }
+                continue;
+            }
+
+            $url->setHost( '' );
+            $url->setScheme( '' );
+
+            yield new PathInfo( $url->write() );
         }
     }
 }

@@ -26,8 +26,11 @@ class DetectAuthorsURLs {
             }
 
             $permalink = trim( $author_link );
+            $url = \Wa72\Url\Url::parse( $permalink );
+            $url->setHost( '' );
+            $url->setScheme( '' );
 
-            yield new PathInfo( $permalink );
+            yield new PathInfo( $url->write() );
         }
     }
 }

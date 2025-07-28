@@ -58,7 +58,11 @@ class DetectArchiveURLs {
         preg_match_all( $url_matching_regex, $archive_urls_with_markup, $matches );
 
         foreach ( $matches[0] as $url ) {
-            yield new PathInfo( $url );
+            $url = \Wa72\Url\Url::parse( $url );
+            $url->setHost( '' );
+            $url->setScheme( '' );
+
+            yield new PathInfo( $url->write() );
         }
     }
 }

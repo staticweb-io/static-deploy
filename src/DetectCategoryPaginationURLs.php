@@ -53,7 +53,12 @@ class DetectCategoryPaginationURLs {
             $total_pages = ceil( $total_posts / $default_posts_per_page );
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
-                yield new PathInfo( "{$term}{$pagination_base}/{$page}/" );
+                $permalink = "{$term}{$pagination_base}/{$page}/";
+                $url = \Wa72\Url\Url::parse( $permalink );
+                $url->setHost( '' );
+                $url->setScheme( '' );
+
+                yield new PathInfo( $url->write() );
             }
         }
     }

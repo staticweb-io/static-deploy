@@ -36,7 +36,11 @@ class DetectCategoryURLs {
 
                 $permalink = trim( $term_link );
 
-                yield new PathInfo( $permalink );
+                $url = \Wa72\Url\Url::parse( $permalink );
+                $url->setHost( '' );
+                $url->setScheme( '' );
+
+                yield new PathInfo( $url->write() );
             }
         }
     }
