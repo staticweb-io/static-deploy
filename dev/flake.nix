@@ -209,6 +209,7 @@
                         define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
                     }
                   '';
+                  STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL = "max-age=6";
                 };
               };
             in {
