@@ -177,4 +177,36 @@
 
         </tbody>
     </table>
+
+    <?php
+    if ( $view['memcachedStats'] ?? false ) : ?>
+    <h4>Memcached Stats</h4>
+
+        <?php foreach ( $view['memcachedStats'] as $server => $stats ) : ?>
+
+    <h5>Server: <?php echo $server; ?></h5>
+
+    <table class="widefat striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <?php foreach ( $stats as $name => $value ) : ?>
+            <tr>
+            <td><?php echo $name; ?></td>
+            <td><?php echo $value; ?></td>
+            </tr>
+
+            <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+    <?php endforeach; ?>
+
+    <?php endif; ?>
 </div>
