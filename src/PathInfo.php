@@ -25,6 +25,7 @@ class PathInfo {
         string $path,
         ?string $filename = null,
         ?string $body = null,
+        ?string $content_hash = null,
         ?string $content_type = null,
         ?string $redirect_to = null,
         ?int $status = null,
@@ -43,6 +44,10 @@ class PathInfo {
         $this->content_type = $content_type;
         $this->redirect_to = $redirect_to;
         $this->status = $status;
+
+        if ( $content_hash !== null ) {
+            $this->content_hash = $content_hash;
+        }
     }
 
     public function toArray(): array {
