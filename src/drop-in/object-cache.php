@@ -108,6 +108,29 @@ if ( ! class_exists( 'Memcached' ) ) {
             // TODO: Check binary protocol
             $key = str_replace( ' ', '_', $key );
 
+            // Truncate long keys and add a hash.
+            // Memcached only allows 250 bytes for keys.
+            if ( strlen( $key ) >= 250 ) {
+                // Preserve as much of the key as we can.
+                // Split the key without breaking up any
+                // multi-byte characters.
+                $key_start = mb_substr( $key, 0, 218 );
+                $sl = strlen( $key_start );
+                while ( $sl > 218 ) {
+                    $key_start = mb_substr(
+                        $key_start,
+                        0,
+                        218 - ( $sl - 218 ),
+                    );
+
+                    $sl = strlen( $key_start );
+                }
+
+                // Append the key's hash to the part of the
+                // key that we were able to keep.
+                $key = $key_start . md5( $key );
+            }
+
             return $key;
         }
 
