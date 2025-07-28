@@ -14,6 +14,10 @@ class CLI {
      */
     private $assoc_args = null;
 
+    public static function init(): void {
+        WP_CLI::add_command( 'static-deploy', self::class );
+    }
+
     /**
      * Display system information and health check
      */
