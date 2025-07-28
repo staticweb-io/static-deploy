@@ -30,7 +30,7 @@ class Args {
             $cfg[ $k ] = $args[ $i ];
         }
 
-        foreach ( $assoc_args as $k => $v ) {
+        foreach ( $assoc_args ?? [] as $k => $v ) {
             if ( ! array_key_exists( $k, $assoc_opts ) ) {
                 WP_CLI::error( 'Unrecognized option: --' . $k );
             }
@@ -38,7 +38,7 @@ class Args {
             $cfg[ $k ] = $v;
         }
 
-        foreach ( $assoc_opts as $k => $v ) {
+        foreach ( $assoc_opts ?? [] as $k => $v ) {
             if ( ! array_key_exists( $k, $cfg ) ) {
                 if ( $v && array_key_exists( 'default', $v ) ) {
                     $cfg[ $k ] = $v['default'];
