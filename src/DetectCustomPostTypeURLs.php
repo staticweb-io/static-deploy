@@ -20,7 +20,7 @@ class DetectCustomPostTypeURLs {
             "SELECT ID
             FROM {$wpdb->posts}
             WHERE post_status = 'publish'
-            AND post_type NOT IN ('revision','nav_menu_item')"
+            AND post_type NOT IN ('nav_menu_item','revision','wp_navigation')"
         );
 
         foreach ( $post_ids as $post_id ) {
