@@ -187,6 +187,7 @@
                   WP_CACHE_KEY_SALT =
                     ")O~B@EKC(tfdgDg6R8@6;ePxJJkXMpZ&.u?X{j##:@7-,/*YKvvl-l4}r^@2=Ha-";
 
+                  WP_CACHE = true;
                   HTTP_HOST = WPConfigFormat.lib.mkInline ''
                     if ( defined( 'WP_CLI' ) ) {
                         $_SERVER['HTTP_HOST'] = isset( $_ENV['HTTP_HOST'] ) ? $_ENV['HTTP_HOST'] : 'localhost:${
