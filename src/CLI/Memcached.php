@@ -12,6 +12,12 @@ class Memcached {
         );
     }
 
+    public static function getMemcached(): \Memcached {
+        return \StaticDeploy\Memcached::getMemcached(
+            required: true,
+        );
+    }
+
     /**
      * Get stats from memcached
      *
@@ -40,10 +46,7 @@ class Memcached {
             [ 'format' => [ 'default' => 'table' ] ],
         );
 
-        $mc = \StaticDeploy\Memcached::getMemcached();
-        if ( ! $mc ) {
-            WP_CLI::error( 'Memcached is not enabled or is not managed by this plugin.' );
-        }
+        $mc = self::getMemcached();
 
         $stats = $mc->getStats();
         foreach ( $stats as $server => $server_stats ) {
