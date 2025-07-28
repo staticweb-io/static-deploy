@@ -44,11 +44,11 @@ class DetectedFiles {
      * Add an Iterator of paths, returning an Iterator of the same
      * paths once they have been added.
      *
-     * @param \Iterator $paths
+     * @param \Iterator<PathInfo> $paths
      * @param bool $omit_unchanged_paths
      *  If true, will not yield paths that already exist in the DB
      *  unless they were updated, e.g., the filename changed.
-     * @return \Iterator
+     * @return \Iterator<array>
      */
     public static function addPathsIter(
         \Iterator $paths,
@@ -62,7 +62,7 @@ class DetectedFiles {
             $hashes = [];
             $paths = [];
             foreach ( $chunk as $path ) {
-                $hashes[] = md5( $path['path'] );
+                $hashes[] = md5( $path->path );
                 $paths[] = $path;
             }
 
@@ -77,8 +77,8 @@ class DetectedFiles {
             $update_values = [];
             $yield_paths = [];
             foreach ( $paths as $path ) {
-                $filename = $path['filename'] ?? '';
-                $p = $path['path'];
+                $filename = $path->filename ?? '';
+                $p = $path->path;
                 $url = rawurldecode( $p );
                 $hash = md5( $url );
                 if ( ! isset( $existing_urls[ $p ] ) ) {
@@ -127,7 +127,12 @@ class DetectedFiles {
             }
 
             foreach ( $yield_paths as $path ) {
-                yield $path;
+                $arr = $path->toArray();
+                // Convert to array and add url for compatibility
+                // until downstream can be converted to
+                // use PathInfo.
+                $arr['url'] = $path;
+                yield $arr;
             }
         }
     }
@@ -136,6 +141,9 @@ class DetectedFiles {
      * Add an Iterator of paths, returning an Iterator
      * of all paths in the DB.
      * Includes the newly added paths and pre-existing paths.
+     *
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<array>
      */
     public static function withPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;

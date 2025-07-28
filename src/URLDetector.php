@@ -16,7 +16,7 @@ class URLDetector {
     /**
      * Detect URLs within site
      *
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public static function detectURLsIter( bool $quiet = false ): \Iterator {
         if ( ! $quiet ) {
@@ -204,12 +204,7 @@ class URLDetector {
                         $last_log_time = microtime( true );
                     }
 
-                    $arr = $detected->toArray();
-                    // Convert to array and add url for compatibility
-                    // until downstream can be converted to
-                    // use PathInfo.
-                    $arr['url'] = $path;
-                    yield $arr;
+                    yield $detected;
                 }
             }
         }
