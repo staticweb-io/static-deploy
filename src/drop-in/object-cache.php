@@ -100,7 +100,7 @@ if ( ! class_exists( 'Memcached' ) ) {
                 $prefix = $this->non_global_prefix;
             }
 
-            $key = $this->cache_key_salt_hash . $prefix . $group . ':' . $key;
+            $key = $prefix . $group . ':' . $key . $this->cache_key_salt_hash;
 
             // Unfortunately WordPress uses a lot of keys with spaces,
             // and we have to do something about them because memcached
