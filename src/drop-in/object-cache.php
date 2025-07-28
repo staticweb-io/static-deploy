@@ -25,6 +25,7 @@ if ( ! class_exists( 'Memcached' ) ) {
     class StaticDeployMemcached {
         private Memcached $mc;
 
+        private string $cache_key_salt_hash;
         // Array of group_name => true
         private array $global_groups;
         // Prefix used for cache keys in global groups
@@ -46,7 +47,12 @@ if ( ! class_exists( 'Memcached' ) ) {
             string $cache_key_salt = '',
             string $global_prefix = 'global',
         ) {
-            $this->cache_key_salt = $cache_key_salt;
+            if ( $cache_key_salt === '' ) {
+                $this->cache_key_salt = '';
+            } else {
+                $this->cache_key_salt_hash = md5( $cache_key_salt );
+            }
+
             $this->global_groups = [];
             $this->global_prefix = $global_prefix;
             $this->local_cache = [];
@@ -94,7 +100,15 @@ if ( ! class_exists( 'Memcached' ) ) {
                 $prefix = $this->non_global_prefix;
             }
 
-            return $this->cache_key_salt . $prefix . $group . ':' . $key;
+            $key = $this->cache_key_salt_hash . $prefix . $group . ':' . $key;
+
+            // Unfortunately WordPress uses a lot of keys with spaces,
+            // and we have to do something about them because memcached
+            // doesn't allow that.
+            // TODO: Check binary protocol
+            $key = str_replace( ' ', '_', $key );
+
+            return $key;
         }
 
         /**
