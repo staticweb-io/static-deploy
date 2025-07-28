@@ -7,7 +7,7 @@ class DetectCustomPostTypeURLs {
     /**
      * Detect Custom Post Type URLs
      *
-     * @return Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -34,7 +34,7 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            yield [ 'url' => $permalink ];
+            yield new PathInfo( $permalink );
         }
     }
 }

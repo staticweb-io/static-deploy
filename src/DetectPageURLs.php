@@ -7,7 +7,7 @@ class DetectPageURLs {
     /**
      * Detect Page URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -30,7 +30,7 @@ class DetectPageURLs {
                 continue;
             }
 
-            yield [ 'url' => $permalink ];
+            yield new PathInfo( $permalink );
         }
     }
 }

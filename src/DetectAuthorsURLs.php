@@ -7,7 +7,7 @@ class DetectAuthorsURLs {
     /**
      * Detect Authors URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -27,7 +27,7 @@ class DetectAuthorsURLs {
 
             $permalink = trim( $author_link );
 
-            yield [ 'url' => $permalink ];
+            yield new PathInfo( $permalink );
         }
     }
 }

@@ -7,7 +7,7 @@ class DetectWPIncludesAssets {
     /**
      * Detect assets within wp-includes path
      *
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      * @throw StaticDeployException
      */
     public static function detect(
@@ -46,10 +46,10 @@ class DetectWPIncludesAssets {
                     continue;
                 }
 
-                yield [
-                    'filename' => $filename,
-                    'url' => '/' . $detected_filename,
-                ];
+                yield new PathInfo(
+                    '/' . $detected_filename,
+                    filename: $filename,
+                );
             }
         }
     }

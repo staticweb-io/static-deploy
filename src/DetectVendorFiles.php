@@ -7,7 +7,7 @@ class DetectVendorFiles {
     /**
      * Detect vendor URLs from filesystem
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(
         FileFiltering $filtering,
@@ -42,8 +42,8 @@ class DetectVendorFiles {
                     $prefix
                 );
 
-                foreach ( $vendor_cache_urls as $arr ) {
-                    yield $arr;
+                foreach ( $vendor_cache_urls as $path ) {
+                    yield $path;
                 }
             }
         }
@@ -67,7 +67,7 @@ class DetectVendorFiles {
 
             if ( $posts ) {
                 foreach ( $posts as $post ) {
-                    yield [ 'url' => $wp_site_url . $post->meta_value ];
+                    yield new PathInfo( $wp_site_url . $post->meta_value );
                 }
             }
         }

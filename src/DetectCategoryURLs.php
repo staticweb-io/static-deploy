@@ -7,7 +7,7 @@ class DetectCategoryURLs {
     /**
      * Detect Category URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -36,7 +36,7 @@ class DetectCategoryURLs {
 
                 $permalink = trim( $term_link );
 
-                yield [ 'url' => $permalink ];
+                yield new PathInfo( $permalink );
             }
         }
     }

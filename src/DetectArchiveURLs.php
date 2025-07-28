@@ -13,7 +13,7 @@ class DetectArchiveURLs {
      *      https://foo.com/2020/05/
      *      https://foo.com/2020/
      *
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -58,7 +58,7 @@ class DetectArchiveURLs {
         preg_match_all( $url_matching_regex, $archive_urls_with_markup, $matches );
 
         foreach ( $matches[0] as $url ) {
-            yield [ 'url' => $url ];
+            yield new PathInfo( $url );
         }
     }
 }

@@ -7,7 +7,7 @@ class DetectPostsPaginationURLs {
     /**
      * Detect Post pagination URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect( string $wp_site_url ): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -104,9 +104,9 @@ class DetectPostsPaginationURLs {
                         }
                     }
 
-                    yield [ 'url' => "/{$post_archive_slug}{$pagination_base}/{$page}/" ];
+                    yield new PathInfo( "/{$post_archive_slug}{$pagination_base}/{$page}/" );
                 } else {
-                    yield [ 'url' => "/{$plural_form}/{$pagination_base}/{$page}/" ];
+                    yield new PathInfo( "/{$plural_form}/{$pagination_base}/{$page}/" );
                 }
             }
         }

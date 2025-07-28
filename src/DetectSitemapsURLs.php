@@ -11,7 +11,7 @@ class DetectSitemapsURLs {
     /**
      * Detect Authors URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      * @throws StaticDeployException
      */
     public static function detect( string $wp_site_url ): \Iterator {
@@ -142,7 +142,7 @@ class DetectSitemapsURLs {
                 $status_code = $response->getStatusCode();
 
                 if ( $status_code === 200 ) {
-                    yield [ 'url' => $sitemap ];
+                    yield new PathInfo( $sitemap );
 
                     $parser->parse( $wp_site_url . $sitemap );
 
@@ -154,7 +154,7 @@ class DetectSitemapsURLs {
                             '',
                             $url
                         );
-                        yield [ 'url' => $url ];
+                        yield new PathInfo( $url );
                     }
                 }
             }

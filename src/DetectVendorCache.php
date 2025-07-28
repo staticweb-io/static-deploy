@@ -12,7 +12,7 @@ class DetectVendorCache {
      *   So, we grab all the files from the its actual cache dir
      *   then strip the site path and any subdir path (no extra logic needed?)
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(
         FileFiltering $filtering,
@@ -40,10 +40,10 @@ class DetectVendorCache {
                         $filename
                     );
 
-                yield [
-                    'filename' => $filename,
-                    'url' => $prefix . home_url( $detected_filename ),
-                ];
+                yield new PathInfo(
+                    $prefix . home_url( $detected_filename ),
+                    filename: $filename,
+                );
             }
         }
     }

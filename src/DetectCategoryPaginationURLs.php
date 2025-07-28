@@ -7,7 +7,7 @@ class DetectCategoryPaginationURLs {
     /**
      * Detect Category Pagination URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect(): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -53,7 +53,7 @@ class DetectCategoryPaginationURLs {
             $total_pages = ceil( $total_posts / $default_posts_per_page );
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
-                yield [ 'url' => "{$term}{$pagination_base}/{$page}/" ];
+                yield new PathInfo( "{$term}{$pagination_base}/{$page}/" );
             }
         }
     }

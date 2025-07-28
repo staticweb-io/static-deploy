@@ -42,10 +42,10 @@ class URLDetector {
 
         $iterators_to_merge[] = new \ArrayIterator(
             [
-                [ 'url' => '/' ],
-                [ 'url' => '/robots.txt' ],
-                [ 'url' => '/favicon.ico' ],
-                [ 'url' => '/sitemap.xml' ],
+                new PathInfo( '/' ),
+                new PathInfo( '/robots.txt' ),
+                new PathInfo( '/favicon.ico' ),
+                new PathInfo( '/sitemap.xml' ),
             ]
         );
 
@@ -198,11 +198,7 @@ class URLDetector {
 
         foreach ( $iterators_to_merge as $iter ) {
             foreach ( $iter as $detected ) {
-                if ( ! is_array( $detected ) ) {
-                    $detected = [ 'url' => $detected ];
-                }
-
-                $path = FilesHelper::cleanDetectedURL( $home_url, $detected['url'] );
+                $path = $detected->path;
 
                 if ( $path && ! isset( $unique_urls[ $path ] ) ) {
                     $unique_urls[ $path ] = true;
@@ -217,8 +213,12 @@ class URLDetector {
                         $last_log_time = microtime( true );
                     }
 
-                    $detected['path'] = $path;
-                    yield $detected;
+                    $arr = $detected->toArray();
+                    // Convert to array and add url for compatibility
+                    // until downstream can be converted to
+                    // use PathInfo.
+                    $arr['url'] = $path;
+                    yield $arr;
                 }
             }
         }

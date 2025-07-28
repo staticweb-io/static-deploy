@@ -7,7 +7,7 @@ class DetectAuthorPaginationURLs {
     /**
      * Detect Author Pagination URLs
      *
-     * @return \Iterator<array> list of URLs
+     * @return \Iterator<PathInfo> list of URLs
      */
     public static function detect( string $wp_site_url ): \Iterator {
         if ( STATIC_DEPLOY_DEBUG ) {
@@ -54,7 +54,7 @@ class DetectAuthorPaginationURLs {
             $total_pages = ceil( $total_posts / $default_posts_per_page );
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
-                yield [ 'url' => "/{$author}{$pagination_base}/{$page}/" ];
+                yield new PathInfo( "/{$author}{$pagination_base}/{$page}/" );
             }
         }
     }
