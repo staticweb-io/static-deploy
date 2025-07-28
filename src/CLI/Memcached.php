@@ -70,4 +70,60 @@ class Memcached {
             );
         }
     }
+
+    /**
+     * Dumps memcached key metadata
+     *
+     * Note: This is not guaranteed to contain all keys.
+     * Memcached may move keys around during the processing.
+     *
+     * ## OPTIONS
+     *
+     * [--limit=<n>]
+     * : Stop after this many lines.
+     *
+     * [--format=<format>]
+     * : Output format.
+     * ---
+     * default: table
+     * options:
+     *   - table
+     *   - json
+     *   - csv
+     *   - yaml
+     * ---
+     */
+    public function metadump( array $args, array $assoc_args ): void {
+        $cfg = Args::parse(
+            $args,
+            $assoc_args,
+            [],
+            [
+                'format' => [ 'default' => 'table' ],
+                'limit'  => [ 'default' => null ],
+            ]
+        );
+
+        $mc = self::getMemcached();
+        $lines = \StaticDeploy\Memcached::metadump( $mc );
+
+        $output = [];
+        $count = 0;
+        foreach ( $lines as $line ) {
+            $line = rtrim( $line );
+            if ( $cfg['limit'] !== null && ++$count > (int) $cfg['limit'] ) {
+                break;
+            }
+
+            if ( preg_match( '/key=([^ ]+)/', $line, $m ) ) {
+                $output[] = [ 'key' => $m[1] ];
+            }
+        }
+
+        WP_CLI\Utils\format_items(
+            $cfg['format'],
+            $output,
+            [ 'key' ]
+        );
+    }
 }

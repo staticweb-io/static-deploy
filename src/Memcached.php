@@ -116,4 +116,16 @@ class Memcached {
         fclose( $sock );
     }
 
+    /**
+     * Returns the output of lru_crawler metadump
+     * See https://github.com/memcached/memcached/blob/master/doc/protocol.txt
+     */
+    public static function metadump(
+        \Memcached $mc,
+    ): \Iterator {
+        yield from self::doCommand(
+            $mc,
+            'lru_crawler metadump all'
+        );
+    }
 }
