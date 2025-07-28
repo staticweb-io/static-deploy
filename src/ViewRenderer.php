@@ -39,11 +39,9 @@ class ViewRenderer {
         $view['domDocumentAvailable'] = class_exists( 'DOMDocument' );
         $view['extensions'] = get_loaded_extensions();
 
-        global $wp_object_cache;
-
-        if ( class_exists( 'StaticDeployMemcached' )
-            && $wp_object_cache instanceof \StaticDeployMemcached ) {
-            $view['memcachedStats'] = $wp_object_cache->mc->getStats();
+        $mc = Memcached::getMemcached();
+        if ( $mc ) {
+            $view['memcachedStats'] = $mc->getStats();
         }
 
         require_once STATIC_DEPLOY_PATH . 'views/diagnostics-page.php';
