@@ -87,6 +87,12 @@ class DirectDeployer {
         );
     }
 
+    /**
+     * Deploy specific paths
+     *
+     * @param \Iterator<PathInfo> $paths
+     * @param bool $remove_404s
+     */
     public function deployPaths( \Iterator $paths, bool $remove_404s = true ): void {
         $crawled = $this->crawler->crawlIter( $paths );
         if ( $remove_404s ) {

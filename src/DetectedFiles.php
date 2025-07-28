@@ -48,7 +48,7 @@ class DetectedFiles {
      * @param bool $omit_unchanged_paths
      *  If true, will not yield paths that already exist in the DB
      *  unless they were updated, e.g., the filename changed.
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public static function addPathsIter(
         \Iterator $paths,
@@ -127,12 +127,7 @@ class DetectedFiles {
             }
 
             foreach ( $yield_paths as $path ) {
-                $arr = $path->toArray();
-                // Convert to array and add url for compatibility
-                // until downstream can be converted to
-                // use PathInfo.
-                $arr['url'] = $path;
-                yield $arr;
+                yield $path;
             }
         }
     }
@@ -143,7 +138,7 @@ class DetectedFiles {
      * Includes the newly added paths and pre-existing paths.
      *
      * @param \Iterator<PathInfo> $paths
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public static function withPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;
@@ -165,11 +160,14 @@ class DetectedFiles {
             ORDER BY id ASC
             LIMIT %d";
             $q = $wpdb->prepare( $qs, $last_id, $db_now, $batch_size );
-            $rows = $wpdb->get_results( $q, ARRAY_A );
+            $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
-                yield $row;
-                $last_id = $row['id'];
+                yield new PathInfo(
+                    $row->path,
+                    filename: $row->filename,
+                );
+                $last_id = $row->id;
             }
 
             if ( count( $rows ) < $batch_size ) {
@@ -182,6 +180,7 @@ class DetectedFiles {
      * Yields all paths in the table.
      *
      * @param string $detected_since default to '0000-00-00 00:00:00'
+     * @return \Iterator<PathInfo>
      */
     public static function getPathsIter(
         string $detected_since = '0000-00-00 00:00:00'
@@ -203,11 +202,14 @@ class DetectedFiles {
                 $detected_since,
                 $batch_size
             );
-            $rows = $wpdb->get_results( $q, ARRAY_A );
+            $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
-                yield $row;
-                $last_id = $row['id'];
+                yield new PathInfo(
+                    $row->path,
+                    filename: $row->filename,
+                );
+                $last_id = $row->id;
             }
 
             if ( count( $rows ) < $batch_size ) {
@@ -223,7 +225,7 @@ class DetectedFiles {
      */
     public static function getCrawlablePaths(): \Iterator {
         foreach ( self::getPathsIter() as $path ) {
-            yield $path['path'];
+            yield $path->path;
         }
     }
 

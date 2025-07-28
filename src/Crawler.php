@@ -154,9 +154,9 @@ class Crawler {
         do_action( Controller::getHookName( 'crawling_complete' ), $args );
     }
 
-    public function crawlPath( array $detected, array $site_urls ): PromiseInterface {
-        $filename = $detected['filename'] ?? null;
-        $path = $detected['path'];
+    public function crawlPath( PathInfo $detected, array $site_urls ): PromiseInterface {
+        $filename = $detected->filename;
+        $path = $detected->path;
 
         $absolute_uri = ( new URL( $this->site_path . $path ) )->get();
         try {
@@ -210,6 +210,10 @@ class Crawler {
         return $promise;
     }
 
+    /**
+     * @param \Iterator<PathInfo> $path_iter
+     * @return \Iterator<array>
+     */
     public function crawlIter( \Iterator $path_iter ): \Iterator {
         if ( ! isset( $this->concurrency ) ) {
             $this->concurrency = intval( Options::getValue( 'crawlConcurrency' ) );
@@ -220,7 +224,7 @@ class Crawler {
             $path_iter = new \CallbackFilterIterator(
                 $path_iter,
                 function ( $path ) use ( $path_hash_prefix ) {
-                    return str_starts_with( md5( $path['path'] ), $path_hash_prefix );
+                    return str_starts_with( md5( $path->path ), $path_hash_prefix );
                 }
             );
             $path_iter->rewind();
@@ -234,7 +238,7 @@ class Crawler {
         $in_flight = [];
         $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
             $detected = $path_iter->current();
-            $path = $detected['path'];
+            $path = $detected->path;
             $in_flight[ $path ] = $this->crawlPath( $detected, $site_urls );
             $path_iter->next();
         };
