@@ -30,7 +30,7 @@ class SitemapRobotsTxtTest extends TestCase {
         return [
             [
                 'http://www.example.com/robots.txt',
-                <<<ROBOTSTXT
+                <<<'ROBOTSTXT'
 User-agent: *
 Disallow: /
 #Sitemap:http://www.example.com/sitemap.xml.gz

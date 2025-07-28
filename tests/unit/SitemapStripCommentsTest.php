@@ -53,7 +53,7 @@ class SitemapStripCommentsTest extends TestCase {
         return [
             [
                 'https://www.bellinghambaymarathon.org/sitemap_index.xml',
-                <<<TEXT
+                <<<'TEXT'
 <!-- This page is cached by the Hummingbird Performance plugin v2.0.1 - https://blah.com/. -->
 <?xml version="1.0" encoding="UTF-8"?>
 	<?xml-stylesheet type="text/xsl" href="//www.bellinghambaymarathon.org/main-sitemap.xsl"?>

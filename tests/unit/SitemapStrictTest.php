@@ -29,7 +29,7 @@ class SitemapStrictTest extends TestCase {
         return [
             [
                 'http://www.example.com/sitemap.txt',
-                <<<TEXT
+                <<<'TEXT'
 http://www.example.com/sitemap1.xml
 http://www.example.com/sitemap2.xml
 http://www.example.com/sitemap3.xml.gz
