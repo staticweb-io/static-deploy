@@ -13,20 +13,11 @@
 namespace StaticDeploy;
 
 class URLDetector {
-
-    public static function countURLs(): int {
-        return count( static::detectURLs( $quiet = true ) );
-    }
-
     /**
      * Detect URLs within site
      *
-     * @return array<string>
+     * @return \Iterator<array>
      */
-    public static function detectURLs( bool $quiet = false ): array {
-        return iterator_to_array( static::detectURLsIter( $quiet ) );
-    }
-
     public static function detectURLsIter( bool $quiet = false ): \Iterator {
         if ( ! $quiet ) {
             WsLog::l( 'Starting to detect WordPress site URLs.' );

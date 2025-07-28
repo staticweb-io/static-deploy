@@ -23,6 +23,8 @@
 - Show job duration on jobs page.
 - Fix error with "Delete All Jobs from Queue"
   button submission.
+- Remove unused functions countURLs and detectURLs from
+  URLDetector
 
 ## 9.2.1 (2025-07-18)
 
