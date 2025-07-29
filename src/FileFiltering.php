@@ -34,7 +34,7 @@ class FileFiltering {
 
         $dir_iter = new \RecursiveDirectoryIterator(
             $directory,
-            \RecursiveDirectoryIterator::SKIP_DOTS,
+            \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS,
         );
 
         // Using a callback filter is more efficient than
