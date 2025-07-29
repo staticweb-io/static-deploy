@@ -69,7 +69,10 @@ class Deployer {
         ];
     }
 
-    public function uploadFilesIter( \Iterator $files ): void {
+    /**
+     * @param \Iterator<PathInfo> $path_infos
+     */
+    public function uploadFilesIter( \Iterator $path_infos ): void {
         $object_acl = S3Options::getValue( 'objectAcl' );
         $base_put_data = [
             'Bucket' => S3Options::getValue( 'bucketName' ),
@@ -96,7 +99,8 @@ class Deployer {
             $iter_key = 0;
             $last_log_time = microtime( true );
 
-            foreach ( $iterator as $file ) {
+            foreach ( $iterator as $path_info ) {
+                $file = $path_info->toArray();
                 $now = microtime( true );
                 $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
                 if ( $total > 0 && $now - $last_log_time >= 60 ) {
@@ -215,7 +219,7 @@ class Deployer {
             }
         };
 
-        $commands = $command_generator( $files );
+        $commands = $command_generator( $path_infos );
 
         $concurrency = intval( S3Options::getValue( 'concurrency' ) || '4' );
         $config = [

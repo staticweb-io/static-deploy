@@ -53,12 +53,12 @@ class PostProcessor {
         $processed = $this->processIter( $crawled );
 
         foreach ( $processed as $path ) {
-            $save_path = StaticSite::transformPath( $path['path'] );
-            if ( $path['body'] ?? null ) {
-                ProcessedSite::add( $save_path, $path['body'] );
+            $save_path = StaticSite::transformPath( $path->path );
+            if ( $path->body ) {
+                ProcessedSite::add( $save_path, $path->body );
                 ++$this->processed;
-            } elseif ( $path['filename'] ?? null ) {
-                ProcessedSite::copy( $save_path, $path['filename'] );
+            } elseif ( $path->filename ) {
+                ProcessedSite::copy( $save_path, $path->filename );
                 ++$this->skipped;
             } else {
                 WsLog::w(
@@ -78,7 +78,7 @@ class PostProcessor {
 
     /**
      * @param \Iterator<PathInfo>
-     * @return \Iterator<array>
+     * @return \Iterator<PathInfo>
      */
     public function processIter(
         \Iterator $crawl_responses
@@ -86,22 +86,19 @@ class PostProcessor {
         $rewriter = new SimpleRewriter();
         $process = function ( $crawl_responses ) use ( $rewriter ) {
             foreach ( $crawl_responses as $crawled ) {
-                $crawled = $crawled->toArray();
-                $content_type = $crawled['content_type'] ?? null;
+                $content_type = $crawled->content_type;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
-                    if ( $crawled['body'] ?? null ) {
-                        $rewritten = $rewriter->rewriteFileContents( $crawled['body'] );
-                        if ( $rewritten !== $crawled['body'] ) {
-                            $crawled['body'] = $rewritten;
-                            unset( $crawled['content_hash'] );
+                    if ( $crawled->body ) {
+                        $rewritten = $rewriter->rewriteFileContents( $crawled->body );
+                        if ( $rewritten !== $crawled->body ) {
+                            $crawled = $crawled->withBody( $rewritten );
                         }
                         ++$this->processed;
-                    } elseif ( $crawled['filename'] ?? null ) {
-                        $file_contents = file_get_contents( $crawled['filename'] );
+                    } elseif ( $crawled->filename ) {
+                        $file_contents = file_get_contents( $crawled->filename );
                         $rewritten = $rewriter->rewriteFileContents( $file_contents );
                         if ( $rewritten !== $file_contents ) {
-                            $crawled['body'] = $rewritten;
-                            unset( $crawled['content_hash'] );
+                            $crawled = $crawled->withBody( $rewritten );
                         }
                         ++$this->processed;
                     }

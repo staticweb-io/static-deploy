@@ -43,7 +43,10 @@ class LocalDeployer {
         ];
     }
 
-    public function uploadFilesIter( \Iterator $files ): void {
+    /**
+     * @param \Iterator<PathInfo> $path_infos
+     */
+    public function uploadFilesIter( \Iterator $path_infos ): void {
         $dir_path = LocalOptions::getValue( 'dirPath' );
         // Make $out_dir absolute
         if ( empty( $dir_path ) || $dir_path[0] !== '/' ) {
@@ -79,7 +82,8 @@ class LocalDeployer {
 
         $last_log_time = microtime( true );
 
-        foreach ( $files as $file ) {
+        foreach ( $path_infos as $path_info ) {
+            $file = $path_info->toArray();
             $now = microtime( true );
             $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
             if ( $total > 0 && $now - $last_log_time >= 60 ) {
