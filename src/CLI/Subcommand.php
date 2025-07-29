@@ -10,10 +10,17 @@ class Subcommand {
      *
      * See https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/
      * for details on args.
+     *
+     * @param string $slug
+     * @param callable|object|string|string[] $callabl
+     * @param array $args
      */
     public static function register(
         string $slug,
-        callable|object|string $callabl,
+        // Even though the docs say that add_command takes
+        // callable|object|string, it actually takes string[]
+        // as well.
+        callable|object|string|array $callabl,
         array $args = [],
     ): void {
         WP_CLI::add_command(
