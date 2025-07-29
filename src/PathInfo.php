@@ -85,13 +85,15 @@ class PathInfo {
             return $this->content_hash;
         }
 
-        if ( ! isset( $this->body ) ) {
-            return null;
+        if ( isset( $this->body ) ) {
+            $this->content_hash = md5( $this->body );
         }
 
-        $hash = md5( $this->body );
-        $this->content_hash = $hash;
-        return $hash;
+        if ( isset( $this->filename ) ) {
+            $this->content_hash = md5_file( $this->filename );
+        }
+
+        return $this->content_hash;
     }
 
     public function withBody( ?string $new_body ): self {
