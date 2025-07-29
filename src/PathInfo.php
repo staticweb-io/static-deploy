@@ -7,17 +7,17 @@ class PathInfo {
 
     // If the path corresponds to a file on disk,
     // this will be the absolute path to the file.
-    public readonly ?string $filename;
+    public ?string $filename;
 
     // The relative URL path, not containing the host.
     // E.g., "/author/user/"
     public readonly string $path;
 
     // Values not known until crawling.
-    public readonly ?string $body;
-    public readonly ?string $content_type;
-    public readonly ?string $redirect_to;
-    public readonly ?int $status;
+    public ?string $body;
+    public ?string $content_type;
+    public ?string $redirect_to;
+    public ?int $status;
 
     private ?string $content_hash;
 
@@ -92,5 +92,13 @@ class PathInfo {
         $hash = md5( $this->body );
         $this->content_hash = $hash;
         return $hash;
+    }
+
+    public function withBody( ?string $new_body ): self {
+        $copy = clone $this;
+        $copy->body = $new_body;
+        $copy->content_hash = null;
+        $copy->filename = null;
+        return $copy;
     }
 }
