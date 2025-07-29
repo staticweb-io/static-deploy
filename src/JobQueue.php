@@ -312,4 +312,94 @@ class JobQueue {
             }
         }
     }
+
+    /**
+     * Process a single job
+     */
+    public static function process( \stdClass $job ): void {
+        global $wpdb;
+
+        $lock = Db::getLockName( self::getTableName(), $job->job_type );
+        $query = "SELECT GET_LOCK('$lock', 30) AS lck";
+        $locked = intval( $wpdb->get_row( $query )->lck );
+        if ( ! $locked ) {
+            WsLog::l( "Failed to acquire \"$lock\" lock." );
+            return;
+        }
+        try {
+            self::setStatus( $job->id, 'processing' );
+
+            switch ( $job->job_type ) {
+                case 'detect':
+                    WsLog::l( 'Starting URL detection' );
+                    $detected_count = URLDetector::enqueueURLs();
+                    WsLog::l( "URL detection completed ($detected_count URLs detected)" );
+                    break;
+                case 'crawl':
+                    Controller::crawl();
+                    break;
+                case 'post_process':
+                    WsLog::l( 'Starting post-processing' );
+                    $post_processor = new PostProcessor();
+                    $post_processor->processStaticSite( StaticSite::getPath() );
+                    WsLog::l( 'Post-processing completed' );
+                    break;
+                case 'deploy':
+                    $deployer = Addons::getDeployer();
+
+                    if ( ! $deployer ) {
+                        WsLog::l( 'No deployment add-ons are enabled, skipping deployment.' );
+                    } else {
+                        WsLog::l( 'Starting deployment' );
+                        do_action(
+                            Controller::getHookName( 'deploy' ),
+                            ProcessedSite::getPath(),
+                            $deployer
+                        );
+                    }
+                    WsLog::l( 'Starting post-deployment actions' );
+                    do_action(
+                        Controller::getHookName( 'post_deploy_trigger' ),
+                        $deployer
+                    );
+                    break;
+                case 'direct_deploy':
+                    $deployer = new DirectDeployer();
+                    WsLog::l( 'Starting direct deployment' );
+                    $deployer->deploy();
+                    $deployer->deployComplete();
+                    break;
+                case 'direct_deploy_post':
+                    $deployer = new DirectDeployer();
+                    $post_id = $job->triggering_post_id;
+                    if ( $post_id ) {
+                        $path = wp_make_link_relative( get_permalink( $post_id ) );
+                        $paths = new \ArrayIterator( [ new PathInfo( $path ) ] );
+                        $detected = DetectedFiles::addPathsIter( $paths );
+                        WsLog::l( 'Starting direct deployment for path ' . $path );
+                        $deployer->deployPaths( $detected );
+                    } else {
+                        WsLog::w( 'No post ID found for direct deployment post' );
+                    }
+                    $deployer->deployComplete();
+                    break;
+                default:
+                    WsLog::l( 'Trying to process unknown job type' );
+            }
+            self::setStatus( $job->id, 'completed' );
+        } catch ( \Throwable $e ) {
+            self::setStatus( $job->id, 'failed' );
+            // We don't want to crawl and deploy if the detect step fails.
+            // Skip all waiting jobs when one fails.
+            $table_name = self::getTableName();
+            $wpdb->query(
+                "UPDATE $table_name
+                    SET status = 'skipped'
+                    WHERE status = 'waiting'"
+            );
+            throw $e;
+        } finally {
+            $wpdb->query( "DO RELEASE_LOCK('$lock')" );
+        }
+    }
 }
