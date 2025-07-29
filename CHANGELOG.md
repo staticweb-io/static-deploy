@@ -30,6 +30,8 @@
 - Allow both hyphens and underscores in CLI command names.
 - Rename "process_queue" command to "jobs process". The
   "process_queue" command still works as an alias.
+- Fix that a job could block a job of another database on
+  the same server.
 
 ## 9.2.1 (2025-07-18)
 

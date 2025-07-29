@@ -66,10 +66,11 @@ final class Db {
         ?string $attribute = null,
     ): string {
         if ( $attribute ) {
-            $lock_name = $table_name . '.' . $attribute;
+            $prefix = DB_NAME . '.' . $table_name;
+            $lock_name = $prefix . '.' . $attribute;
             if ( strlen( $lock_name ) > 64 ) {
                 if ( strlen( $attribute ) <= 32 ) {
-                    $lock_name = md5( $table_name ) . '.' . $attribute;
+                    $lock_name = md5( $prefix ) . '.' . $attribute;
                 } else {
                     $lock_name = md5( $lock_name );
                 }
