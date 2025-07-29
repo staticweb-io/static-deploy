@@ -150,7 +150,8 @@ class CLI {
      * [--path-hash-prefix=<prefix>]
      * : Ignore paths that do not match the hash prefix.
      *
-     * @alias direct-deploy
+     * @subcommand direct-deploy
+     * @alias direct_deploy
      */
     public function direct_deploy(
         array $args,
@@ -364,7 +365,8 @@ class CLI {
     /**
      * Makes a copy of crawled static site with processing applied
      *
-     * @alias post-process
+     * @subcommand post-process
+     * @alias post_process
      */
     public function post_process(): void {
         Options::init();
@@ -387,7 +389,8 @@ class CLI {
      *
      * Delete all crawled files
      *
-     * @alias crawled-files
+     * @subcommand crawled-files
+     * @alias crawled_files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -445,7 +448,8 @@ class CLI {
      *
      * Empty all detected files
      *
-     * @alias detected-files
+     * @subcommand detected-files
+     * @alias detected_files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -495,7 +499,8 @@ class CLI {
      *
      * Delete all generated Processed Site files from server
      *
-     * @alias processed-site
+     * @subcommand processed-site
+     * @alias processed_site
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -538,8 +543,9 @@ class CLI {
      *
      *   -- also deletes the crawled files
      *
-     * @alias static-site
-
+     * @subcommand static-site
+     * @alias static_site
+     *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -587,7 +593,8 @@ class CLI {
      *
      * Empty all URLs from DeployCache
      *
-     * @alias deploy-cache
+     * @subcommand deploy-cache
+     * @alias deploy_cache
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -633,7 +640,8 @@ class CLI {
      *
      * Executes all core workflows: detect, crawl, post_process & deploy
      *
-     * @alias full-workflow
+     * @subcommand full-workflow
+     * @alias full_workflow
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -655,7 +663,8 @@ class CLI {
      *
      * Deletes all caches
      *
-     * @alias delete-all-cache
+     * @subcommand delete-all-cache
+     * @alias delete_all_cache
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -751,7 +760,8 @@ class CLI {
      * Option name to import or --all to import
      * all available options.
      *
-     * @alias import-wp2static-options
+     * @subcommand import-wp2static-options
+     * @alias import_wp2static_options
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command

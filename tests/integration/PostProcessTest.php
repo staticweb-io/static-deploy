@@ -12,7 +12,7 @@ final class PostProcessTest extends TestCase {
     {
         $this->pluginCli( [ 'detect' ] );
         $this->pluginCli( [ 'crawl' ] );
-        $this->pluginCli( [ 'post_process' ] );
+        $this->pluginCli( [ 'post-process' ] );
 
         $content = $this->getProcessedFileContents( 'index.html' );
         $this->assertStringContainsString( 'Welcome to WordPress', $content );

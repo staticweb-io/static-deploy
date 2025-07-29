@@ -11,7 +11,7 @@ final class LocalDeployTest extends TestCase {
     public function testLocalDeploy(): void {
         $this->pluginCli( [ 'addons', 'enable', 'static-deploy-addon-local' ] );
         $this->pluginCli( [ 'options', 'set', 'local_dirPath', '../localdeploy' ] );
-        $this->pluginCli( [ 'full_workflow' ] );
+        $this->pluginCli( [ 'full-workflow' ] );
 
         $content = $this->getLocalDeployFileContents( 'index.html' );
         $this->assertStringContainsString( 'Welcome to WordPress', $content );
@@ -26,7 +26,7 @@ final class LocalDeployTest extends TestCase {
     public function testLocalDirectDeploy(): void {
         $this->pluginCli( [ 'addons', 'enable', 'static-deploy-addon-local' ] );
         $this->pluginCli( [ 'options', 'set', 'local_dirPath', '../localdeploy' ] );
-        $this->pluginCli( [ 'direct_deploy' ] );
+        $this->pluginCli( [ 'direct-deploy' ] );
 
         $content = $this->getLocalDeployFileContents( 'index.html' );
         $this->assertStringContainsString( 'Welcome to WordPress', $content );

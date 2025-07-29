@@ -10,7 +10,7 @@ final class DetectTest extends TestCase {
 
     public function testCount(): void {
         $this->pluginCli( [ 'detect' ] );
-        $line = $this->pluginCli( [ 'detected_files', 'count' ] )['final_line'];
+        $line = $this->pluginCli( [ 'detected-files', 'count' ] )['final_line'];
         $this->assertGreaterThan( 1000, (int) $line );
     }
 
@@ -23,7 +23,7 @@ final class DetectTest extends TestCase {
         file_put_contents( $dir . '/new-content.html', 'New Content' );
 
         $this->pluginCli( [ 'detect' ] );
-        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
+        $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
         $this->assertContains(
             ITEnv::getTestContentPath() . '/new-content.html',
             $lines
@@ -35,7 +35,7 @@ final class DetectTest extends TestCase {
      */
     public function testList(): void {
         $this->pluginCli( [ 'detect' ] );
-        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
+        $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
         $this->assertContains( '/hello-world/', $lines );
     }
 

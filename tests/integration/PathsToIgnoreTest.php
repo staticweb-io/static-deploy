@@ -63,7 +63,7 @@ final class PathsToIgnoreTest extends TestCase {
         );
 
         $this->pluginCli( [ 'detect' ] );
-        $lines = $this->pluginCli( [ 'detected_files', 'list' ] )['output'];
+        $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
         $this->assertNotContains(
             '/wp-content/plugins/static-deploy/vendor/findme.html',
             $lines,
