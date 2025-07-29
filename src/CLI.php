@@ -368,25 +368,6 @@ class CLI {
     }
 
     /**
-     * Process any jobs in the queue.
-     *
-     * @alias process-queue
-     */
-    public function process_queue(): void {
-        $job_count = JobQueue::getWaitingJobsCount();
-
-        if ( $job_count === 0 ) {
-            WP_CLI::success( 'No jobs in queue' );
-        } else {
-            WP_CLI::log( ' Processing ' . $job_count . ' job' . ( $job_count > 1 ? 's' : '' ) );
-
-            Controller::processQueue();
-
-            WP_CLI::success( 'Done processing queue' );
-        }
-    }
-
-    /**
      * Crawled Files
      *
      * <list>

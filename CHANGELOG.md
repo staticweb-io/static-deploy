@@ -28,6 +28,8 @@
 - Fix that very long wpdb prefixes could result in invalid
   MySQL lock names.
 - Allow both hyphens and underscores in CLI command names.
+- Rename "process_queue" command to "jobs process". The
+  "process_queue" command still works as an alias.
 
 ## 9.2.1 (2025-07-18)
 
