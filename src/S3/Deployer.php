@@ -164,7 +164,7 @@ class Deployer {
                         WsLog::l( 'Failed to hash file ' . $filename );
                         continue;
                     } else {
-                        $file_hash = $path_info->getContentHash();
+                        $file_hash = hex2bin( $path_info->getContentHash() );
                         $cmd_data['ContentMD5'] = base64_encode( $file_hash );
                         $cmd_data['ContentType'] = $content_type;
                     }

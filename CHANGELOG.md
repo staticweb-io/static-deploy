@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix wrong calculation for Content-MD5 in S3 deployer.
+
 ## 9.3.1 (2025-07-29)
 
 - Fix "direct-deploy --no-detect" gave the message
