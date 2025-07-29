@@ -96,7 +96,7 @@ class DirectDeployer {
     public function deployPaths( \Iterator $paths, bool $remove_404s = true ): void {
         $crawled = $this->crawler->crawlIter( $paths );
         if ( $remove_404s ) {
-            $crawled = CrawledFiles::remove404s( $crawled );
+            $crawled = CrawledFiles::removeOutdated( $crawled );
         }
         $crawled = CrawledFiles::addPathsIter( $crawled );
         $crawled = $this->url_discovery->discoverURLs( $crawled );

@@ -115,7 +115,7 @@ class Crawler {
             $detected = DetectedFiles::getPathsIter();
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
             $crawled = $crawler->crawlIter( $detected );
-            $crawled = CrawledFiles::remove404s( $crawled );
+            $crawled = CrawledFiles::removeOutdated( $crawled );
             $crawled = CrawledFiles::writeFilesIter( $crawled );
             $crawled = CrawledFiles::addPathsIter( $crawled );
             $crawled = $url_discovery->discoverURLs( $crawled );

@@ -168,16 +168,36 @@ class CrawledFiles {
     }
 
     /**
-     * Remove 404 URLs from the detected files, crawled files, and
+     * Remove outdated paths from the detected files, crawled files, and
      * files written to disk.
+     *
+     * Removes paths that return 404s and filenames that
+     * no longer correspond to a file, such as filenames
+     * whose path now refers to a directory.
      *
      * @param \Iterator<PathInfo> $paths
      * @return \Iterator<PathInfo>
      */
-    public static function remove404s( \Iterator $paths ): \Iterator {
+    public static function removeOutdated( \Iterator $paths ): \Iterator {
         foreach ( $paths as $path ) {
+            $outdated = false;
+
             if ( isset( $path->status ) && $path->status === 404 ) {
                 WsLog::l( '404 for URL ' . $path->path );
+                $outdated = true;
+            }
+
+            if ( isset( $path->filename ) && ! file_exists( $path->filename ) ) {
+                WsLog::l( 'File ' . $path->filename . ' does not exist' );
+                $outdated = true;
+            }
+
+            if ( isset( $path->filename ) && is_dir( $path->filename ) ) {
+                WsLog::l( 'File ' . $path->filename . ' is a directory' );
+                $outdated = true;
+            }
+
+            if ( $outdated ) {
                 self::rmUrl( $path->path );
                 // Delete from detected files to prevent crawling not found urls forever.
                 DetectedFiles::rmUrl( $path->path );
