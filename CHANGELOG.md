@@ -27,6 +27,7 @@
   URLDetector
 - Fix that very long wpdb prefixes could result in invalid
   MySQL lock names.
+- Allow both hyphens and underscores in CLI command names.
 
 ## 9.2.1 (2025-07-18)
 

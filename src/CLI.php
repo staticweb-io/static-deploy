@@ -144,6 +144,8 @@ class CLI {
      *
      * [--path-hash-prefix=<prefix>]
      * : Ignore paths that do not match the hash prefix.
+     *
+     * @alias direct-deploy
      */
     public function direct_deploy(
         array $args,
@@ -356,6 +358,8 @@ class CLI {
 
     /**
      * Makes a copy of crawled static site with processing applied
+     *
+     * @alias post-process
      */
     public function post_process(): void {
         Options::init();
@@ -365,6 +369,8 @@ class CLI {
 
     /**
      * Process any jobs in the queue.
+     *
+     * @alias process-queue
      */
     public function process_queue(): void {
         $job_count = JobQueue::getWaitingJobsCount();
@@ -394,6 +400,8 @@ class CLI {
      * <delete>
      *
      * Delete all crawled files
+     *
+     * @alias crawled-files
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -451,6 +459,8 @@ class CLI {
      *
      * Empty all detected files
      *
+     * @alias detected-files
+     *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -499,6 +509,8 @@ class CLI {
      *
      * Delete all generated Processed Site files from server
      *
+     * @alias processed-site
+     *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -540,6 +552,8 @@ class CLI {
      *
      *   -- also deletes the crawled files
      *
+     * @alias static-site
+
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -587,6 +601,8 @@ class CLI {
      *
      * Empty all URLs from DeployCache
      *
+     * @alias deploy-cache
+     *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -631,6 +647,8 @@ class CLI {
      *
      * Executes all core workflows: detect, crawl, post_process & deploy
      *
+     * @alias full-workflow
+     *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
      */
@@ -650,6 +668,8 @@ class CLI {
      * delete_all_cache
      *
      * Deletes all caches
+     *
+     * @alias delete-all-cache
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
@@ -744,6 +764,8 @@ class CLI {
      *
      * Option name to import or --all to import
      * all available options.
+     *
+     * @alias import-wp2static-options
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
