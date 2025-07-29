@@ -56,4 +56,17 @@ class Utils {
         }
         return substr_replace( $subject, $replace, $pos, strlen( $search ) );
     }
+
+    /**
+     * Returns a \DateTime in the timezone of the
+     * WordPress settings.
+     */
+    public static function wpDateTime(
+        string $datetime = 'now',
+    ): \DateTime {
+        return new \DateTime(
+            $datetime,
+            new \DateTimeZone( wp_timezone_string() )
+        );
+    }
 }
