@@ -4,6 +4,7 @@ namespace StaticDeploy\CLI;
 
 use StaticDeploy\Controller;
 use StaticDeploy\JobQueue;
+use StaticDeploy\WsLog;
 use WP_CLI;
 
 /**
@@ -17,13 +18,13 @@ class Jobs {
         );
 
         // Deprecated aliases
-        Subcommand::register(
+        Subcommand::registerHidden(
             'process-queue',
-            [ self::class, 'process' ],
+            [ self::class, '__deprecatedProcessQueue' ],
         );
-        Subcommand::register(
+        Subcommand::registerHidden(
             'process_queue',
-            [ self::class, 'process' ],
+            [ self::class, '__deprecatedProcessQueue' ],
         );
     }
 
@@ -52,6 +53,17 @@ class Jobs {
 
         $id = JobQueue::addJob( $cfg['job-type'] );
         WP_CLI::success( 'Added job ' . $id );
+    }
+
+    /**
+     * Process any jobs waiting in the queue.
+     *
+     * @deprecated
+     */
+    public function __deprecatedProcessQueue(): void {
+        WsLog::w( 'The "process-queue" command is deprecated. Use "jobs process" instead.' );
+        // Ignoring all arguments for backwards-compatibility.
+        $this->process( [], [] );
     }
 
     /**
