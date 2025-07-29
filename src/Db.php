@@ -52,6 +52,34 @@ final class Db {
     }
 
     /**
+     * Returns a lock name for an "attribute"
+     * of a table. The "attribute" is any MySQL-legal
+     * string whose meaning is defined by the caller.
+     *
+     * If necessary, hashes part or all of the lock name
+     * to fit within the 64-character limit.
+     *
+     * See https://dev.mysql.com/doc/refman/8.4/en/locking-functions.html
+     */
+    public static function getLockName(
+        string $table_name,
+        ?string $attribute = null,
+    ): string {
+        if ( $attribute ) {
+            $lock_name = $table_name . '.' . $attribute;
+            if ( strlen( $lock_name ) > 64 ) {
+                if ( strlen( $attribute ) <= 32 ) {
+                    $lock_name = md5( $table_name ) . '.' . $attribute;
+                } else {
+                    $lock_name = md5( $lock_name );
+                }
+            }
+            return $lock_name;
+        }
+        return $table_name;
+    }
+
+    /**
      * Perform a $wpdb->query with error handling.
      * Throws an exception if $on_error is null and a
      * database error is detected.

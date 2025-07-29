@@ -289,7 +289,7 @@ class JobQueue {
 
         foreach ( $job_types as $type ) {
             try {
-                $lock = self::getTableName() . '.' . $type;
+                $lock = Db::getLockName( self::getTableName(), $type );
                 $query = "SELECT IS_FREE_LOCK('$lock') AS free";
                 $free = intval( $wpdb->get_row( $query )->free );
 

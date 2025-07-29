@@ -624,7 +624,7 @@ class Controller {
         $jobs = JobQueue::getProcessableJobs();
 
         foreach ( $jobs as $job ) {
-            $lock = JobQueue::getTableName() . '.' . $job->job_type;
+            $lock = Db::getLockName( JobQueue::getTableName(), $job->job_type );
             $query = "SELECT GET_LOCK('$lock', 30) AS lck";
             $locked = intval( $wpdb->get_row( $query )->lck );
             if ( ! $locked ) {

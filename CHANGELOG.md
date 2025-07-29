@@ -25,6 +25,8 @@
   button submission.
 - Remove unused functions countURLs and detectURLs from
   URLDetector
+- Fix that very long wpdb prefixes could result in invalid
+  MySQL lock names.
 
 ## 9.2.1 (2025-07-18)
 
