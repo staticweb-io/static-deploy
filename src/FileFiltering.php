@@ -51,6 +51,13 @@ class FileFiltering {
                     }
                 }
 
+                if ( $current->isLink() ) {
+                    // Filter out broken links
+                    if ( ! $current->isReadable() ) {
+                        return false;
+                    }
+                }
+
                 return true;
             }
         );
