@@ -4,6 +4,9 @@ namespace StaticDeploy\CLI;
 
 use WP_CLI;
 
+/**
+ * Memcached configuration, stats, and data
+ */
 class Memcached {
     public static function registerCommands(): void {
         Subcommand::register(
