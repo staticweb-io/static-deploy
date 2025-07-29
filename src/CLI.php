@@ -150,8 +150,9 @@ class CLI {
      * : Post ID to deploy. Deploys all files if omitted.
      *
      * [--no-detect]
-     * : Skip detect step and crawl only previously detected
-     *   paths.
+     * [--detect]
+     * : Whether to run or skip the detect step. The default
+     *   is to run the detect step.
      *
      * [--path-hash-prefix=<prefix>]
      * : Ignore paths that do not match the hash prefix.

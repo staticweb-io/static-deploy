@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Fix "direct-deploy --no-detect" gave the message
+  "Unknown option: detect".
+
 ## 9.3.0 (2025-07-29)
 
 - Remove "debugLogging" option. Instead, debug logs are enabled
