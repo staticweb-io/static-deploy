@@ -68,7 +68,7 @@ trait DeployerTrait {
             )
         );
 
-        $file_arrays = function (
+        $path_infos = function (
             $files,
             $redirects,
         ) use ( $processed_site_path ) {
@@ -78,10 +78,11 @@ trait DeployerTrait {
                 }
                 $base_name = basename( $filename );
                 if ( $base_name !== '.' && $base_name !== '..' ) {
-                    yield [
-                        'filename' => $filename,
-                        'path' => str_replace( $processed_site_path, '', $filename ),
-                    ];
+                    $path = str_replace( $processed_site_path, '', $filename );
+                    yield new PathInfo(
+                        $path,
+                        filename: $filename,
+                    );
                 }
             }
 
@@ -96,15 +97,15 @@ trait DeployerTrait {
                     $path = $path . 'index.html';
                 }
 
-                yield [
-                    'path' => $path,
-                    'redirect_to' => $redirect->redirect_to,
-                ];
+                yield new PathInfo(
+                    $path,
+                    redirect_to: $redirect->redirect_to,
+                );
             }
         };
 
         $redirects = CrawledFiles::listRedirects();
 
-        self::uploadFilesIter( $file_arrays( $files, $redirects ) );
+        self::uploadFilesIter( $path_infos( $files, $redirects ) );
     }
 }

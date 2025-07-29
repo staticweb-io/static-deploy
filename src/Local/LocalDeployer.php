@@ -83,11 +83,10 @@ class LocalDeployer {
         $last_log_time = microtime( true );
 
         foreach ( $path_infos as $path_info ) {
-            $file = $path_info->toArray();
             $now = microtime( true );
             $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
             if ( $total > 0 && $now - $last_log_time >= 60 ) {
-                WsLog::l( 'Deployed ' . $file['path'] );
+                WsLog::l( 'Deployed ' . $path_info->path );
                 $notice = "Deploy progress: $this->deployed_ct deployed," .
                     " $this->deploy_error_ct failed," .
                     " $this->deploy_cache_ct skipped (cached).";
@@ -95,13 +94,10 @@ class LocalDeployer {
                 $last_log_time = microtime( true );
             }
 
-            $body = $file['body'] ?? null;
-            $cache_key = $file['path'];
-            $filename = $file['filename'] ?? null;
-            $status = $file['status'] ?? null;
+            $cache_key = $path_info->path;
 
             // Remove 404s
-            if ( $status === 404 ) {
+            if ( $path_info->status === 404 ) {
                 $out_path = $out_dir . '/' . ltrim( $cache_key, '/' );
                 if ( is_file( $out_path ) ) {
                     unlink( $out_path );
@@ -121,10 +117,10 @@ class LocalDeployer {
             }
 
             // Write file contents
-            if ( $body !== null ) {
-                $result = file_put_contents( $out_path, $body );
-            } elseif ( $filename && is_file( $filename ) ) {
-                $result = copy( $filename, $out_path );
+            if ( $path_info->body !== null ) {
+                $result = file_put_contents( $out_path, $path_info->body );
+            } elseif ( $path_info->filename && is_file( $path_info->filename ) ) {
+                $result = copy( $path_info->filename, $out_path );
             } else {
                 WsLog::l( 'No content to write for ' . $cache_key );
                 ++$this->deploy_error_ct;

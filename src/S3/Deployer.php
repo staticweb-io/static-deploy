@@ -100,11 +100,10 @@ class Deployer {
             $last_log_time = microtime( true );
 
             foreach ( $iterator as $path_info ) {
-                $file = $path_info->toArray();
                 $now = microtime( true );
                 $total = $this->deployed_ct + $this->deploy_cache_ct + $this->deploy_error_ct;
                 if ( $total > 0 && $now - $last_log_time >= 60 ) {
-                    WsLog::l( 'Deployed ' . $file['path'] );
+                    WsLog::l( 'Deployed ' . $path_info->path );
                     $notice = "Deploy progress: $this->deployed_ct deployed," .
                         " $this->deploy_error_ct failed," .
                         " $this->deploy_cache_ct skipped (cached).";
@@ -112,12 +111,12 @@ class Deployer {
                     $last_log_time = microtime( true );
                 }
 
-                $body = $file['body'] ?? null;
-                $cache_key = $file['path'];
-                $content_type = $file['content_type'] ?? null;
-                $filename = $file['filename'] ?? null;
-                $redirect_to = $file['redirect_to'] ?? null;
-                $status = $file['status'] ?? null;
+                $body = $path_info->body;
+                $cache_key = $path_info->path;
+                $content_type = $path_info->content_type;
+                $filename = $path_info->filename;
+                $redirect_to = $path_info->redirect_to;
+                $status = $path_info->status;
 
                 if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
@@ -143,12 +142,6 @@ class Deployer {
                     }
                 }
 
-                if ( $body !== null ) {
-                    $file_hash = md5( $body, true );
-                } elseif ( $filename ) {
-                    $file_hash = md5_file( $filename, true );
-                }
-
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
                 if ( mb_substr( $s3_key, -1 ) === '/' ) {
                     $s3_key = $s3_key . 'index.html';
@@ -167,10 +160,11 @@ class Deployer {
 
                     if ( $redirect_to ) {
                         $cmd_data['WebsiteRedirectLocation'] = $redirect_to;
-                    } elseif ( ! $file_hash ) {
+                    } elseif ( ! $path_info->getContentHash() ) {
                         WsLog::l( 'Failed to hash file ' . $filename );
                         continue;
                     } else {
+                        $file_hash = $path_info->getContentHash();
                         $cmd_data['ContentMD5'] = base64_encode( $file_hash );
                         $cmd_data['ContentType'] = $content_type;
                     }
