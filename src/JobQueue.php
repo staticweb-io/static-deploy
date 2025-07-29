@@ -40,8 +40,9 @@ class JobQueue {
      *
      * @param string $job_type Type of job
      * ie detect, crawl, post_process, deploy
+     * @return int ID of the row added
      */
-    public static function addJob( string $job_type, ?int $post_id = null ): void {
+    public static function addJob( string $job_type, ?int $post_id = null ): int {
         WsLog::l( 'Adding job: ' . $job_type );
 
         global $wpdb;
@@ -53,7 +54,8 @@ class JobQueue {
         VALUES (%s, 'waiting', %s);";
         $query = $wpdb->prepare( $query_string, $job_type, $post_id );
 
-        $wpdb->query( $query );
+        Db::query( $query );
+        return $wpdb->insert_id;
     }
 
     /**
