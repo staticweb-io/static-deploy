@@ -67,6 +67,30 @@ class Jobs {
     }
 
     /**
+     * Delete all jobs from the queue.
+     *
+     * ## OPTIONS
+     *
+     * [--yes]
+     * : Skip confirmation.
+     */
+    public function delete( array $args, array $assoc_args ): void {
+        $cfg = Args::parse(
+            $args,
+            $assoc_args,
+            null,
+            [ 'yes' => [] ],
+        );
+
+        if ( ! $cfg['yes'] ) {
+            WP_CLI::confirm( 'Are you sure you want to delete all jobs?' );
+        }
+
+        JobQueue::truncate();
+        WP_CLI::success( 'Deleted all jobs' );
+    }
+
+    /**
      * Process any jobs waiting in the queue.
      */
     public function process( array $args, array $assoc_args ): void {

@@ -10,7 +10,8 @@ trait ITTrait {
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getLocalDeployDir() ) );
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
 
-        $this->pluginCli( [ 'delete_all_cache', '--force' ] );
+        $this->pluginCli( [ 'delete-all-cache', '--force' ] );
+        $this->pluginCli( [ 'jobs', 'delete', '--yes' ] );
     }
 
     public function wpCli( array $args, array $expect_warnings = [] ): array
