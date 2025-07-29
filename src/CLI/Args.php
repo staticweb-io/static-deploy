@@ -2,6 +2,7 @@
 
 namespace StaticDeploy\CLI;
 
+use StaticDeploy\WsLog;
 use WP_CLI;
 
 class Args {
