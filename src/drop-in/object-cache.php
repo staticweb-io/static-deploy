@@ -494,7 +494,9 @@ if ( ! class_exists( 'Memcached' ) ) {
                 $ks_to_keys = array_combine( $ks, $keys );
                 $arr = [];
                 foreach ( $ks_to_keys as $k => $key ) {
-                    $arr[ $key ] = $local[ $k ];
+                    if ( array_key_exists( $k, $local ) ) {
+                        $arr[ $key ] = $local[ $k ];
+                    }
                 }
                 $ks = array_diff( $ks, array_keys( $local ) );
 
