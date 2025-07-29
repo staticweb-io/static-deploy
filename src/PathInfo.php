@@ -38,7 +38,12 @@ class PathInfo {
             throw WsLog::ex( 'Path cannot contain query string: ' . $path );
         }
 
-        $this->filename = $filename;
+        if ( $filename === '' ) {
+            $this->filename = null;
+        } else {
+            $this->filename = $filename;
+        }
+
         $this->path = $path;
         $this->body = $body;
         $this->content_type = $content_type;
