@@ -32,7 +32,7 @@ class Args {
         }
 
         foreach ( $assoc_args ?? [] as $k => $v ) {
-            if ( ! array_key_exists( $k, $assoc_opts ) ) {
+            if ( ! array_key_exists( $k, $assoc_opts ?? [] ) ) {
                 WP_CLI::error( 'Unrecognized option: --' . $k );
             }
 
