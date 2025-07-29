@@ -10,9 +10,8 @@ final class DetectTest extends TestCase {
 
     public function testCount(): void {
         $this->pluginCli( [ 'detect' ] );
-        $lines = $this->pluginCli( [ 'detected_files', 'count' ] )['output'];
-        $count = (int) $lines[ count( $lines ) - 1 ];
-        $this->assertGreaterThan( 1000, $count );
+        $line = $this->pluginCli( [ 'detected_files', 'count' ] )['final_line'];
+        $this->assertGreaterThan( 1000, (int) $line );
     }
 
     /**

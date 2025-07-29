@@ -44,6 +44,7 @@ trait ITTrait {
 
         return [
             'exit' => $exit_code,
+            'final_line' => empty( $output ) ? null : $output[ count( $output ) - 1 ],
             'output' => $output,
         ];
     }
