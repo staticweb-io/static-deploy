@@ -26,7 +26,7 @@ class CrawledFiles {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'path_hash',
             "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
@@ -50,7 +50,7 @@ class CrawledFiles {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'crawled_files' );
+        return Db::getTableName( 'crawled_files' );
     }
 
     /**
@@ -103,7 +103,7 @@ class CrawledFiles {
             }
 
             $query = $wpdb->prepare( $sql, ...$values );
-            Controller::query( $query );
+            Db::query( $query );
 
             foreach ( $paths as $path ) {
                 yield $path;

@@ -19,7 +19,7 @@ $tables_to_drop = [
 ];
 
 foreach ( $tables_to_drop as $table ) {
-    $table_name = StaticDeploy\Controller::getTableName( $table );
+    $table_name = StaticDeploy\Db::getTableName( $table );
 
     $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 }

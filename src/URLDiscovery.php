@@ -44,7 +44,7 @@ class URLDiscovery {
                 $sql = "INSERT IGNORE INTO $table_name (path)
                   VALUES " . implode( ',', $placeholders );
                 $query = $wpdb->prepare( $sql, ...array_keys( $urls ) );
-                Controller::query( $query );
+                Db::query( $query );
                 yield $path_info;
             } else {
                 yield $path_info;

@@ -8,7 +8,7 @@ class DeployCache {
 
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'deploy_cache' );
+        return Db::getTableName( 'deploy_cache' );
     }
 
     public static function createTable(): void {
@@ -30,7 +30,7 @@ class DeployCache {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'path_hash_ns_idx',
             "CREATE UNIQUE INDEX path_hash_ns_idx ON $table_name (path_hash, namespace)"

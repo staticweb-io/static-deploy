@@ -4,7 +4,7 @@ namespace StaticDeploy;
 
 class Addons {
     public static function getTableName(): string {
-        return Controller::getTableName( 'addons' );
+        return Db::getTableName( 'addons' );
     }
 
     public static function createTable(): void {

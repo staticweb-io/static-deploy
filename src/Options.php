@@ -25,7 +25,7 @@ class Options {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'options' );
+        return Db::getTableName( 'options' );
     }
 
     public static function createTable(): void {
@@ -46,7 +46,7 @@ class Options {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'name',
             "CREATE UNIQUE INDEX name ON $table_name (name)"

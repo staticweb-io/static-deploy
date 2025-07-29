@@ -5,7 +5,7 @@ namespace StaticDeploy;
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {
     public static function getTableName(): string {
-        return Controller::getTableName( 'log' );
+        return Db::getTableName( 'log' );
     }
 
     public static function createTable(): void {

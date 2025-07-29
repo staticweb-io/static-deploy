@@ -23,13 +23,13 @@ class DetectedFiles {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'path_hash',
             "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
         );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'detected_at',
             "CREATE INDEX detected_at ON $table_name (detected_at)"
@@ -37,7 +37,7 @@ class DetectedFiles {
     }
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'detected_files' );
+        return Db::getTableName( 'detected_files' );
     }
 
     /**

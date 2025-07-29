@@ -5,7 +5,7 @@ namespace StaticDeploy;
 class JobQueue {
 
     public static function getTableName(): string {
-        return Controller::getTableName( 'jobs' );
+        return Db::getTableName( 'jobs' );
     }
 
     public static function createTable(): void {
@@ -28,7 +28,7 @@ class JobQueue {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        Controller::ensureIndex(
+        Db::ensureIndex(
             $table_name,
             'status',
             "CREATE INDEX status ON $table_name (status)"
@@ -210,13 +210,13 @@ class JobQueue {
             $status,
             $id
         );
-        Controller::query(
+        Db::query(
             $query,
             // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
             on_error: function ( $error ) use ( $query ) {
                 // Try to create status_update_at column
                 self::createTable();
-                return Controller::query( $query );
+                return Db::query( $query );
             },
         );
     }
