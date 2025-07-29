@@ -32,6 +32,8 @@
   "process_queue" command still works as an alias.
 - Fix that a job could block a job of another database on
   the same server.
+- Add jobs run from the CLI to the jobs table after
+  completion.
 
 ## 9.2.1 (2025-07-18)
 

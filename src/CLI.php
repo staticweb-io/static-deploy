@@ -115,6 +115,7 @@ class CLI {
 
         Options::init();
         $deployer = Addons::getDeployer();
+        $started_at = Utils::wpDateTime();
 
         if ( ! $deployer ) {
             WP_CLI::log( 'No deployment add-ons are enabled, skipping deployment.' );
@@ -130,6 +131,11 @@ class CLI {
         do_action(
             Controller::getHookName( 'post_deploy_trigger' ),
             $deployer
+        );
+
+        JobQueue::addCompletedJob(
+            'deploy',
+            $started_at,
         );
     }
 
@@ -183,6 +189,8 @@ class CLI {
             return;
         }
 
+        $started_at = Utils::wpDateTime();
+
         if ( ( $cfg['post-id'] ?? null ) !== null ) {
             $post_id = intval( $cfg['post-id'] );
             $path = wp_make_link_relative( get_permalink( $post_id ) );
@@ -191,11 +199,18 @@ class CLI {
             WsLog::l( 'Starting direct deployment for path ' . $path );
             $deployer->deployPaths( $detected );
         } else {
+            $post_id = null;
             WsLog::l( 'Starting direct deployment' );
             $deployer->deploy();
         }
 
         $deployer->deployComplete();
+
+        JobQueue::addCompletedJob(
+            'direct_deploy',
+            $started_at,
+            $post_id,
+        );
     }
 
     /**
@@ -351,7 +366,13 @@ class CLI {
         $crawl_config = new CrawlConfig(
             path_hash_prefix: $path_hash_prefix,
         );
+        $started_at = Utils::wpDateTime();
         Controller::crawl( $crawl_config );
+
+        JobQueue::addCompletedJob(
+            'crawl',
+            $started_at,
+        );
     }
 
     /**
@@ -359,7 +380,12 @@ class CLI {
      */
     public function detect(): void {
         Options::init();
-        $detected_count = URLDetector::enqueueURLs();
+        $started_at = Utils::wpDateTime();
+        URLDetector::enqueueURLs();
+        JobQueue::addCompletedJob(
+            'detect',
+            $started_at,
+        );
     }
 
     /**
@@ -370,8 +396,13 @@ class CLI {
      */
     public function post_process(): void {
         Options::init();
+        $started_at = Utils::wpDateTime();
         $post_processor = new PostProcessor();
         $post_processor->processStaticSite( StaticSite::getPath() );
+        JobQueue::addCompletedJob(
+            'post_process',
+            $started_at,
+        );
     }
 
     /**

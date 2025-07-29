@@ -59,6 +59,36 @@ class JobQueue {
     }
 
     /**
+     * Add Job to queue
+     *
+     * @param string $job_type Type of job
+     * ie detect, crawl, post_process, deploy
+     * @return int ID of the row added
+     */
+    public static function addCompletedJob(
+        string $job_type,
+        \DateTime $started_at,
+        ?int $post_id = null
+    ): int {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        $query_string = "INSERT INTO $table_name
+        (job_type,status,triggering_post_id,created_at,status_updated_at)
+        VALUES (%s,'completed',%s,%s,NOW());";
+        $query = $wpdb->prepare(
+            $query_string,
+            $job_type,
+            $post_id,
+            $started_at->format( 'Y-m-d H:i:s' ),
+        );
+
+        Db::query( $query );
+        return $wpdb->insert_id;
+    }
+
+    /**
      *  Get all jobs
      *
      *  @return string[] All jobs
