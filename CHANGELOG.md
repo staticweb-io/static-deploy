@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.3.0 (2025-07-29)
+
 - Remove "debugLogging" option. Instead, debug logs are enabled
   when WP_DEBUG is true or when the "--debug" flag is passed to
   the WP CLI. This improves performance when debug logs are

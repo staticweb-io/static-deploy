@@ -3,7 +3,7 @@
  * Plugin Name:       Static Deploy Object Cache for Memcached (Drop-in)
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
  * Description:       Object caching for Memcached.
- * Version:           9.2.1
+ * Version:           9.3.0
  * Author:            StaticWeb.io
  * Author URI:        https://github.com/staticweb-io/static-deploy
  * Text Domain:       static-deploy
