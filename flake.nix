@@ -12,7 +12,7 @@
       with pkgs;
       let
         name = "static-deploy";
-        version = "9.3.0";
+        version = "9.3.1";
         composerSrc = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
