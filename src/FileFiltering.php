@@ -69,7 +69,7 @@ class FileFiltering {
      * Get public URLs for all files in a local directory.
      *
      * @param string $dir
-     * @return \Iterator
+     * @return \Iterator<PathInfo>
      */
     public function getListOfLocalFilesByDir(
         string $dir,
@@ -82,10 +82,10 @@ class FileFiltering {
             foreach ( $iterator as $filename => $file_object ) {
                 $url = str_replace( $site_path, '/', $filename );
 
-                yield [
-                    'filename' => $filename,
-                    'url' => $url,
-                ];
+                yield new PathInfo(
+                    $url,
+                    filename: $filename,
+                );
             }
         }
     }
