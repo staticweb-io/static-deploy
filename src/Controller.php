@@ -8,11 +8,6 @@ use WP_Post;
 
 class Controller {
     /**
-     * @var string
-     */
-    public $bootstrap_file;
-
-    /**
      * Main controller
      *
      * @var \StaticDeploy\Controller Instance.
