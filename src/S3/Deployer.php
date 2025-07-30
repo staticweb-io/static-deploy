@@ -276,7 +276,6 @@ class Deployer {
     public static function awsClientOpts(): array {
         $opts = [
             'region' => S3Options::getValue( 'awsRegion' ),
-            'version' => 'latest',
         ];
 
         /*
