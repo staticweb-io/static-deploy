@@ -22,6 +22,47 @@ class Utils {
         }
     }
 
+    /**
+     * Formats a \DateInterval into a human-readable string.
+     * Example: 1 minute, 20 seconds
+     *
+     * Returns null if the interval is less than one second.
+     *
+     * @param \DateInterval $interval The interval to format.
+     * @param int $max_parts The maximum number of parts to include.
+     */
+    public static function formatIntervalPretty(
+        \DateInterval $interval,
+        int $max_parts = 1,
+    ): ?string {
+        $parts = [];
+
+        $map = [
+            'y' => [ 'year', 'years' ],
+            'm' => [ 'month', 'months' ],
+            'd' => [ 'day', 'days' ],
+            'h' => [ 'hour', 'hours' ],
+            'i' => [ 'minute', 'minutes' ],
+            's' => [ 'second', 'seconds' ],
+        ];
+
+        foreach ( $map as $key => [ $singular, $plural ] ) {
+            $value = $interval->$key;
+            if ( $value ) {
+                $parts[] = "$value " . ( $value === 1 ? $singular : $plural );
+            }
+            if ( count( $parts ) >= $max_parts ) {
+                break;
+            }
+        }
+
+        if ( empty( $parts ) ) {
+            return null;
+        }
+
+        return implode( ', ', $parts );
+    }
+
     /*
      * Adjusts the max_execution_time ini option
      *
