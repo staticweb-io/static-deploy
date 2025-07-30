@@ -273,10 +273,10 @@ class Deployer {
         }
     }
 
-    public static function s3Client(): \Aws\S3\S3Client {
-        $client_options = [
-            'version' => 'latest',
+    public static function awsClientOpts(): array {
+        $opts = [
             'region' => S3Options::getValue( 'awsRegion' ),
+            'version' => 'latest',
         ];
 
         /*
@@ -291,67 +291,29 @@ class Deployer {
             S3Options::getValue( 'awsAccessKeyId' ) &&
             S3Options::getValue( 'awsSecretAccessKey' )
         ) {
-            $client_options['credentials'] = [
+            $opts['credentials'] = [
                 'key' => S3Options::getValue( 'awsAccessKeyId' ),
                 'secret' => Options::encrypt_decrypt(
                     'decrypt',
                     S3Options::getValue( 'awsSecretAccessKey' )
                 ),
             ];
-        } elseif ( S3Options::getValue( 'awsProfile' ) ) {
-            $client_options['profile'] = S3Options::getValue( 'awsProfile' );
+        } else {
+            $profile = S3Options::getValue( 'awsProfile' );
+            if ( $profile ) {
+                $opts['profile'] = $profile;
+            }
         }
 
-        return new \Aws\S3\S3Client( $client_options );
+        return $opts;
+    }
+
+    public static function s3Client(): \Aws\S3\S3Client {
+        return new \Aws\S3\S3Client( self::awsClientOpts() );
     }
 
     public static function cloudfrontClient(): \Aws\CloudFront\CloudFrontClient {
-        /*
-         * If no credentials option, SDK attempts to load credentials from
-         * your environment in the following order:
-         * - environment variables.
-         * - a credentials .ini file.
-         * - an IAM role.
-         */
-        if (
-            S3Options::getValue( 'awsAccessKeyId' ) &&
-            S3Options::getValue( 'awsSecretAccessKey' )
-        ) {
-            // Use the supplied access keys.
-            $credentials = new \Aws\Credentials\Credentials(
-                S3Options::getValue( 'awsAccessKeyId' ),
-                Options::encrypt_decrypt(
-                    'decrypt',
-                    S3Options::getValue( 'awsSecretAccessKey' )
-                )
-            );
-            $client = \Aws\CloudFront\CloudFrontClient::factory(
-                [
-                    'region' => S3Options::getValue( 'awsRegion' ),
-                    'version' => 'latest',
-                    'credentials' => $credentials,
-                ]
-            );
-        } elseif ( S3Options::getValue( 'awsProfile' ) ) {
-            // Use the specified profile.
-            $client = \Aws\CloudFront\CloudFrontClient::factory(
-                [
-                    'profile' => S3Options::getValue( 'awsProfile' ),
-                    'region' => S3Options::getValue( 'awsRegion' ),
-                    'version' => 'latest',
-                ]
-            );
-        } else {
-            // Use the IAM role.
-            $client = \Aws\CloudFront\CloudFrontClient::factory(
-                [
-                    'region' => S3Options::getValue( 'awsRegion' ),
-                    'version' => 'latest',
-                ]
-            );
-        }
-
-        return $client;
+        return new \Aws\CloudFront\Client( self::awsClientOpts() );
     }
 
     public function addCfPath( string $path ): void {
