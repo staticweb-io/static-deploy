@@ -85,7 +85,7 @@
             "@phpstan",
             "@phpunit"
         ],
-        "test-integration": "nix flake check ./dev",
+        "test-integration": "bin/test-php-versions",
         "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit tests/integration",
         "build": "nix build .#plugin"
     }
