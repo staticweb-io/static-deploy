@@ -24,12 +24,13 @@
           dbUserName = "wordpress";
           dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
           serverPort = 8888;
+          phpPackage = getEnv "PHP_PACKAGE" "php";
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
           staticDeployPkgs = inputs.static-deploy.packages.${system};
           staticDeploy = staticDeployPkgs.plugin;
           overlay = self: super: {
-            php = super.php.buildEnv {
+            php = super.${phpPackage}.buildEnv {
               extensions = { enabled, all }:
                 enabled ++ (with all; [ apcu imagick memcached ]);
             };
