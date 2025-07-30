@@ -10,6 +10,7 @@ trait ITTrait {
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getLocalDeployDir() ) );
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
 
+        $this->wpCli( [ 'plugin', 'activate', 'static-deploy' ] );
         $this->pluginCli( [ 'delete-all-cache', '--force' ] );
         $this->pluginCli( [ 'jobs', 'delete', '--yes' ] );
     }
