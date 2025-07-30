@@ -124,6 +124,15 @@ class S3Options {
                 wp2static_table: $wp2static_table,
             ),
 
+            // AWS config
+            new OptionSpec(
+                'string',
+                self::getName( 'awsEndpoint' ),
+                '',
+                'Endpoint',
+                'AWS endpoint override',
+            ),
+
             // S3 settings
             new OptionSpec(
                 'string',
@@ -215,6 +224,7 @@ class S3Options {
                         self::getName( 'awsSecretAccessKey' ),
                         self::getName( 'awsRegion' ),
                         self::getName( 'awsProfile' ),
+                        self::getName( 'awsEndpoint' ),
                     ],
                 ],
                 [

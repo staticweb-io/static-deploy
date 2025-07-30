@@ -278,6 +278,11 @@ class Deployer {
             'region' => S3Options::getValue( 'awsRegion' ),
         ];
 
+        $endpoint = S3Options::getValue( 'awsEndpoint' );
+        if ( $endpoint ) {
+            $opts['endpoint'] = $endpoint;
+        }
+
         /*
          * If no credentials option, SDK attempts to load credentials from
          * your environment in the following order:

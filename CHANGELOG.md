@@ -5,6 +5,8 @@
   "1 minute".
 - Fix a rare Run page error that happened when the
   views/ folder was symlinked to a different location.
+- Add s3_awsEndpoint option for overriding the AWS
+  endpoint.
 
 ## 9.3.2 (2025-07-29)
 
