@@ -2,7 +2,7 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded                              
 // phpcs:disable Generic.Files.LineLength.TooLong                                  
 
-StaticDeploy\Controller::init( __DIR__ . '/static-deploy.php' );
+StaticDeploy\Controller::init( __DIR__ . '/../static-deploy.php' );
 
 $run_nonce = wp_create_nonce( StaticDeploy\Controller::getHookName( 'run_page' ) );
 ?>
