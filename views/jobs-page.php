@@ -8,6 +8,7 @@
 
 use StaticDeploy\Controller;
 use StaticDeploy\OptionRenderer;
+use StaticDeploy\Utils;
 
 /**
  * @var mixed[] $jobs
@@ -214,26 +215,33 @@ $row = function ( $name ) use ( $options ) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach ( $jobs as $job ) : ?>
+            <?php
+            foreach ( $jobs as $job ) : ?>
             <tr>
                 <td>
                     <?php echo $job->created_at; ?>
-                    (<?php echo human_time_diff( new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() ); ?> ago)
+                    (<?php echo human_time_diff( Utils::wpDateTime( $job->created_at )->getTimestamp() ); ?> ago)
                 </td>
                 <td><?php echo $job->job_type; ?></td>
                 <td><?php echo $job->status; ?>
-                (<?php echo human_time_diff( new DateTime( $job->status_updated_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() ); ?> ago)
+                (<?php echo human_time_diff( Utils::wpDateTime( $job->status_updated_at )->getTimestamp() ); ?> ago)
                 </td>
                 <td>
                 <?php
+                $from = Utils::wpDateTime( $job->created_at );
                 if ( $job->status === 'processing' ) {
-                    echo human_time_diff( new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp() );
+                    $to = Utils::wpDateTime( 'now' );
+                } else {
+                    $to = Utils::wpDateTime( $job->status_updated_at );
+                }
+
+                if ( $job->status !== 'waiting' ) {
+                    $interval = Utils::formatIntervalPretty( $from->diff( $to ), 2 );
+                    echo $interval ?? '1 second';
+                }
+
+                if ( $job->status === 'processing' ) {
                     echo ' (still in progress)';
-                } elseif ( $job->status !== 'waiting' ) {
-                    echo human_time_diff(
-                        new DateTime( $job->created_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp(),
-                        new DateTime( $job->status_updated_at, new DateTimeZone( wp_timezone_string() ) )->getTimestamp(),
-                    );
                 }
                 ?>
                 </td>

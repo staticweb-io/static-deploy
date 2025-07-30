@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Show job duration with more precision on the jobs
+  page. E.g., "1 minute 20 seconds" instead of
+  "1 minute".
 ## 9.3.2 (2025-07-29)
 
 - Fix wrong calculation for Content-MD5 in S3 deployer.
