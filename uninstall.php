@@ -7,7 +7,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-StaticDeploy\Controller::init( __DIR__ . '/static-deploy.php' );
+StaticDeploy\Controller::init();
 
 $tables_to_drop = [
     'crawled_files',

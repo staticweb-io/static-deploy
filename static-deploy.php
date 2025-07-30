@@ -46,7 +46,7 @@ if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
     }
 }
 
-StaticDeploy\Controller::init( __FILE__ );
+StaticDeploy\Controller::init();
 
 /**
  * Define Settings link for plugin
