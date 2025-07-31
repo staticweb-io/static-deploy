@@ -333,7 +333,7 @@ class Deployer {
     }
 
     public static function cloudfrontClient(): \Aws\CloudFront\CloudFrontClient {
-        return new \Aws\CloudFront\Client( self::awsClientOpts() );
+        return new \Aws\CloudFront\CloudFrontClient( self::awsClientOpts() );
     }
 
     public function addCfPath( string $path ): void {
