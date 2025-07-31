@@ -7,6 +7,8 @@
   views/ folder was symlinked to a different location.
 - Add s3_awsEndpoint option for overriding the AWS
   endpoint.
+- Fix an error when the S3 deployer could construct
+  a blank key.
 
 ## 9.3.2 (2025-07-29)
 

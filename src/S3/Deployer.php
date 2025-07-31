@@ -143,8 +143,8 @@ class Deployer {
                 }
 
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
-                if ( mb_substr( $s3_key, -1 ) === '/' ) {
-                    $s3_key = $s3_key . 'index.html';
+                if ( mb_substr( $cache_key, -1 ) === '/' ) {
+                    $s3_key = $cache_key . 'index.html';
                 }
 
                 if ( $status === 404 ) {
