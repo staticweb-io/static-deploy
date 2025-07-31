@@ -10,7 +10,7 @@ class URLHelper {
             $_SERVER['SERVER_PORT'] === 443;
     }
 
-    /*
+    /**
      * Returns the current full URL including querystring
      *
      * @return string
@@ -70,7 +70,7 @@ class URLHelper {
             http_build_query( $query_array );
     }
 
-    /*
+    /**
      * Takes either an http or https URL and returns a // protocol-relative URL
      *
      * @param string URL either http or https
@@ -134,10 +134,9 @@ class URLHelper {
         return $url;
     }
 
-    /*
+    /**
      * Detect if a URL belongs to our WP site
      * We check against known internal prefixes and WP site host
-     *
      */
     public static function isInternalLink(
         string $url,
