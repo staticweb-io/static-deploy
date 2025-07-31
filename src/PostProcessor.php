@@ -85,7 +85,7 @@ class PostProcessor {
     public function processIter(
         \Iterator $crawl_responses
     ): \Iterator {
-        if ( ! $this->config->hosts_to_rewrite ) {
+        if ( ! $this->config->replacement_patterns ) {
             return $crawl_responses;
         }
 
