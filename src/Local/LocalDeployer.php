@@ -2,8 +2,8 @@
 
 namespace StaticDeploy\Local;
 
-use StaticDeploy\CrawledFiles;
 use StaticDeploy\DeployerTrait;
+use StaticDeploy\FilesHelper;
 use StaticDeploy\SiteInfo;
 use StaticDeploy\WsLog;
 
@@ -94,11 +94,13 @@ class LocalDeployer {
                 $last_log_time = microtime( true );
             }
 
-            $cache_key = $path_info->path;
+            $out_path = FilesHelper::getFilePath(
+                $out_dir,
+                $path_info->path,
+            );
 
             // Remove 404s
             if ( $path_info->status === 404 ) {
-                $out_path = $out_dir . '/' . ltrim( $cache_key, '/' );
                 if ( is_file( $out_path ) ) {
                     unlink( $out_path );
                 }
@@ -106,32 +108,21 @@ class LocalDeployer {
                 continue;
             }
 
-            // Determine output path and ensure directory exists
-            $out_path = $out_dir . '/' . ltrim( $cache_key, '/' );
-            if ( mb_substr( $out_path, -1 ) === '/' ) {
-                $out_path .= 'index.html';
-            }
-            $out_dirname = dirname( $out_path );
-            if ( ! is_dir( $out_dirname ) ) {
-                mkdir( $out_dirname, 0774, true );
-            }
-
             // Write file contents
-            if ( $path_info->body !== null ) {
-                $result = file_put_contents( $out_path, $path_info->body );
-            } elseif ( $path_info->filename && is_file( $path_info->filename ) ) {
-                $result = copy( $path_info->filename, $out_path );
+            if ( $path_info->body || $path_info->filename ) {
+                try {
+                    FilesHelper::writePathInfo(
+                        $out_dir,
+                        $path_info,
+                    );
+                    ++$this->deployed_ct;
+                } catch ( \Exception $e ) {
+                    WsLog::w( 'Failed to deploy ' . $path_info->path . ': ' . $e->getMessage() );
+                    ++$this->deploy_error_ct;
+                }
             } else {
-                WsLog::l( 'No content to write for ' . $cache_key );
+                WsLog::l( 'No content to write for ' . $path_info->path );
                 ++$this->deploy_error_ct;
-                continue;
-            }
-
-            if ( $result === false ) {
-                WsLog::l( 'Failed to write file ' . $out_path );
-                ++$this->deploy_error_ct;
-            } else {
-                ++$this->deployed_ct;
             }
         }
 
