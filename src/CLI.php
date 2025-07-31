@@ -810,7 +810,7 @@ class CLI {
 
         $wp2static_table_name = $wpdb->prefix . 'wp2static_core_options';
 
-        if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$wp2static_table_name'" ) ) {
+        if ( ! Db::tableExists( $wp2static_table_name ) ) {
             WP_CLI::error( 'WP2Static options table not found.' );
         }
 

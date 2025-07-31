@@ -104,4 +104,20 @@ final class Db {
             throw WsLog::ex( 'Error in query: ' . $wpdb->last_error );
         }
     }
+
+    /**
+     * Returns whether a table with the given name exists in the db
+     *
+     * Example:
+     * Db::tableExists( $wpdb->prefix . 'static_deploy_jobs' );
+     */
+    public static function tableExists( string $table_name ): bool {
+        global $wpdb;
+
+        $result = $wpdb->get_var(
+            $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
+        );
+
+        return $result !== null;
+    }
 }
