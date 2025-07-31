@@ -93,22 +93,8 @@ class PostProcessor {
             foreach ( $crawl_responses as $crawled ) {
                 $content_type = $crawled->content_type;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
-                    if ( $crawled->body ) {
-                        $rewritten = $this->rewriteFileContents(
-                            $crawled->body,
-                        );
-                        if ( $rewritten !== $crawled->body ) {
-                            $crawled = $crawled->withBody( $rewritten );
-                        }
-                        ++$this->processed;
-                    } elseif ( $crawled->filename ) {
-                        $file_contents = file_get_contents( $crawled->filename );
-                        $rewritten = $this->rewriteFileContents(
-                            $file_contents
-                        );
-                        if ( $rewritten !== $file_contents ) {
-                            $crawled = $crawled->withBody( $rewritten );
-                        }
+                    if ( $crawled->body || $crawled->filename ) {
+                        $crawled = $this->rewriteFileContents( $crawled );
                         ++$this->processed;
                     }
                 } else {
@@ -122,25 +108,31 @@ class PostProcessor {
     }
 
     /**
-     * Rewrite URLs in a string to destination_url
-     *
-     * @param string $file_contents
-     * @return string
+     * Rewrite strings in the body of a PathInfo
+     * according to $this->config->replacement_patterns
      */
     public function rewriteFileContents(
-        string $file_contents,
-    ): string {
-        // TODO: allow empty file saving here? Exception for style.css
-        if ( ! $file_contents ) {
-            return '';
+        PathInfo $path_info
+    ): PathInfo {
+        if ( $path_info->body !== null ) {
+            $s = $path_info->body;
+        } elseif ( $path_info->filename ) {
+            $s = file_get_contents( $path_info->filename );
+            if ( $s === false ) {
+                throw WsLog::ex( 'Error reading file ' . $path_info->filename );
+            }
         }
 
-        $rewritten_contents = strtr(
-            $file_contents,
+        $rewritten = strtr(
+            $s,
             $this->config->replacement_patterns
         );
 
-        return $rewritten_contents;
+        if ( $rewritten !== $s ) {
+            return $path_info->withBody( $rewritten );
+        }
+
+        return $path_info;
     }
 
     public function complete(): void {
