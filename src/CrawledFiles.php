@@ -230,22 +230,20 @@ class CrawledFiles {
     public static function writeFilesIter( \Iterator $paths ): \Iterator {
         $cache_hits = 0;
         foreach ( $paths as $path ) {
-            $body = $path->body;
             $is_cacheable = true;
-            $status = $path->status;
 
-            if ( $status === 404 ) {
+            if ( $path->status === 404 ) {
                 $is_cacheable = false;
-            } elseif ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
+            } elseif ( in_array( $path->status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
                 $is_cacheable = false;
             }
 
             $content_hash = $path->getContentHash();
             if ( $is_cacheable && $content_hash && self::getUrl( $path->path, $content_hash ) ) {
                 ++$cache_hits;
-            } elseif ( $body ) {
+            } elseif ( $path->body ) {
                 $static_path = StaticSite::transformPath( $path->path );
-                StaticSite::add( $static_path, $body );
+                StaticSite::add( $static_path, $path->body );
             }
 
             yield $path;
