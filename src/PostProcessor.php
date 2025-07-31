@@ -19,13 +19,21 @@ class PostProcessor {
         $this->config = new PostProcessConfig();
     }
 
-    public function processContentType( string $content_type ): bool {
+    public function shouldProcess( PathInfo $path_info ): bool {
+        $content_type = $path_info->content_type;
+
+        if ( ! $content_type ) {
+            return false;
+        }
+
         if ( str_starts_with( $content_type, 'text/html' ) ||
             str_starts_with( $content_type, 'text/css' ) ||
             str_starts_with( $content_type, 'application/xml' ) ||
             str_starts_with( $content_type, 'text/plain' ) ||
             str_starts_with( $content_type, 'application/javascript' ) ) {
-            return true;
+            if ( $path_info->body || $path_info->filename ) {
+                return true;
+            }
         }
         return false;
     }
@@ -89,22 +97,15 @@ class PostProcessor {
             return $crawl_responses;
         }
 
-        $process = function ( $crawl_responses ) {
-            foreach ( $crawl_responses as $crawled ) {
-                $content_type = $crawled->content_type;
-                if ( $content_type && $this->processContentType( $content_type ) ) {
-                    if ( $crawled->body || $crawled->filename ) {
-                        $crawled = $this->rewriteFileContents( $crawled );
-                        ++$this->processed;
-                    }
-                } else {
-                    ++$this->skipped;
-                }
-                yield $crawled;
+        foreach ( $crawl_responses as $path_info ) {
+            if ( $this->shouldProcess( $path_info ) ) {
+                ++$this->processed;
+                yield $this->rewriteFileContents( $path_info );
+            } else {
+                ++$this->skipped;
+                yield $path_info;
             }
-        };
-
-        return $process( $crawl_responses );
+        }
     }
 
     /**
