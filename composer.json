@@ -85,6 +85,7 @@
             "@phpstan",
             "@phpunit"
         ],
+        "test-aws": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit --testsuite AWS",
         "test-integration": "bin/test-php-versions",
         "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit --testsuite Integration",
         "build": "nix build .#plugin"

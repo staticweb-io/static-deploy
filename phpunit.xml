@@ -3,6 +3,9 @@
     bootstrap="tests/unit/bootstrap.php"
 >
     <testsuites>
+        <testsuite name="AWS">
+            <directory>tests/aws</directory>
+        </testsuite>
         <testsuite name="Integration">
             <directory>tests/integration</directory>
         </testsuite>
