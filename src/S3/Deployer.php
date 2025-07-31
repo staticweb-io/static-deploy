@@ -281,6 +281,13 @@ class Deployer {
         $endpoint = S3Options::getValue( 'awsEndpoint' );
         if ( $endpoint ) {
             $opts['endpoint'] = $endpoint;
+
+            // Work-around for localstack.
+            // Docs suggest to use s3.localhost.localstack.cloud,
+            // but the DNS lookups fail in test.
+            if ( strpos( $endpoint, 'http://localhost:4566' ) === 0 ) {
+                $opts['use_path_style_endpoint'] = true;
+            }
         }
 
         /*
