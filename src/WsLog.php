@@ -52,7 +52,7 @@ class WsLog {
     public static function ex(
         string $message,
         int $code = 0,
-        ?Throwable $previous = null
+        ?\Throwable $previous = null
     ): StaticDeployException {
         self::e( $message );
         return new StaticDeployException(
