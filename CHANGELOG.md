@@ -11,6 +11,8 @@
   a blank key.
 - Fix that crawl always reported 0 cached files even when
   there were cached files.
+- Normalize the sitemap path when robots.txt reports a
+  sitemap path with extra slashes.
 
 ## 9.3.2 (2025-07-29)
 

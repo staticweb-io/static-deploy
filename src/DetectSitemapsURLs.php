@@ -125,6 +125,12 @@ class DetectSitemapsURLs {
                     continue;
                 }
 
+                // For some reason WordPress sitemaps can have
+                // doubled slashes like Sitemap: http://localhost:8888//wp-sitemap.xml
+                // We have to normalize before we make it a relative URI,
+                // or else the // will make it look like a network-path URI.
+                $sitemap = URLHelper::normalize( $sitemap );
+
                 $sitemap = '/' . str_replace(
                     $wp_site_url,
                     '',
