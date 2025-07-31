@@ -17,47 +17,15 @@ class StaticSite {
     private static string $crawled_site_path;
 
     /**
-     * Add crawled resource to static site
+     * Add PathInfo contents to static site
      */
     public static function add(
         PathInfo $path_info,
     ): void {
-        $path = self::transformPath( $path_info->path );
-        $full_path = self::getPath() . $path;
-
-        $directory = dirname( $full_path );
-
-        if ( ! is_dir( $directory ) ) {
-            if ( ! wp_mkdir_p( $directory ) ) {
-                WsLog::l( 'Couldn\'t make directory: ' . $directory );
-            }
-        }
-
-        try {
-            if ( $path_info->body ) {
-                $result = file_put_contents( $full_path, $path_info->body );
-            } elseif ( $path_info->filename ) {
-                $result = copy( $path_info->filename, $full_path );
-            } else {
-                throw WsLog::ex(
-                    'No contents found for crawled path: ' . json_encode( $path_info )
-                );
-            }
-        } catch ( \Throwable $e ) {
-            if ( file_exists( $full_path ) ) {
-                unlink( $full_path );
-            }
-            throw $e;
-        }
-
-        if ( $result === false ) {
-            if ( file_exists( $full_path ) ) {
-                unlink( $full_path );
-            }
-            throw WsLog::ex(
-                'Unable to write file ' . $full_path
-            );
-        }
+        FilesHelper::writePathInfo(
+            self::getPath(),
+            $path_info,
+        );
     }
 
     public static function getPath(): string {
