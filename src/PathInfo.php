@@ -119,7 +119,7 @@ class PathInfo {
             $this->content_hash = md5_file( $this->filename );
         }
 
-        return $this->content_hash;
+        return $this->content_hash ?? null;
     }
 
     public function withBody( ?string $new_body ): self {
