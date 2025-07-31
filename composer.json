@@ -37,7 +37,6 @@
         "symfony/deprecation-contracts": "^3"
     },
     "require-dev": {
-        "thecodingmachine/phpstan-strict-rules": "*",
         "szepeviktor/phpstan-wordpress": "*",
         "squizlabs/php_codesniffer": "*",
         "phpunit/phpunit": "*",
