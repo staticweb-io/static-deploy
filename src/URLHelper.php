@@ -2,8 +2,6 @@
 
 namespace StaticDeploy;
 
-use Exception;
-
 class URLHelper {
     public static function isSecure(): bool {
         return ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ||
