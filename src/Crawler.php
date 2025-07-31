@@ -155,7 +155,7 @@ class Crawler {
     }
 
     public function crawlPath( PathInfo $detected, array $site_urls ): PromiseInterface {
-        $absolute_uri = ( new URL( $this->site_path . $detected->path ) )->get();
+        $absolute_uri = URLHelper::normalize( $this->site_path . $detected->path );
         try {
             if ( $detected->filename ) {
                 $request = new Request( 'HEAD', $absolute_uri );
