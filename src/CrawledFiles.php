@@ -144,9 +144,11 @@ class CrawledFiles {
 
             foreach ( $rows as $row ) {
                 if ( ! $row->filename ) {
-                    $xform = StaticSite::transformPath( $row->path );
-                    $cc_path = $static_site_path . $xform;
-                    if ( $xform && file_exists( $cc_path ) ) {
+                    $cc_path = FilesHelper::getFilePath(
+                        $static_site_path,
+                        $row->path
+                    );
+                    if ( file_exists( $cc_path ) ) {
                         $row->filename = $cc_path;
                     }
                 }
@@ -205,8 +207,8 @@ class CrawledFiles {
                 // both the crawled and the processed.
                 array_map(
                     function ( $dir ) use ( $path ) {
-                        $transformed_path = StaticSite::transformPath( $path->path );
-                        $suffix = ltrim( $transformed_path, '/' );
+                        $file_path = FilesHelper::getFilePath( $dir, $path->path );
+                        $suffix = ltrim( $file_path, '/' );
                         $full_path = trailingslashit( $dir ) . $suffix;
                         if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
                             unlink( $full_path );

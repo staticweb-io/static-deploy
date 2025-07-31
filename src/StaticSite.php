@@ -89,20 +89,4 @@ class StaticSite {
 
         return $paths;
     }
-
-    /**
-     * Transform a root-relative path to a static site path.
-     *
-     * This lets us encapsulate the logic for path transformation in a single
-     * place and use it in multiple places.
-     */
-    public static function transformPath( string $root_relative_path ): string {
-        // do some magic here - naive: if URL ends in /, save to /index.html
-        // TODO: will need love for example, XML files
-        // check content type, serve .xml/rss, etc instead
-        if ( mb_substr( $root_relative_path, -1 ) === '/' ) {
-            return $root_relative_path . 'index.html';
-        }
-        return $root_relative_path;
-    }
 }
