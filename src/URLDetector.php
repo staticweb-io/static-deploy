@@ -182,6 +182,8 @@ class URLDetector {
             );
         }
 
+        $iterators_to_merge[] = DetectPluginRedirects::detect();
+
         $home_url = SiteInfo::getUrl( 'home' );
         $unique_urls = [];
 
