@@ -84,6 +84,8 @@ class URLDiscovery {
 
         if ( ! Uri::isAbsolute( $uri ) ) {
             $uri = UriResolver::resolve( $base_uri, $uri );
+            $path = $uri->getPath();
+            return $this->file_filtering->pathLooksCrawlable( $path );
         }
 
         $path = $uri->getPath();
