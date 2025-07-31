@@ -71,11 +71,7 @@ class Crawler {
             'base_uri' => $base_uri,
             'verify' => false,
             'http_errors' => false,
-            'allow_redirects' => [
-                'max' => 2,
-                // required to get effective_url
-                'track_redirects' => true,
-            ],
+            'allow_redirects' => false,
             'connect_timeout'  => 0,
             'timeout' => 600,
             'headers' => [
@@ -171,32 +167,36 @@ class Crawler {
                 $status = $response->getStatusCode();
 
                 $body = null;
-                $redirect_to = null;
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
-                    $redirect_history =
-                        $response->getHeaderLine( 'X-Guzzle-Redirect-History' );
+                    $location = $response->getHeaderLine( 'Location' );
+                    $redirect_to = (string) str_replace( $site_urls, '', $location );
+                    $path_info = new PathInfo(
+                        $detected->path,
+                        redirect_to: $redirect_to,
+                        status: $status,
+                    );
 
-                    if ( $redirect_history ) {
-                        $redirects = explode( ', ', $redirect_history );
-                        $effective_url = end( $redirects );
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d(
+                            'Crawler encountered redirect from '
+                            . $absolute_uri . ' to ' . $redirect_to
+                        );
                     }
-
-                    $redirect_to =
-                        (string) str_replace( $site_urls, '', $effective_url );
                 } elseif ( ! $detected->filename && $status !== 404 ) {
                     $body = (string) $response->getBody();
                 }
 
-                $path = new PathInfo(
-                    $detected->path,
-                    body: $body,
-                    content_type: $response->getHeaderLine( 'Content-Type' ),
-                    filename: $detected->filename,
-                    redirect_to: $redirect_to,
-                    status: $status,
-                );
+                if ( ! $path_info ) {
+                    $path_info = new PathInfo(
+                        $detected->path,
+                        body: $body,
+                        content_type: $response->getHeaderLine( 'Content-Type' ),
+                        filename: $detected->filename,
+                        status: $status,
+                    );
+                }
                 return [
-                    'path' => $path,
+                    'path' => $path_info,
                 ];
             },
             function () use ( &$detected ) {

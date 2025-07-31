@@ -18,6 +18,9 @@
   "Redirect Redirection" plugins.
 - Fix a possible error when checking the correctness of
   a request to S3.
+- Fix that redirects were being treated as if they were
+  the page they redirect to. Now they will be treated
+  and deployed as actual redirects.
 
 ## 9.3.2 (2025-07-29)
 
