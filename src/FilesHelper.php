@@ -31,18 +31,17 @@ class FilesHelper {
     }
 
     /**
-     * Returns the full path to where a PathInfo's contents should
-     * be stored.
+     * Returns the full path to where a static site file's contents
+     * should be stored.
      */
-    public static function getPathInfoFilePath(
+    public static function getFilePath(
         string $base_dir,
-        PathInfo $path_info,
+        string $relative_path,
     ): string {
-        $file_path = $path_info->path;
-        if ( mb_substr( $file_path, -1 ) === '/' ) {
-            return $base_dir . $file_path . 'index.html';
+        if ( mb_substr( $relative_path, -1 ) === '/' ) {
+            return $base_dir . $relative_path . 'index.html';
         }
-        return $base_dir . $file_path;
+        return $base_dir . $relative_path;
     }
 
     /**
@@ -52,7 +51,7 @@ class FilesHelper {
         string $base_dir,
         PathInfo $path_info,
     ): void {
-        $full_path = self::getPathInfoFilePath( $base_dir, $path_info );
+        $full_path = self::getFilePath( $base_dir, $path_info->path );
         $directory = dirname( $full_path );
 
         if ( ! is_dir( $directory ) ) {
