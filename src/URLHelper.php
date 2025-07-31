@@ -14,9 +14,9 @@ class URLHelper {
         $uri = Psr7Utils::uriFor( $uri );
 
         if ( Uri::isAbsolute( $uri ) ) {
-            return $uri->withScheme( '' )->withHost( '' )->withPort( null );
+            return $uri->withScheme( '' )->withHost( '' )->withPort( null )->withUserInfo( '' );
         } elseif ( Uri::isNetworkPathReference( $uri ) ) {
-            return $uri->withHost( '' )->withPort( null );
+            return $uri->withHost( '' )->withPort( null )->withUserInfo( '' );
         }
 
         return $uri;
