@@ -33,13 +33,29 @@ class StaticSite {
             }
         }
 
-        if ( $path_info->body ) {
-            file_put_contents( $full_path, $path_info->body );
-        } elseif ( $path_info->filename ) {
-            copy( $path_info->filename, $full_path );
-        } else {
+        try {
+            if ( $path_info->body ) {
+                $result = file_put_contents( $full_path, $path_info->body );
+            } elseif ( $path_info->filename ) {
+                $result = copy( $path_info->filename, $full_path );
+            } else {
+                throw WsLog::ex(
+                    'No contents found for crawled path: ' . json_encode( $path_info )
+                );
+            }
+        } catch ( \Throwable $e ) {
+            if ( file_exists( $full_path ) ) {
+                unlink( $full_path );
+            }
+            throw $e;
+        }
+
+        if ( $result === false ) {
+            if ( file_exists( $full_path ) ) {
+                unlink( $full_path );
+            }
             throw WsLog::ex(
-                'No contents found for crawled path: ' . json_encode( $path_info )
+                'Unable to write file ' . $full_path
             );
         }
     }
