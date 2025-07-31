@@ -24,7 +24,6 @@
     },
     "require": {
         "php": ">=8.1",
-        "wa72/url": "^0.7",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
         "lib-libxml": "*",
