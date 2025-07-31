@@ -67,7 +67,7 @@ class Utils {
      * Adjusts the max_execution_time ini option
      *
      */
-    public static function set_max_execution_time(): void {
+    public static function setMaxExecutionTime(): void {
         if (
             ! function_exists( 'set_time_limit' ) ||
             ! function_exists( 'ini_get' )
@@ -86,7 +86,7 @@ class Utils {
         }
     }
 
-    public static function str_replace_first(
+    public static function strReplaceFirst(
         string $search,
         string $replace,
         string $subject,

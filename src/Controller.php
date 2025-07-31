@@ -49,7 +49,7 @@ class Controller {
         WordPressAdmin::buildUpdateChecker( $bootstrap_file );
         WordPressAdmin::addAdminUIElements();
 
-        Utils::set_max_execution_time();
+        Utils::setMaxExecutionTime();
 
         Local\LocalDeployer::registerHooks();
         Local\LocalOptions::registerHooks();

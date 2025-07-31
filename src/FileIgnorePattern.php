@@ -70,7 +70,7 @@ class FileIgnorePattern {
         }
 
         $path = $file->getPathname();
-        $path = Utils::str_replace_first( $abs_base_dir, '', $path );
+        $path = Utils::strReplaceFirst( $abs_base_dir, '', $path );
 
         return self::matchesPath( $path );
     }
