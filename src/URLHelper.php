@@ -2,7 +2,27 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\UriNormalizer;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+use Psr\Http\Message\UriInterface;
+
 class URLHelper {
+    public static function normalize(
+        string|UriInterface $uri,
+    ): UriInterface {
+        return UriNormalizer::normalize(
+            Psr7Utils::uriFor( $uri ),
+            UriNormalizer::PRESERVING_NORMALIZATIONS
+            | UriNormalizer::CAPITALIZE_PERCENT_ENCODING
+            | UriNormalizer::CONVERT_EMPTY_PATH
+            | UriNormalizer::DECODE_UNRESERVED_CHARACTERS
+            | UriNormalizer::REMOVE_DEFAULT_HOST
+            | UriNormalizer::REMOVE_DEFAULT_PORT
+            | UriNormalizer::REMOVE_DOT_SEGMENTS
+            | UriNormalizer::REMOVE_DUPLICATE_SLASHES
+        );
+    }
+
     public static function isSecure(): bool {
         return ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ||
             $_SERVER['SERVER_PORT'] === 443;
