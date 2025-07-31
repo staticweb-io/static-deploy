@@ -281,7 +281,7 @@ class Crawler {
                 }
 
                 if ( $response['error'] ?? false ) {
-                    WsLog::l( $response['error'] );
+                    WsLog::w( $response['error'] );
                 } else {
                     yield $response['path'];
                 }
