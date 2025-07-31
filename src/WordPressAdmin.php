@@ -247,41 +247,6 @@ class WordPressAdmin {
         );
 
         add_action(
-            Controller::getHookName( 'process_html' ),
-            [ SimpleRewriter::class, 'rewrite' ],
-            10,
-            1
-        );
-
-        add_action(
-            Controller::getHookName( 'process_css' ),
-            [ SimpleRewriter::class, 'rewrite' ],
-            10,
-            1
-        );
-
-        add_action(
-            Controller::getHookName( 'process_js' ),
-            [ SimpleRewriter::class, 'rewrite' ],
-            10,
-            1
-        );
-
-        add_action(
-            Controller::getHookName( 'process_robots_txt' ),
-            [ SimpleRewriter::class, 'rewrite' ],
-            10,
-            1
-        );
-
-        add_action(
-            Controller::getHookName( 'process_xml' ),
-            [ SimpleRewriter::class, 'rewrite' ],
-            10,
-            1
-        );
-
-        add_action(
             'save_post',
             [ Controller::class, 'savePostHandler' ],
             0

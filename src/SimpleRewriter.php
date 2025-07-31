@@ -45,26 +45,6 @@ class SimpleRewriter {
     }
 
     /**
-     * Rewrite URLs in file to destination_url
-     *
-     * @param string $filename file to rewrite URLs in
-     * @throws StaticDeployException
-     */
-    public static function rewrite( string $filename ): void {
-        $rewriter = new SimpleRewriter();
-
-        $file_contents = file_get_contents( $filename );
-
-        if ( $file_contents === false ) {
-            $file_contents = '';
-        } else {
-            $rewritten_contents = $rewriter->rewriteFileContents( $file_contents );
-        }
-
-        file_put_contents( $filename, $rewritten_contents );
-    }
-
-    /**
      * Rewrite URLs in a string to destination_url
      *
      * @param string $file_contents
