@@ -116,6 +116,18 @@
                 opcache.jit_buffer_size = 8M
               '';
             };
+            # An optional service to run localstack if docker is available
+            # We can't run docker in nix flake check,
+            # so we run AWS tests in the dev environment.
+            settings.processes."localstack-image1" = {
+              command = "docker pull docker.io/localstack/localstack:4.6.0";
+            };
+            settings.processes."localstack1" = {
+              command =
+                "docker run --rm docker.io/localstack/localstack:4.6.0 -p 4566:4566";
+              depends_on."localstack-image1".condition =
+                "process_completed_successfully";
+            };
             settings.processes."nginx1".depends_on."phpfpm1".condition =
               "process_healthy";
             settings.processes.test =
