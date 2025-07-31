@@ -25,37 +25,15 @@ class ProcessedSite {
     }
 
     /**
-     * Add file contents to ProcessedSite
+     * Add PathInfo contents to processed site
      */
-    public static function add( string $path, string $contents ): void {
-        $full_path = self::getPath() . "/$path";
-
-        $directory = dirname( $full_path );
-
-        if ( ! is_dir( $directory ) ) {
-            if ( ! wp_mkdir_p( $directory ) ) {
-                WsLog::l( 'Couldn\t make directory: ' . $directory );
-            }
-        }
-
-        file_put_contents( $full_path, $contents );
-    }
-
-    /**
-     * Copy a file to ProcessedSite
-     */
-    public static function copy( string $path, string $source_file ): void {
-        $full_path = self::getPath() . "/$path";
-
-        $directory = dirname( $full_path );
-
-        if ( ! is_dir( $directory ) ) {
-            if ( ! wp_mkdir_p( $directory ) ) {
-                WsLog::l( 'Couldn\'t make directory: ' . $directory );
-            }
-        }
-
-        copy( $source_file, $full_path );
+    public static function add(
+        PathInfo $path_info,
+    ): void {
+        FilesHelper::writePathInfo(
+            self::getPath(),
+            $path_info,
+        );
     }
 
     /**

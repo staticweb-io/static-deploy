@@ -62,13 +62,12 @@ class PostProcessor {
         $crawled = CrawledFiles::getPathsIter();
         $processed = $this->processIter( $crawled );
 
-        foreach ( $processed as $path ) {
-            $save_path = StaticSite::transformPath( $path->path );
-            if ( $path->body ) {
-                ProcessedSite::add( $save_path, $path->body );
+        foreach ( $processed as $path_info ) {
+            if ( $path_info->body ) {
+                ProcessedSite::add( $path_info );
                 ++$this->processed;
-            } elseif ( $path->filename ) {
-                ProcessedSite::copy( $save_path, $path->filename );
+            } elseif ( $path_info->filename ) {
+                ProcessedSite::add( $path_info );
                 ++$this->skipped;
             } else {
                 WsLog::w(
