@@ -166,7 +166,6 @@ class Crawler {
             function ( $response ) use ( &$detected, &$site_urls ) {
                 $status = $response->getStatusCode();
 
-                $body = null;
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
                     $location = $response->getHeaderLine( 'Location' );
                     $redirect_to = (string) str_replace( $site_urls, '', $location );
@@ -182,19 +181,28 @@ class Crawler {
                             . $absolute_uri . ' to ' . $redirect_to
                         );
                     }
-                } elseif ( ! $detected->filename && $status !== 404 ) {
-                    $body = (string) $response->getBody();
-                }
-
-                if ( ! $path_info ) {
+                } elseif ( $status === 404 ) {
                     $path_info = new PathInfo(
                         $detected->path,
-                        body: $body,
+                        status: $status,
+                    );
+                } elseif ( $detected->filename ) {
+                    $path_info = new PathInfo(
+                        $detected->path,
                         content_type: $response->getHeaderLine( 'Content-Type' ),
                         filename: $detected->filename,
                         status: $status,
                     );
+                } else {
+                    $body = (string) $response->getBody();
+                    $path_info = new PathInfo(
+                        $detected->path,
+                        body: $body,
+                        content_type: $response->getHeaderLine( 'Content-Type' ),
+                        status: $status,
+                    );
                 }
+
                 return [
                     'path' => $path_info,
                 ];

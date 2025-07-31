@@ -21,6 +21,8 @@
 - Fix that redirects were being treated as if they were
   the page they redirect to. Now they will be treated
   and deployed as actual redirects.
+- No longer grabs the body of 404 responses. These are
+  normally removed from the crawl.
 
 ## 9.3.2 (2025-07-29)
 
