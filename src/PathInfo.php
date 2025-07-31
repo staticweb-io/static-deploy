@@ -2,6 +2,11 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\UriNormalizer;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+use Psr\Http\Message\UriInterface;
+
 class PathInfo {
     // Values known upon detection.
 
@@ -22,7 +27,7 @@ class PathInfo {
     private ?string $content_hash;
 
     public function __construct(
-        string $path,
+        string|UriInterface $path,
         ?string $filename = null,
         ?string $body = null,
         ?string $content_hash = null,
@@ -30,12 +35,18 @@ class PathInfo {
         ?string $redirect_to = null,
         ?int $status = null,
     ) {
-        if ( strpos( $path, '/' ) !== 0 ) {
-            throw WsLog::ex( 'Not a relative path: ' . $path );
+        $uri = Psr7Utils::uriFor( $path );
+
+        if ( ! Uri::isAbsolutePathReference( $uri ) ) {
+            throw WsLog::ex( 'Not an absolute path reference: ' . $path );
         }
 
-        if ( strpos( $path, '?' ) !== false ) {
+        if ( $uri->getQuery() !== '' ) {
             throw WsLog::ex( 'Path cannot contain query string: ' . $path );
+        }
+
+        if ( $uri->getFragment() !== '' ) {
+            throw WsLog::ex( 'Path cannot contain fragment: ' . $path );
         }
 
         if ( $filename === '' ) {
