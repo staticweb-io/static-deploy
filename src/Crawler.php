@@ -116,7 +116,7 @@ class Crawler {
             $last_now = $wpdb->get_var( 'SELECT NOW()' );
             $crawled = $crawler->crawlIter( $detected );
             $crawled = CrawledFiles::removeOutdated( $crawled );
-            $crawled = CrawledFiles::writeFilesIter( $crawled );
+            $crawled = $crawler->writeFilesIter( $crawled );
             $crawled = CrawledFiles::addPathsIter( $crawled );
             $crawled = $url_discovery->discoverURLs( $crawled );
             foreach ( $crawled as $_ ) {
@@ -129,7 +129,7 @@ class Crawler {
                 $detected = DetectedFiles::getPathsIter( $last_now );
                 $last_now = $wpdb->get_var( 'SELECT NOW()' );
                 $crawled = $crawler->crawlIter( $detected );
-                $crawled = CrawledFiles::writeFilesIter( $crawled );
+                $crawled = $crawler->writeFilesIter( $crawled );
                 $crawled = CrawledFiles::addPathsIter( $crawled );
                 $crawled = $url_discovery->discoverURLs( $crawled );
                 $has_new = false;
@@ -285,5 +285,35 @@ class Crawler {
         };
 
         return $responses( $path_iter );
+    }
+
+    /**
+     * Write path contents to the crawled site dir,
+     * returning an Iterator of the same paths.
+     *
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<PathInfo>
+     */
+    public function writeFilesIter( \Iterator $paths ): \Iterator {
+        foreach ( $paths as $path ) {
+            $is_cacheable = true;
+
+            if ( $path->status === 404 ) {
+                $is_cacheable = false;
+            } elseif ( in_array( $path->status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
+                $is_cacheable = false;
+            }
+
+            $content_hash = $path->getContentHash();
+            if ( $is_cacheable
+            && $content_hash
+            && CrawledFiles::getUrl( $path->path, $content_hash ) ) {
+                ++$this->cache_hits;
+            } elseif ( $path->body ) {
+                StaticSite::add( $path );
+            }
+
+            yield $path;
+        }
     }
 }

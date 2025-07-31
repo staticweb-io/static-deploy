@@ -9,6 +9,8 @@
   endpoint.
 - Fix an error when the S3 deployer could construct
   a blank key.
+- Fix that crawl always reported 0 cached files even when
+  there were cached files.
 
 ## 9.3.2 (2025-07-29)
 

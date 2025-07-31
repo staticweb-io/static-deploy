@@ -220,35 +220,6 @@ class CrawledFiles {
         }
     }
 
-    /**
-     * Write path contents to the crawled site dir,
-     * returning an Iterator of the same paths.
-     *
-     * @param \Iterator<PathInfo> $paths
-     * @return \Iterator<PathInfo>
-     */
-    public static function writeFilesIter( \Iterator $paths ): \Iterator {
-        $cache_hits = 0;
-        foreach ( $paths as $path ) {
-            $is_cacheable = true;
-
-            if ( $path->status === 404 ) {
-                $is_cacheable = false;
-            } elseif ( in_array( $path->status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
-                $is_cacheable = false;
-            }
-
-            $content_hash = $path->getContentHash();
-            if ( $is_cacheable && $content_hash && self::getUrl( $path->path, $content_hash ) ) {
-                ++$cache_hits;
-            } elseif ( $path->body ) {
-                StaticSite::add( $path );
-            }
-
-            yield $path;
-        }
-    }
-
     public static function addUrl(
         string $path,
         string $content_hash,
