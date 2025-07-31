@@ -9,60 +9,23 @@
 namespace StaticDeploy;
 
 class SimpleRewriter {
-
-    /**
-     * @var string
-     */
-    private $destination_url;
-
-    /**
-     * @var array
-     */
-    private $hosts_to_rewrite;
-
-    /**
-     * @var string
-     */
-    private $site_url;
-
-    /**
-     * @var boolean
-     */
-    private $skip_url_rewrite;
-
-    public function __construct() {
-        $this->destination_url = apply_filters(
-            Controller::getHookName( 'set_destination_url' ),
-            Options::getValue( 'deploymentURL' )
-        );
-        $this->hosts_to_rewrite = Options::getLineDelimitedBlobValue( 'hostsToRewrite' );
-        $this->site_url = apply_filters(
-            Controller::getHookName( 'set_wordpress_site_url' ),
-            untrailingslashit( SiteInfo::getUrl( 'site' ) )
-        );
-        $url_rewrite = (int) Options::getValue( 'skipURLRewrite' );
-        $this->skip_url_rewrite = $url_rewrite === 1 ? true : false;
-    }
-
     /**
      * Rewrite URLs in a string to destination_url
      *
      * @param string $file_contents
      * @return string
      */
-    public function rewriteFileContents( string $file_contents ): string
-    {
+    public function rewriteFileContents(
+        PostProcessConfig $config,
+        string $file_contents,
+    ): string {
         // TODO: allow empty file saving here? Exception for style.css
         if ( ! $file_contents ) {
             return '';
         }
 
-        if ( $this->skip_url_rewrite ) {
-            return $file_contents;
-        }
-
-        $wordpress_site_url = untrailingslashit( $this->site_url );
-        $destination_url = untrailingslashit( $this->destination_url );
+        $wordpress_site_url = untrailingslashit( $config->site_url );
+        $destination_url = untrailingslashit( $config->destination_url );
         $destination_url_c = addcslashes( $destination_url, '/' );
         $destination_url_rel = URLHelper::getProtocolRelativeURL( $destination_url );
         $destination_url_rel_c = addcslashes( $destination_url_rel, '/' );
@@ -75,7 +38,7 @@ class SimpleRewriter {
                 addcslashes( URLHelper::getProtocolRelativeURL( $destination_url ), '/' ),
         ];
 
-        foreach ( $this->hosts_to_rewrite as $host ) {
+        foreach ( $config->hosts_to_rewrite as $host ) {
             if ( $host ) {
                 $host_rel = URLHelper::getProtocolRelativeURL( 'http://' . $host );
                 $host_rel_c = addcslashes( $host_rel, '/' );
