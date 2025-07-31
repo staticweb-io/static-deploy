@@ -115,6 +115,10 @@ class PostProcessor {
     public function rewriteFileContents(
         PathInfo $path_info
     ): PathInfo {
+        if ( STATIC_DEPLOY_DEBUG ) {
+            $start = microtime( true );
+        }
+
         if ( $path_info->body !== null ) {
             $s = $path_info->body;
         } elseif ( $path_info->filename ) {
@@ -130,7 +134,17 @@ class PostProcessor {
         );
 
         if ( $rewritten !== $s ) {
-            return $path_info->withBody( $rewritten );
+            $path_info = $path_info->withBody( $rewritten );
+        }
+
+        if ( STATIC_DEPLOY_DEBUG ) {
+            $end = microtime( true );
+
+            WsLog::d(
+                'Processed ' . strlen( $s ) . ' bytes in '
+                . sprintf( '%.6f', $end - $start ) . ' seconds'
+                . ' for ' . $path_info->path
+            );
         }
 
         return $path_info;
