@@ -37,18 +37,33 @@ class URLDiscovery {
         foreach ( $iterator as $path_info ) {
             if ( isset( $path_info->content_type )
             && str_starts_with( $path_info->content_type, 'text/html' ) ) {
-                $urls = [];
+                $page_uri = Psr7Utils::uriFor( $path_info->path );
+                // Store indexed for easy deduplication
+                $uris = [];
                 foreach ( $this->parseURLs( $path_info ) as $url ) {
-                    $urls[ $url ] = true;
+                    $uri = Psr7Utils::uriFor( $url );
+                    $uri = URIResolver::resolve( $page_uri, $uri );
+                    $uri = URLHelper::makeAbsolutePath( $uri );
+
+                    $msg = PathInfo::pathErrorMessage( $uri );
+                    if ( $msg ) {
+                        WsLog::w(
+                            'Skipping invalid path found in detected files table: '
+                            . "$uri ($msg)",
+                        );
+                        continue;
+                    }
+
+                    $uris[ (string) $uri ] = true;
                 }
-                if ( empty( $urls ) ) {
+                if ( empty( $uris ) ) {
                     yield $path_info;
                     continue;
                 }
-                $placeholders = array_fill( 0, count( $urls ), '(%s)' );
+                $placeholders = array_fill( 0, count( $uris ), '(%s)' );
                 $sql = "INSERT IGNORE INTO $table_name (path)
                   VALUES " . implode( ',', $placeholders );
-                $query = $wpdb->prepare( $sql, ...array_keys( $urls ) );
+                $query = $wpdb->prepare( $sql, ...array_keys( $uris ) );
                 Db::query( $query );
                 yield $path_info;
             } else {
