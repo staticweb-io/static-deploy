@@ -78,6 +78,8 @@
 
                   index index.php index.html index.htm;
 
+                  client_max_body_size 1024M;
+
                   location / {
                       try_files $uri $uri/ =404;
 
@@ -114,6 +116,7 @@
                 opcache.interned_strings_buffer = 16
                 opcache.jit = 1255
                 opcache.jit_buffer_size = 8M
+                upload_max_filesize = 1024M
               '';
             };
             # An optional service to run localstack if docker is available
