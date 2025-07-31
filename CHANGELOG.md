@@ -14,6 +14,8 @@
 - Normalize the sitemap path when robots.txt reports a
   sitemap path with extra slashes.
 - Check that crawled files are successfully written.
+- Detect redirect URLs created by the "Redirection" and
+  "Redirect Redirection" plugins.
 
 ## 9.3.2 (2025-07-29)
 
