@@ -16,6 +16,8 @@
 - Check that crawled files are successfully written.
 - Detect redirect URLs created by the "Redirection" and
   "Redirect Redirection" plugins.
+- Fix a possible error when checking the correctness of
+  a request to S3.
 
 ## 9.3.2 (2025-07-29)
 

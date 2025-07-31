@@ -188,8 +188,8 @@ class Deployer {
                     }
 
                     if ( ! isset( $cmd_data['Body'] )
-                    && ! $cmd_data['SourceFile']
-                    && ! $cmd_data['WebsiteRedirectLocation']
+                    && ! isset( $cmd_data['SourceFile'] )
+                    && ! isset( $cmd_data['WebsiteRedirectLocation'] )
                     ) {
                         WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
                         continue;
