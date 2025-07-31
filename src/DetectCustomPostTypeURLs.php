@@ -34,7 +34,7 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            $url = \Wa72\Url\Url::parse( $permalink );
+            $url = URLHelper::makeAbsolutePath( $permalink );
 
             if ( $url->getQuery() !== '' ) {
                 if ( STATIC_DEPLOY_DEBUG ) {
@@ -43,10 +43,7 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            $url->setHost( '' );
-            $url->setScheme( '' );
-
-            yield new PathInfo( $url->write() );
+            yield new PathInfo( $url );
         }
     }
 }

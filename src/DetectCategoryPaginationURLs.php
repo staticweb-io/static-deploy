@@ -54,11 +54,7 @@ class DetectCategoryPaginationURLs {
 
             for ( $page = 1; $page <= $total_pages; $page++ ) {
                 $permalink = "{$term}{$pagination_base}/{$page}/";
-                $url = \Wa72\Url\Url::parse( $permalink );
-                $url->setHost( '' );
-                $url->setScheme( '' );
-
-                yield new PathInfo( $url->write() );
+                yield new PathInfo( URLHelper::makeAbsolutePath( $permalink ) );
             }
         }
     }

@@ -34,11 +34,7 @@ class DetectPostURLs {
                 continue;
             }
 
-            $url = \Wa72\Url\Url::parse( $permalink );
-            $url->setHost( '' );
-            $url->setScheme( '' );
-
-            yield new PathInfo( $url->write() );
+            yield new PathInfo( URLHelper::makeAbsolutePath( $permalink ) );
         }
     }
 }
