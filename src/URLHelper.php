@@ -2,11 +2,26 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use Psr\Http\Message\UriInterface;
 
 class URLHelper {
+    public static function makeAbsolutePath(
+        string|UriInterface $uri,
+    ): UriInterface {
+        $uri = Psr7Utils::uriFor( $uri );
+
+        if ( Uri::isAbsolute( $uri ) ) {
+            return $uri->withScheme( '' )->withHost( '' )->withPort( null );
+        } elseif ( Uri::isNetworkPathReference( $uri ) ) {
+            return $uri->withHost( '' )->withPort( null );
+        }
+
+        return $uri;
+    }
+
     public static function normalize(
         string|UriInterface $uri,
     ): UriInterface {
