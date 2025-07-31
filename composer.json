@@ -44,7 +44,6 @@
         "wp-coding-standards/wpcs": "*",
         "phpcompatibility/php-compatibility": "*",
         "php-parallel-lint/php-parallel-lint": "*",
-        "10up/wp_mock": "*",
         "mikey179/vfsstream": "*",
         "php-stubs/wp-cli-stubs": "^2.12"
     },
