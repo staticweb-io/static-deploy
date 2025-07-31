@@ -178,6 +178,15 @@ class Deployer {
                         $cmd_data['SourceFile'] = $filename;
                     }
 
+                    if ( empty( $cmd_data['Key'] ) ) {
+                        unset( $cmd_data['Body'] );
+                        throw WsLog::ex(
+                            'Invalid deploy data for path "' . $path_info->path .
+                            '": ' . json_encode( $cmd_data )
+                        );
+                        continue;
+                    }
+
                     if ( ! isset( $cmd_data['Body'] )
                     && ! $cmd_data['SourceFile']
                     && ! $cmd_data['WebsiteRedirectLocation']
