@@ -36,17 +36,9 @@ class PathInfo {
         ?int $status = null,
     ) {
         $uri = Psr7Utils::uriFor( $path );
-
-        if ( ! Uri::isAbsolutePathReference( $uri ) ) {
-            throw WsLog::ex( 'Not an absolute path reference: ' . $path );
-        }
-
-        if ( $uri->getQuery() !== '' ) {
-            throw WsLog::ex( 'Path cannot contain query string: ' . $path );
-        }
-
-        if ( $uri->getFragment() !== '' ) {
-            throw WsLog::ex( 'Path cannot contain fragment: ' . $path );
+        $msg = self::pathErrorMessage( $uri );
+        if ( $msg ) {
+            throw WsLog::ex( "$msg: $path" );
         }
 
         if ( $filename === '' ) {
@@ -64,6 +56,29 @@ class PathInfo {
         if ( $content_hash !== null ) {
             $this->content_hash = $content_hash;
         }
+    }
+
+    /**
+     * Check if a path is valid for use in a PathInfo object.
+     *
+     * Returns error message if any, or false if there are no errors.
+     */
+    public static function pathErrorMessage(
+        UriInterface $uri,
+    ): false|string {
+        if ( ! Uri::isAbsolutePathReference( $uri ) ) {
+            return 'Not an absolute path reference';
+        }
+
+        if ( $uri->getQuery() !== '' ) {
+            return 'Path cannot contain query string';
+        }
+
+        if ( $uri->getFragment() !== '' ) {
+            return 'Path cannot contain fragment';
+        }
+
+        return false;
     }
 
     public function toArray(): array {
