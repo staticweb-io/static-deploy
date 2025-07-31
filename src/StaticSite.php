@@ -29,7 +29,7 @@ class StaticSite {
 
         if ( ! is_dir( $directory ) ) {
             if ( ! wp_mkdir_p( $directory ) ) {
-                WsLog::l( 'Couldn\t make directory: ' . $directory );
+                WsLog::l( 'Couldn\'t make directory: ' . $directory );
             }
         }
 
