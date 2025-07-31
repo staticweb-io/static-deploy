@@ -30,10 +30,8 @@
         "yahnis-elsts/plugin-update-checker": "^5",
         "masterminds/html5": "^2",
         "phlak/splat": "^6",
-        "symfony/finder": "^6",
         "aws/aws-sdk-php": "^3",
-        "guzzlehttp/guzzle": "^7",
-        "symfony/deprecation-contracts": "^3"
+        "guzzlehttp/guzzle": "^7"
     },
     "require-dev": {
         "szepeviktor/phpstan-wordpress": "*",
