@@ -42,4 +42,11 @@ final class S3DeployTest extends TestCase {
         $this->pluginCli( [ 'addons', 'enable', 'static-deploy-addon-s3' ] );
         $this->pluginCli( [ 'full-workflow' ] );
     }
+
+    public function testDirectDeploy(): void {
+        $this->setUpBucket();
+        $this->setUpCommonOptions();
+        $this->pluginCli( [ 'addons', 'enable', 'static-deploy-addon-s3' ] );
+        $this->pluginCli( [ 'direct-deploy' ] );
+    }
 }
