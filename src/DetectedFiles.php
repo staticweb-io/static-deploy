@@ -2,6 +2,8 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+
 class DetectedFiles {
 
     public static function createTable(): void {
@@ -163,8 +165,19 @@ class DetectedFiles {
             $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
+                $uri = Psr7Utils::uriFor( $row->path );
+                $msg = PathInfo::pathErrorMessage( $uri );
+
+                if ( $msg ) {
+                    WsLog::w(
+                        'Skipping invalid path found in detected files table:'
+                        . " $row->path ($msg)"
+                    );
+                    continue;
+                }
+
                 yield new PathInfo(
-                    $row->path,
+                    $uri,
                     filename: $row->filename,
                 );
                 $last_id = $row->id;
@@ -205,8 +218,19 @@ class DetectedFiles {
             $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
+                $uri = Psr7Utils::uriFor( $row->path );
+                $msg = PathInfo::pathErrorMessage( $uri );
+
+                if ( $msg ) {
+                    WsLog::w(
+                        'Skipping invalid path found in detected files table:'
+                        . " $row->path ($msg)"
+                    );
+                    continue;
+                }
+
                 yield new PathInfo(
-                    $row->path,
+                    $uri,
                     filename: $row->filename,
                 );
                 $last_id = $row->id;
