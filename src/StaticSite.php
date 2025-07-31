@@ -19,10 +19,11 @@ class StaticSite {
     /**
      * Add crawled resource to static site
      */
-    public static function add( string $path, string $contents ): void {
-        // simple file save, Crawler holds logic for what/where to save
-        // Crawler has already processed links, etc
-        $full_path = self::getPath() . "$path";
+    public static function add(
+        PathInfo $path_info,
+    ): void {
+        $path = self::transformPath( $path_info->path );
+        $full_path = self::getPath() . $path;
 
         $directory = dirname( $full_path );
 
@@ -32,7 +33,15 @@ class StaticSite {
             }
         }
 
-        file_put_contents( $full_path, $contents );
+        if ( $path_info->body ) {
+            file_put_contents( $full_path, $path_info->body );
+        } elseif ( $path_info->filename ) {
+            copy( $path_info->filename, $full_path );
+        } else {
+            throw WsLog::ex(
+                'No contents found for crawled path: ' . json_encode( $path_info )
+            );
+        }
     }
 
     public static function getPath(): string {

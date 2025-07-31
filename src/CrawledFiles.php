@@ -242,8 +242,7 @@ class CrawledFiles {
             if ( $is_cacheable && $content_hash && self::getUrl( $path->path, $content_hash ) ) {
                 ++$cache_hits;
             } elseif ( $path->body ) {
-                $static_path = StaticSite::transformPath( $path->path );
-                StaticSite::add( $static_path, $path->body );
+                StaticSite::add( $path );
             }
 
             yield $path;
