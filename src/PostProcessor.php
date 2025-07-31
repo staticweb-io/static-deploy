@@ -89,14 +89,12 @@ class PostProcessor {
             return $crawl_responses;
         }
 
-        $rewriter = new SimpleRewriter();
-        $process = function ( $crawl_responses ) use ( $rewriter ) {
+        $process = function ( $crawl_responses ) {
             foreach ( $crawl_responses as $crawled ) {
                 $content_type = $crawled->content_type;
                 if ( $content_type && $this->processContentType( $content_type ) ) {
                     if ( $crawled->body ) {
-                        $rewritten = $rewriter->rewriteFileContents(
-                            $this->config,
+                        $rewritten = $this->rewriteFileContents(
                             $crawled->body,
                         );
                         if ( $rewritten !== $crawled->body ) {
@@ -105,8 +103,7 @@ class PostProcessor {
                         ++$this->processed;
                     } elseif ( $crawled->filename ) {
                         $file_contents = file_get_contents( $crawled->filename );
-                        $rewritten = $rewriter->rewriteFileContents(
-                            $this->config,
+                        $rewritten = $this->rewriteFileContents(
                             $file_contents
                         );
                         if ( $rewritten !== $file_contents ) {
@@ -122,6 +119,28 @@ class PostProcessor {
         };
 
         return $process( $crawl_responses );
+    }
+
+    /**
+     * Rewrite URLs in a string to destination_url
+     *
+     * @param string $file_contents
+     * @return string
+     */
+    public function rewriteFileContents(
+        string $file_contents,
+    ): string {
+        // TODO: allow empty file saving here? Exception for style.css
+        if ( ! $file_contents ) {
+            return '';
+        }
+
+        $rewritten_contents = strtr(
+            $file_contents,
+            $this->config->replacement_patterns
+        );
+
+        return $rewritten_contents;
     }
 
     public function complete(): void {
