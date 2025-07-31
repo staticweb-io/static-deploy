@@ -86,7 +86,7 @@
             "@phpunit"
         ],
         "test-integration": "bin/test-php-versions",
-        "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit tests/integration",
+        "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit --testsuite Integration",
         "build": "nix build .#plugin"
     }
 }

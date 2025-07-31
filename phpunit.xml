@@ -2,4 +2,12 @@
 <phpunit
     bootstrap="tests/unit/bootstrap.php"
 >
+    <testsuites>
+        <testsuite name="Integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

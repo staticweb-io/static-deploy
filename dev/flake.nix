@@ -149,7 +149,7 @@
                     ${phpPackages.composer}/bin/composer dump-autoload
                     WORDPRESS_DIR="$(realpath ./data/wordpress1)"
                     export WORDPRESS_DIR
-                    ${php}/bin/php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result ./tests/integration/
+                    ${php}/bin/php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result --testsuite Integration
                   '';
                 };
                 depends_on."mysql1-configure".condition =
