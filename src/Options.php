@@ -298,7 +298,7 @@ class Options {
                         '**.map',
                         '**.md',
                         '**.mo',
-                        '**.php',
+                        '**.php*', // Don't crawl files like wp-config.php.save
                         '**.phtml',
                         '**.po',
                         '**.pot',
