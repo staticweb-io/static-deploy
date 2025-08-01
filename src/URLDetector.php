@@ -193,7 +193,7 @@ class URLDetector {
             foreach ( $iter as $detected ) {
                 $path = $detected->path;
 
-                if ( $path && ! isset( $unique_urls[ $path ] ) ) {
+                if ( ! isset( $unique_urls[ $path ] ) ) {
                     $unique_urls[ $path ] = true;
 
                     $detected_ct = count( $unique_urls );
