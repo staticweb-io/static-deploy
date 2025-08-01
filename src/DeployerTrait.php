@@ -106,6 +106,8 @@ trait DeployerTrait {
 
         $redirects = CrawledFiles::listRedirects();
 
-        self::uploadFilesIter( $path_infos( $files, $redirects ) );
+        $pis = $path_infos( $files, $redirects );
+        $pis = DeployCache::addCacheData( $pis );
+        self::uploadFilesIter( $pis );
     }
 }

@@ -106,7 +106,8 @@ class DirectDeployer {
         $crawled = CrawledFiles::addPathsIter( $crawled );
         $crawled = $this->url_discovery->discoverURLs( $crawled );
 
-        $processed = $this->processor->processIter( $crawled );
-        $this->deployer->uploadFilesIter( $processed );
+        $pis = $this->processor->processIter( $crawled );
+        $pis = DeployCache::addCacheData( $pis );
+        $this->deployer->uploadFilesIter( $pis );
     }
 }

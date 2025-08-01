@@ -44,6 +44,72 @@ class DeployCache {
         );
     }
 
+    /**
+     * Adds deploy cache data to PathInfos that don't
+     * already have it.
+     *
+     * @param \Iterator<PathInfo>
+     * @return \Iterator<PathInfo>
+     */
+    public static function addCacheData(
+        \Iterator $path_infos,
+    ): \Iterator {
+        global $wpdb;
+
+        $chunks = Utils::chunkIterator( $path_infos, 200 );
+        foreach ( $chunks as $chunk ) {
+            $to_lookup = [];
+            foreach ( $chunk as $pi ) {
+                if ( isset( $pi->deploy_cache ) ) {
+                    yield $pi;
+                } else {
+                    $to_lookup[] = $pi;
+                }
+            }
+
+            if ( empty( $to_lookup ) ) {
+                continue;
+            }
+
+            $path_hashes = array_map(
+                function ( PathInfo $pi ): string {
+                    return $pi->getPathHash();
+                },
+                $to_lookup,
+            );
+
+            $placeholders = implode( ',', array_fill( 0, count( $path_hashes ), '%s' ) );
+            $table_name = self::getTableName();
+            $sql = "SELECT path_hash,data_hash,namespace
+                 FROM $table_name
+                 WHERE path_hash IN ($placeholders)";
+            $query = $wpdb->prepare( $sql, ...$path_hashes );
+            $results = $wpdb->get_results( $query );
+
+            $results_by_hash = [];
+            foreach ( $results as $result ) {
+                $current = $results_by_hash[ $result->path_hash ] ?? [];
+                $current[ $result->namespace ] = $result->data_hash;
+                $results_by_hash[ $result->path_hash ] = $current;
+            }
+            foreach ( $to_lookup as $pi ) {
+                $cached = $results_by_hash[ $pi->getPathHash() ] ?? null;
+
+                if ( $cached ) {
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d(
+                            'Adding deploy cache data for '
+                            . $pi->path . ': ' . json_encode( $cached )
+                        );
+                    }
+                    yield $pi->withDeployCache( $cached );
+                } else {
+                    yield $pi;
+                }
+            }
+        }
+    }
+
     public static function addFile(
         string $path,
         string $ns = self::DEFAULT_NAMESPACE,
