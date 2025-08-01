@@ -9,7 +9,8 @@ global $wpdb;
 
 $tables_to_drop = [
     'crawled_files',
-    'deploy_cache',
+    'deploy_cache', // An older version of deployed_files
+    'deployed_files',
     'detected_files',
     'jobs',
     'log',

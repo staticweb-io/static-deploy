@@ -8,7 +8,7 @@ class DeployCache {
 
 
     public static function getTableName(): string {
-        return Db::getTableName( 'deploy_cache' );
+        return Db::getTableName( 'deployed_files' );
     }
 
     public static function createTable(): void {
@@ -20,10 +20,11 @@ class DeployCache {
 
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            path_hash CHAR(32) NOT NULL,
             path VARCHAR(2083) NOT NULL,
-            file_hash CHAR(32) NOT NULL,
+            path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
+            data_hash CHAR(32) NOT NULL,
             namespace VARCHAR(128) NOT NULL,
+            deployed_at datetime DEFAULT NOW() NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
@@ -35,36 +36,36 @@ class DeployCache {
             'path_hash_ns_idx',
             "CREATE UNIQUE INDEX path_hash_ns_idx ON $table_name (path_hash, namespace)"
         );
+
+        Db::ensureIndex(
+            $table_name,
+            'deployed_at_idx',
+            "CREATE INDEX deployed_at_idx ON $table_name (deployed_at)"
+        );
     }
 
     public static function addFile(
-        string $local_path,
+        string $path,
         string $ns = self::DEFAULT_NAMESPACE,
-        string $file_hash,
+        string $data_hash,
     ): void {
         global $wpdb;
 
         $table_name = self::getTableName();
 
-        $post_processed_dir = ProcessedSite::getPath();
-
-        $deployed_file = $post_processed_dir . $local_path;
-
-        $path_hash = md5( $deployed_file );
-
-        $sql = "INSERT INTO {$table_name} (path_hash,path,file_hash,namespace)" .
-            ' VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE file_hash = %s, namespace = %s';
+        $sql = "INSERT INTO $table_name
+                (path,data_hash,namespace,deployed_at)
+                VALUES (%s,%s,%s,NOW())
+                ON DUPLICATE KEY UPDATE
+                    path = VALUES(path),
+                    data_hash = VALUES(data_hash),
+                    deployed_at = VALUES(deployed_at)";
 
         $sql = $wpdb->prepare(
-            // Insert values
             $sql,
-            $path_hash,
-            $local_path,
-            $file_hash,
+            $path,
+            $data_hash,
             $ns,
-            // Duplicate key values
-            $file_hash,
-            $ns
         );
 
         $wpdb->query( $sql );
@@ -75,25 +76,21 @@ class DeployCache {
      *  - uses hash of file and path's hash
      */
     public static function fileisCached(
-        string $local_path,
+        string $path,
         string $ns = self::DEFAULT_NAMESPACE,
-        string $file_hash,
+        string $data_hash,
     ): bool {
         global $wpdb;
 
-        $post_processed_dir = ProcessedSite::getPath();
-
-        $deployed_file = $post_processed_dir . $local_path;
-
-        $path_hash = md5( $deployed_file );
+        $path_hash = md5( $path );
 
         $table_name = self::getTableName();
 
         $sql = $wpdb->prepare(
             "SELECT path_hash FROM $table_name WHERE" .
-            ' path_hash = %s AND file_hash = %s AND namespace = %s LIMIT 1',
+            ' path_hash = %s AND data_hash = %s AND namespace = %s LIMIT 1',
             $path_hash,
-            $file_hash,
+            $data_hash,
             $ns
         );
 

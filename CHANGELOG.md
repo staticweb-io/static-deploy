@@ -28,6 +28,12 @@
 - Apply "Paths to Ignore" patterns to all paths.
   Previously, it only applied to files and URLs
   discovered while crawling.
+- Rename the deploy_cache table to deployed_files
+  and restructure it.
+  - Make path_hash a persistent generated column.
+  - Rename file_hash to data_hash to reflect that it
+    can include metadata.
+  - Add deployed_at column and an index on it.
 
 ## 9.3.2 (2025-07-29)
 
