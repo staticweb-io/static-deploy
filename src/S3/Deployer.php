@@ -216,6 +216,18 @@ class Deployer {
                 ];
                 ++$iter_key;
 
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    $d = $cmd_data;
+                    if ( isset( $d['Body'] ) ) {
+                        $d['Body'] = '...' . strlen( $d['Body'] ) . ' bytes...';
+                    }
+                    $pi = $path_info->withBody( '' );
+                    WsLog::d(
+                        "Command $cmd_name: " . json_encode( $d )
+                        . ' for : ' . json_encode( $pi )
+                    );
+                }
+
                 yield $this->s3_client->getCommand( $cmd_name, array_merge( [], $cmd_data ) );
             }
         };
