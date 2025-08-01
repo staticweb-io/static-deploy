@@ -190,8 +190,7 @@ class Deployer {
                     && ! isset( $cmd_data['SourceFile'] )
                     && ! isset( $cmd_data['WebsiteRedirectLocation'] )
                     ) {
-                        WsLog::l( 'Invalid deploy data: ' . json_encode( $file ) );
-                        continue;
+                        throw WsLog::ex( 'Invalid deploy data: ' . json_encode( $file ) );
                     }
                 }
 
