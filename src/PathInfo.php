@@ -25,6 +25,7 @@ class PathInfo {
     public ?int $status;
 
     private ?string $content_hash;
+    private ?string $path_hash;
 
     public function __construct(
         string|UriInterface $path,
@@ -120,6 +121,16 @@ class PathInfo {
         }
 
         return $this->content_hash ?? null;
+    }
+
+    public function getPathHash(): string {
+        if ( isset( $this->path_hash ) ) {
+            return $this->path_hash;
+        }
+
+        $this->path_hash = md5( $this->path );
+
+        return $this->path_hash;
     }
 
     public function withBody( ?string $new_body ): self {
