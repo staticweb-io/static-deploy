@@ -184,7 +184,6 @@ class Deployer {
                             'Invalid deploy data for path "' . $path_info->path .
                             '": ' . json_encode( $cmd_data )
                         );
-                        continue;
                     }
 
                     if ( ! isset( $cmd_data['Body'] )
