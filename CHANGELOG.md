@@ -34,6 +34,8 @@
   - Rename file_hash to data_hash to reflect that it
     can include metadata.
   - Add deployed_at column and an index on it.
+- Batch queries to the deployed_files table for better
+  performance.
 
 ## 9.3.2 (2025-07-29)
 

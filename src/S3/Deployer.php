@@ -194,13 +194,8 @@ class Deployer {
                     }
                 }
 
-                $is_cached = DeployCache::fileisCached(
-                    $cache_key,
-                    self::DEFAULT_NAMESPACE,
-                    $hash,
-                );
-
-                if ( $is_cached ) {
+                if ( isset( $path_info->deploy_cache )
+                && ( $path_info->deploy_cache[ self::DEFAULT_NAMESPACE ] ?? null ) === $hash ) {
                     ++$this->deploy_cache_ct;
                     if ( STATIC_DEPLOY_DEBUG ) {
                         WsLog::d( 'Skipping deploy of cached file ' . $cache_key );

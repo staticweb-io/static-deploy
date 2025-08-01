@@ -137,34 +137,6 @@ class DeployCache {
         $wpdb->query( $sql );
     }
 
-    /**
-     * Checks if file can skip deployment
-     *  - uses hash of file and path's hash
-     */
-    public static function fileisCached(
-        string $path,
-        string $ns = self::DEFAULT_NAMESPACE,
-        string $data_hash,
-    ): bool {
-        global $wpdb;
-
-        $path_hash = md5( $path );
-
-        $table_name = self::getTableName();
-
-        $sql = $wpdb->prepare(
-            "SELECT path_hash FROM $table_name WHERE" .
-            ' path_hash = %s AND data_hash = %s AND namespace = %s LIMIT 1',
-            $path_hash,
-            $data_hash,
-            $ns
-        );
-
-        $hash = $wpdb->get_var( $sql );
-
-        return (bool) $hash;
-    }
-
     public static function truncate(
         string $ns = ''
     ): void {
