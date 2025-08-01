@@ -119,9 +119,8 @@ class URLDiscovery {
         $page_url = Psr7Utils::uriFor( $this->destination_url . $path_info->path );
         foreach ( ParseHTML::parseURLsString( $body ) as $url ) {
             $discovered_url = Psr7Utils::uriFor( $url )->withFragment( '' )->withQuery( '' );
-            $is_local = $this->isURLLocal( $page_url, $discovered_url );
-            $discovered_url = URLHelper::makeAbsolutePath( $discovered_url );
-            if ( $is_local ) {
+            if ( $this->isURLLocal( $page_url, $discovered_url ) ) {
+                $discovered_url = URLHelper::makeAbsolutePath( $discovered_url );
                 yield (string) $discovered_url;
             }
         }
