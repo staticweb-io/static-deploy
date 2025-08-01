@@ -35,6 +35,12 @@
                 enabled ++ (with all; [ apcu imagick memcached ]);
             };
           };
+          phpOptions = ''
+            opcache.interned_strings_buffer = 16
+            opcache.jit = 1255
+            opcache.jit_buffer_size = 8M
+            upload_max_filesize=1024M
+          '';
           finalPkgs = import pkgs.path {
             inherit (pkgs) system;
             overlays = [ overlay ];
@@ -112,12 +118,7 @@
                 "pm.max_children" = "5";
               };
               package = php;
-              phpOptions = ''
-                opcache.interned_strings_buffer = 16
-                opcache.jit = 1255
-                opcache.jit_buffer_size = 8M
-                upload_max_filesize = 1024M
-              '';
+              phpOptions = phpOptions;
             };
             # An optional service to run localstack if docker is available
             # We can't run docker in nix flake check,
