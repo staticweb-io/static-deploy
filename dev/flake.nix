@@ -29,18 +29,25 @@
           staticDeployLib = inputs.static-deploy.lib.${system};
           staticDeployPkgs = inputs.static-deploy.packages.${system};
           staticDeploy = staticDeployPkgs.plugin;
-          overlay = self: super: {
-            php = super.${phpPackage}.buildEnv {
-              extensions = { enabled, all }:
-                enabled ++ (with all; [ apcu imagick memcached ]);
-            };
-          };
           phpOptions = ''
             opcache.interned_strings_buffer = 16
             opcache.jit = 1255
             opcache.jit_buffer_size = 8M
             upload_max_filesize=1024M
           '';
+          overlay = self: super:
+            let
+              php = super.${phpPackage}.buildEnv {
+                extraConfig = phpOptions;
+                extensions = { enabled, all }:
+                  enabled ++ (with all; [ apcu imagick memcached ]);
+              };
+              phpIniFile =
+                pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
+                  cat ${php}/etc/php.ini > $out
+                '';
+              wp-cli = super.wp-cli.override { phpIniFile = phpIniFile; };
+            in { inherit php wp-cli; };
           finalPkgs = import pkgs.path {
             inherit (pkgs) system;
             overlays = [ overlay ];
