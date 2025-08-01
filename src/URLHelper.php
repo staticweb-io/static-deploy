@@ -13,10 +13,18 @@ class URLHelper {
     ): UriInterface {
         $uri = Psr7Utils::uriFor( $uri );
 
-        if ( Uri::isAbsolute( $uri ) ) {
-            return $uri->withScheme( '' )->withHost( '' )->withPort( null )->withUserInfo( '' );
-        } elseif ( Uri::isNetworkPathReference( $uri ) ) {
-            return $uri->withHost( '' )->withPort( null )->withUserInfo( '' );
+        try {
+            if ( Uri::isAbsolute( $uri ) ) {
+                return $uri->withScheme( '' )->withHost( '' )->withPort( null )->withUserInfo( '' );
+            } elseif ( Uri::isNetworkPathReference( $uri ) ) {
+                return $uri->withHost( '' )->withPort( null )->withUserInfo( '' );
+            }
+        } catch ( \Exception $e ) {
+            throw WsLog::ex(
+                'Error making absolute path for ' . $uri . ': ' . $e->getMessage(),
+                0,
+                $e
+            );
         }
 
         return $uri;
