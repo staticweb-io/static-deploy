@@ -23,6 +23,8 @@
   and deployed as actual redirects.
 - No longer grabs the body of 404 responses. These are
   normally removed from the crawl.
+- Fix that the s3 prefix would get dropped if the path
+  being deployed ended in a slash.
 
 ## 9.3.2 (2025-07-29)
 
