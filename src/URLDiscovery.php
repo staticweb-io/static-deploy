@@ -2,6 +2,7 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Exception\MalformedUriException;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriResolver;
 use GuzzleHttp\Psr7\Utils as Psr7Utils;
@@ -118,7 +119,15 @@ class URLDiscovery {
 
         $page_url = Psr7Utils::uriFor( $this->destination_url . $path_info->path );
         foreach ( ParseHTML::parseURLsString( $body ) as $url ) {
-            $discovered_url = Psr7Utils::uriFor( $url )->withFragment( '' )->withQuery( '' );
+            try {
+                $discovered_url = Psr7Utils::uriFor( $url )->withFragment( '' )->withQuery( '' );
+            } catch ( MalformedUriException $e ) {
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d( 'Skipping invalid URL discovered: ' . $url );
+                }
+                continue;
+            }
+
             if ( $this->isURLLocal( $page_url, $discovered_url ) ) {
                 $discovered_url = URLHelper::makeAbsolutePath( $discovered_url );
                 yield (string) $discovered_url;
