@@ -185,6 +185,7 @@ class URLDetector {
         $iterators_to_merge[] = DetectPluginRedirects::detect();
 
         $home_url = SiteInfo::getUrl( 'home' );
+        $ct_ignored = 0;
         $unique_urls = [];
 
         $last_log_time = microtime( true );
@@ -196,12 +197,18 @@ class URLDetector {
                 if ( ! isset( $unique_urls[ $path ] ) ) {
                     $unique_urls[ $path ] = true;
 
-                    $detected_ct = count( $unique_urls );
+                    if ( ! $filtering->pathLooksCrawlable( $path ) ) {
+                        ++$ct_ignored;
+                        continue;
+                    }
+
+                    $detected_ct = count( $unique_urls ) - $ct_ignored;
                     $now = microtime( true );
 
                     if ( $now - $last_log_time >= 60 ) {
                         WsLog::l( 'Detected ' . $path );
-                        $notice = "Detection progress: $detected_ct unique URLs found";
+                        $notice = "Detection progress: $detected_ct unique URLs found."
+                        . " $ct_ignored ignored.";
                         WsLog::l( $notice );
                         $last_log_time = microtime( true );
                     }
@@ -211,11 +218,11 @@ class URLDetector {
             }
         }
 
-        $detected_ct = count( $unique_urls );
+        $detected_ct = count( $unique_urls ) - $ct_ignored;
 
         if ( ! $quiet ) {
             WsLog::l(
-                "Detection complete. $detected_ct URLs found."
+                "Detection complete. $detected_ct URLs found. $ct_ignored ignored."
             );
         }
     }

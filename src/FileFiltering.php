@@ -66,6 +66,20 @@ class FileFiltering {
     }
 
     /**
+     * Filters out PathInfos that don't look crawlable.
+     *
+     * @param \Iterator<PathInfo>
+     * @return \Iterator<PathInfo>
+     */
+    public function filterLooksCrawlable( \Iterator $iterator ): \Iterator {
+        foreach ( $iterator as $path_info ) {
+            if ( $this->pathLooksCrawlable( $path_info->path ) ) {
+                yield $path_info;
+            }
+        }
+    }
+
+    /**
      * Get public URLs for all files in a local directory.
      *
      * @param string $dir

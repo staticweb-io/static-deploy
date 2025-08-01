@@ -93,8 +93,13 @@ class DirectDeployer {
      * @param \Iterator<PathInfo> $paths
      * @param bool $remove_404s
      */
-    public function deployPaths( \Iterator $paths, bool $remove_404s = true ): void {
-        $crawled = $this->crawler->crawlIter( $paths );
+    public function deployPaths(
+        \Iterator $path_infos,
+        bool $remove_404s = true,
+    ): void {
+        $filtering = new FileFiltering();
+        $path_infos = $filtering->filterLooksCrawlable( $path_infos );
+        $crawled = $this->crawler->crawlIter( $path_infos );
         if ( $remove_404s ) {
             $crawled = CrawledFiles::removeOutdated( $crawled );
         }

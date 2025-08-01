@@ -25,6 +25,9 @@
   normally removed from the crawl.
 - Fix that the s3 prefix would get dropped if the path
   being deployed ended in a slash.
+- Apply "Paths to Ignore" patterns to all paths.
+  Previously, it only applied to files and URLs
+  discovered while crawling.
 
 ## 9.3.2 (2025-07-29)
 
