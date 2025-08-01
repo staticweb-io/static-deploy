@@ -2,6 +2,8 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+
 class DetectPluginRedirects {
 
     /**
@@ -48,7 +50,17 @@ class DetectPluginRedirects {
 
         $ct = 0;
         foreach ( $rows as $row ) {
-            yield new PathInfo( $row->url );
+            $uri = Psr7Utils::uriFor( $row->url );
+            $msg = PathInfo::pathErrorMessage( $uri );
+            if ( $msg ) {
+                WsLog::l(
+                    'Can\'t use path pattern from Redirection plugin: '
+                    . $uri . ' - ' . $msg
+                );
+                continue;
+            }
+
+            yield new PathInfo( $uri );
             ++$ct;
         }
 
@@ -85,7 +97,17 @@ class DetectPluginRedirects {
 
         $ct = 0;
         foreach ( $rows as $row ) {
-            yield new PathInfo( $row->match );
+            $uri = Psr7Utils::uriFor( $row->match );
+            $msg = PathInfo::pathErrorMessage( $uri );
+            if ( $msg ) {
+                WsLog::l(
+                    'Can\'t use path pattern from Redirect Redirection plugin: '
+                    . $uri . ' - ' . $msg
+                );
+                continue;
+            }
+
+            yield new PathInfo( $uri );
             ++$ct;
         }
 
