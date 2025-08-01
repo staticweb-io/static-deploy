@@ -27,6 +27,11 @@ class PathInfo {
     private ?string $content_hash;
     private ?string $path_hash;
 
+    /**
+     * array<string, string> Array of namespace to data_hash
+     */
+    public ?array $deploy_cache;
+
     public function __construct(
         string|UriInterface $path,
         ?string $filename = null,
@@ -138,6 +143,12 @@ class PathInfo {
         $copy->body = $new_body;
         $copy->content_hash = null;
         $copy->filename = null;
+        return $copy;
+    }
+
+    public function withDeployCache( array $deploy_cache ): self {
+        $copy = clone $this;
+        $copy->deploy_cache = $deploy_cache;
         return $copy;
     }
 }
