@@ -3,6 +3,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
+    hyperfine-flake = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:john-shaffer/hyperfine-flake";
+    };
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake.url = "github:staticweb-io/wordpress-flake";
@@ -259,6 +263,8 @@
           devShells.default = pkgs.mkShell {
             buildInputs = [
               fd
+              inputs.hyperfine-flake.packages.${system}.default
+              inputs.hyperfine-flake.packages.${system}.scripts
               jq
               omnix
               php
