@@ -8,6 +8,10 @@ namespace StaticDeploy;
 class ITEnv {
     private static string $wordpress_dir;
 
+    public static function getPluginsDir(): string {
+        return self::getWordPressDir() . '/wp-content/plugins';
+    }
+
     /**
      * Return directory used for adding test content
      * files.

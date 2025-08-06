@@ -97,8 +97,7 @@ final class OptionsTest extends TestCase {
 
     public function testOptionFilters(): void
     {
-        $plugin_dir = ITEnv::getWordPressDir() . '/wp-content/plugins/options-test';
-        exec( 'rm -rf ' . escapeshellarg( $plugin_dir ) );
+        $plugin_dir = ITEnv::getPluginsDir() . '/options-test';
 
         $this->assertEquals( '0', $this->getOptionValue( 'processQueueImmediately' ) );
 
