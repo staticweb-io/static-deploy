@@ -106,9 +106,6 @@ final class OptionsTest extends TestCase {
         file_put_contents( $plugin_dir . '/options-test.php', $this->optionsTestFilters() );
         $this->wpCli( [ 'plugin', 'activate', 'options-test' ] );
         $this->assertEquals( '1', $this->getOptionValue( 'processQueueImmediately' ) );
-
-        $this->wpCli( [ 'plugin', 'deactivate', 'options-test' ] );
-        exec( 'rm -rf ' . escapeshellarg( $plugin_dir ) );
     }
 
     private function optionsTestFilters(): string
