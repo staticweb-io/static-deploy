@@ -18,10 +18,8 @@ class URLDetector {
      *
      * @return \Iterator<PathInfo>
      */
-    public static function detectURLsIter( bool $quiet = false ): \Iterator {
-        if ( ! $quiet ) {
-            WsLog::l( 'Starting to detect WordPress site URLs.' );
-        }
+    public static function detectURLsIter(): \Iterator {
+        WsLog::l( 'Starting to detect WordPress site URLs.' );
 
         do_action(
             Controller::getHookName( 'detect' )
@@ -220,11 +218,9 @@ class URLDetector {
 
         $detected_ct = count( $unique_urls ) - $ct_ignored;
 
-        if ( ! $quiet ) {
-            WsLog::l(
-                "Detection complete. $detected_ct URLs found. $ct_ignored ignored."
-            );
-        }
+        WsLog::l(
+            "Detection complete. $detected_ct URLs found. $ct_ignored ignored."
+        );
     }
 
     public static function enqueueURLs(): int {
