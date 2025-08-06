@@ -29,6 +29,11 @@ class URLDetector {
 
         $iterators_to_merge = [];
 
+        $iterators_to_merge[] = apply_filters(
+            Controller::getHookName( 'extra_detected_files' ),
+            new \ArrayIterator( [] ),
+        );
+
         $iterators_to_merge[] = new \ArrayIterator(
             [
                 new PathInfo( '/' ),

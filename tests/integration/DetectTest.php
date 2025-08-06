@@ -66,4 +66,32 @@ Sitemap: http://localhost:8888//wp-sitemap.xml';
 
         exec( 'rm -f ' . escapeshellarg( $robotstxt ) );
     }
+
+    public function testExtraDetectedFiles(): void
+    {
+        $plugin = <<<'PHP'
+<?php
+
+/**
+ * Plugin Name: Extra Detected Files Test
+ */
+
+if ( ! defined( 'WPINC' ) ) {
+    die;
+}
+
+use StaticDeploy\PathInfo;
+
+function extra_detected_files_filter ( $iter ) {
+    yield from $iter;
+    yield new PathInfo( '/extra-detected-file.html' );
+}
+add_filter( 'static_deploy_extra_detected_files', 'extra_detected_files_filter' );
+PHP;
+        $this->installStringPlugin( 'extra-detected-files-test', $plugin );
+
+        $this->pluginCli( [ 'detect' ] );
+        $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
+        $this->assertContains( '/extra-detected-file.html', $lines );
+    }
 }

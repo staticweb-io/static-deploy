@@ -36,6 +36,8 @@
   - Add deployed_at column and an index on it.
 - Batch queries to the deployed_files table for better
   performance.
+- Add "extra_detected_files" filter that allows plugins to
+  add additional files when the "detect" step is run.
 
 ## 9.3.2 (2025-07-29)
 
