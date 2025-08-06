@@ -105,6 +105,22 @@ trait ITTrait {
         return $lines[ count( $lines ) - 1 ];
     }
 
+    /**
+     * Install a plugin from a string
+     */
+    public function installStringPlugin(
+        string $plugin_name,
+        string $plugin_content,
+    ): void {
+        $plugin_dir = ITEnv::getPluginsDir() . '/' . $plugin_name;
+        $result = exec( 'mkdir -p ' . escapeshellarg( $plugin_dir ) );
+        $this->assertNotFalse( $result );
+        $plugin_filename = $plugin_dir . '/' . $plugin_name . '.php';
+        $written = file_put_contents( $plugin_filename, $plugin_content );
+        $this->assertNotFalse( $written );
+        $this->wpCli( [ 'plugin', 'activate', $plugin_name ] );
+    }
+
     public function setOptionValue(
         string $option_name,
         string $option_value,

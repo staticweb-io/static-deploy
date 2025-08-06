@@ -95,21 +95,10 @@ final class OptionsTest extends TestCase {
         );
     }
 
-    public function testOptionFilters(): void
-    {
-        $plugin_dir = ITEnv::getPluginsDir() . '/options-test';
-
+    public function testOptionFilters(): void {
         $this->assertEquals( '0', $this->getOptionValue( 'processQueueImmediately' ) );
 
-        exec( 'mkdir -p ' . escapeshellarg( $plugin_dir ) );
-        file_put_contents( $plugin_dir . '/options-test.php', $this->optionsTestFilters() );
-        $this->wpCli( [ 'plugin', 'activate', 'options-test' ] );
-        $this->assertEquals( '1', $this->getOptionValue( 'processQueueImmediately' ) );
-    }
-
-    private function optionsTestFilters(): string
-    {
-        return <<<PHP
+        $plugin = <<<PHP
 <?php
 
 /**
@@ -125,5 +114,8 @@ function processQueueImmediately_filter ( $val ) {
 }
 add_filter( 'static_deploy_option_processQueueImmediately', 'processQueueImmediately_filter' );
 PHP;
+        $this->installStringPlugin( 'options-test', $plugin );
+
+        $this->assertEquals( '1', $this->getOptionValue( 'processQueueImmediately' ) );
     }
 }
