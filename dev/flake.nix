@@ -61,6 +61,8 @@
           services.memcached = memcachedConfig;
           services.mysql = mysqlConfig;
           services.phpfpm = phpfpmConfig;
+          # Create the home dir on the volume
+          systemd.tmpfiles.rules = [ "d /home/www 0755 www www -" ];
           users.users.php = {
             isSystemUser = true;
             group = "php";
@@ -255,11 +257,18 @@
                 microvm = {
                   hypervisor = "firecracker";
                   socket = "control.socket";
-                  volumes = [{
-                    mountPoint = "/var";
-                    image = "var.img";
-                    size = 8096;
-                  }];
+                  volumes = [
+                    {
+                      mountPoint = "/home";
+                      image = "home.img";
+                      size = 8096;
+                    }
+                    {
+                      mountPoint = "/var";
+                      image = "var.img";
+                      size = 8096;
+                    }
+                  ];
                 };
               }
             ];
