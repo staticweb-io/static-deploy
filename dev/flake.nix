@@ -229,7 +229,12 @@
               inputs.microvm.nixosModules.microvm
               nixosModules.wordpress-server
               ({ config, ... }: {
-                environment.systemPackages = [ mariadb php ];
+                environment.systemPackages = [
+                  mariadb
+                  memcached
+                  nginx
+                  php
+                ];
                 services.mysql.package = mariadb;
                 services.nginx = {
                   enable = true;
