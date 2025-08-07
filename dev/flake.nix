@@ -331,7 +331,7 @@
                 cd ./data/wordpress1
                 ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
                 ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
-                rm -rf "./wp-content/plugins/staticDeploy"
+                rm -rf "./wp-content/plugins/static-deploy"
                 ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
               '';
               depends_on."memcached1".condition = "process_healthy";
