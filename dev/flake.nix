@@ -35,10 +35,37 @@
         }];
         initialDatabases = [{ name = dbName; }];
       };
+      # Note that /tmp/xd has to be created to receive traces
+      phpOptions = ''
+        opcache.interned_strings_buffer = 16
+        opcache.jit = 1255
+        opcache.jit_buffer_size = 8M
+        upload_max_filesize=1024M
+      '';
+      phpfpmConfig = {
+        pools = {
+          default = {
+            settings = {
+              "catch_workers_output" = "yes";
+              "pm" = "ondemand";
+              "pm.max_children" = "5";
+            };
+            group = "php";
+            user = "php";
+          };
+        };
+        phpOptions = phpOptions;
+      };
       nixosModules = {
         wordpress-server = {
           services.memcached = memcachedConfig;
           services.mysql = mysqlConfig;
+          services.phpfpm = phpfpmConfig;
+          users.users.php = {
+            isSystemUser = true;
+            group = "php";
+          };
+          users.groups.php = { };
         };
       };
     in inputs.flake-parts.lib.mkFlake { inherit inputs; } {
@@ -88,10 +115,14 @@
           };
           wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
             inherit system;
-            modules = [
+            pkgs = finalPkgs;
+            modules = with finalPkgs; [
               inputs.microvm.nixosModules.microvm
               nixosModules.wordpress-server
-              { services.mysql.package = finalPkgs.mariadb; }
+              {
+                environment.systemPackages = [ mariadb php ];
+                services.mysql.package = mariadb;
+              }
               {
                 networking.hostName = "wordpress-firecracker";
                 users.users.root.password = "";
