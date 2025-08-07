@@ -113,16 +113,52 @@
             inherit (pkgs) system;
             overlays = [ overlay ];
           };
+          nginxHttpConfig = data-root: phpfpm-socket: ''
+            server {
+              listen ${toString serverPort} default_server;
+
+              server_name _;
+
+              root ${data-root};
+
+              index index.php index.html index.htm;
+
+              client_max_body_size 1024M;
+
+              location / {
+                  try_files $uri $uri/ =404;
+
+                  if (!-e $request_filename) {
+                      rewrite ^(.+)$ /index.php?q=$1 last;
+                  }
+              }
+
+              location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:${phpfpm-socket};
+                include ${pkgs.nginx}/conf/fastcgi.conf;
+              }
+
+              location ~ /\.ht {
+                deny all;
+              }
+            }
+          '';
           wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
             inherit system;
             pkgs = finalPkgs;
             modules = with finalPkgs; [
               inputs.microvm.nixosModules.microvm
               nixosModules.wordpress-server
-              {
+              ({ config, ... }: {
                 environment.systemPackages = [ mariadb php ];
                 services.mysql.package = mariadb;
-              }
+                services.nginx = {
+                  enable = true;
+                  httpConfig = nginxHttpConfig "/var/wordpress"
+                    config.services.phpfpm.pools.default.socket;
+                };
+              })
               {
                 networking.hostName = "wordpress-firecracker";
                 users.users.root.password = "";
@@ -146,7 +182,8 @@
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.memcached."memcached1" = {
               enable = true;
-              startArgs = [ "--memory-limit=${memcachedConfig.maxMemory}M" ];
+              startArgs =
+                [ "--memory-limit=${toString memcachedConfig.maxMemory}M" ];
             };
             services.mysql."mysql1" = {
               enable = true;
@@ -166,39 +203,8 @@
             };
             services.nginx."nginx1" = {
               enable = true;
-              httpConfig = ''
-                server {
-                  listen ${toString serverPort} default_server;
-
-                  server_name _;
-
-                  root ./data/wordpress1;
-
-                  index index.php index.html index.htm;
-
-                  client_max_body_size 1024M;
-
-                  location / {
-                      try_files $uri $uri/ =404;
-
-                      if (!-e $request_filename) {
-                          rewrite ^(.+)$ /index.php?q=$1 last;
-                      }
-                  }
-
-                  location ~ \.php$ {
-                    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                    fastcgi_pass unix:${
-                      config.services.phpfpm."phpfpm1".dataDir
-                    }/phpfpm.sock;
-                    include ${pkgs.nginx}/conf/fastcgi.conf;
-                  }
-
-                  location ~ /\.ht {
-                    deny all;
-                  }
-                }
-              '';
+              httpConfig = nginxHttpConfig "./data/wordpress1"
+                "${config.services.phpfpm."phpfpm1".dataDir}/phpfpm.sock";
             };
             services.phpfpm."phpfpm1" = {
               enable = true;
