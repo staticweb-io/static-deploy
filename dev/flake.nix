@@ -65,7 +65,14 @@
             isSystemUser = true;
             group = "php";
           };
+          users.users.www = {
+            group = "www";
+            home = "/home/www";
+            isNormalUser = true;
+            password = "";
+          };
           users.groups.php = { };
+          users.groups.www = { };
         };
       };
     in inputs.flake-parts.lib.mkFlake { inherit inputs; } {
@@ -238,7 +245,7 @@
                 services.mysql.package = mariadb;
                 services.nginx = {
                   enable = true;
-                  httpConfig = nginxHttpConfig "/var/wordpress"
+                  httpConfig = nginxHttpConfig "/home/www/wordpress"
                     config.services.phpfpm.pools.default.socket;
                 };
               })
