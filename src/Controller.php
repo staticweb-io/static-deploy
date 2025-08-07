@@ -89,7 +89,9 @@ class Controller {
         S3\S3Options::deactivateForSingleSite();
     }
 
-    public static function deactivate( bool $network_wide = null ): void {
+    public static function deactivate(
+        bool $network_wide = false,
+    ): void {
         if ( $network_wide ) {
             global $wpdb;
 
@@ -127,7 +129,9 @@ class Controller {
         S3\S3Options::activateForSingleSite();
     }
 
-    public static function activate( bool $network_wide = null ): void {
+    public static function activate(
+        bool $network_wide = false,
+    ): void {
         if ( $network_wide ) {
             global $wpdb;
 
@@ -505,8 +509,8 @@ class Controller {
     }
 
     public static function adminSetAddonState(
-        string $addon_slug = null,
-        bool $enabled = null,
+        ?string $addon_slug = null,
+        bool $enabled = false,
     ): void {
         if ( defined( 'WP_CLI' ) ) {
             if ( ! $addon_slug ) {
@@ -555,7 +559,9 @@ class Controller {
         }
     }
 
-    public static function adminToggleAddon( string $addon_slug = null ): void {
+    public static function adminToggleAddon(
+        ?string $addon_slug = null,
+    ): void {
         if ( defined( 'WP_CLI' ) ) {
             if ( ! $addon_slug ) {
                 throw WsLog::ex(
@@ -683,7 +689,7 @@ class Controller {
 
     public static function invalidateSingleURLCache(
         int $post_id = 0,
-        WP_Post $post = null
+        ?WP_Post $post = null,
     ): void {
         if ( ! $post ) {
             return;
