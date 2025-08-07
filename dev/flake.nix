@@ -144,6 +144,84 @@
               }
             }
           '';
+          WPConfigFormat =
+            (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
+              inherit pkgs lib;
+            }).format { };
+          update-wordpress =
+            inputs.wordpress-flake.packages.${system}.update-wordpress;
+          wordpress =
+            inputs.wordpress-flake.packages.${system}.${wordpressPackage};
+          wpConfig = inputs.wordpress-flake.lib.${system}.mkWPConfig {
+            inherit pkgs lib;
+            name = "wp-config.php";
+            settings = {
+              DB_HOST = "127.0.0.1:${toString dbPort}";
+              DB_NAME = dbName;
+              DB_USER = dbUserName;
+              DB_PASSWORD = dbUserPass;
+              WP_AUTO_UPDATE_CORE = false;
+
+              AUTH_KEY =
+                "A6tr^0=N<QP++W-%/hv1yOZ4]f<3m`/}0(A/UFi6pmy|ZLT)=>e+raWRmgYCs>aK";
+              SECURE_AUTH_KEY =
+                "Vj>>M=2uvzzWw-tqT?]H3RWsG%jTA9EhJKn~F6:8B<So+<A_},Y<RW-U)}/w-0Y+";
+              LOGGED_IN_KEY =
+                "jJCaP}~YG-Se+<WK5g9.@K*^g7*v=_yLyX7+i?{Mc%CcJ|L54u=+*+rW_Uxa{95L";
+              NONCE_KEY =
+                "98.DYg|E,*CV]Rz&#Q{j]?n[!sQji*X9%`Ic_n>NExS<7Sn[SG:`P8)*CqC[G2NF";
+              AUTH_SALT =
+                "*KON9~cuX+lG,Kx6`^5d#kyu5oFt{^~O:[]pB]F745S<B2U*L0aHb;(pEn:kPggf";
+              SECURE_AUTH_SALT =
+                "MV6l72,Yi+y8X`0wm5-T)6T#ZY~Sp;G+e3. ^CHdZ1W_*WY?;9>c}^|:[<j0FkpV";
+              LOGGED_IN_SALT =
+                "Don!4M=(5=Y=*@.NI:bn$V[FZ*a~wyJ:s9p&l@XD{7WzqBDO.3+-#[H>79,rG)Q~";
+              NONCE_SALT =
+                "t={*XeC6q4LZ5:%wo*C3f-sr6g3#Wa}_EMf}Jh$8*P/%4SdK4=0hjjnVa&8yY#-F";
+              WP_CACHE_KEY_SALT =
+                ")O~B@EKC(tfdgDg6R8@6;ePxJJkXMpZ&.u?X{j##:@7-,/*YKvvl-l4}r^@2=Ha-";
+
+              WP_CACHE = true;
+              HTTP_HOST = WPConfigFormat.lib.mkInline ''
+                if ( defined( 'WP_CLI' ) ) {
+                    $_SERVER['HTTP_HOST'] = isset( $_ENV['HTTP_HOST'] ) ? $_ENV['HTTP_HOST'] : 'localhost:${
+                      toString serverPort
+                    }';
+                }
+              '';
+              WP_HOME = WPConfigFormat.lib.mkInline ''
+                if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                    define( 'WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                } else {
+                    define( 'WP_HOME', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                }
+              '';
+              WP_SITEURL = WPConfigFormat.lib.mkInline ''
+                if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
+                    define( 'WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
+                } else {
+                    define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
+                }
+              '';
+              STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL = "max-age=6";
+            };
+          };
+          wpInstaller = dataDir:
+            pkgs.writeShellApplication {
+              name = "wordpress-installer";
+              text = ''
+                set -eu
+                mkdir -p ${dataDir}
+                chmod ug+w ${dataDir}/wp-config.php || true
+                cp "${wpConfig}" "${dataDir}/wp-config.php"
+                ${update-wordpress}/bin/update-wordpress ${dataDir} ${wordpress}
+                cd ${dataDir}
+                ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
+                ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
+                rm -rf "./wp-content/plugins/static-deploy"
+                ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
+              '';
+            };
           wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
             inherit system;
             pkgs = finalPkgs;
@@ -258,82 +336,9 @@
                 depends_on."wordpress1".condition =
                   "process_completed_successfully";
               };
-            settings.processes."wordpress1" = let
-              WPConfigFormat =
-                (inputs.wordpress-flake.lib.${system}.WPConfigFormat {
-                  inherit pkgs lib;
-                }).format { };
-              update-wordpress =
-                inputs.wordpress-flake.packages.${system}.update-wordpress;
-              wordpress =
-                inputs.wordpress-flake.packages.${system}.${wordpressPackage};
-              wpConfig = inputs.wordpress-flake.lib.${system}.mkWPConfig {
-                inherit pkgs lib;
-                name = "wp-config.php";
-                settings = {
-                  DB_HOST = "127.0.0.1:${toString dbPort}";
-                  DB_NAME = dbName;
-                  DB_USER = dbUserName;
-                  DB_PASSWORD = dbUserPass;
-                  WP_AUTO_UPDATE_CORE = false;
-
-                  AUTH_KEY =
-                    "A6tr^0=N<QP++W-%/hv1yOZ4]f<3m`/}0(A/UFi6pmy|ZLT)=>e+raWRmgYCs>aK";
-                  SECURE_AUTH_KEY =
-                    "Vj>>M=2uvzzWw-tqT?]H3RWsG%jTA9EhJKn~F6:8B<So+<A_},Y<RW-U)}/w-0Y+";
-                  LOGGED_IN_KEY =
-                    "jJCaP}~YG-Se+<WK5g9.@K*^g7*v=_yLyX7+i?{Mc%CcJ|L54u=+*+rW_Uxa{95L";
-                  NONCE_KEY =
-                    "98.DYg|E,*CV]Rz&#Q{j]?n[!sQji*X9%`Ic_n>NExS<7Sn[SG:`P8)*CqC[G2NF";
-                  AUTH_SALT =
-                    "*KON9~cuX+lG,Kx6`^5d#kyu5oFt{^~O:[]pB]F745S<B2U*L0aHb;(pEn:kPggf";
-                  SECURE_AUTH_SALT =
-                    "MV6l72,Yi+y8X`0wm5-T)6T#ZY~Sp;G+e3. ^CHdZ1W_*WY?;9>c}^|:[<j0FkpV";
-                  LOGGED_IN_SALT =
-                    "Don!4M=(5=Y=*@.NI:bn$V[FZ*a~wyJ:s9p&l@XD{7WzqBDO.3+-#[H>79,rG)Q~";
-                  NONCE_SALT =
-                    "t={*XeC6q4LZ5:%wo*C3f-sr6g3#Wa}_EMf}Jh$8*P/%4SdK4=0hjjnVa&8yY#-F";
-                  WP_CACHE_KEY_SALT =
-                    ")O~B@EKC(tfdgDg6R8@6;ePxJJkXMpZ&.u?X{j##:@7-,/*YKvvl-l4}r^@2=Ha-";
-
-                  WP_CACHE = true;
-                  HTTP_HOST = WPConfigFormat.lib.mkInline ''
-                    if ( defined( 'WP_CLI' ) ) {
-                        $_SERVER['HTTP_HOST'] = isset( $_ENV['HTTP_HOST'] ) ? $_ENV['HTTP_HOST'] : 'localhost:${
-                          toString serverPort
-                        }';
-                    }
-                  '';
-                  WP_HOME = WPConfigFormat.lib.mkInline ''
-                    if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
-                        define( 'WP_HOME', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
-                    } else {
-                        define( 'WP_HOME', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
-                    }
-                  '';
-                  WP_SITEURL = WPConfigFormat.lib.mkInline ''
-                    if ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) {
-                        define( 'WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/' );
-                    } else {
-                        define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] . '/' );
-                    }
-                  '';
-                  STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL = "max-age=6";
-                };
-              };
-            in {
-              command = ''
-                set -eu
-                mkdir -p ./data/wordpress1
-                chmod ug+w ./data/wordpress1/wp-config.php || true
-                cp "${wpConfig}" "./data/wordpress1/wp-config.php"
-                ${update-wordpress}/bin/update-wordpress ./data/wordpress1 ${wordpress}
-                cd ./data/wordpress1
-                ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
-                ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
-                rm -rf "./wp-content/plugins/static-deploy"
-                ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
-              '';
+            settings.processes."wordpress1" = {
+              command =
+                "${wpInstaller "./data/wordpress1"}/bin/wordpress-installer";
               depends_on."memcached1".condition = "process_healthy";
               depends_on."mysql1-configure".condition = "process_completed";
             };
