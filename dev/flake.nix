@@ -7,13 +7,41 @@
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:john-shaffer/hyperfine-flake";
     };
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake.url = "github:staticweb-io/wordpress-flake";
     static-deploy.url = ./..;
   };
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    let
+      dbName = "wordpress";
+      dbPort = 3306;
+      dbUserName = "wordpress";
+      dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
+      serverPort = 8888;
+      memcachedConfig = {
+        enable = true;
+        maxMemory = 100;
+      };
+      mysqlConfig = {
+        enable = true;
+        ensureUsers = [{
+          name = dbUserName;
+          ensurePermissions = { "${dbName}.*" = "ALL PRIVILEGES"; };
+        }];
+        initialDatabases = [{ name = dbName; }];
+      };
+      nixosModules = {
+        wordpress-server = {
+          services.memcached = memcachedConfig;
+          services.mysql = mysqlConfig;
+        };
+      };
+    in inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [ inputs.process-compose-flake.flakeModule ];
       perSystem = { self', pkgs, config, lib, system, ... }:
@@ -23,11 +51,6 @@
               default
             else
               builtins.getEnv name);
-          dbName = "wordpress";
-          dbPort = 3306;
-          dbUserName = "wordpress";
-          dbUserPass = "8BVMm2jqDE6iADNyfaVCxoCzr3eBY6Ep";
-          serverPort = 8888;
           phpPackage = getEnv "PHP_PACKAGE" "php";
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
@@ -63,6 +86,27 @@
             inherit (pkgs) system;
             overlays = [ overlay ];
           };
+          wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
+            inherit system;
+            modules = [
+              inputs.microvm.nixosModules.microvm
+              nixosModules.wordpress-server
+              { services.mysql.package = finalPkgs.mariadb; }
+              {
+                networking.hostName = "wordpress-firecracker";
+                users.users.root.password = "";
+                microvm = {
+                  hypervisor = "firecracker";
+                  socket = "control.socket";
+                  volumes = [{
+                    mountPoint = "/var";
+                    image = "var.img";
+                    size = 8096;
+                  }];
+                };
+              }
+            ];
+          };
         in with finalPkgs; {
           # `process-compose.foo` will add a flake package output called "foo".
           # Therefore, this will add a default package that you can build using
@@ -71,7 +115,7 @@
             imports = [ inputs.services-flake.processComposeModules.default ];
             services.memcached."memcached1" = {
               enable = true;
-              startArgs = [ "--memory-limit=100M" ];
+              startArgs = [ "--memory-limit=${memcachedConfig.maxMemory}M" ];
             };
             services.mysql."mysql1" = {
               enable = true;
@@ -81,7 +125,6 @@
                 ensurePermissions = { "${dbName}.*" = "ALL PRIVILEGES"; };
               }];
               initialDatabases = [{ name = dbName; }];
-              package = pkgs.mariadb;
               settings = {
                 mysqld = {
                   bind-address = "127.0.0.1";
@@ -125,7 +168,6 @@
                   }
                 }
               '';
-              package = pkgs.nginx;
             };
             services.phpfpm."phpfpm1" = {
               enable = true;
@@ -266,6 +308,7 @@
               inputs.hyperfine-flake.packages.${system}.default
               inputs.hyperfine-flake.packages.${system}.scripts
               jq
+              inputs.microvm.packages.${system}.microvm
               omnix
               php
               phpunit
@@ -276,6 +319,12 @@
             inputsFrom =
               [ config.process-compose."default".services.outputs.devShell ];
           };
+          packages = {
+            wordpress-firecracker =
+              wordpress-firecracker.config.microvm.declaredRunner;
+          };
         };
+    } // {
+      inherit nixosModules;
     };
 }

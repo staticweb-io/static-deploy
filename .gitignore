@@ -10,6 +10,7 @@ node_modules/
 coverage/
 data
 admin/*.js*
+*.img
 *.pid
 result
 result-*
