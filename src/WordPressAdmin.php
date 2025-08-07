@@ -268,10 +268,6 @@ class WordPressAdmin {
             'deleted_post',
         ];
 
-        $full_site_invalidation_events = [
-            'switch_theme',
-        ];
-
         foreach ( $single_url_invalidation_events as $invalidation_events ) {
             add_action(
                 $invalidation_events,
