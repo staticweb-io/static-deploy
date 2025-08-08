@@ -30,7 +30,7 @@
       mysqlConfig = {
         enable = true;
         ensureUsers = [{
-          name = dbUserName;
+          name = "www";
           ensurePermissions = { "${dbName}.*" = "ALL PRIVILEGES"; };
         }];
         initialDatabases = [{ name = dbName; }];
