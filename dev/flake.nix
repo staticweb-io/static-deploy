@@ -42,20 +42,6 @@
         opcache.jit_buffer_size = 8M
         upload_max_filesize=1024M
       '';
-      phpfpmConfig = {
-        pools = {
-          default = {
-            settings = {
-              "catch_workers_output" = "yes";
-              "pm" = "ondemand";
-              "pm.max_children" = "5";
-            };
-            group = "php";
-            user = "php";
-          };
-        };
-        phpOptions = phpOptions;
-      };
       nixosModules = {
         wordpress-server = {
           security.sudo.extraRules = [{
@@ -67,10 +53,11 @@
           }];
           services.memcached = memcachedConfig;
           services.mysql = mysqlConfig;
-          services.phpfpm = phpfpmConfig;
           # Create the home dir on the volume
           systemd.tmpfiles.rules = [ "d /home/www 0755 www www -" ];
+          users.users.nginx = { extraGroups = [ "www" ]; };
           users.users.php = {
+            extraGroups = [ "www" ];
             isSystemUser = true;
             group = "php";
           };
@@ -256,12 +243,28 @@
                   httpConfig = nginxHttpConfig "/home/www/wordpress"
                     config.services.phpfpm.pools.default.socket;
                 };
+                services.phpfpm = {
+                  pools = {
+                    default = {
+                      settings = {
+                        "catch_workers_output" = "yes";
+                        "listen.owner" = config.services.nginx.user;
+                        "pm" = "ondemand";
+                        "pm.max_children" = "5";
+                      };
+                      group = "php";
+                      user = "php";
+                    };
+                  };
+                  phpOptions = phpOptions;
+                };
                 services.wordpress-installer = {
                   enable = true;
                   package =
                     (wpInstaller "localhost" "www" "/home/www/wordpress");
                   user = "www";
                 };
+                systemd.services.nginx.serviceConfig.ProtectHome = false;
               })
               {
                 networking.hostName = "wordpress-firecracker";
