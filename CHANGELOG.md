@@ -38,6 +38,7 @@
   performance.
 - Add "extra_detected_files" filter that allows plugins to
   add additional files when the "detect" step is run.
+- Fix text domain for "Settings" translation.
 
 ## 9.3.2 (2025-07-29)
 

@@ -57,7 +57,7 @@ StaticDeploy\Controller::init();
 function static_deploy_plugin_action_links( $links ) {
     $settings_link =
         '<a href="admin.php?page=static-deploy">' .
-        __( 'Settings', 'static-html-output-plugin' ) .
+        __( 'Settings', 'static-deploy' ) .
         '</a>';
     array_unshift( $links, $settings_link );
 
