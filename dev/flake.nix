@@ -251,6 +251,7 @@
                   memcached
                   nginx
                   php
+                  vim
                 ];
                 services.mysql.package = mariadb;
                 services.nginx = {
