@@ -265,6 +265,12 @@
                   user = "www";
                 };
                 systemd.services.nginx.serviceConfig.ProtectHome = false;
+                systemd.services.phpfpm-default.serviceConfig.ProtectHome =
+                  lib.mkForce false;
+                systemd.services.wordpress-installer = {
+                  after = [ "mysql.service" ];
+                  wants = [ "mysql.service" ];
+                };
               })
               {
                 networking.hostName = "wordpress-firecracker";
