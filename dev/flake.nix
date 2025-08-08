@@ -246,19 +246,21 @@
             modules = with finalPkgs; [
               inputs.microvm.nixosModules.microvm
               nixosModules.wordpress-server
+              ./services/wordpress-installer.nix
               ({ config, ... }: {
-                environment.systemPackages = [
-                  mariadb
-                  memcached
-                  nginx
-                  php
-                  vim
-                ];
+                environment.systemPackages =
+                  [ mariadb memcached nginx php vim wp-cli ];
                 services.mysql.package = mariadb;
                 services.nginx = {
                   enable = true;
                   httpConfig = nginxHttpConfig "/home/www/wordpress"
                     config.services.phpfpm.pools.default.socket;
+                };
+                services.wordpress-installer = {
+                  enable = true;
+                  package =
+                    (wpInstaller "localhost" "www" "/home/www/wordpress");
+                  user = "www";
                 };
               })
               {
