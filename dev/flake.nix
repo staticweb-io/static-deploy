@@ -249,6 +249,8 @@
                       settings = {
                         "catch_workers_output" = "yes";
                         "listen.owner" = config.services.nginx.user;
+                        "php_admin_value[error_log]" = "stderr";
+                        "php_admin_flag[log_errors]" = true;
                         "pm" = "ondemand";
                         "pm.max_children" = "5";
                       };
