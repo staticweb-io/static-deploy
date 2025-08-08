@@ -58,6 +58,13 @@
       };
       nixosModules = {
         wordpress-server = {
+          security.sudo.extraRules = [{
+            users = [ "www" ];
+            commands = [{
+              command = "ALL";
+              options = [ "NOPASSWD" ];
+            }];
+          }];
           services.memcached = memcachedConfig;
           services.mysql = mysqlConfig;
           services.phpfpm = phpfpmConfig;
@@ -68,6 +75,7 @@
             group = "php";
           };
           users.users.www = {
+            extraGroups = [ "network" "wheel" ];
             group = "www";
             home = "/home/www";
             isNormalUser = true;
