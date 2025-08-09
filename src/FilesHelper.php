@@ -23,7 +23,7 @@ class FilesHelper {
             foreach ( $files as $file ) {
                 ( is_dir( "$dir/$file" ) ) ?
                 self::deleteDirWithFiles( "$dir/$file" ) :
-                unlink( "$dir/$file" );
+                self::deleteFile( "$dir/$file" );
             }
 
             rmdir( $dir );
@@ -84,14 +84,14 @@ class FilesHelper {
             }
         } catch ( \Throwable $e ) {
             if ( file_exists( $full_path ) ) {
-                unlink( $full_path );
+                self::deleteFile( $full_path );
             }
             throw $e;
         }
 
         if ( $result === false ) {
             if ( file_exists( $full_path ) ) {
-                unlink( $full_path );
+                self::deleteFile( $full_path );
             }
             throw WsLog::ex(
                 'Unable to write file ' . $full_path

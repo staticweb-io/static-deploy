@@ -211,7 +211,7 @@ class CrawledFiles {
                         $suffix = ltrim( $file_path, '/' );
                         $full_path = trailingslashit( $dir ) . $suffix;
                         if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
-                            unlink( $full_path );
+                            FilesHelper::deleteFile( $full_path );
                         }
                     },
                     [ StaticSite::getPath(), ProcessedSite::getPath() ]

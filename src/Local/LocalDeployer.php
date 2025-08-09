@@ -103,7 +103,7 @@ class LocalDeployer {
             // Remove 404s
             if ( $path_info->status === 404 ) {
                 if ( is_file( $out_path ) ) {
-                    unlink( $out_path );
+                    FilesHelper::deleteFile( $out_path );
                 }
                 ++$this->deployed_ct;
                 continue;
