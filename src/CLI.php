@@ -9,11 +9,6 @@ use WP_CLI;
  * Generate a static copy of your website & publish remotely
  */
 class CLI {
-    /**
-     * @var array<string>
-     */
-    private $assoc_args = null;
-
     public static function init(): void {
         WP_CLI::add_command( 'static-deploy', self::class );
         CLI\Jobs::registerCommands();

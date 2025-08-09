@@ -11,9 +11,7 @@ use Psr\Http\Message\UriInterface;
 class URLDiscovery {
     private string $destination_host;
     private string $destination_url;
-    private bool $discover_complete = false;
     private FileFiltering $file_filtering;
-    private string $site_host;
 
     public function __construct() {
         $this->destination_url = untrailingslashit(
@@ -71,8 +69,6 @@ class URLDiscovery {
                 yield $path_info;
             }
         }
-
-        $this->discover_complete = true;
     }
 
     public function isURLLocal(

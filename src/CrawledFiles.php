@@ -40,7 +40,6 @@ class CrawledFiles {
      */
     public static function getHashes(): array {
         global $wpdb;
-        $hashes = [];
 
         $table_name = self::getTableName();
 

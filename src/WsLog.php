@@ -185,7 +185,6 @@ class WsLog {
         self::deleteOldLogs();
 
         global $wpdb;
-        $logs = [];
 
         $table_name = self::getTableName();
 

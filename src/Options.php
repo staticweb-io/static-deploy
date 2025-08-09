@@ -625,10 +625,6 @@ VALUES (%s, %s, %s);";
     public static function saveFromAdmin(
         array $option_specs,
     ): void {
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
         foreach ( $option_specs as $option_spec ) {
             $name = $option_spec->name;
             $v = isset( $_POST[ $name ] ) ? $_POST[ $name ] : '';
@@ -640,10 +636,6 @@ VALUES (%s, %s, %s);";
      * Save all options POST'ed via UI
      */
     public static function savePosted( string $screen = 'core' ): void {
-        global $wpdb;
-
-        $table_name = self::getTableName();
-
         switch ( $screen ) {
             case 'core':
                 $names = [

@@ -103,8 +103,6 @@ class Memcached {
 
         fwrite( $sock, $command . "\r\n" );
 
-        $output = [];
-        $count = 0;
         while ( ! feof( $sock ) ) {
             $line = fgets( $sock );
             if ( $line === false || rtrim( $line ) === 'END' ) {

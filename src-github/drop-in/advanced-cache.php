@@ -681,7 +681,6 @@ class StaticDeployPageCache {
         $method = $_SERVER['REQUEST_METHOD'];
 
         $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
-        $cache_key = $method . $uri_hash;
         $response = $this->get_cached_response(
             $method,
             $uri_hash,

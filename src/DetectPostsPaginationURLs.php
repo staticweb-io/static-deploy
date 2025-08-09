@@ -15,8 +15,6 @@ class DetectPostsPaginationURLs {
         }
 
         global $wpdb, $wp_rewrite;
-
-        $post_urls = [];
         $unique_post_types = [];
 
         $query = "

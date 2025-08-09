@@ -56,7 +56,6 @@ class Addons {
      */
     public static function getAll( string $type = 'all' ): array {
         global $wpdb;
-        $addons = [];
 
         $table_name = self::getTableName();
 

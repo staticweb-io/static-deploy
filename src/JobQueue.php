@@ -115,7 +115,6 @@ class JobQueue {
      */
     public static function jobsInProgress(): bool {
         global $wpdb;
-        $jobs = [];
 
         $table_name = self::getTableName();
 

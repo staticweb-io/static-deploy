@@ -203,7 +203,6 @@ class DeployCache {
         string $ns = self::DEFAULT_NAMESPACE
     ): array {
         global $wpdb;
-        $urls = [];
 
         $table_name = self::getTableName();
 

@@ -11,7 +11,6 @@ final class DetectPostURLsTest extends TestCase {
 
     public function testDetect() {
         global $wpdb;
-        $site_url = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited

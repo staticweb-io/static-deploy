@@ -29,9 +29,6 @@ class LocalDeployer {
      */
     private $deploy_error_ct = 0;
 
-    public function __construct() {
-    }
-
     public static function getDeployerSlug(): string {
         return 'static-deploy-addon-local';
     }

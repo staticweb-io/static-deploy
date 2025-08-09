@@ -211,7 +211,6 @@ class AdminBar {
 
     public static function getJobsInProgress(): array {
         global $wpdb;
-        $jobs = [];
 
         $table_name = JobQueue::getTableName();
 

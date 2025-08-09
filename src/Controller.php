@@ -67,7 +67,6 @@ class Controller {
      */
     public static function setMenuOrder( array $menu_order ): array {
         $order = [];
-        $file  = plugin_basename( __FILE__ );
 
         foreach ( $menu_order as $index => $item ) {
             if ( $item === 'index.php' ) {

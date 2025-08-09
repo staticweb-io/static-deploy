@@ -14,12 +14,6 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 class WordPressAdmin {
 
     /**
-     * WordPressAdmin constructor
-     */
-    public function __construct() {
-    }
-
-    /**
      * Build update checker
      *
      * @param string $bootstrap_file main plugin filepath
