@@ -43,6 +43,14 @@
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock";
         };
+        # Sources used for GitHub releases but not for WordPress.org
+        staticDeploySrcGitHub = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
+            let base = baseNameOf path;
+            in type == "directory" && base == "src-github"
+            || pkgs.lib.hasInfix "/src-github/" path;
+        };
         staticDeploySrcDev = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
@@ -59,7 +67,8 @@
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
           cp -r "${composerVendor}/vendor" "$PLUGIN_DIR"
-          cp -r "${staticDeploySrc}"/* "$PLUGIN_DIR"
+          cp -r --dereference --no-preserve=mode,ownership "${staticDeploySrc}"/* "$PLUGIN_DIR"
+          cp -r --dereference --no-preserve=mode,ownership "${staticDeploySrcGitHub}"/src-github/* "$PLUGIN_DIR"/src
           cd "$PLUGIN_DIR"
           chmod 600 vendor/composer/autoload_*.php
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
