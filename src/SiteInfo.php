@@ -11,7 +11,7 @@ class SiteInfo {
     /**
      * @var SiteInfo
      */
-    private static $instance = null;
+    private static $instance;
 
     /**
      * Site info.

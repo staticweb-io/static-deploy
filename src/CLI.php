@@ -267,7 +267,7 @@ class CLI {
         Options::init();
         Options::seedOptions( $option_specs );
 
-        $plugin = Controller::getInstance();
+        Controller::getInstance();
 
         if ( $action === 'get' || $action === 'set' ) {
             if ( empty( $option_name ) ) {

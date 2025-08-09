@@ -262,9 +262,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $total_jobs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
-
-        return $total_jobs;
+        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
     }
 
     public static function getWaitingJobs(): int {
@@ -281,9 +279,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $total_jobs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name WHERE status = 'waiting'" );
-
-        return $total_jobs;
+        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name WHERE status = 'waiting'" );
     }
 
     /**

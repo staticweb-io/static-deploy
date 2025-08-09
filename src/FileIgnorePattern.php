@@ -14,12 +14,6 @@ class FileIgnorePattern {
 
     /**
      * @var string
-     * Regex tested against file and directory paths.
-     */
-    private $regex;
-
-    /**
-     * @var string
      * Regex tested against relative URLs.
      */
     private $url_regex;
@@ -49,10 +43,7 @@ class FileIgnorePattern {
         } elseif ( substr( $pattern, 0, 1 ) !== '/' ) {
             $pattern = '/' . $pattern;
         }
-
-        $regex = Pattern::make( $pattern )->toRegex( Anchors::BOTH );
-        // Make it case-insensitive
-        $this->regex = $regex . 'i';
+        Pattern::make( $pattern )->toRegex( Anchors::BOTH );
 
         // URL paths can match with or without trailing /
         // We add a .* to make directory patterns also match

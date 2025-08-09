@@ -72,15 +72,13 @@ class Memcached {
         $host = $server['host'];
         $port = $server['port'];
 
-        $sock = fsockopen(
+        return fsockopen(
             $host,
             $port,
             $error_code,
             $error_message,
             1.0
         );
-
-        return $sock;
     }
 
     /**
@@ -102,7 +100,6 @@ class Memcached {
         }
 
         fwrite( $sock, $command . "\r\n" );
-
         while ( ! feof( $sock ) ) {
             $line = fgets( $sock );
             if ( $line === false || rtrim( $line ) === 'END' ) {

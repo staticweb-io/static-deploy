@@ -162,7 +162,7 @@ class Crawler {
             return new FulfilledPromise( $e );
         }
 
-        $promise = $this->client->sendAsync( $request )->then(
+        return $this->client->sendAsync( $request )->then(
             function ( $response ) use ( &$detected, &$site_urls ) {
                 $status = $response->getStatusCode();
 
@@ -214,8 +214,6 @@ class Crawler {
                 ];
             }
         );
-
-        return $promise;
     }
 
     /**

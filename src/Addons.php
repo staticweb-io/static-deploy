@@ -87,9 +87,8 @@ class Addons {
             "SELECT * FROM $table_name WHERE type = %s AND enabled = 1 ORDER BY slug",
             $type
         );
-        $addons = $wpdb->get_results( $query );
 
-        return $addons;
+        return $wpdb->get_results( $query );
     }
 
     /**

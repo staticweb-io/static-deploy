@@ -65,9 +65,7 @@ class URLHelper {
             $url .= ':' . $_SERVER['SERVER_PORT'];
         }
 
-        $url .= $_SERVER['REQUEST_URI'];
-
-        return $url;
+        return $url . $_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -118,7 +116,7 @@ class URLHelper {
      * @return string URL protocol-relative
      */
     public static function getProtocolRelativeURL( string $url ): string {
-        $protocol_relative_url = str_replace(
+        return str_replace(
             [
                 'https:',
                 'http:',
@@ -129,8 +127,6 @@ class URLHelper {
             ],
             $url
         );
-
-        return $protocol_relative_url;
     }
 
     public static function startsWithHash( string $url ): bool {
@@ -166,13 +162,11 @@ class URLHelper {
         string $site_url
     ): string {
 
-        $url = str_replace(
+        return str_replace(
             self::getProtocolRelativeURL( $site_url ),
             $site_url,
             $url
         );
-
-        return $url;
     }
 
     /**

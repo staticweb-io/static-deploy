@@ -12,12 +12,12 @@ class Options {
     /**
      * @var ?array<string, OptionSpec>
      */
-    private static $cached_option_specs = null;
+    private static $cached_option_specs;
 
     /**
      * @var ?array<string, OptionSpec>
      */
-    private static $cached_core_option_specs = null;
+    private static $cached_core_option_specs;
 
     public static function init(): void {
         self::createTable();

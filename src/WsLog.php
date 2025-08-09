@@ -188,9 +188,7 @@ class WsLog {
 
         $table_name = self::getTableName();
 
-        $logs = $wpdb->get_results( "SELECT time, log FROM $table_name ORDER BY id DESC" );
-
-        return $logs;
+        return $wpdb->get_results( "SELECT time, log FROM $table_name ORDER BY id DESC" );
     }
 
     /**
@@ -209,9 +207,7 @@ class WsLog {
             ORDER BY id DESC"
         );
 
-        $logs = implode( PHP_EOL, $logs );
-
-        return $logs;
+        return implode( PHP_EOL, $logs );
     }
 
     /**

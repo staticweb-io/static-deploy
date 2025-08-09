@@ -43,9 +43,7 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $hashes = $wpdb->get_col( "SELECT path_hash FROM $table_name" );
-
-        return $hashes;
+        return $wpdb->get_col( "SELECT path_hash FROM $table_name" );
     }
 
     public static function getTableName(): string {
@@ -354,9 +352,7 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $total = $wpdb->get_var( "SELECT count(*) FROM $table_name" );
-
-        return $total;
+        return $wpdb->get_var( "SELECT count(*) FROM $table_name" );
     }
 
     /**
@@ -367,10 +363,8 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $rows = $wpdb->get_results(
+        return $wpdb->get_results(
             "SELECT path, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
         );
-
-        return $rows;
     }
 }

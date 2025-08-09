@@ -94,7 +94,7 @@ class Jobs {
      * Process any jobs waiting in the queue.
      */
     public function process( array $args, array $assoc_args ): void {
-        $cfg = Args::parse( $args, $assoc_args );
+        Args::parse( $args, $assoc_args );
 
         $job_count = JobQueue::getWaitingJobsCount();
 

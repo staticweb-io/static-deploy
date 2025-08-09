@@ -167,9 +167,8 @@ class DeployCache {
 
         $sql = "SELECT count(*) FROM $table_name WHERE namespace = %s";
         $sql = $wpdb->prepare( $sql, $ns );
-        $total = $wpdb->get_var( $sql );
 
-        return $total;
+        return $wpdb->get_var( $sql );
     }
 
     /**
@@ -208,8 +207,7 @@ class DeployCache {
 
         $sql = "SELECT path FROM $table_name WHERE namespace = %s ORDER BY path";
         $sql = $wpdb->prepare( $sql, $ns );
-        $urls = $wpdb->get_col( $sql );
 
-        return $urls;
+        return $wpdb->get_col( $sql );
     }
 }

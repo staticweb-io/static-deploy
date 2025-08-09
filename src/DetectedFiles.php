@@ -290,9 +290,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
-        $total_urls = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
-
-        return $total_urls;
+        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
     }
 
     /**
@@ -322,8 +320,6 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
-        $total = $wpdb->get_var( "SELECT count(*) FROM $table_name" );
-
-        return $total;
+        return $wpdb->get_var( "SELECT count(*) FROM $table_name" );
     }
 }

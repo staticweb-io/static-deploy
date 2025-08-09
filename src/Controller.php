@@ -12,7 +12,7 @@ class Controller {
      *
      * @var \StaticDeploy\Controller Instance.
      */
-    protected static $plugin_instance = null;
+    protected static $plugin_instance;
 
     protected function __construct() {}
 
@@ -68,18 +68,16 @@ class Controller {
     public static function setMenuOrder( array $menu_order ): array {
         $order = [];
 
-        foreach ( $menu_order as $index => $item ) {
+        foreach ( $menu_order as $item ) {
             if ( $item === 'index.php' ) {
                 $order[] = $item;
             }
         }
 
-        $order = [
+        return [
             'index.php',
             'static-deploy',
         ];
-
-        return $order;
     }
 
     public static function deactivateForSingleSite(): void {

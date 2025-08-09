@@ -214,12 +214,10 @@ class AdminBar {
 
         $table_name = JobQueue::getTableName();
 
-        $jobs_in_progress = $wpdb->get_results(
+        return $wpdb->get_results(
             "SELECT * FROM $table_name
             WHERE status = 'processing'"
         );
-
-        return $jobs_in_progress;
     }
 
     public static function listInvalidations( int $max_items = 5 ) {
