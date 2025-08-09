@@ -4,6 +4,7 @@ namespace StaticDeploy\Local;
 
 use StaticDeploy\DeployerTrait;
 use StaticDeploy\FilesHelper;
+use StaticDeploy\PathInfo;
 use StaticDeploy\SiteInfo;
 use StaticDeploy\WsLog;
 
