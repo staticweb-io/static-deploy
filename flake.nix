@@ -47,8 +47,9 @@
           src = self;
           filter = path: type:
             let base = baseNameOf path;
-            in type == "directory" && base == "src" || type == "directory"
-            && base == "tests" || pkgs.lib.hasInfix "/tests/" path || type
+            in type == "directory" && base == "src"
+            || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
+            == "tests" || pkgs.lib.hasInfix "/tests/" path || type
             == "directory" && base == "views"
             || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
