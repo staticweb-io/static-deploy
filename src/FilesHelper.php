@@ -31,6 +31,18 @@ class FilesHelper {
     }
 
     /**
+     * Delete a file.
+     *
+     * @param string $filename Path to the file.
+     */
+    public static function deleteFile( string $filename ): void {
+        $result = FilesHelperImpl::deleteFile( $filename );
+        if ( ! $result ) {
+            throw WsLog::ex( 'Failed to delete file: ' . $filename );
+        }
+    }
+
+    /**
      * Returns the full path to where a static site file's contents
      * should be stored.
      */
