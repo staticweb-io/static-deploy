@@ -63,11 +63,15 @@
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
+        staticDeployWpOrgSrc = runCommand "static-deploy" { } ''
+          mkdir -p $out
+          cp -r "${composerVendor}/vendor" "$out"
+          cp -r "${staticDeploySrc}"/* "$out"
+        '';
         staticDeploy = runCommand "static-deploy" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
-          cp -r "${composerVendor}/vendor" "$PLUGIN_DIR"
-          cp -r --dereference --no-preserve=mode,ownership "${staticDeploySrc}"/* "$PLUGIN_DIR"
+          cp -r --dereference --no-preserve=mode,ownership "${staticDeployWpOrgSrc}"/* "$PLUGIN_DIR"
           cp -r --dereference --no-preserve=mode,ownership "${staticDeploySrcGitHub}"/src-github/* "$PLUGIN_DIR"/src
           cd "$PLUGIN_DIR"
           chmod 600 vendor/composer/autoload_*.php
@@ -107,6 +111,7 @@
         packages = {
           inherit composerVendorDev composerVendor staticDeploy;
           plugin = staticDeploy;
+          pluginWpOrgSrc = staticDeployWpOrgSrc;
         };
       });
 }
