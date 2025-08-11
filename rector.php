@@ -2,6 +2,7 @@
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
+use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
@@ -18,5 +19,6 @@ return RectorConfig::configure()
         [
             // Allow explicit loops to consume iterators for side-effects
             RemoveDeadContinueRector::class,
+            TernaryToElvisRector::class,
         ]
     );
