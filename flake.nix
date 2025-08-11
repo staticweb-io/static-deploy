@@ -98,6 +98,7 @@
           src = staticDeploySrc;
 
           nativeBuildInputs = [ bash php ];
+          nativeCheckInputs = [ jq phpPackages.composer ];
 
           doCheck = true;
 
@@ -110,9 +111,12 @@
             mkdir -p "$PLUGIN_DIR"
             cd "$PLUGIN_DIR"
             cp -a "${composerVendorDev}/vendor" .
-            cp -a "$src"/* .
-            ${phpPackages.composer}/bin/composer lint
-            ${phpPackages.composer}/bin/composer phpcs
+            cp -r --no-preserve=mode "$src"/* .
+            cp -a "${staticDeploySrcGitHub}"/* .
+            composer lint
+            composer phpcs
+            # Run directly because composer swallows the exit code
+            php vendor/bin/rector --debug --dry-run
           '';
         };
       in {
