@@ -192,8 +192,8 @@ class URLDetector {
 
         $last_log_time = microtime( true );
 
-        foreach ( $iterators_to_merge as $iter ) {
-            foreach ( $iter as $detected ) {
+        foreach ( $iterators_to_merge as $iterator_to_merge ) {
+            foreach ( $iterator_to_merge as $detected ) {
                 $path = $detected->path;
 
                 if ( ! isset( $unique_urls[ $path ] ) ) {

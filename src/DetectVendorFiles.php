@@ -42,8 +42,8 @@ class DetectVendorFiles {
                     $prefix
                 );
 
-                foreach ( $vendor_cache_urls as $path ) {
-                    yield $path;
+                foreach ( $vendor_cache_urls as $vendor_cache_url ) {
+                    yield $vendor_cache_url;
                 }
             }
         }

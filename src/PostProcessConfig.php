@@ -42,9 +42,9 @@ final class PostProcessConfig {
                 addcslashes( URLHelper::getProtocolRelativeURL( $destination_url ), '/' ),
         ];
 
-        foreach ( $this->hosts_to_rewrite as $host ) {
-            if ( $host ) {
-                $host_rel = URLHelper::getProtocolRelativeURL( 'http://' . $host );
+        foreach ( $this->hosts_to_rewrite as $host_to_rewrite ) {
+            if ( $host_to_rewrite ) {
+                $host_rel = URLHelper::getProtocolRelativeURL( 'http://' . $host_to_rewrite );
                 $host_rel_c = addcslashes( $host_rel, '/' );
 
                 $replacement_patterns[ 'http:' . $host_rel ] = $destination_url;

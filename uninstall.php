@@ -17,8 +17,8 @@ $tables_to_drop = [
     'options',
 ];
 
-foreach ( $tables_to_drop as $table ) {
-    $table_name = StaticDeploy\Db::getTableName( $table );
+foreach ( $tables_to_drop as $table_to_drop ) {
+    $table_name = StaticDeploy\Db::getTableName( $table_to_drop );
 
     $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 }

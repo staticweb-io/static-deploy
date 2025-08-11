@@ -630,9 +630,9 @@ class CLI {
         $action = $args[0] ?? null;
 
         if ( $action === 'list' ) {
-            $paths = DeployCache::getPaths();
+            $urls = DeployCache::getPaths();
 
-            foreach ( $paths as $url ) {
+            foreach ( $urls as $url ) {
                 WP_CLI::log( $url );
             }
         }
@@ -819,16 +819,16 @@ class CLI {
             return;
         }
 
-        foreach ( $args as $option_name ) {
-            $option_spec = Options::optionSpecs()[ $option_name ] ?? null;
+        foreach ( $args as $arg ) {
+            $option_spec = Options::optionSpecs()[ $arg ] ?? null;
 
             if ( ! $option_spec ) {
-                $option_spec = S3\S3Options::getSpecs()[ $option_name ] ?? null;
+                $option_spec = S3\S3Options::getSpecs()[ $arg ] ?? null;
             }
 
             if ( ! $option_spec ) {
                 WP_CLI::error(
-                    'Unknown option: ' . $option_name
+                    'Unknown option: ' . $arg
                 );
             }
 

@@ -118,9 +118,9 @@
     } else {
         $lists = array_chunk( $ar_list, $rows );
 
-        foreach ( $lists as $column ) {
+        foreach ( $lists as $list ) {
             echo '<tr>';
-            foreach ( $column as $item ) {
+            foreach ( $list as $item ) {
                 $loaded_extension = strval( $item );
                 echo "<td>$loaded_extension</td>";
             }

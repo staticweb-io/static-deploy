@@ -128,8 +128,8 @@ class DetectedFiles {
                 }
             }
 
-            foreach ( $yield_paths as $path ) {
-                yield $path;
+            foreach ( $yield_paths as $yield_path ) {
+                yield $yield_path;
             }
         }
     }

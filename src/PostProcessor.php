@@ -96,13 +96,13 @@ class PostProcessor {
             return $crawl_responses;
         }
 
-        foreach ( $crawl_responses as $path_info ) {
-            if ( $this->shouldProcess( $path_info ) ) {
+        foreach ( $crawl_responses as $crawl_response ) {
+            if ( $this->shouldProcess( $crawl_response ) ) {
                 ++$this->processed;
-                yield $this->rewriteFileContents( $path_info );
+                yield $this->rewriteFileContents( $crawl_response );
             } else {
                 ++$this->skipped;
-                yield $path_info;
+                yield $crawl_response;
             }
         }
     }

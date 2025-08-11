@@ -377,8 +377,8 @@ class Options {
         ];
 
         $ret = [];
-        foreach ( $specs as $s ) {
-            $ret[ $s->name ] = $s;
+        foreach ( $specs as $spec ) {
+            $ret[ $spec->name ] = $spec;
         }
         self::$cached_option_specs = $ret;
         return $ret;
@@ -400,12 +400,12 @@ class Options {
             "INSERT IGNORE INTO $table_name (name, value, blob_value)
 VALUES (%s, %s, %s);";
 
-        foreach ( $option_specs as $os ) {
+        foreach ( $option_specs as $option_spec ) {
             $query = $wpdb->prepare(
                 $query_string,
-                $os->name,
-                $os->default_value,
-                $os->default_blob_value
+                $option_spec->name,
+                $option_spec->default_value,
+                $option_spec->default_blob_value
             );
             $wpdb->query( $query );
         }
@@ -551,20 +551,20 @@ VALUES (%s, %s, %s);";
         }
 
         $ret = [];
-        foreach ( $option_specs as $opt_spec ) {
-            $name = $opt_spec->name;
+        foreach ( $option_specs as $option_spec ) {
+            $name = $option_spec->name;
             $opt = $options_map[ $name ];
             if ( $opt ) {
                 $opt = new OptionData(
-                    $opt_spec,
+                    $option_spec,
                     $opt->blob_value,
                     $opt->value,
                 );
             } else {
                 $opt = new OptionData(
-                    $opt_spec,
-                    $opt_spec->default_blob_value,
-                    $opt_spec->default_value,
+                    $option_spec,
+                    $option_spec->default_blob_value,
+                    $option_spec->default_value,
                 );
             }
             $ret[ $name ] = $opt;

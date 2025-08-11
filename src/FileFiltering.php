@@ -15,8 +15,8 @@ class FileFiltering {
 
         $paths_to_ignore = Options::getLineDelimitedBlobValue( 'pathsToIgnore' );
 
-        foreach ( $paths_to_ignore as $path_pattern ) {
-            $this->patterns_to_ignore[] = new FileIgnorePattern( $path_pattern );
+        foreach ( $paths_to_ignore as $path_to_ignore ) {
+            $this->patterns_to_ignore[] = new FileIgnorePattern( $path_to_ignore );
         }
     }
 
@@ -42,8 +42,8 @@ class FileFiltering {
             // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
             function ( $current, $key, $iterator ) use ( $abs_base_dir ) {
                 // Filter out both directories and files
-                foreach ( $this->patterns_to_ignore as $pattern ) {
-                    if ( $pattern->matches( $abs_base_dir, $current ) ) {
+                foreach ( $this->patterns_to_ignore as $pattern_to_ignore ) {
+                    if ( $pattern_to_ignore->matches( $abs_base_dir, $current ) ) {
                         return false;
                     }
                 }
@@ -107,8 +107,8 @@ class FileFiltering {
     public function pathLooksCrawlable(
         string $path,
     ): bool {
-        foreach ( $this->patterns_to_ignore as $pattern ) {
-            if ( $pattern->matchesPath( $path ) ) {
+        foreach ( $this->patterns_to_ignore as $pattern_to_ignore ) {
+            if ( $pattern_to_ignore->matchesPath( $path ) ) {
                 return false;
             }
         }

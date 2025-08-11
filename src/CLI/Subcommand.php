@@ -61,18 +61,18 @@ class Subcommand {
             return;
         }
 
-        foreach ( self::$hidden_commands as $data ) {
-            $ct = count( $data[0] );
+        foreach ( self::$hidden_commands as $hidden_command ) {
+            $ct = count( $hidden_command[0] );
             for ( $i = 0; $i < $ct; $i++ ) {
-                if ( $argv[ $start + $i ] !== $data[0][ $i ] ) {
+                if ( $argv[ $start + $i ] !== $hidden_command[0][ $i ] ) {
                     continue;
                 }
             }
             if ( $i === $ct ) {
                 WP_CLI::add_command(
-                    self::getName( implode( ' ', $data[0] ) ),
-                    $data[1],
-                    $data[2],
+                    self::getName( implode( ' ', $hidden_command[0] ) ),
+                    $hidden_command[1],
+                    $hidden_command[2],
                 );
             }
         }

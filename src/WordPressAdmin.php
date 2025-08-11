@@ -262,9 +262,9 @@ class WordPressAdmin {
             'deleted_post',
         ];
 
-        foreach ( $single_url_invalidation_events as $invalidation_events ) {
+        foreach ( $single_url_invalidation_events as $single_url_invalidation_event ) {
             add_action(
-                $invalidation_events,
+                $single_url_invalidation_event,
                 Controller::invalidateSingleURLCache( ... ),
                 10,
                 2

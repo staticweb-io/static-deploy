@@ -56,8 +56,8 @@ class LocalOptions {
         ];
 
         $ret = [];
-        foreach ( $specs as $s ) {
-            $ret[ $s->name ] = $s;
+        foreach ( $specs as $spec ) {
+            $ret[ $spec->name ] = $spec;
         }
         self::$cached_option_specs = $ret;
         return $ret;

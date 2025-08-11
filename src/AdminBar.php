@@ -250,9 +250,9 @@ class AdminBar {
 
         $inv_items = $invalidations['InvalidationList']['Items'];
         $arr = [];
-        foreach ( $inv_items as $inv ) {
-            if ( 'InProgress' === $inv['Status'] ) {
-                array_push( $arr, $inv );
+        foreach ( $inv_items as $inv_item ) {
+            if ( 'InProgress' === $inv_item['Status'] ) {
+                array_push( $arr, $inv_item );
             }
         }
         return [ 'Invalidations' => $arr ];

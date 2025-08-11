@@ -314,9 +314,9 @@ class JobQueue {
 
         $wpdb->query( 'START TRANSACTION' );
 
-        foreach ( $job_types as $type ) {
+        foreach ( $job_types as $job_type ) {
             try {
-                $lock = Db::getLockName( self::getTableName(), $type );
+                $lock = Db::getLockName( self::getTableName(), $job_type );
                 $query = "SELECT IS_FREE_LOCK('$lock') AS free";
                 $free = intval( $wpdb->get_row( $query )->free );
 
@@ -324,11 +324,11 @@ class JobQueue {
                     $failed_jobs = $wpdb->query(
                         "UPDATE $table_name
                          SET status = 'failed'
-                         WHERE job_type = '$type' AND status = 'processing'"
+                         WHERE job_type = '{$job_type}' AND status = 'processing'"
                     );
                     if ( $failed_jobs ) {
                         $s = $failed_jobs === 1 ? '' : 's';
-                        WsLog::l( "$failed_jobs processing $type job$s marked as failed." );
+                        WsLog::l( "$failed_jobs processing {$job_type} job$s marked as failed." );
                     }
                 }
 

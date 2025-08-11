@@ -99,8 +99,8 @@ class DetectSitemapsURLs {
                     WsLog::d( 'Parsing robots.txt for sitemaps' );
                 }
                 $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
-                foreach ( $robotsmaps as $map ) {
-                    $sitemaps[ $map ] = [];
+                foreach ( $robotsmaps as $robotsmap ) {
+                    $sitemaps[ $robotsmap ] = [];
                 }
                 if ( STATIC_DEPLOY_DEBUG && count( $sitemaps ) > 0 ) {
                     WsLog::d( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
