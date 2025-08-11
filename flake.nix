@@ -82,9 +82,10 @@
         staticDeploy = runCommand "static-deploy" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
-          cp -r --no-preserve=mode "${staticDeploySrc}"/* "$PLUGIN_DIR"
-          cp -r --no-preserve=mode "${staticDeploySrcGitHub}"/src-github/* "$PLUGIN_DIR"/src
           cd "$PLUGIN_DIR"
+          cp -r --no-preserve=mode "${composerVendor}"/* .
+          cp -r --no-preserve=mode "${staticDeploySrc}"/* .
+          cp -r --no-preserve=mode "${staticDeploySrcGitHub}"/src-github/* ./src
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
           rm composer.json composer.lock
           mkdir -p $out
