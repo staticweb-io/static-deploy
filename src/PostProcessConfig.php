@@ -30,7 +30,7 @@ final class PostProcessConfig {
 
         $wordpress_site_url = untrailingslashit( $this->site_url );
         $destination_url = untrailingslashit( $this->destination_url );
-        $destination_url_c = addcslashes( $destination_url, '/' );
+        $destination_url_c = addcslashes( (string) $destination_url, '/' );
         $destination_url_rel = URLHelper::getProtocolRelativeURL( $destination_url );
         $destination_url_rel_c = addcslashes( $destination_url_rel, '/' );
 

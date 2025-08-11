@@ -226,7 +226,7 @@ class Crawler {
         if ( $path_hash_prefix !== null && $path_hash_prefix !== '' ) {
             $path_iter = new \CallbackFilterIterator(
                 $path_iter,
-                fn( $path ) => str_starts_with( md5( $path->path ), $path_hash_prefix )
+                fn( $path ) => str_starts_with( md5( (string) $path->path ), $path_hash_prefix )
             );
             $path_iter->rewind();
         }

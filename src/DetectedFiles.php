@@ -64,7 +64,7 @@ class DetectedFiles {
             $hashes = [];
             $paths = [];
             foreach ( $chunk as $path ) {
-                $hashes[] = md5( $path->path );
+                $hashes[] = md5( (string) $path->path );
                 $paths[] = $path;
             }
 
@@ -81,7 +81,7 @@ class DetectedFiles {
             foreach ( $paths as $path ) {
                 $filename = $path->filename ?? '';
                 $p = $path->path;
-                $url = rawurldecode( $p );
+                $url = rawurldecode( (string) $p );
                 $hash = md5( $url );
                 if ( ! isset( $existing_urls[ $p ] ) ) {
                     $yield_paths[] = $path;

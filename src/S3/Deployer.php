@@ -164,7 +164,7 @@ class Deployer {
                         WsLog::l( 'Failed to hash file ' . $filename );
                         continue;
                     } else {
-                        $file_hash = hex2bin( $path_info->getContentHash() );
+                        $file_hash = hex2bin( (string) $path_info->getContentHash() );
                         $cmd_data['ContentMD5'] = base64_encode( $file_hash );
                         $cmd_data['ContentType'] = $content_type;
                     }
@@ -214,7 +214,7 @@ class Deployer {
                 if ( STATIC_DEPLOY_DEBUG ) {
                     $d = $cmd_data;
                     if ( isset( $d['Body'] ) ) {
-                        $d['Body'] = '...' . strlen( $d['Body'] ) . ' bytes...';
+                        $d['Body'] = '...' . strlen( (string) $d['Body'] ) . ' bytes...';
                     }
                     $pi = $path_info->withBody( '' );
                     WsLog::d(

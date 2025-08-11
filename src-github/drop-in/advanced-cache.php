@@ -647,7 +647,7 @@ class StaticDeployPageCache {
     public function output_cache_response(): bool {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
+        $uri_hash = hash( $this->hash_algo, (string) $_SERVER['REQUEST_URI'] );
         $response = $this->get_cached_response(
             $method,
             $uri_hash,
@@ -661,7 +661,7 @@ class StaticDeployPageCache {
             $if_none_match = $request_headers['if-none-match'] ?? null;
             if ( $if_none_match ) {
                 $etag = $response->headers['etag'][1];
-                foreach ( explode( ',', $if_none_match ) as $match_etag ) {
+                foreach ( explode( ',', (string) $if_none_match ) as $match_etag ) {
                     if ( $etag === trim( $match_etag ) ) {
                         $response->code = 304;
                         $response->status_header = 'HTTP/1.1 304 Not Modified';
@@ -781,7 +781,7 @@ class StaticDeployPageCache {
             $blob_key,
         );
 
-        $uri_hash = hash( $this->hash_algo, $_SERVER['REQUEST_URI'] );
+        $uri_hash = hash( $this->hash_algo, (string) $_SERVER['REQUEST_URI'] );
         $cache_key = $method . $uri_hash;
         $this->cache->set_response(
             $cache_key,

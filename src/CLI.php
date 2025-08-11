@@ -311,7 +311,7 @@ class CLI {
                         $value = '(Empty BLOB value)';
                     } else {
                         $value = '(' .
-                        count( explode( PHP_EOL, $option->blob_value ) ) .
+                        count( explode( PHP_EOL, (string) $option->blob_value ) ) .
                         '-line BLOB value)';
                     }
                 }

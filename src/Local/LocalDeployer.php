@@ -70,7 +70,7 @@ class LocalDeployer {
             WsLog::d( 'Site dir: ' . $site_dir );
         }
 
-        if ( mb_strpos( $out_dir, $site_dir ) === 0 ) {
+        if ( mb_strpos( (string) $out_dir, (string) $site_dir ) === 0 ) {
             throw WsLog::ex(
                 'Local deployment directory must be outside of the WordPress directory: ' . $out_dir
             );

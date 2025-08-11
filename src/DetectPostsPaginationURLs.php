@@ -69,7 +69,7 @@ class DetectPostsPaginationURLs {
             // cast WP's object back to array
             $post_type_labels = (array) $post_type_obj->labels;
 
-            $plural_form = strtolower( $post_type_labels['name'] );
+            $plural_form = strtolower( (string) $post_type_labels['name'] );
 
             // skip post type names containing spaces
             if ( strpos( $plural_form, ' ' ) !== false ) {

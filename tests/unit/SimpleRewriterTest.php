@@ -122,8 +122,8 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
 
         // Do a cslashed version of this test also
-        $actual = SimpleRewriter::rewriteFileContents( addcslashes( $raw_html, '/' ) );
-        $this->assertEquals( addcslashes( $expected, '/' ), $actual );
+        $actual = SimpleRewriter::rewriteFileContents( addcslashes( (string) $raw_html, '/' ) );
+        $this->assertEquals( addcslashes( (string) $expected, '/' ), $actual );
     }
 
     public function testRewriteFileContentsHttpToHttps() {
@@ -230,7 +230,7 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
 
         // Do a cslashed version of this test also
-        $actual = SimpleRewriter::rewriteFileContents( addcslashes( $raw_html, '/' ) );
+        $actual = SimpleRewriter::rewriteFileContents( addcslashes( (string) $raw_html, '/' ) );
         $this->assertEquals( addcslashes( $expected, '/' ), $actual );
     }
 
@@ -260,7 +260,7 @@ final class SimpleRewriterTest extends TestCase {
 
         // Do a cslashed version of this test also
         $actual = SimpleRewriter::rewriteFileContents( addcslashes( $raw_html, '/' ) );
-        $this->assertEquals( addcslashes( $expected, '/' ), $actual );
+        $this->assertEquals( addcslashes( (string) $expected, '/' ), $actual );
     }
 
     /**
