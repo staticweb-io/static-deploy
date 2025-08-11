@@ -20,31 +20,19 @@
 declare(strict_types=1);
 
 class StaticDeployPageCacheResponse {
-    public ?string $blob_key;
-    public int $code;
     public string $hash_algo;
-    public array $headers;
-    public int $max_age;
-    public string $status_header;
     public int $time;
-    public string $uri;
 
     public function __construct(
-        int $code,
-        string $status_header,
-        string $uri,
-        array $headers,
-        int $max_age,
-        ?string $blob_key = null,
+        public int $code,
+        public string $status_header,
+        public string $uri,
+        public array $headers,
+        public int $max_age,
+        public ?string $blob_key = null,
         ?int $time = null,
     ) {
-        $this->blob_key = $blob_key;
-        $this->code = $code;
-        $this->headers = $headers;
-        $this->max_age = $max_age;
-        $this->status_header = $status_header;
         $this->time = $time ?? time();
-        $this->uri = $uri;
     }
 
     public static function from_array(
@@ -120,20 +108,18 @@ interface StaticDeployCacheInterface {
 
 class StaticDeployFileCache implements StaticDeployCacheInterface {
     public string $dir;
-    public float $min_free_space;
     private string $temp_dir;
 
     public function __construct(
         string $dir,
         string $temp_dir,
-        float $min_free_space,
+        public float $min_free_space,
     ) {
         // If the directory doesn't exist, try to create it
         if ( ! is_dir( $dir ) && ! mkdir( $dir, 0700, true ) ) {
             die( 'Failed to create cache directory' );
         }
         $this->dir = $dir;
-        $this->min_free_space = $min_free_space;
 
         if ( ! is_dir( $temp_dir ) && ! mkdir( $temp_dir, 0700, true ) ) {
             die( 'Failed to create temp directory' );
@@ -298,12 +284,8 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
 }
 
 class StaticDeployObjectCache implements StaticDeployCacheInterface {
-    public string $group;
-
-    public function __construct(
-        string $group,
-    ) {
-        $this->group = $group;
+    public function __construct( public string $group )
+    {
     }
 
     public function get_response(
@@ -355,22 +337,16 @@ class StaticDeployObjectCache implements StaticDeployCacheInterface {
  * as well.
  */
 class StaticDeployCombinedCache implements StaticDeployCacheInterface {
-    public StaticDeployCacheInterface $blob_cache;
-    // Blobs up to this size in bytes will be stored in
-    // the response cache. Larger blobs will be stored in
-    // the blob cache.
-    public int $large_blob_threshold;
-    public StaticDeployCacheInterface $response_cache;
-
     public function __construct(
-        StaticDeployCacheInterface $blob_cache,
-        StaticDeployCacheInterface $response_cache,
-        int $large_blob_threshold = 0,
-    ) {
-        $this->blob_cache = $blob_cache;
-        $this->large_blob_threshold = $large_blob_threshold;
-        $this->response_cache = $response_cache;
-    }
+        public StaticDeployCacheInterface $blob_cache,
+        public StaticDeployCacheInterface $response_cache,
+        /**
+         * Blobs up to this size in bytes will be stored in
+         * the response cache. Larger blobs will be stored in
+         * the blob cache.
+         */
+        public int $large_blob_threshold = 0,
+    ) {}
 
     public function get_response(
         string $key
@@ -428,10 +404,6 @@ class StaticDeployCombinedCache implements StaticDeployCacheInterface {
  */
 
 class StaticDeployPageCache {
-    public StaticDeployCacheInterface $cache;
-    private string $default_cache_control;
-    public string $hash_algo;
-
     /**
      * An array of headers in the format
      * [ 'content-type' => [ 'Content-Type', 'text/html' ] ]
@@ -455,13 +427,10 @@ class StaticDeployPageCache {
     private string $status_header;
 
     public function __construct(
-        StaticDeployCacheInterface $cache,
-        string $default_cache_control,
-        string $hash_algo,
+        public StaticDeployCacheInterface $cache,
+        private string $default_cache_control,
+        public string $hash_algo,
     ) {
-        $this->cache = $cache;
-        $this->default_cache_control = $default_cache_control;
-        $this->hash_algo = $hash_algo;
         $this->headers = [];
     }
 

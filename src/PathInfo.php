@@ -18,12 +18,6 @@ class PathInfo {
     // E.g., "/author/user/"
     public readonly string $path;
 
-    // Values not known until crawling.
-    public ?string $body;
-    public ?string $content_type;
-    public ?string $redirect_to;
-    public ?int $status;
-
     private ?string $content_hash;
     private ?string $path_hash;
 
@@ -35,11 +29,11 @@ class PathInfo {
     public function __construct(
         string|UriInterface $path,
         ?string $filename = null,
-        ?string $body = null,
+        public ?string $body = null,
         ?string $content_hash = null,
-        ?string $content_type = null,
-        ?string $redirect_to = null,
-        ?int $status = null,
+        public ?string $content_type = null,
+        public ?string $redirect_to = null,
+        public ?int $status = null,
     ) {
         $uri = Psr7Utils::uriFor( $path );
         $msg = self::pathErrorMessage( $uri );
@@ -54,10 +48,6 @@ class PathInfo {
         }
 
         $this->path = $path;
-        $this->body = $body;
-        $this->content_type = $content_type;
-        $this->redirect_to = $redirect_to;
-        $this->status = $status;
 
         if ( $content_hash !== null ) {
             $this->content_hash = $content_hash;

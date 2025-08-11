@@ -49,13 +49,6 @@ class SitemapParser {
     const ROBOTSTXT_PATH = '/robots.txt';
 
     /**
-     * User-Agent to send with every HTTP(S) request
-     *
-     * @var string
-     */
-    protected $user_agent;
-
-    /**
      * Configuration options
      *
      * @var mixed[]
@@ -103,8 +96,13 @@ class SitemapParser {
      * @param string $user_agent User-Agent to send with every HTTP(S) request
      * @param mixed[] $config Configuration options
      */
-    public function __construct( $user_agent = self::DEFAULT_USER_AGENT, array $config = [] ) {
-        $this->user_agent = $user_agent;
+    public function __construct(
+        /**
+         * User-Agent to send with every HTTP(S) request
+         */
+        protected $user_agent = self::DEFAULT_USER_AGENT,
+        array $config = []
+    ) {
         $this->config = $config;
     }
 

@@ -4,12 +4,8 @@ namespace StaticDeploy;
 
 final class CrawlConfig {
 
-    public readonly ?string $path_hash_prefix;
-
-    public function __construct(
-        ?string $path_hash_prefix = null,
-    ) {
-        $this->path_hash_prefix = $path_hash_prefix;
+    public function __construct( public readonly ?string $path_hash_prefix = null )
+    {
     }
 
     /**

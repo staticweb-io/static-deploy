@@ -28,8 +28,6 @@ class Crawler {
      */
     private $client;
 
-    public CrawlConfig $crawl_config;
-
     /**
      * @var string
      */
@@ -51,9 +49,8 @@ class Crawler {
      * Crawler constructor
      */
     public function __construct(
-        CrawlConfig $crawl_config,
+        public CrawlConfig $crawl_config,
     ) {
-        $this->crawl_config = $crawl_config;
         $this->site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
 
         $port_override = apply_filters(
