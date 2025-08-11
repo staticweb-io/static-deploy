@@ -246,16 +246,15 @@ class AdminBar {
 
         if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
             return [ 'Exception' => $invalidations ];
-        } else {
-            $inv_items = $invalidations['InvalidationList']['Items'];
-
-            $arr = [];
-            foreach ( $inv_items as $inv ) {
-                if ( 'InProgress' === $inv['Status'] ) {
-                    array_push( $arr, $inv );
-                }
-            }
-            return [ 'Invalidations' => $arr ];
         }
+
+        $inv_items = $invalidations['InvalidationList']['Items'];
+        $arr = [];
+        foreach ( $inv_items as $inv ) {
+            if ( 'InProgress' === $inv['Status'] ) {
+                array_push( $arr, $inv );
+            }
+        }
+        return [ 'Invalidations' => $arr ];
     }
 }

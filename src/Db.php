@@ -100,9 +100,8 @@ final class Db {
                 WsLog::d( 'Detected error in query: ' . $wpdb->last_error );
             }
             return $on_error( $wpdb->last_error ) || false;
-        } else {
-            throw WsLog::ex( 'Error in query: ' . $wpdb->last_error );
         }
+        throw WsLog::ex( 'Error in query: ' . $wpdb->last_error );
     }
 
     /**
