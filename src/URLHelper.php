@@ -138,7 +138,7 @@ class URLHelper {
     }
 
     public static function isMailto( string $url ): bool {
-        if ( substr( $url, 0, 7 ) === 'mailto:' ) {
+        if ( str_starts_with( $url, 'mailto:' ) ) {
             return true;
         }
 

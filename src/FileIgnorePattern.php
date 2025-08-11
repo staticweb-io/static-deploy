@@ -40,7 +40,7 @@ class FileIgnorePattern {
 
         if ( ! str_contains( $pattern, '/' ) ) {
             $pattern = '**/' . $pattern;
-        } elseif ( substr( $pattern, 0, 1 ) !== '/' ) {
+        } elseif ( ! str_starts_with( $pattern, '/' ) ) {
             $pattern = '/' . $pattern;
         }
         Pattern::make( $pattern )->toRegex( Anchors::BOTH );

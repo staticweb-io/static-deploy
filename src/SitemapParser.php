@@ -190,7 +190,7 @@ class SitemapParser {
         }
 
         // Check if content is an gzip file
-        if ( strpos( $response, "\x1f\x8b\x08", 0 ) === 0 ) {
+        if ( str_starts_with( $response, "\x1f\x8b\x08" ) ) {
             $response = gzdecode( $response );
         }
 

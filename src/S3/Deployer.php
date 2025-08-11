@@ -137,7 +137,7 @@ class Deployer {
 
                 if ( ! $content_type && $filename ) {
                     $content_type = MimeTypes::guessMimeType( $filename );
-                    if ( 'text/' === substr( $content_type, 0, 5 ) ) {
+                    if ( str_starts_with( $content_type, 'text/' ) ) {
                         $content_type = $content_type . '; charset=UTF-8';
                     }
                 }
@@ -299,7 +299,7 @@ class Deployer {
             // Work-around for localstack.
             // Docs suggest to use s3.localhost.localstack.cloud,
             // but the DNS lookups fail in test.
-            if ( strpos( $endpoint, 'http://localhost:4566' ) === 0 ) {
+            if ( str_starts_with( $endpoint, 'http://localhost:4566' ) ) {
                 $opts['use_path_style_endpoint'] = true;
             }
         }
