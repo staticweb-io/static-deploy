@@ -478,12 +478,12 @@ class StaticDeployPageCache {
     public function capture_response(): void {
         add_filter(
             'status_header',
-            [ $this, 'filter_status_header' ],
+            $this->filter_status_header(...),
             10,
             2
         );
 
-        $buffering = ob_start( [ $this, 'receive_output' ] );
+        $buffering = ob_start( $this->receive_output(...) );
         if ( $buffering === false ) {
             error_log( 'Output buffering failed' );
         }

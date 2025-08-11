@@ -20,11 +20,11 @@ class Jobs {
         // Deprecated aliases
         Subcommand::registerHidden(
             'process-queue',
-            [ self::class, '__deprecatedProcessQueue' ],
+            self::__deprecatedProcessQueue( ... ),
         );
         Subcommand::registerHidden(
             'process_queue',
-            [ self::class, '__deprecatedProcessQueue' ],
+            self::__deprecatedProcessQueue( ... ),
         );
     }
 

@@ -17,21 +17,21 @@ trait OptionsControllerTrait {
     public static function registerHooks(): void {
         add_action(
             'admin_post_' . self::getAdminAction(),
-            [ self::class, 'saveFromAdmin' ],
+            self::saveFromAdmin( ... ),
             15,
             1
         );
 
         add_action(
             'admin_menu',
-            [ self::class, 'addOptionsPage' ],
+            self::addOptionsPage( ... ),
             15,
             1
         );
 
         add_filter(
             Controller::getHookName( 'add_menu_items' ),
-            [ self::class, 'addSubmenuPage' ]
+            self::addSubmenuPage( ... )
         );
     }
 
@@ -43,7 +43,7 @@ trait OptionsControllerTrait {
             $title,
             'manage_options',
             self::getOptionsPageSlug(),
-            [ self::class, 'renderPage' ]
+            self::renderPage( ... )
         );
     }
 
@@ -54,10 +54,7 @@ trait OptionsControllerTrait {
      * @return mixed[] array of submenu pages
      */
     public static function addSubmenuPage( array $submenu_pages ): array {
-        $submenu_pages[ self::getOptionsPageSlug() ] = [
-            self::class,
-            'renderPage',
-        ];
+        $submenu_pages[ self::getOptionsPageSlug() ] = self::renderPage( ... );
 
         return $submenu_pages;
     }

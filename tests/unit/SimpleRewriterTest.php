@@ -20,7 +20,7 @@ final class SimpleRewriterTest extends TestCase {
         // Mock the methods and functions used by SimpleRewriter
         Mockery::mock( 'overload:\StaticDeploy\URLHelper' )
             ->shouldreceive( 'getProtocolRelativeURL' )
-            ->andReturnUsing( [ $this, 'getProtocolRelativeURL' ] );
+            ->andReturnUsing( $this->getProtocolRelativeURL( ... ) );
     }
 
     public function tearDown(): void

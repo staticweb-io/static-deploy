@@ -6,14 +6,14 @@ trait DeployerTrait {
     public static function registerHooks(): void {
         add_filter(
             Controller::getHookName( 'deployer_class' ),
-            [ self::class, 'deployerClass' ],
+            self::deployerClass( ... ),
             10,
             2
         );
 
         add_action(
             Controller::getHookName( 'deploy' ),
-            [ self::class, 'deploy' ],
+            self::deploy( ... ),
             15,
             2
         );

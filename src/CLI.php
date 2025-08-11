@@ -16,7 +16,7 @@ class CLI {
 
         WP_CLI::add_hook(
             'find_command_to_run_pre',
-            [ CLI\Subcommand::class, 'addHiddenCommands' ],
+            CLI\Subcommand::addHiddenCommands( ... ),
         );
     }
 

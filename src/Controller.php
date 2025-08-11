@@ -33,12 +33,12 @@ class Controller {
 
         register_activation_hook(
             $bootstrap_file,
-            [ self::class, 'activate' ]
+            self::activate( ... )
         );
 
         register_deactivation_hook(
             $bootstrap_file,
-            [ self::class, 'deactivate' ]
+            self::deactivate( ... )
         );
 
         if ( ! $plugin_instance->loadAdmin() ) {
@@ -163,20 +163,20 @@ class Controller {
             'Static Deploy',
             'manage_options',
             'static-deploy',
-            [ ViewRenderer::class, 'renderRunPage' ],
+            ViewRenderer::renderRunPage( ... ),
             'dashicons-shield-alt'
         );
 
         /** @var array<string, callable> $submenu_pages */
         $submenu_pages = [
-            'run' => [ ViewRenderer::class, 'renderRunPage' ],
-            'options' => [ ViewRenderer::class, 'renderOptionsPage' ],
-            'jobs' => [ ViewRenderer::class, 'renderJobsPage' ],
-            'caches' => [ ViewRenderer::class, 'renderCachesPage' ],
-            'diagnostics' => [ ViewRenderer::class, 'renderDiagnosticsPage' ],
-            'logs' => [ ViewRenderer::class, 'renderLogsPage' ],
-            'addons' => [ ViewRenderer::class, 'renderAddonsPage' ],
-            'advanced' => [ ViewRenderer::class, 'renderAdvancedOptionsPage' ],
+            'run' => ViewRenderer::renderRunPage( ... ),
+            'options' => ViewRenderer::renderOptionsPage( ... ),
+            'jobs' => ViewRenderer::renderJobsPage( ... ),
+            'caches' => ViewRenderer::renderCachesPage( ... ),
+            'diagnostics' => ViewRenderer::renderDiagnosticsPage( ... ),
+            'logs' => ViewRenderer::renderLogsPage( ... ),
+            'addons' => ViewRenderer::renderAddonsPage( ... ),
+            'advanced' => ViewRenderer::renderAdvancedOptionsPage( ... ),
         ];
 
         foreach ( $submenu_pages as $slug => $method ) {
@@ -204,7 +204,7 @@ class Controller {
             'Detected Files',
             'manage_options',
             self::getHookName( 'detected_files' ),
-            [ ViewRenderer::class, 'renderDetectedFiles' ]
+            ViewRenderer::renderDetectedFiles( ... )
         );
 
         add_submenu_page(
@@ -213,7 +213,7 @@ class Controller {
             'Crawled Files',
             'manage_options',
             self::getHookName( 'crawled_files' ),
-            [ ViewRenderer::class, 'renderCrawledFiles' ]
+            ViewRenderer::renderCrawledFiles( ... )
         );
 
         add_submenu_page(
@@ -222,7 +222,7 @@ class Controller {
             'Deploy Cache',
             'manage_options',
             self::getHookName( 'deploy_cache' ),
-            [ ViewRenderer::class, 'renderDeployCache' ]
+            ViewRenderer::renderDeployCache( ... )
         );
 
         add_submenu_page(
@@ -231,7 +231,7 @@ class Controller {
             'Static Site',
             'manage_options',
             self::getHookName( 'static_site' ),
-            [ ViewRenderer::class, 'renderStaticSitePaths' ]
+            ViewRenderer::renderStaticSitePaths( ... )
         );
 
         add_submenu_page(
@@ -240,7 +240,7 @@ class Controller {
             'Post Processed Site',
             'manage_options',
             self::getHookName( 'post_processed_site' ),
-            [ ViewRenderer::class, 'renderPostProcessedSitePaths' ]
+            ViewRenderer::renderPostProcessedSitePaths( ... )
         );
     }
 

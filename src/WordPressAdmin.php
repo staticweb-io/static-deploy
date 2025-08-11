@@ -36,199 +36,199 @@ class WordPressAdmin {
         add_filter(
             // phpcs:ignore WordPress.WP.CronInterval -- namespaces not yet fully supported
             'cron_schedules',
-            [ WPCron::class, 'customCronSchedules' ]
+            WPCron::customCronSchedules( ... )
         );
 
         add_filter(
             'cron_request',
-            [ WPCron::class, 'cronWithBasicAuth' ]
+            WPCron::cronWithBasicAuth( ... )
         );
 
         add_action(
             'wp_ajax_' . Controller::getHookName( 'run' ),
-            [ Controller::class, 'ajaxRun' ],
+            Controller::ajaxRun( ... ),
             10,
             0
         );
 
         add_action(
             'wp_ajax_' . Controller::getHookName( 'poll_log' ),
-            [ Controller::class, 'ajaxPollLog' ],
+            Controller::ajaxPollLog( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'ui_save_options' ),
-            [ Controller::class, 'UISaveOptions' ],
+            Controller::UISaveOptions( ... ),
             10,
             0
         );
 
         add_action(
             Controller::getHookName( 'register_addon' ),
-            [ Addons::class, 'registerAddon' ],
+            Addons::registerAddon( ... ),
             10,
             5
         );
 
         add_action(
             Controller::getHookName( 'post_deploy_trigger' ),
-            [ Controller::class, 'emailDeployNotification' ],
+            Controller::emailDeployNotification( ... ),
             10,
             0
         );
 
         add_action(
             Controller::getHookName( 'post_deploy_trigger' ),
-            [ Controller::class, 'webhookDeployNotification' ],
+            Controller::webhookDeployNotification( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'post_processed_site_delete' ),
-            [ Controller::class, 'adminPostProcessedSiteDelete' ],
+            Controller::adminPostProcessedSiteDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'post_processed_site_show' ),
-            [ Controller::class, 'adminPostProcessedSiteShow' ],
+            Controller::adminPostProcessedSiteShow( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'log_delete' ),
-            [ Controller::class, 'adminLogDelete' ],
+            Controller::adminLogDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'delete_all_caches' ),
-            [ Controller::class, 'adminDeleteAllCaches' ],
+            Controller::adminDeleteAllCaches( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'delete_jobs_queue' ),
-            [ Controller::class, 'adminDeleteJobsQueue' ],
+            Controller::adminDeleteJobsQueue( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'process_jobs_queue' ),
-            [ Controller::class, 'adminProcessJobsQueue' ],
+            Controller::adminProcessJobsQueue( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'process_queue' ),
-            [ self::class, 'adminPostProcessQueue' ],
+            self::adminPostProcessQueue( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'detected_files_delete' ),
-            [ Controller::class, 'adminDetectedFilesDelete' ],
+            Controller::adminDetectedFilesDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'detected_files_show' ),
-            [ Controller::class, 'adminDetectedFilesShow' ],
+            Controller::adminDetectedFilesShow( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'deploy_cache_delete' ),
-            [ Controller::class, 'adminDeployCacheDelete' ],
+            Controller::adminDeployCacheDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'deploy_cache_show' ),
-            [ Controller::class, 'adminDeployCacheShow' ],
+            Controller::adminDeployCacheShow( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'crawled_files_delete' ),
-            [ Controller::class, 'adminCrawledFilesDelete' ],
+            Controller::adminCrawledFilesDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'crawled_files_show' ),
-            [ Controller::class, 'adminCrawledFilesShow' ],
+            Controller::adminCrawledFilesShow( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'static_site_delete' ),
-            [ Controller::class, 'adminStaticSiteDelete' ],
+            Controller::adminStaticSiteDelete( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'static_site_show' ),
-            [ Controller::class, 'adminStaticSiteShow' ],
+            Controller::adminStaticSiteShow( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'ui_save_job_options' ),
-            [ Controller::class, 'adminUISaveJobsOptions' ],
+            Controller::adminUISaveJobsOptions( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'ui_save_advanced_options' ),
-            [ Controller::class, 'adminUISaveAdvancedOptions' ],
+            Controller::adminUISaveAdvancedOptions( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'manually_enqueue_jobs' ),
-            [ Controller::class, 'adminManuallyEnqueueJobs' ],
+            Controller::adminManuallyEnqueueJobs( ... ),
             10,
             0
         );
 
         add_action(
             'admin_post_' . Controller::getHookName( 'toggle_addon' ),
-            [ Controller::class, 'adminToggleAddon' ],
+            Controller::adminToggleAddon( ... ),
             10,
             0
         );
 
         add_action(
             Controller::getHookName( 'process_queue' ),
-            [ Controller::class, 'processQueue' ],
+            Controller::processQueue( ... ),
             10,
             0
         );
 
         add_action(
             Controller::getHookName( 'headless_hook' ),
-            [ Controller::class, 'runHeadless' ],
+            Controller::runHeadless( ... ),
             10,
             0
         );
@@ -242,13 +242,13 @@ class WordPressAdmin {
 
         add_action(
             'save_post',
-            [ Controller::class, 'savePostHandler' ],
+            Controller::savePostHandler( ... ),
             0
         );
 
         add_action(
             'trashed_post',
-            [ Controller::class, 'trashedPostHandler' ],
+            Controller::trashedPostHandler( ... ),
             0
         );
 
@@ -265,7 +265,7 @@ class WordPressAdmin {
         foreach ( $single_url_invalidation_events as $invalidation_events ) {
             add_action(
                 $invalidation_events,
-                [ Controller::class, 'invalidateSingleURLCache' ],
+                Controller::invalidateSingleURLCache( ... ),
                 10,
                 2
             );
@@ -279,10 +279,10 @@ class WordPressAdmin {
         if ( is_admin() ) {
             add_action(
                 'admin_menu',
-                [ Controller::class, 'registerOptionsPage' ]
+                Controller::registerOptionsPage( ... )
             );
             add_filter( 'custom_menu_order', '__return_true' );
-            add_filter( 'menu_order', [ Controller::class, 'setMenuOrder' ] );
+            add_filter( 'menu_order', Controller::setMenuOrder( ... ) );
             AdminBar::registerHooks();
         }
     }

@@ -8,17 +8,17 @@ class AdminBar {
     public static function registerHooks(): void {
         add_action(
             'admin_bar_menu',
-            [ self::class, 'adminBarMenuHook' ],
+            self::adminBarMenuHook( ... ),
             100
         );
         add_action(
             'wp_after_admin_bar_render',
-            [ self::class, 'afterAdminBarRender' ]
+            self::afterAdminBarRender( ... )
         );
         $hook_name = 'wp_ajax_' . Controller::getHookName( 'job_queue' );
         add_action(
             $hook_name,
-            [ self::class, 'ajaxJobQueue' ]
+            self::ajaxJobQueue( ... )
         );
     }
 
