@@ -8,6 +8,8 @@ use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\SetList;
 
+// Search rules at https://getrector.com/find-rule
+
 return RectorConfig::configure()
     ->withPaths(
         [
