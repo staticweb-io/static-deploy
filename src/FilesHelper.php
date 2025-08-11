@@ -36,7 +36,14 @@ class FilesHelper {
      * @param string $filename Path to the file.
      */
     public static function deleteFile( string $filename ): void {
-        $result = FilesHelperImpl::deleteFile( $filename );
+        if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+        || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+            $result = wp_delete_file( $filename );
+        } else {
+            // @phpcs:disable WordPress.PHP.NoSilencedErrors
+            $result = @unlink( $filename );
+        }
+
         if ( ! $result ) {
             throw WsLog::ex( 'Failed to delete file: ' . $filename );
         }
