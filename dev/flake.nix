@@ -358,21 +358,24 @@
               in {
                 command = pkgs.writeShellApplication {
                   name = "test";
-                  runtimeInputs =
-                    [ config.services.mysql."mysql1".package php wp-cli ];
+                  runtimeInputs = [
+                    config.services.mysql."mysql1".package
+                    php
+                    phpPackages.composer
+                    wp-cli
+                  ];
                   text = ''
                     TMPDIR="$(realpath ./tmp)"
                     mkdir -p "$TMPDIR"
                     echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${
                       toString dbPort
                     }" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
-                    ${pkgs.rsync}/bin/rsync -a --copy-links ${staticDeployPkgs.composerVendorDev}/. .
-                    ${pkgs.rsync}/bin/rsync -a --copy-links ${staticDeployLib.staticDeploySrcDev}/. .
-                    chmod ug+w -R ./vendor
-                    ${phpPackages.composer}/bin/composer dump-autoload
+                    cp -r --no-preserve=mode ${staticDeployPkgs.composerVendorDev}/. .
+                    cp -r ${staticDeployLib.staticDeploySrc}/. .
+                    composer dump-autoload
                     WORDPRESS_DIR="$(realpath ./data/wordpress1)"
                     export WORDPRESS_DIR
-                    ${php}/bin/php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result --testsuite Integration
+                    php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result --testsuite Integration
                   '';
                 };
                 depends_on."mysql1-configure".condition =
