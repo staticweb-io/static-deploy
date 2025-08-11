@@ -67,7 +67,7 @@ final class DetectPostURLsTest extends TestCase {
             'https://foo.com/2020/08/2',
             'https://foo.com/2020/08/3',
         ];
-        $actual = DetectPostURLs::detect( '%year%/%month%/%day%' );
+        $actual = DetectPostURLs::detect();
         $this->assertEquals( $expected, $actual );
     }
 
