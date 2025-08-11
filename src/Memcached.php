@@ -45,7 +45,7 @@ class Memcached {
             $total_weight += $s['weight'] ?? 1;
         }
 
-        $rand = rand( 1, $total_weight );
+        $rand = mt_rand( 1, $total_weight );
         $current = 0;
 
         foreach ( $servers as $s ) {
