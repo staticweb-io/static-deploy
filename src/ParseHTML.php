@@ -6,7 +6,6 @@ class ParseHTML {
     /**
      * Return URLs found in a DOMNode, recursively.
      *
-     * @param \DOMNode $node
      * @return \Iterator<string>
      */
     public static function parseURLsDOMNode( \DOMNode $node ): \Iterator {
@@ -36,7 +35,6 @@ class ParseHTML {
     /**
      * Return an iterator of URLs parsed from the provided HTML
      *
-     * @param string $html
      * @return \Iterator<string>
      */
     public static function parseURLsString( string $html ): \Iterator {

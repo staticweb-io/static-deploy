@@ -265,7 +265,6 @@ class SitemapParser {
     /**
      * Search for sitemaps in the robots.txt content
      *
-     * @param string $robotstxt
      * @return \Iterator<string>
      */
     public function parseRobotstxt( string $robotstxt ): \Iterator {

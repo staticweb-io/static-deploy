@@ -53,8 +53,6 @@ class URLHelper {
 
     /**
      * Returns the current full URL including querystring
-     *
-     * @return string
      */
     public static function getCurrent(): string {
         $scheme = self::isSecure() ? 'https' : 'http';

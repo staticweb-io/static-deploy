@@ -22,9 +22,6 @@ class FileFiltering {
 
     /**
      * Returns crawlable files in a given directory, recursively.
-     *
-     * @param string $directory
-     * @return \Iterator
      */
     public function crawlableFiles(
         string $directory,
@@ -82,7 +79,6 @@ class FileFiltering {
     /**
      * Get public URLs for all files in a local directory.
      *
-     * @param string $dir
      * @return \Iterator<PathInfo>
      */
     public function getListOfLocalFilesByDir(
@@ -105,7 +101,6 @@ class FileFiltering {
     }
 
     /**
-     * @param string $path
      * @return bool  True if the given path does not match an ignore pattern
      */
     public function pathLooksCrawlable(

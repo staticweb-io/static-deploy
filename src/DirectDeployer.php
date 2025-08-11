@@ -91,7 +91,6 @@ class DirectDeployer {
      * Deploy specific paths
      *
      * @param \Iterator<PathInfo> $paths
-     * @param bool $remove_404s
      */
     public function deployPaths(
         \Iterator $path_infos,

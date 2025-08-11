@@ -716,8 +716,6 @@ VALUES (%s, %s, %s);";
 
     /**
      * Import option value from WP2Static
-     *
-     * @param OptionSpec $option_spec
      */
     public static function importFromWP2Static(
         OptionSpec $option_spec,

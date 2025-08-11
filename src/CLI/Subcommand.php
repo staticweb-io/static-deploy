@@ -13,9 +13,7 @@ class Subcommand {
      * See https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/
      * for details on args.
      *
-     * @param string $slug
      * @param callable|object|string|string[] $callabl
-     * @param array $args
      */
     public static function register(
         string $slug,
@@ -39,9 +37,7 @@ class Subcommand {
      * See https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/
      * for details on args.
      *
-     * @param string $slug
      * @param callable|object|string|string[] $callabl
-     * @param array $args
      */
     public static function registerHidden(
         string $slug,

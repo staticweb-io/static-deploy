@@ -266,9 +266,6 @@ final class SimpleRewriterTest extends TestCase {
     /**
      * Reimplimentation of URLHelper::getProtocolRelativeURL specific for our
      * test.
-     *
-     * @param string $url
-     * @return string
      */
     public function getProtocolRelativeURL( string $url ): string {
         return str_replace(

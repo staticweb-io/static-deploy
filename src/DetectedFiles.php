@@ -257,7 +257,6 @@ class DetectedFiles {
      * Remove multiple URLs at once
      *
      * @param array<string> $ids
-     * @return void
      */
     public static function rmUrlsById( array $ids ): void {
         global $wpdb;

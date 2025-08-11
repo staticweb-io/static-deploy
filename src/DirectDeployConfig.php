@@ -15,9 +15,6 @@ final class DirectDeployConfig {
         $this->do_detect = $do_detect;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

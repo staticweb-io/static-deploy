@@ -32,8 +32,6 @@ class Paginator {
      * Create a new Paginator
      *
      * @param array<mixed> $records
-     * @param integer $page_size
-     * @param integer $page
      */
     public function __construct( array $records, int $page_size, int $page ) {
         $this->page = $page;
@@ -86,8 +84,6 @@ class Paginator {
      * the array into keys and values, array_slice each then recombine
      *
      * @param array<mixed> $records
-     * @param int $page_size
-     * @param int $page
      * @return array<mixed>
      */
     protected function paginateRecords( array $records, int $page_size, int $page ): array {
