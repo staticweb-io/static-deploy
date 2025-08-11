@@ -240,10 +240,11 @@ class AdminBar {
 
     public static function listInvalidationsInProgress( int $max_items = 5 ) {
         $invalidations = self::listInvalidations( $max_items );
-
         if ( ! $invalidations ) {
             return;
-        } elseif ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
+        }
+
+        if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
             return [ 'Exception' => $invalidations ];
         } else {
             $inv_items = $invalidations['InvalidationList']['Items'];

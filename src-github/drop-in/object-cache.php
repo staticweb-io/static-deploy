@@ -158,9 +158,8 @@ if ( ! class_exists( 'Memcached' ) ) {
             // Number of seconds in 30 days
             if ( $expire <= 2592000 ) {
                 return $expire;
-            } else {
-                return $expire + time();
             }
+            return $expire + time();
         }
 
         /**
@@ -206,11 +205,10 @@ if ( ! class_exists( 'Memcached' ) ) {
             if ( $this->mc->add( $k, $data, $expire ) ) {
                 $this->local_cache[ $k ] = self::maybe_clone( $data );
                 return true;
-            } else {
-                // We don't know the state of the memcached item
-                unset( $this->local_cache[ $k ] );
-                return false;
             }
+            // We don't know the state of the memcached item
+            unset( $this->local_cache[ $k ] );
+            return false;
         }
 
         /**
@@ -402,10 +400,9 @@ if ( ! class_exists( 'Memcached' ) ) {
                 if ( array_key_exists( $k, $this->non_persistent_groups[ $group ] ) ) {
                     $found = true;
                     return self::maybe_clone( $this->non_persistent_groups[ $group ][ $k ] );
-                } else {
-                    $found = false;
-                    return false;
                 }
+                $found = false;
+                return false;
             }
 
             if ( ! $force && array_key_exists( $k, $this->local_cache ) ) {
@@ -512,12 +509,11 @@ if ( ! class_exists( 'Memcached' ) ) {
             if ( $result === false ) {
                 if ( empty( $local ) ) {
                     return array_fill_keys( $keys, false );
-                } else {
-                    return array_merge(
-                        array_fill_keys( $keys, false ),
-                        $local,
-                    );
                 }
+                return array_merge(
+                    array_fill_keys( $keys, false ),
+                    $local,
+                );
             }
 
             if ( ! isset( $ks_to_keys ) ) {
@@ -539,22 +535,21 @@ if ( ! class_exists( 'Memcached' ) ) {
                     }
                 }
                 return $arr;
-            } else {
-                $arr = [];
-                foreach ( $ks_to_keys as $k => $key ) {
-                    if ( isset( $result[ $k ] ) ) {
-                        $v = $result[ $k ];
-                        $this->local_cache[ $k ] = self::maybe_clone( $v );
-                        $arr[ $key ] = $v;
-                    } elseif ( isset( $local[ $key ] ) ) {
-                        $arr[ $key ] = $local[ $key ];
-                    } else {
-                        unset( $this->local_cache[ $k ] );
-                        $arr[ $key ] = false;
-                    }
-                }
-                return $arr;
             }
+            $arr = [];
+            foreach ( $ks_to_keys as $k => $key ) {
+                if ( isset( $result[ $k ] ) ) {
+                    $v = $result[ $k ];
+                    $this->local_cache[ $k ] = self::maybe_clone( $v );
+                    $arr[ $key ] = $v;
+                } elseif ( isset( $local[ $key ] ) ) {
+                    $arr[ $key ] = $local[ $key ];
+                } else {
+                    unset( $this->local_cache[ $k ] );
+                    $arr[ $key ] = false;
+                }
+            }
+            return $arr;
         }
 
         /**
@@ -585,10 +580,9 @@ if ( ! class_exists( 'Memcached' ) ) {
                 // We don't know the state of the memcached item
                 unset( $this->local_cache[ $k ] );
                 return false;
-            } else {
-                $this->local_cache[ $k ] = $result;
-                return $result;
             }
+            $this->local_cache[ $k ] = $result;
+            return $result;
         }
 
         /**
@@ -624,10 +618,9 @@ if ( ! class_exists( 'Memcached' ) ) {
                 // We don't know the state of the memcached item
                 unset( $this->local_cache[ $k ] );
                 return false;
-            } else {
-                $this->local_cache[ $k ] = self::maybe_clone( $data );
-                return true;
             }
+            $this->local_cache[ $k ] = self::maybe_clone( $data );
+            return true;
         }
 
         /**
@@ -661,10 +654,9 @@ if ( ! class_exists( 'Memcached' ) ) {
                 // We don't know the state of the memcached item
                 unset( $this->local_cache[ $k ] );
                 return false;
-            } else {
-                $this->local_cache[ $k ] = self::maybe_clone( $data );
-                return true;
             }
+            $this->local_cache[ $k ] = self::maybe_clone( $data );
+            return true;
         }
 
         /**

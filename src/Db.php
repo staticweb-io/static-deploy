@@ -46,9 +46,8 @@ final class Db {
                 WsLog::l( "Failed to create $index_name index on $table_name." );
             }
             return $result;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
@@ -92,10 +91,11 @@ final class Db {
         global $wpdb;
 
         $result = $wpdb->query( $query );
-
         if ( $result !== false ) {
             return $result;
-        } elseif ( $on_error ) {
+        }
+
+        if ( $on_error ) {
             if ( STATIC_DEPLOY_DEBUG ) {
                 WsLog::d( 'Detected error in query: ' . $wpdb->last_error );
             }

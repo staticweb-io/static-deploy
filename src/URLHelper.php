@@ -16,7 +16,8 @@ class URLHelper {
         try {
             if ( Uri::isAbsolute( $uri ) ) {
                 return $uri->withScheme( '' )->withHost( '' )->withPort( null )->withUserInfo( '' );
-            } elseif ( Uri::isNetworkPathReference( $uri ) ) {
+            }
+            if ( Uri::isNetworkPathReference( $uri ) ) {
                 return $uri->withHost( '' )->withPort( null )->withUserInfo( '' );
             }
         } catch ( \Exception $e ) {

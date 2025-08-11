@@ -436,13 +436,12 @@ VALUES (%s, %s, %s);";
                 $row->blob_value,
                 $row->value,
             );
-        } else {
-            return new OptionData(
-                $option_spec,
-                null,
-                null,
-            );
         }
+        return new OptionData(
+            $option_spec,
+            null,
+            null,
+        );
     }
 
     /**

@@ -160,12 +160,12 @@ class StaticDeployFileCache implements StaticDeployCacheInterface {
                 '%, but there are no files in the cache. Caching disabled.'
             );
             return false;
-        } else {
-            error_log(
-                'Free disk space below ' . $this->min_free_space * 100 .
-                '%. Deleting files from cache to free up space.'
-            );
         }
+
+        error_log(
+            'Free disk space below ' . $this->min_free_space * 100 .
+            '%. Deleting files from cache to free up space.'
+        );
 
         // Start off by decimating files and increase chance
         // by 10% each time.
@@ -881,8 +881,7 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
     && $page_cache->initial_cacheable_heuristic() ) {
         if ( $page_cache->output_cache_response() ) {
             exit( 0 );
-        } else {
-            $page_cache->capture_response();
         }
+        $page_cache->capture_response();
     }
 } )();

@@ -246,13 +246,12 @@ class SitemapParser {
             $res = $client->request( 'GET', $this->current_url, $this->config['guzzle'] );
             if ( $res->getStatusCode() === 200 ) {
                 return $res->getBody()->getContents();
-            } else {
-                WsLog::w(
-                    'Got ' . $res->getStatusCode() .
-                    ' for sitemap url "' . $this->current_url . '", skipping.'
-                );
-                return null;
             }
+            WsLog::w(
+                'Got ' . $res->getStatusCode() .
+                ' for sitemap url "' . $this->current_url . '", skipping.'
+            );
+            return null;
         } catch ( GuzzleHttp\Exception\TransferException $e ) {
             throw WsLog::ex( 'Unable to fetch URL contents', 0, $e );
         } catch ( GuzzleHttp\Exception\GuzzleException $e ) {
