@@ -34,7 +34,12 @@ return RectorConfig::configure()
             RemoveAlwaysTrueIfConditionRector2::class,
         ]
     )
-    ->withSets( [ SetList::DEAD_CODE ] )
+    ->withSets(
+        [
+            SetList::DEAD_CODE,
+            SetList::EARLY_RETURN,
+        ]
+    )
     ->withSkip(
         [
             // Allow explicit loops to consume iterators for side-effects
