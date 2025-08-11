@@ -253,9 +253,9 @@ class CLI {
         array $args,
         array $assoc_args
     ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
-        $option_name = isset( $args[1] ) ? $args[1] : null;
-        $value = isset( $args[2] ) ? $args[2] : null;
+        $action = $args[0] ?? null;
+        $option_name = $args[1] ?? null;
+        $value = $args[2] ?? null;
         $reveal_sensitive_values = isset( $assoc_args['reveal-sensitive-values'] );
 
         if ( ! in_array( $action, [ 'get', 'set', 'list' ] ) ) {
@@ -423,7 +423,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function crawled_files( array $args, array $assoc_args ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         if ( $action === 'list' ) {
             $urls = CrawledFiles::getHashes();
@@ -482,7 +482,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function detected_files( array $args, array $assoc_args ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         if ( $action === 'list' ) {
             $urls = DetectedFiles::getCrawlablePaths();
@@ -533,7 +533,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function processed_site( array $args, array $assoc_args ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         // also validate expected $action vs any
         if ( empty( $action ) ) {
@@ -577,7 +577,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function static_site( array $args, array $assoc_args ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         // also validate expected $action vs any
         if ( empty( $action ) ) {
@@ -627,7 +627,7 @@ class CLI {
      * @param string[] $assoc_args Parameters after command
      */
     public function deploy_cache( array $args, array $assoc_args ): void {
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         if ( $action === 'list' ) {
             $paths = DeployCache::getPaths();
@@ -729,12 +729,12 @@ class CLI {
         if ( ! empty( $assoc_args ) ) {
             WP_CLI::error( 'No parameters are accepted for this command.' );
         }
-        $action = isset( $args[0] ) ? $args[0] : null;
+        $action = $args[0] ?? null;
 
         switch ( $action ) {
             case 'disable':
             case 'enable':
-                $addon_slug = isset( $args[1] ) ? $args[1] : null;
+                $addon_slug = $args[1] ?? null;
                 Controller::adminSetAddonState(
                     $addon_slug,
                     $action === 'enable'
@@ -762,7 +762,7 @@ class CLI {
                 );
                 break;
             case 'toggle':
-                $addon_slug = isset( $args[1] ) ? $args[1] : null;
+                $addon_slug = $args[1] ?? null;
 
                 if ( ! $addon_slug ) {
                     throw new StaticDeployException(

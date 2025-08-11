@@ -627,7 +627,7 @@ VALUES (%s, %s, %s);";
     ): void {
         foreach ( $option_specs as $option_spec ) {
             $name = $option_spec->name;
-            $v = isset( $_POST[ $name ] ) ? $_POST[ $name ] : '';
+            $v = $_POST[ $name ] ?? '';
             OptionData::fromUserInput( $option_spec, $v )->save();
         }
     }
