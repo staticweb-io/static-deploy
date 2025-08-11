@@ -1,7 +1,10 @@
 <?php declare(strict_types=1);
 
+require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
+
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
+use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector2;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
@@ -25,6 +28,7 @@ return RectorConfig::configure()
             ChangeSwitchToMatchRector::class,
             ClosureToArrowFunctionRector::class,
             FirstClassCallableRector::class,
+            RemoveAlwaysTrueIfConditionRector2::class,
         ]
     )
     ->withSets( [ SetList::DEAD_CODE ] )
