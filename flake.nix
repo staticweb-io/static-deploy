@@ -74,9 +74,6 @@
           mkdir src-github # Prevent an error
           composer rector
 
-          # Remove files that aren't needed in the release artifact
-          rm -rf "constants*.php" util tests vendor
-
           mkdir -p "$out"
           cp -r src static-deploy.php uninstall.php "$out"
           # Add release deps
