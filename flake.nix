@@ -54,6 +54,13 @@
             in type == "directory" && base == "src-github"
             || pkgs.lib.hasInfix "/src-github/" path;
         };
+        wpOrgExtras = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
+            let base = baseNameOf path;
+            in type == "directory" && base == "wp-org"
+            || pkgs.lib.hasInfix "/wp-org/" path;
+        };
         staticDeployWpOrgSrc = runCommand "static-deploy-wp-org-src" {
           nativeBuildInputs = [ php phpPackages.composer ];
         } ''
@@ -63,7 +70,7 @@
           cp -r --no-preserve=mode "${staticDeploySrc}"/* .
 
           # Lock certain constants and run rector to remove dead code
-          mv constants-wp-org.php constants.php
+          cp ${wpOrgExtras}/wp-org/constants.php constants.php
           mkdir src-github # Prevent an error
           composer rector
 
