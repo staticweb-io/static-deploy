@@ -16,6 +16,11 @@ use Rector\Set\ValueObject\SetList;
 // Search rules at https://getrector.com/find-rule
 
 return RectorConfig::configure()
+    ->withBootstrapFiles(
+        [
+            __DIR__ . '/constants.php',
+        ],
+    )
     ->withPaths(
         [
             __DIR__ . '/src',
