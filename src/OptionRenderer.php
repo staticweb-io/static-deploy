@@ -17,7 +17,7 @@ class OptionRenderer {
     public static function optionInput( OptionData $option ): string {
         $option_input = call_user_func(
             [
-                'StaticDeploy\OptionRenderer',
+                self::class,
                 self::INPUT_TYPE_FNS[ $option->option_spec->input_type ],
             ],
             $option

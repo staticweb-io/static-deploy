@@ -14,7 +14,7 @@ class SitemapStrictTest extends TestCase {
      */
     public function testStrict( $url, $body ) {
         $parser = new SitemapParser( 'SitemapParser', [] );
-        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
+        $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( [], $parser->getSitemaps() );
         $this->assertEquals( [], $parser->getURLs() );

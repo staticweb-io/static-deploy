@@ -13,7 +13,7 @@ class SitemapRecursiveTest extends TestCase {
      */
     public function testRecursive( $url ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
+        $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parseRecursive( $url );
         $this->assertTrue( is_array( $parser->getSitemaps() ) );
         $this->assertTrue( is_array( $parser->getURLs() ) );

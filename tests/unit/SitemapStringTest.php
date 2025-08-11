@@ -13,7 +13,7 @@ class SitemapStringTest extends TestCase {
      */
     public function testString( $url ) {
         $parser = new SitemapParser( 'SitemapParser', [ 'strict' => false ] );
-        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
+        $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url );
         $this->assertTrue( is_array( $parser->getSitemaps() ) );
         $this->assertTrue( is_array( $parser->getURLs() ) );

@@ -15,7 +15,7 @@ class SitemapURLSetTest extends TestCase {
      */
     public function testURLSet( $url, $body, $result ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
+        $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( [], $parser->getSitemaps() );
         $this->assertEquals( $result, $parser->getURLs() );

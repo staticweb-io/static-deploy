@@ -12,9 +12,9 @@ class SitemapInvalidURLTest extends TestCase {
      * @param string $url URL
      */
     public function testInvalidURL( $url ) {
-        $this->expectException( 'StaticDeploy\StaticDeployException' );
+        $this->expectException( \StaticDeploy\StaticDeployException::class );
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'StaticDeploy\SitemapParser', $parser );
+        $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url );
     }
 
