@@ -86,7 +86,7 @@ class FileFiltering {
     ): \Iterator {
         $site_path = SiteInfo::getPath( 'site' );
 
-        if ( is_string( $site_path ) && is_dir( $dir ) ) {
+        if ( is_dir( $dir ) ) {
             $iterator = $this->crawlableFiles( $dir );
 
             foreach ( $iterator as $filename => $file_object ) {
