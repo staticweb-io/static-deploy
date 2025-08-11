@@ -117,7 +117,7 @@ class URLDiscovery {
         foreach ( ParseHTML::parseURLsString( $body ) as $url ) {
             try {
                 $discovered_url = Psr7Utils::uriFor( $url )->withFragment( '' )->withQuery( '' );
-            } catch ( MalformedUriException $e ) {
+            } catch ( MalformedUriException ) {
                 if ( STATIC_DEPLOY_DEBUG ) {
                     WsLog::d( 'Skipping invalid URL discovered: ' . $url );
                 }

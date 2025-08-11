@@ -376,7 +376,7 @@ class SitemapParser {
             // TODO: ignoring until refactor as only generic exception
             // thrown and abuses try/catch as conditional
             // @phpstan-ignore-next-line
-        } catch ( \Exception $e ) {
+        } catch ( \Exception ) {
             return false;
         }
     }
