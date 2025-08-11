@@ -8,9 +8,6 @@ use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysFalseIfStatementRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector2;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\SetList;
 
 // Search rules at https://getrector.com/find-rule
@@ -30,11 +27,9 @@ return RectorConfig::configure()
         ]
     )
     ->withRootFiles() // Include static-deploy.php and uninstall.php
+    ->withPhpSets() // Detects PHP version from composer.json
     ->withRules(
         [
-            ChangeSwitchToMatchRector::class,
-            ClosureToArrowFunctionRector::class,
-            FirstClassCallableRector::class,
             RemoveAlwaysFalseIfStatementRector::class,
             RemoveAlwaysTrueIfConditionRector2::class,
         ]
