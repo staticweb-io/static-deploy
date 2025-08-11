@@ -729,8 +729,13 @@ if ( ! class_exists( 'Memcached' ) ) {
         public function supports(
             string $feature,
         ): bool {
-            return match ($feature) {
-                'add_multiple', 'delete_multiple', 'flush_runtime', 'get_multiple', 'set_multiple' => true,
+            return match ( $feature ) {
+                'add_multiple',
+                'delete_multiple',
+                'flush_runtime',
+                'get_multiple',
+                'set_multiple'
+                    => true,
                 default => false,
             };
         }
