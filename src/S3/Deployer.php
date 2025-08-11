@@ -244,8 +244,8 @@ class Deployer {
                     $item = $items_by_iter_key[ $iter_key ];
                     DeployCache::addFile(
                         $item['cache_key'],
+                        $item['hash'],
                         self::DEFAULT_NAMESPACE,
-                        $item['hash']
                     );
                     $this->addCfPath( $item['cache_key'] );
                     unset( $items_by_iter_key[ $iter_key ] );

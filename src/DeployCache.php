@@ -110,8 +110,8 @@ class DeployCache {
 
     public static function addFile(
         string $path,
-        string $ns = self::DEFAULT_NAMESPACE,
         string $data_hash,
+        string $ns = self::DEFAULT_NAMESPACE,
     ): void {
         global $wpdb;
 
