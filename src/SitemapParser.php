@@ -290,11 +290,12 @@ class SitemapParser {
                 (array) preg_split( '/:/', $line, 2 )
             );
             // Check if the line contains a sitemap
-            if (
-                strtolower( $pair[0] ) !== self::XML_TAG_SITEMAP ||
-                empty( $pair[1] )
-            ) {
-                // Line does not contain any supported directive
+            if ( strtolower( $pair[0] ) !== self::XML_TAG_SITEMAP ) {
+                // Directive is not supported
+                continue;
+            }
+            if ( empty( $pair[1] ) ) {
+                // Line does not contain any directive
                 continue;
             }
             $url = $this->urlEncode( $pair[1] );
