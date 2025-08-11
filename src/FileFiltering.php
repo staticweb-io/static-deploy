@@ -48,11 +48,12 @@ class FileFiltering {
                     }
                 }
 
-                if ( $current->isLink() ) {
-                    // Filter out broken links
-                    if ( ! $current->isReadable() ) {
-                        return false;
-                    }
+                if ( ! $current->isLink() ) {
+                    return true;
+                }
+                // Filter out broken links
+                if ( ! $current->isReadable() ) {
+                    return false;
                 }
 
                 return true;

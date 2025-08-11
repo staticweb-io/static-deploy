@@ -147,10 +147,11 @@ class URLHelper {
     }
 
     public static function isProtocolRelative( string $url ): bool {
-        if ( $url[0] === '/' ) {
-            if ( $url[1] === '/' ) {
-                return true;
-            }
+        if ( $url[0] !== '/' ) {
+            return false;
+        }
+        if ( $url[1] === '/' ) {
+            return true;
         }
 
         return false;
