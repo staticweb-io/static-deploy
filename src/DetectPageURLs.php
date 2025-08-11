@@ -26,7 +26,7 @@ class DetectPageURLs {
         foreach ( $page_ids as $page_id ) {
             $permalink = get_page_link( $page_id );
 
-            if ( strpos( $permalink, '?post_type' ) !== false ) {
+            if ( str_contains( $permalink, '?post_type' ) ) {
                 continue;
             }
 

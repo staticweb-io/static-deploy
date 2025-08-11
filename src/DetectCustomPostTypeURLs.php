@@ -30,7 +30,7 @@ class DetectCustomPostTypeURLs {
                 continue;
             }
 
-            if ( strpos( $permalink, '?post_type' ) !== false ) {
+            if ( str_contains( $permalink, '?post_type' ) ) {
                 continue;
             }
 

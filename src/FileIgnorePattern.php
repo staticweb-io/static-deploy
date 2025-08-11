@@ -38,7 +38,7 @@ class FileIgnorePattern {
             $this->only_directories = false;
         }
 
-        if ( strpos( $pattern, '/' ) === false ) {
+        if ( ! str_contains( $pattern, '/' ) ) {
             $pattern = '**/' . $pattern;
         } elseif ( substr( $pattern, 0, 1 ) !== '/' ) {
             $pattern = '/' . $pattern;

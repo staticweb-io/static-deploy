@@ -16,18 +16,18 @@ final class OptionsTest extends TestCase {
         $local_dir_path = 0;
         $process_queue_immediately = 0;
         foreach ( $output as $line ) {
-            if ( strpos( (string) $line, 'basicAuthPassword' ) !== false ) {
+            if ( str_contains( (string) $line, 'basicAuthPassword' ) ) {
                 ++$basic_auth_password;
             }
-            if ( strpos( (string) $line, 'deploymentURL' ) !== false
-            && strpos( (string) $line, 'https://example.com' ) !== false ) {
+            if ( str_contains( (string) $line, 'deploymentURL' )
+            && str_contains( (string) $line, 'https://example.com' ) ) {
                 ++$deployment_url;
             }
-            if ( strpos( (string) $line, 'local_dirPath' ) !== false ) {
+            if ( str_contains( (string) $line, 'local_dirPath' ) ) {
                 ++$local_dir_path;
             }
-            if ( strpos( (string) $line, 'processQueueImmediately' ) !== false
-            && strpos( (string) $line, '0' ) !== false ) {
+            if ( str_contains( (string) $line, 'processQueueImmediately' )
+            && str_contains( (string) $line, '0' ) ) {
                 ++$process_queue_immediately;
             }
         }

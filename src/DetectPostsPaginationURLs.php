@@ -72,7 +72,7 @@ class DetectPostsPaginationURLs {
             $plural_form = strtolower( (string) $post_type_labels['name'] );
 
             // skip post type names containing spaces
-            if ( strpos( $plural_form, ' ' ) !== false ) {
+            if ( str_contains( $plural_form, ' ' ) ) {
                 continue;
             }
 
