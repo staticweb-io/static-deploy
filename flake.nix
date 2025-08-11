@@ -39,9 +39,12 @@
             let base = baseNameOf path;
             in type == "directory" && base == "src"
             || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
-            == "views" || pkgs.lib.hasInfix "/views/" path || type == "regular"
+            == "tests" || pkgs.lib.hasInfix "/tests/" path || type
+            == "directory" && base == "util" || pkgs.lib.hasInfix "/util/" path
+            || type == "directory" && base == "views"
+            || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock";
+            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
         # Sources used for GitHub releases but not for WordPress.org
         staticDeploySrcGitHub = pkgs.lib.cleanSourceWith {
@@ -51,30 +54,33 @@
             in type == "directory" && base == "src-github"
             || pkgs.lib.hasInfix "/src-github/" path;
         };
-        staticDeploySrcDev = pkgs.lib.cleanSourceWith {
-          src = self;
-          filter = path: type:
-            let base = baseNameOf path;
-            in type == "directory" && base == "src"
-            || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
-            == "tests" || pkgs.lib.hasInfix "/tests/" path || type
-            == "directory" && base == "views"
-            || pkgs.lib.hasInfix "/views/" path || type == "regular"
-            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
-        };
-        staticDeployWpOrgSrc = runCommand "static-deploy" { } ''
-          mkdir -p $out
+        staticDeployWpOrgSrc = runCommand "static-deploy-wp-org-src" {
+          nativeBuildInputs = [ php phpPackages.composer ];
+        } ''
+          export PLUGIN_DIR="$TMPDIR/${name}"
+          mkdir -p "$PLUGIN_DIR"
+          cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
+          cp -r --no-preserve=mode "${staticDeploySrc}"/* .
+
+          # Lock certain constants and run rector to remove dead code
+          mv constants-wp-org.php constants.php
+          mkdir src-github # Prevent an error
+          composer rector
+
+          # Remove files that aren't needed in the release artifact
+          rm -rf "constants*.php" util tests vendor
+
+          mkdir -p "$out"
+          cp -r src static-deploy.php uninstall.php "$out"
+          # Add release deps
           cp -r "${composerVendor}/vendor" "$out"
-          cp -r "${staticDeploySrc}"/* "$out"
         '';
         staticDeploy = runCommand "static-deploy" { } ''
           export PLUGIN_DIR="$TMPDIR/${name}"
           mkdir -p "$PLUGIN_DIR"
-          cp -r --dereference --no-preserve=mode,ownership "${staticDeployWpOrgSrc}"/* "$PLUGIN_DIR"
-          cp -r --dereference --no-preserve=mode,ownership "${staticDeploySrcGitHub}"/src-github/* "$PLUGIN_DIR"/src
+          cp -r --no-preserve=mode "${staticDeploySrc}"/* "$PLUGIN_DIR"
+          cp -r --no-preserve=mode "${staticDeploySrcGitHub}"/src-github/* "$PLUGIN_DIR"/src
           cd "$PLUGIN_DIR"
-          chmod 600 vendor/composer/autoload_*.php
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
           rm composer.json composer.lock
           mkdir -p $out
@@ -85,7 +91,7 @@
           pname = "static-deploy-check";
           version = version;
 
-          src = staticDeploySrcDev;
+          src = staticDeploySrc;
 
           nativeBuildInputs = [ bash php ];
 
@@ -107,7 +113,7 @@
         };
       in {
         checks = { inherit staticDeployCheck; };
-        lib = { inherit staticDeploySrcDev staticDeploySrc; };
+        lib = { inherit staticDeploySrc; };
         packages = {
           inherit composerVendorDev composerVendor staticDeploy;
           plugin = staticDeploy;
