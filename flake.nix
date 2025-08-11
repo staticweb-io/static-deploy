@@ -75,7 +75,7 @@
           composer rector
 
           mkdir -p "$out"
-          cp -r src static-deploy.php uninstall.php "$out"
+          cp -r src static-deploy.php uninstall.php views "$out"
           # Add release deps
           cp -r "${composerVendor}/vendor" "$out"
         '';
