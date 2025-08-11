@@ -86,23 +86,13 @@ class WsLog {
         if ( defined( 'WP_CLI' ) ) {
             $date = current_time( 'c' );
             $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
-            switch ( $level ) {
-                case 'debug':
-                    \WP_CLI::debug( $colorized );
-                    break;
-                case 'error':
-                    \WP_CLI::error_multi_line( [ $colorized ] );
-                    break;
-                case 'info':
-                    \WP_CLI::log( $colorized );
-                    break;
-                case 'warn':
-                    \WP_CLI::warning( $colorized );
-                    break;
-                default:
-                    self::ex( "Invalid log level: $level" );
-                    break;
-            }
+            match ( $level ) {
+                'debug' => \WP_CLI::debug( $colorized ),
+                'error' => \WP_CLI::error_multi_line( [ $colorized ] ),
+                'info' => \WP_CLI::log( $colorized ),
+                'warn' => \WP_CLI::warning( $colorized ),
+                default => self::ex( "Invalid log level: $level" ),
+            };
         }
     }
 

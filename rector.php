@@ -4,6 +4,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\SetList;
 
@@ -18,6 +19,7 @@ return RectorConfig::configure()
     )
     ->withRules(
         [
+            ChangeSwitchToMatchRector::class,
             ClosureToArrowFunctionRector::class,
             FirstClassCallableRector::class,
         ]
