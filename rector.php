@@ -19,6 +19,7 @@ return RectorConfig::configure()
             __DIR__ . '/views',
         ]
     )
+    ->withRootFiles() // Include static-deploy.php and uninstall.php
     ->withRules(
         [
             ChangeSwitchToMatchRector::class,
