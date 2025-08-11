@@ -253,13 +253,11 @@ final class FileHelperTest extends TestCase {
      * @return void
      */
     public function testPathLooksCrawlableExtension() {
-        $looks_crawlable = function ( $file_name ) {
-            return FilesHelper::pathLooksCrawlable(
-                $file_name,
-                [],
-                [ '.unknown' ]
-            );
-        };
+        $looks_crawlable = ( fn( $file_name ) => FilesHelper::pathLooksCrawlable(
+            $file_name,
+            [],
+            [ '.unknown' ]
+        ) );
 
         // We've disallowed .unknown - test it
         $expected = false;

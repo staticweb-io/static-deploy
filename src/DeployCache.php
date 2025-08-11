@@ -72,9 +72,7 @@ class DeployCache {
             }
 
             $path_hashes = array_map(
-                function ( PathInfo $pi ): string {
-                    return $pi->getPathHash();
-                },
+                fn( PathInfo $pi ): string => $pi->getPathHash(),
                 $to_lookup,
             );
 

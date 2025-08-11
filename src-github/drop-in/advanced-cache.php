@@ -469,9 +469,7 @@ class StaticDeployPageCache {
         add_filter(
             'static_deploy_page_cache_get_instance',
             // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-            function ( $instance = null ) {
-                return $this;
-            },
+            fn($instance = null) => $this,
             10,
             1
         );

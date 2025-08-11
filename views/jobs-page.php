@@ -20,13 +20,9 @@ $jobs = $view['jobs'];
  */
 $options = $view['jobOptions'];
 
-$input = function ( $name ) use ( $options ) {
-    return OptionRenderer::optionInput( $options[ $name ] );
-};
+$input = ( fn( $name ) => OptionRenderer::optionInput( $options[ $name ] ) );
 
-$label = function ( $name, $description = false ) use ( $options ) {
-    return OptionRenderer::optionLabel( $options[ $name ], $description );
-};
+$label = ( fn( $name, $description = false ) => OptionRenderer::optionLabel( $options[ $name ], $description ) );
 
 $row = function ( $name ) use ( $options ) {
     $opt = $options[ $name ];

@@ -3,6 +3,7 @@
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
@@ -12,6 +13,11 @@ return RectorConfig::configure()
             __DIR__ . '/src-github',
             __DIR__ . '/tests',
             __DIR__ . '/views',
+        ]
+    )
+    ->withRules(
+        [
+            ClosureToArrowFunctionRector::class,
         ]
     )
     ->withSets( [ SetList::DEAD_CODE ] )
