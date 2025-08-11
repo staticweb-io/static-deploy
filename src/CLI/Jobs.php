@@ -11,7 +11,7 @@ use WP_CLI;
  * Manage the job queue
  */
 class Jobs {
-    public static function registerCommands(): void {
+    public function registerCommands(): void {
         Subcommand::register(
             'jobs',
             self::class,
@@ -20,11 +20,11 @@ class Jobs {
         // Deprecated aliases
         Subcommand::registerHidden(
             'process-queue',
-            self::__deprecatedProcessQueue( ... ),
+            $this->__deprecatedProcessQueue( ... ),
         );
         Subcommand::registerHidden(
             'process_queue',
-            self::__deprecatedProcessQueue( ... ),
+            $this->__deprecatedProcessQueue( ... ),
         );
     }
 

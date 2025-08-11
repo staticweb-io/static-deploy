@@ -11,7 +11,7 @@ use WP_CLI;
 class CLI {
     public static function init(): void {
         WP_CLI::add_command( 'static-deploy', self::class );
-        CLI\Jobs::registerCommands();
+        new CLI\Jobs()->registerCommands();
         CLI\Memcached::registerCommands();
 
         WP_CLI::add_hook(
