@@ -19,12 +19,12 @@ class PathInfo {
     public readonly string $path;
 
     private ?string $content_hash;
-    private ?string $path_hash;
+    private ?string $path_hash = null;
 
     /**
      * array<string, string> Array of namespace to data_hash
      */
-    public ?array $deploy_cache;
+    public ?array $deploy_cache = null;
 
     public function __construct(
         string|UriInterface $path,
