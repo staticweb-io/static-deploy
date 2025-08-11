@@ -25,10 +25,11 @@ if ( ! defined( 'STATIC_DEPLOY_DEBUG' ) ) {
         WP_DEBUG
         || ( defined( 'WP_CLI' ) && WP_CLI::get_config( 'debug' ) )
     ) {
-        define( 'STATIC_DEPLOY_DEBUG', true );
+        $enabled = true;
     } else {
-        define( 'STATIC_DEPLOY_DEBUG', false );
+        $enabled = false;
     }
+    define( 'STATIC_DEPLOY_DEBUG', $enabled );
 }
 
 if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {
