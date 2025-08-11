@@ -595,7 +595,7 @@ class StaticDeployPageCache {
 
         // HEAD responses can use cached GET response headers
         if ( ! $response && $method === 'HEAD' ) {
-            $response = $this->get_cached_response(
+            return $this->get_cached_response(
                 'GET',
                 $uri_hash,
                 $current_time,
