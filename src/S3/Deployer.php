@@ -343,7 +343,7 @@ class Deployer {
 
     public function addCfPath( string $path ): void {
         if ( $this->cf_max_paths >= count( $this->cf_stale_paths ) ) {
-            if ( 0 === substr_compare( $path, '/index.html', -11 ) ) {
+            if ( str_ends_with( $path, '/index.html' ) ) {
                 $path = substr( $path, 0, -10 );
             }
             $path = str_replace( ' ', '%20', $path );

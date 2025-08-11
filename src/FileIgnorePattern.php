@@ -31,7 +31,7 @@ class FileIgnorePattern {
     public function __construct(
         string $pattern,
     ) {
-        if ( substr( $pattern, -1 ) === '/' ) {
+        if ( str_ends_with( $pattern, '/' ) ) {
             $this->only_directories = true;
             $pattern = substr( $pattern, 0, -1 );
         } else {
