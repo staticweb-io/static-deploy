@@ -32,7 +32,7 @@ if ( ! class_exists( 'Memcached' ) ) {
         // the end of script execution.
         private array $local_cache;
         // Marker object used to represent missing cache items
-        private object $local_missing_marker;
+        private readonly object $local_missing_marker;
         // Array of group_name => array of keys => values
         private array $non_persistent_groups;
 
@@ -42,12 +42,12 @@ if ( ! class_exists( 'Memcached' ) ) {
             /**
              * Prefix used for cache keys in non-global groups
              */
-            private string $non_global_prefix,
+            private readonly string $non_global_prefix,
             string $cache_key_salt = '',
             /**
              * Prefix used for cache keys in global groups
              */
-            private string $global_prefix = 'global',
+            private readonly string $global_prefix = 'global',
         ) {
             if ( $cache_key_salt === '' ) {
                 $this->cache_key_salt = '';

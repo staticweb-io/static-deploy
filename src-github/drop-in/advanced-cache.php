@@ -108,7 +108,7 @@ interface StaticDeployCacheInterface {
 
 class StaticDeployFileCache implements StaticDeployCacheInterface {
     public string $dir;
-    private string $temp_dir;
+    private readonly string $temp_dir;
 
     public function __construct(
         string $dir,
@@ -428,7 +428,7 @@ class StaticDeployPageCache {
 
     public function __construct(
         public StaticDeployCacheInterface $cache,
-        private string $default_cache_control,
+        private readonly string $default_cache_control,
         public string $hash_algo,
     ) {
         $this->headers = [];

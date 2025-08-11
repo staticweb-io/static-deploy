@@ -9,9 +9,9 @@ use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use Psr\Http\Message\UriInterface;
 
 class URLDiscovery {
-    private string $destination_host;
-    private string $destination_url;
-    private FileFiltering $file_filtering;
+    private readonly string $destination_host;
+    private readonly string $destination_url;
+    private readonly FileFiltering $file_filtering;
 
     public function __construct() {
         $this->destination_url = untrailingslashit(
