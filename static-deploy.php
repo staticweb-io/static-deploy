@@ -36,7 +36,7 @@ if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {
     require_once STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 }
 
-if ( ! class_exists( 'StaticDeploy\Controller' ) ) {
+if ( ! class_exists( \StaticDeploy\Controller::class ) ) {
     if ( file_exists( STATIC_DEPLOY_PATH . 'src/StaticDeployException.php' ) ) {
         require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
 
