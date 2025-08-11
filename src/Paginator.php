@@ -90,7 +90,7 @@ class Paginator {
         $keys = array_keys( $records );
         $values = array_values( $records );
 
-        return (array) array_combine(
+        return array_combine(
             array_slice( $keys, ( $page - 1 ) * $page_size, $page_size ),
             array_slice( $values, ( $page - 1 ) * $page_size, $page_size )
         );

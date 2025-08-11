@@ -153,7 +153,7 @@ class Deployer {
                         'Bucket' => $base_put_data['Bucket'],
                         'Key' => $s3_key,
                     ];
-                    $hash = md5( $cmd_name . (string) json_encode( $cmd_data ) );
+                    $hash = md5( $cmd_name . json_encode( $cmd_data ) );
                 } else {
                     $cmd_name = 'PutObject';
                     $cmd_data = array_merge( [], $base_put_data );
@@ -170,7 +170,7 @@ class Deployer {
                     }
 
                     $cmd_data['Key'] = $s3_key;
-                    $hash = md5( $cmd_name . (string) json_encode( $cmd_data ) );
+                    $hash = md5( $cmd_name . json_encode( $cmd_data ) );
 
                     if ( $body !== null ) {
                         $cmd_data['Body'] = $body;

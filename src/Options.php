@@ -604,7 +604,7 @@ VALUES (%s, %s, %s);";
 
         if ( $action === 'decrypt' ) {
             return (string) openssl_decrypt(
-                (string) base64_decode( $str ),
+                base64_decode( $str ),
                 $encrypt_method,
                 $hex_key,
                 0,
@@ -614,7 +614,7 @@ VALUES (%s, %s, %s);";
 
         $output = openssl_encrypt( $str, $encrypt_method, $hex_key, 0, $hex_iv );
 
-        return (string) base64_encode( (string) $output );
+        return base64_encode( (string) $output );
     }
 
     /**
