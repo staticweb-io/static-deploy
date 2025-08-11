@@ -38,6 +38,7 @@ return RectorConfig::configure()
         [
             SetList::DEAD_CODE,
             SetList::EARLY_RETURN,
+            SetList::INSTANCEOF,
         ]
     )
     ->withSkip(
