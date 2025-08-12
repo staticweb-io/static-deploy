@@ -60,7 +60,7 @@
   have the "Using WordPress CLI" value set.
 - Don't register hooks in the non-admin part of the
   site. This avoids some unnecessary load.
-- Add a "--path-hash-prefix=<prefix>" option
+- Add a "--path-hash-prefix=&lt;prefix&gt;" option
   to the crawl and direct_deploy CLI commands.
   This allows restricting processing to a stable
   subset of paths.
@@ -104,9 +104,9 @@
 - Prevent an error that could occur if no AWS
   credentials were set when the admin bar checked
   for invalidation status.
-- Add "addons enable <addon>" and "addons disable <addon>"
+- Add "addons enable &lt;addon&gt;" and "addons disable &lt;addon&gt;"
   commands.
-- Print resulting state when using the "addons toggle <addon>"
+- Print resulting state when using the "addons toggle &lt;addon&gt;"
   command.
 - Add a deployer that writes files to a local directory.
   This is useful for cases where you are serving files
