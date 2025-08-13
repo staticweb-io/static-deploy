@@ -21,7 +21,6 @@ return RectorConfig::configure()
     ->withPaths(
         [
             __DIR__ . '/src',
-            __DIR__ . '/src-github',
             __DIR__ . '/tests',
             __DIR__ . '/views',
         ]

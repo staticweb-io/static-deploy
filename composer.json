@@ -69,8 +69,8 @@
     },
     "scripts": {
         "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
-        "phpcbf": "php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src src-github tests views *.php",
-        "phpcs": "php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src src-github tests views *.php",
+        "phpcbf": "php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php",
+        "phpcs": "php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php",
         "lint": "php ./vendor/bin/parallel-lint --exclude integration-tests --exclude vendor .",
         "rector": "php ./vendor/bin/rector --debug",
         "test": [

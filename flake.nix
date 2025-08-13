@@ -24,14 +24,14 @@
           pname = "${name}-composer-deps";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-4eHxmlB7KQsEn1gCTGPJzklnYTrRzpI+Pt8ccrl7Jkc=";
+          vendorHash = "sha256-c7zv3Wprd5rSeDpRLcfBkMEADDrJP5O0XKYQOIk1mSM=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-4M4bKmJMZyM+DMVIUwKdbhC6rI+xIDtAtWHu1l9JAS4=";
+          vendorHash = "sha256-WJ3zfADVJQTLeWLlDBTX34O90SHxLTgIy1nvqUqPIfE=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -45,14 +45,6 @@
             || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
-        };
-        # Sources used for GitHub releases but not for WordPress.org
-        staticDeploySrcGitHub = pkgs.lib.cleanSourceWith {
-          src = self;
-          filter = path: type:
-            let base = baseNameOf path;
-            in type == "directory" && base == "src-github"
-            || pkgs.lib.hasInfix "/src-github/" path;
         };
         wpOrgExtras = pkgs.lib.cleanSourceWith {
           src = self;
@@ -71,7 +63,6 @@
 
           # Lock certain constants and run rector to remove dead code
           cp ${wpOrgExtras}/wp-org/constants.php constants.php
-          mkdir src-github # Prevent an error
           composer rector
 
           mkdir -p "$out"
@@ -85,7 +76,6 @@
           cd "$PLUGIN_DIR"
           cp -r --no-preserve=mode "${composerVendor}"/* .
           cp -r --no-preserve=mode "${staticDeploySrc}"/* .
-          cp -r --no-preserve=mode "${staticDeploySrcGitHub}"/src-github/* ./src
           ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
           rm composer.json composer.lock
           mkdir -p $out
@@ -113,7 +103,6 @@
             cd "$PLUGIN_DIR"
             cp -a "${composerVendorDev}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
-            cp -a "${staticDeploySrcGitHub}"/* .
             composer lint
             composer phpcs
             # Run directly because composer swallows the exit code
