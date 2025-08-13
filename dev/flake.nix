@@ -411,8 +411,8 @@
               [ config.process-compose."default".services.outputs.devShell ];
           };
           packages = {
-            wordpress-firecracker =
-              wordpress-firecracker.config.microvm.declaredRunner;
+            #wordpress-firecracker =
+            #  wordpress-firecracker.config.microvm.declaredRunner;
           };
         };
     } // {
