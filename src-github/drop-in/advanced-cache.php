@@ -438,7 +438,7 @@ class StaticDeployPageCache {
         add_filter(
             'static_deploy_page_cache_get_instance',
             // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-            fn( $instance = null ) => $this,
+            fn( $instance = null ): static => $this,
             10,
             1
         );
@@ -829,7 +829,7 @@ if ( ! defined( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO' ) ) {
     define( 'STATIC_DEPLOY_PAGE_CACHE_HASH_ALGO', 'sha256' );
 }
 
-( function () {
+( function (): void {
     if ( defined( 'STATIC_DEPLOY_PAGE_CACHE_LARGE_BLOB_THRESHOLD' ) ) {
         $large_blob_threshold = STATIC_DEPLOY_PAGE_CACHE_LARGE_BLOB_THRESHOLD;
     } else {

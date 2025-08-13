@@ -268,7 +268,7 @@ class SitemapParser {
         // Split lines into array
         $lines = array_filter(
             array_map(
-                fn ( $line ) => trim( (string) $line ),
+                fn ( $line ): string => trim( (string) $line ),
                 (array) preg_split( '/\r\n|\n|\r/', $robotstxt )
             )
         );
@@ -286,7 +286,7 @@ class SitemapParser {
 
             // Split by directive and rule
             $pair = array_map(
-                fn ( $line ) => trim( (string) $line ),
+                fn ( $line ): string => trim( (string) $line ),
                 (array) preg_split( '/:/', $line, 2 )
             );
             // Check if the line contains a sitemap
@@ -394,7 +394,7 @@ class SitemapParser {
         }
         $array = array_filter(
             array_map(
-                fn ( $line ) => trim( (string) $line ),
+                fn ( $line ): string => trim( (string) $line ),
                 (array) preg_split( '/\r\n|\n|\r/', $str )
             )
         );

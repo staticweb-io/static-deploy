@@ -203,7 +203,7 @@ class CrawledFiles {
                 // Delete previously generated files under the directories,
                 // both the crawled and the processed.
                 array_map(
-                    function ( $dir ) use ( $path ) {
+                    function ( $dir ) use ( $path ): void {
                         $file_path = FilesHelper::getFilePath( $dir, $path->path );
                         $suffix = ltrim( $file_path, '/' );
                         $full_path = trailingslashit( $dir ) . $suffix;

@@ -85,7 +85,7 @@ class ViewRenderer {
         if ( $search_term !== '' ) {
             $urls = array_filter(
                 $urls,
-                fn( $url ) => stripos( $url, $search_term ) !== false
+                fn( $url ): bool => stripos( $url, $search_term ) !== false
             );
         }
 
@@ -125,7 +125,7 @@ class ViewRenderer {
         if ( $search_term !== '' ) {
             $urls = array_filter(
                 $urls,
-                fn( $url ) => stripos( $url->url ?? '', $search_term ) !== false
+                fn( $url ): bool => stripos( $url->url ?? '', $search_term ) !== false
             );
         }
 
@@ -156,7 +156,7 @@ class ViewRenderer {
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
-                fn( $path ) => stripos( $path, $search_term ) !== false
+                fn( $path ): bool => stripos( $path, $search_term ) !== false
             );
         }
 
@@ -187,7 +187,7 @@ class ViewRenderer {
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
-                fn( $path ) => stripos( $path, $search_term ) !== false
+                fn( $path ): bool => stripos( $path, $search_term ) !== false
             );
         }
 
@@ -221,7 +221,7 @@ class ViewRenderer {
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
-                fn( $path ) => stripos( $path, $search_term ) !== false
+                fn( $path ): bool => stripos( $path, $search_term ) !== false
             );
         }
 

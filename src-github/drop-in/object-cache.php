@@ -328,7 +328,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $ks = array_map(
-                fn( $k ) => $this->cache_key( $k, $group ),
+                fn( $k ): string => $this->cache_key( $k, $group ),
                 $keys,
             );
 
@@ -451,7 +451,7 @@ if ( ! class_exists( 'Memcached' ) ) {
             }
 
             $ks = array_map(
-                fn( $k ) => $this->cache_key( $k, $group ),
+                fn( $k ): string => $this->cache_key( $k, $group ),
                 $keys,
             );
 

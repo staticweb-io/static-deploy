@@ -38,7 +38,10 @@ trait ITTrait {
         exec( $cmd . ' 2>&1', $output, $exit_code );
 
         foreach ( $expect_warnings as $pattern => $expected_count ) {
-            $matches = array_filter( $output, fn( $line ) => preg_match( $pattern, $line ) );
+            $matches = array_filter(
+                $output,
+                fn( $line ): bool => preg_match( $pattern, $line ) === 1,
+            );
             $this->assertCount(
                 $expected_count,
                 $matches,

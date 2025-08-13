@@ -240,7 +240,7 @@ class Deployer {
             [
                 // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
                 'fulfilled' =>
-                function ( $result, $iter_key, $promise ) use ( &$items_by_iter_key ) {
+                function ( $result, $iter_key, $promise ) use ( &$items_by_iter_key ): void {
                     $item = $items_by_iter_key[ $iter_key ];
                     DeployCache::addFile(
                         $item['cache_key'],
@@ -256,7 +256,7 @@ class Deployer {
                 },
                 // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
                 'rejected' =>
-                function ( $reason, $iter_key, $promise ) use ( &$items_by_iter_key ) {
+                function ( $reason, $iter_key, $promise ) use ( &$items_by_iter_key ): void {
                     $item = $items_by_iter_key[ $iter_key ];
                     WsLog::e( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
                     unset( $items_by_iter_key[ $iter_key ] );

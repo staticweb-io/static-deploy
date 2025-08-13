@@ -52,7 +52,7 @@ class AdminBar {
         // Sort alphabetically by label
         uasort(
             $menu_items,
-            fn( $a, $b ) => strcmp( (string) $a->label, (string) $b->label )
+            fn( $a, $b ): int => strcmp( (string) $a->label, (string) $b->label )
         );
 
         foreach ( $menu_items as $id => $item ) {

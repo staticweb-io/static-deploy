@@ -226,7 +226,10 @@ class Crawler {
         if ( $path_hash_prefix !== null && $path_hash_prefix !== '' ) {
             $path_iter = new \CallbackFilterIterator(
                 $path_iter,
-                fn( $path ) => str_starts_with( md5( (string) $path->path ), $path_hash_prefix )
+                fn( $path ): bool => str_starts_with(
+                    md5( (string) $path->path ),
+                    $path_hash_prefix
+                )
             );
             $path_iter->rewind();
         }
@@ -237,7 +240,7 @@ class Crawler {
         $site_urls = [ "http://$site_host", "https://$site_host" ];
 
         $in_flight = [];
-        $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ) {
+        $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ): void {
             $detected = $path_iter->current();
             $path = $detected->path;
             $in_flight[ $path ] = $this->crawlPath( $detected, $site_urls );
