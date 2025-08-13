@@ -53,34 +53,36 @@
             in type == "directory" && base == "wp-org"
             || pkgs.lib.hasInfix "/wp-org/" path;
         };
-        staticDeployWpOrgSrc = runCommand "static-deploy-wp-org-src" {
-          nativeBuildInputs = [ php phpPackages.composer ];
-        } ''
-          export PLUGIN_DIR="$TMPDIR/${name}"
-          mkdir -p "$PLUGIN_DIR"
-          cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
-          cp -r --no-preserve=mode "${staticDeploySrc}"/* .
+        buildStaticDeploySrc = constantsFile:
+          runCommand "static-deploy-source" {
+            nativeBuildInputs = [ php phpPackages.composer ];
+          } ''
+            export PLUGIN_DIR="$TMPDIR/${name}"
+            mkdir -p "$PLUGIN_DIR"
+            cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
+            cp -r --no-preserve=mode "${staticDeploySrc}"/* .
 
-          # Lock certain constants and run rector to remove dead code
-          cp ${wpOrgExtras}/wp-org/constants.php constants.php
-          composer rector
+            # Lock certain constants and run rector to remove dead code
+            cp ${constantsFile} constants.php
+            composer rector
 
-          mkdir -p "$out"
-          cp -r src static-deploy.php uninstall.php views "$out"
-          # Add release deps
-          cp -r "${composerVendor}/vendor" "$out"
-        '';
+            rm -rf vendor
+            cp -r --no-preserve=mode "${composerVendor}/vendor" .
+            composer dump-autoload --no-dev --optimize
+
+            mkdir -p "$out"
+            cp -r src static-deploy.php uninstall.php vendor views "$out"
+          '';
+        staticDeployWpOrgSrc =
+          buildStaticDeploySrc "${wpOrgExtras}/wp-org/constants.php";
+        staticDeployGitHubSrc =
+          buildStaticDeploySrc "${staticDeploySrc}/constants.php";
         staticDeploy = runCommand "static-deploy" { } ''
-          export PLUGIN_DIR="$TMPDIR/${name}"
-          mkdir -p "$PLUGIN_DIR"
-          cd "$PLUGIN_DIR"
-          cp -r --no-preserve=mode "${composerVendor}"/* .
-          cp -r --no-preserve=mode "${staticDeploySrc}"/* .
-          ${phpPackages.composer}/bin/composer dump-autoload --no-dev --optimize
-          rm composer.json composer.lock
+          mkdir "$TMPDIR/${name}"
+          cd "$TMPDIR/${name}"
+          ln -s "${staticDeployGitHubSrc}" "${name}"
           mkdir -p $out
-          cd "$PLUGIN_DIR"/..
-          ${zip}/bin/zip -r -9 $out/static-deploy.zip "$(basename "$PLUGIN_DIR")"
+          ${zip}/bin/zip -r -9 $out/static-deploy.zip "${name}"
         '';
         staticDeployCheck = stdenv.mkDerivation {
           pname = "static-deploy-check";
@@ -115,6 +117,7 @@
         packages = {
           inherit composerVendorDev composerVendor staticDeploy;
           plugin = staticDeploy;
+          pluginGitHubSrc = staticDeployGitHubSrc;
           pluginWpOrgSrc = staticDeployWpOrgSrc;
         };
       });
