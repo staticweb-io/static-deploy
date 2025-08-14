@@ -213,6 +213,11 @@
                 STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL = "max-age=6";
               };
             };
+          wpPluginCheck = fetchurl {
+            url =
+              "https://downloads.wordpress.org/plugin/plugin-check.1.6.0.zip";
+            hash = "sha256-dOD1BORx3wG6NTTl+e+vvGF57F23a7OO4YYv6/slMPY=";
+          };
           wpInstaller = dbHost: dbUser: dataDir:
             writeShellApplication {
               name = "wordpress-installer";
@@ -224,10 +229,11 @@
                 cp "${wpConfig dbHost dbUser}" "${dataDir}/wp-config.php"
                 update-wordpress ${dataDir} ${wordpress}
                 cd ${dataDir}
-                rm -rf "./wp-content/plugins/static-deploy"
                 wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
                 wp option update permalink_structure "/%postname%/"
+                rm -rf "./wp-content/plugins/plugin-check" "./wp-content/plugins/static-deploy"
                 wp plugin install --activate ${staticDeploy}/static-deploy.zip
+                wp plugin install --activate ${wpPluginCheck}
               '';
             };
           wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
