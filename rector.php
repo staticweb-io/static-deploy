@@ -3,6 +3,7 @@
 require_once __DIR__ . '/util/rector/RemoveAlwaysFalseIfStatementRector.php';
 require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
 require_once __DIR__ . '/util/rector/ReplaceKnownDefinedWithBooleanRector.php';
+require_once __DIR__ . '/util/rector/ReplaceNegatedBooleanRector.php';
 
 use Rector\Config\RectorConfig;
 use Rector\Constants\Rector\FuncCall\ReplaceKnownDefinedWithBooleanRector;
@@ -11,6 +12,7 @@ use Rector\DeadCode\Rector\If_\RemoveAlwaysFalseIfStatementRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector2;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Set\ValueObject\SetList;
+use Rector\Transform\Rector\BooleanNot\ReplaceNegatedBooleanRector;
 
 // Search rules at https://getrector.com/find-rule
 
@@ -34,6 +36,7 @@ return RectorConfig::configure()
             RemoveAlwaysFalseIfStatementRector::class,
             RemoveAlwaysTrueIfConditionRector2::class,
             ReplaceKnownDefinedWithBooleanRector::class,
+            ReplaceNegatedBooleanRector::class,
         ]
     )
     ->withSets(
