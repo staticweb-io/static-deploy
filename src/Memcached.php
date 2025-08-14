@@ -98,7 +98,7 @@ class Memcached {
             );
         }
 
-        fwrite( $sock, $command . "\r\n" );
+        stream_socket_sendto( $sock, $command . "\r\n" );
         while ( ! feof( $sock ) ) {
             $line = fgets( $sock );
             if ( $line === false || rtrim( $line ) === 'END' ) {
@@ -107,7 +107,7 @@ class Memcached {
             yield $line;
         }
 
-        fclose( $sock );
+        stream_socket_shutdown( $sock, STREAM_SHUT_RDWR );
     }
 
     public static function parseItem( string $line ): array {
