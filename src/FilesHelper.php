@@ -231,10 +231,27 @@ class FilesHelper {
         }
 
         try {
+            if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+            || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+                self::initFS( null, true );
+            }
+
             if ( $path_info->body ) {
-                $result = file_put_contents( $full_path, $path_info->body );
+                if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+                || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+                    global $wp_filesystem;
+                    $result = $wp_filesystem->put_contents( $full_path, $path_info->body );
+                } else {
+                    $result = file_put_contents( $full_path, $path_info->body );
+                }
             } elseif ( $path_info->filename ) {
-                $result = copy( $path_info->filename, $full_path );
+                if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+                || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+                    global $wp_filesystem;
+                    $result = $wp_filesystem->copy( $path_info->filename, $full_path, true );
+                } else {
+                    $result = copy( $path_info->filename, $full_path );
+                }
             } else {
                 throw WsLog::ex(
                     'No contents found for PathInfo: ' . json_encode( $path_info )
