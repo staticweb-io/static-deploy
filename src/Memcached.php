@@ -45,7 +45,18 @@ class Memcached {
             $total_weight += $s['weight'] ?? 1;
         }
 
-        $rand = mt_rand( 1, $total_weight );
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
+            $rand = wp_rand( 1, $total_weight );
+        } else {
+            $rand = mt_rand( 1, $total_weight );
+        }
+
+        if ( ! defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) || ! STATIC_DEPLOY_WP_ORG_MODE ) {
+            $rand = mt_rand( 1, $total_weight );
+        } else {
+            $rand = wp_rand( 1, $total_weight );
+        }
+
         $current = 0;
 
         foreach ( $servers as $server ) {
