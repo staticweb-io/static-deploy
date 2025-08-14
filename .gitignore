@@ -3,6 +3,7 @@
 !.envrc
 !.github
 !.gitignore
+!.kiro
 
 /vendor/
 /vendor_prefixed/
