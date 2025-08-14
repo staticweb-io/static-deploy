@@ -65,8 +65,8 @@ class Memcached {
      */
     public static function getSocket(
         \Memcached $mc,
-        int &$error_code = null,
-        string &$error_message = null,
+        ?int &$error_code = null,
+        ?string &$error_message = null,
     ) {
         $server = self::getRandomServer( $mc );
         $host = $server['host'];
