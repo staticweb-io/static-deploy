@@ -39,6 +39,14 @@
 - Add "extra_detected_files" filter that allows plugins to
   add additional files when the "detect" step is run.
 - Fix text domain for "Settings" translation.
+- Use WP_Filesystem methods by default instead of direct
+  file access. These provide more control and can work
+  over FTP and SSH. The previous behavior of direct file
+  access can be enabled by setting
+  `define('STATIC_DEPLOY_DIRECT_FILE_ACCESS', true);` in
+  `wp-config.php`.
+  - This was changed because direct file access is prohibited
+    by the wordpress.org plugin guidelines.
 
 ## 9.3.2 (2025-07-29)
 

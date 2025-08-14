@@ -50,7 +50,12 @@ class FilesHelper {
      * @throws StaticDeployException
      */
     public static function deleteDirWithFiles( string $dir ): void {
-        if ( is_dir( $dir ) ) {
+        if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+        || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+            global $wp_filesystem;
+            self::initFS( null, true );
+            $wp_filesystem->delete( $dir, true, 'd' );
+        } elseif ( is_dir( $dir ) ) {
             $dir_files = scandir( $dir );
 
             if ( ! $dir_files ) {
