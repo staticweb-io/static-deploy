@@ -94,8 +94,8 @@ class Memcached {
         $sock = self::getSocket( $mc, $error_code, $error_message );
         if ( ! $sock ) {
             throw WsLog::ex(
-                'Failed to connect to Memcached at ' .
-                $host . ':' . $port . ': ' . $error_code . ' ' . $error_message
+                'Failed to connect to Memcached: ' .
+                $error_code . ' ' . $error_message
             );
         }
 
