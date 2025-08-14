@@ -98,7 +98,12 @@ class Memcached {
             );
         }
 
-        stream_socket_sendto( $sock, $command . "\r\n" );
+        $result = stream_socket_sendto( $sock, $command . "\r\n" );
+        if ( ! $result ) {
+            stream_socket_shutdown( $sock, STREAM_SHUT_RDWR );
+            throw WsLog::ex( 'Failed to send message to Memcached' );
+        }
+
         while ( ! feof( $sock ) ) {
             $line = fgets( $sock );
             if ( $line === false || rtrim( $line ) === 'END' ) {
@@ -107,7 +112,10 @@ class Memcached {
             yield $line;
         }
 
-        stream_socket_shutdown( $sock, STREAM_SHUT_RDWR );
+        $result = stream_socket_shutdown( $sock, STREAM_SHUT_RDWR );
+        if ( ! $result ) {
+            throw WsLog::ex( 'Memcached socket shutdown failed' );
+        }
     }
 
     public static function parseItem( string $line ): array {
