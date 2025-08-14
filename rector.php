@@ -2,8 +2,10 @@
 
 require_once __DIR__ . '/util/rector/RemoveAlwaysFalseIfStatementRector.php';
 require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
+require_once __DIR__ . '/util/rector/ReplaceKnownDefinedWithBooleanRector.php';
 
 use Rector\Config\RectorConfig;
+use Rector\Constants\Rector\FuncCall\ReplaceKnownDefinedWithBooleanRector;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysFalseIfStatementRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector2;
@@ -31,6 +33,7 @@ return RectorConfig::configure()
         [
             RemoveAlwaysFalseIfStatementRector::class,
             RemoveAlwaysTrueIfConditionRector2::class,
+            ReplaceKnownDefinedWithBooleanRector::class,
         ]
     )
     ->withSets(
