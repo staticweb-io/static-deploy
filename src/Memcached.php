@@ -72,9 +72,8 @@ class Memcached {
         $host = $server['host'];
         $port = $server['port'];
 
-        return fsockopen(
-            $host,
-            $port,
+        return stream_socket_client(
+            'tcp://' . $host . ':' . $port,
             $error_code,
             $error_message,
             1.0
