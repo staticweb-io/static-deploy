@@ -53,7 +53,7 @@ class LocalDeployer {
             $out_dir = $dir_path;
         }
         if ( ! is_dir( $out_dir ) ) {
-            mkdir( $out_dir, 0774, true );
+            FilesHelper::createDir( $out_dir );
         }
         $out_dir = realpath( $out_dir );
         $out_dir = trailingslashit( $out_dir );

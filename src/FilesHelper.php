@@ -3,6 +3,39 @@
 namespace StaticDeploy;
 
 class FilesHelper {
+    /**
+     * Creates a directory at path and any parent directories that
+     * don't already exist. Returns true if the directory already
+     * exists.
+     *
+     * @return bool true if the directory was created or already exists.
+     *   false otherwise.
+     */
+    public static function createDir(
+        string $directory,
+    ): bool {
+        if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+        || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+            return wp_mkdir_p( $directory );
+        }
+
+        // @phpcs:disable WordPress.PHP.NoSilencedErrors
+        if ( @file_exists( $directory ) ) {
+            // @phpcs:disable WordPress.PHP.NoSilencedErrors
+            return @is_dir( $directory );
+        }
+        // @phpcs:disable WordPress.PHP.NoSilencedErrors
+        $result = @mkdir( $directory, 0775, true );
+        if ( $result ) {
+            return true;
+        }
+        // @phpcs:disable WordPress.PHP.NoSilencedErrors
+        if ( @file_exists( $directory ) ) {
+            // @phpcs:disable WordPress.PHP.NoSilencedErrors
+            return @is_dir( $directory );
+        }
+        return false;
+    }
 
     /**
      * Recursively delete a directory
@@ -74,7 +107,7 @@ class FilesHelper {
         $directory = dirname( $full_path );
 
         if ( ! is_dir( $directory ) ) {
-            if ( ! wp_mkdir_p( $directory ) ) {
+            if ( ! self::createDir( $directory ) ) {
                 WsLog::w( 'Couldn\'t make directory: ' . $directory );
             }
         }
