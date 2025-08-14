@@ -86,7 +86,7 @@
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
           staticDeployPkgs = inputs.static-deploy.packages.${system};
-          staticDeploy = staticDeployPkgs.plugin;
+          staticDeploy = staticDeployPkgs.pluginWpOrg;
           # Note that /tmp/xd has to be created to receive traces
           phpOptions = ''
             opcache.interned_strings_buffer = 16
