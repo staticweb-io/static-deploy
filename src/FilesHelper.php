@@ -163,6 +163,58 @@ class FilesHelper {
     }
 
     /**
+     * Returns a normalized path, resolving . and .. when possible.
+     * May still contain .. if the path is not absolute and contains
+     * more ..s than directories.
+     *
+     * @return string The normalized path.
+     */
+    public static function normalizePath(
+        string $file_path,
+    ): string {
+        if ( DIRECTORY_SEPARATOR !== '/' ) {
+            $file_path = str_replace( DIRECTORY_SEPARATOR, '/', $file_path );
+        }
+
+        // Unix root or Windows UNC path
+        if ( str_starts_with( $file_path, '/' ) ) {
+            $prefix = DIRECTORY_SEPARATOR;
+            // Windows drive
+        } elseif ( preg_match( '/^[a-zA-Z]:/', $file_path ) ) {
+            $prefix = mb_substr( $file_path, 0, 2 ) . DIRECTORY_SEPARATOR;
+            // Not an absolute path
+        } else {
+            $prefix = '';
+        }
+
+        $acc = [];
+        $parts = explode( '/', $file_path );
+        foreach ( $parts as $part ) {
+            if ( '' === $part ) {
+                continue;
+            }
+            if ( '.' === $part ) {
+                continue;
+            }
+            if ( '..' !== $part ) {
+                $acc[] = $part;
+                // .. pops the last directory off if there is one
+            } elseif ( ! empty( $acc ) ) {
+                array_pop( $acc );
+                // If there is nothing to pop and we aren't an absolute
+                // path, keep .. in the normalized path.
+            } elseif ( $prefix !== '' ) {
+                $acc[] = $part;
+            }
+            // If there is nothing to pop and we are an absolute
+            // path, discard the "..". We can't go any further up
+            // than the root.
+        }
+
+        return $prefix . implode( DIRECTORY_SEPARATOR, $acc );
+    }
+
+    /**
      * Write the body or file contents of a PathInfo to disk
      */
     public static function writePathInfo(
