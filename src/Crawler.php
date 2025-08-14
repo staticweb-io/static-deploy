@@ -11,6 +11,8 @@ namespace StaticDeploy;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
@@ -28,10 +30,7 @@ class Crawler {
      */
     private $client;
 
-    /**
-     * @var string
-     */
-    private $site_path;
+    private readonly Uri $site_uri;
 
     /**
      * @var integer
@@ -51,21 +50,20 @@ class Crawler {
     public function __construct(
         public CrawlConfig $crawl_config,
     ) {
-        $this->site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
+        $site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
+        $this->site_uri = Psr7Utils::uriFor( $site_path );
 
         $port_override = apply_filters(
             Controller::getHookName( 'curl_port' ),
             null
         );
-
-        $base_uri = $this->site_path;
-
+        $base_uri = $this->site_uri;
         if ( $port_override ) {
-            $base_uri = "{$base_uri}:{$port_override}";
+            $base_uri = $base_uri->withPort( $port_override );
         }
 
         $opts = [
-            'base_uri' => $base_uri,
+            'base_uri' => (string) $base_uri,
             'verify' => false,
             'http_errors' => false,
             'allow_redirects' => false,
@@ -148,7 +146,7 @@ class Crawler {
     }
 
     public function crawlPath( PathInfo $detected, array $site_urls ): PromiseInterface {
-        $absolute_uri = URLHelper::normalize( $this->site_path . $detected->path );
+        $absolute_uri = URLHelper::normalize( $this->site_uri . $detected->path );
         try {
             if ( $detected->filename ) {
                 $request = new Request( 'HEAD', $absolute_uri );
@@ -234,8 +232,8 @@ class Crawler {
             $path_iter->rewind();
         }
 
-        $site_host = parse_url( $this->site_path, PHP_URL_HOST );
-        $site_port = parse_url( $this->site_path, PHP_URL_PORT );
+        $site_host = $this->site_uri->getHost();
+        $site_port = $this->site_uri->getPort();
         $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
         $site_urls = [ "http://$site_host", "https://$site_host" ];
 

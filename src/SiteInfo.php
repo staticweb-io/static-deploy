@@ -2,6 +2,8 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+
 /*
     Singleton instance to allow instantiating once and allow reading
     static properties throughout plugin
@@ -195,9 +197,9 @@ class SiteInfo {
          */
         $site_url = self::$info['site_url'];
 
-        $url_host = parse_url( $site_url, PHP_URL_HOST );
+        $url_host = Psr7Utils::uriFor( $site_url )->getHost();
 
-        if ( ! is_string( $url_host ) ) {
+        if ( ! $url_host ) {
             $err = 'Failed to get hostname from Site URL';
             throw WsLog::ex( $err );
         }

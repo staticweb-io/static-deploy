@@ -2,6 +2,8 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+
 trait URLParser {
 
     /**
@@ -48,56 +50,17 @@ trait URLParser {
 
     /**
      * Validate URL
-     *
-     * @param string $url
-     * @return bool
      */
-    protected function urlValidate( $url ) {
-        return (
-            filter_var( $url, FILTER_VALIDATE_URL ) &&
-            ( $parsed = parse_url( $url ) ) !== false &&
-            isset( $parsed['host'] ) &&
-            isset( $parsed['scheme'] ) &&
-            $this->urlValidateHost( $parsed['host'] ) &&
-            $this->urlValidateScheme( $parsed['scheme'] )
-        );
-    }
+    protected function urlValidate( string $url ): bool {
+        if ( filter_var( $url, FILTER_VALIDATE_URL ) ) {
+            try {
+                Psr7Utils::uriFor( $url );
+                return true;
+            } catch ( \Exception ) {
+                return false;
+            }
+        }
 
-    /**
-     * Validate host name
-     *
-     * @link https://stackoverflow.com/q/1755144/1668057
-     *
-     * @param  string $host
-     * @return bool
-     */
-    protected static function urlValidateHost( $host ) {
-        return (
-            // valid chars check
-            preg_match(
-                '/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i',
-                $host
-            )
-            // overall length check
-            && preg_match( '/^.{1,253}$/', $host )
-            // length of each label
-            && preg_match( '/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $host )
-        );
-    }
-
-    /**
-     * Validate URL scheme
-     *
-     * @param  string $scheme
-     * @return bool
-     */
-    protected static function urlValidateScheme( $scheme ) {
-        return in_array(
-            $scheme,
-            [
-                'http',
-                'https',
-            ]
-        );
+        return false;
     }
 }

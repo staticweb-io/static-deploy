@@ -81,31 +81,9 @@ class URLHelper {
             $url = self::getCurrent();
         }
 
-        // Parse the url into pieces
-        $url_array = (array) parse_url( $url );
+        $uri = Psr7Utils::uriFor( $url );
 
-        // The original URL had a query string, modify it.
-        if ( array_key_exists( 'query', $url_array ) ) {
-            parse_str( $url_array['query'], $query_array );
-            foreach ( $changes as $key => $value ) {
-                $query_array[ $key ] = $value;
-            }
-        } else {
-            // The original URL didn't have a query string, add it.
-            $query_array = $changes;
-        }
-
-        if (
-            ! isset( $url_array['scheme'] ) ||
-            ! isset( $url_array['host'] ) ||
-            ! isset( $url_array['path'] )
-        ) {
-            throw WsLog::ex( 'Unable to parse URL' );
-        }
-
-        return $url_array['scheme'] . '://' .
-            $url_array['host'] . $url_array['path'] . '?' .
-            http_build_query( $query_array );
+        return Uri::withQueryValues( $uri, $changes );
     }
 
     /**
@@ -193,7 +171,7 @@ class URLHelper {
             }
         }
 
-        $url_host = parse_url( $url, PHP_URL_HOST );
+        $url_host = Psr7Utils::uriFor( $url )->getHost();
 
         if ( $url_host === $site_url_host ) {
             return true;

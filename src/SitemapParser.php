@@ -3,6 +3,7 @@
 namespace StaticDeploy;
 
 use GuzzleHttp;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use SimpleXMLElement;
 
 /**
@@ -415,14 +416,14 @@ class SitemapParser {
      * @return bool
      */
     protected function isSitemapURL( $url ) {
-        $path = parse_url( $this->urlEncode( $url ), PHP_URL_PATH );
+        $path = Psr7Utils::uriFor( $this->urlEncode( $url ) )->getPath();
         return $this->urlValidate( $url ) && (
                 substr(
-                    (string) $path,
+                    $path,
                     -strlen( self::XML_EXTENSION ) - 1
                 ) === '.' . self::XML_EXTENSION ||
                 substr(
-                    (string) $path,
+                    $path,
                     -strlen( self::XML_EXTENSION_COMPRESSED ) - 1
                 ) === '.' . self::XML_EXTENSION_COMPRESSED
             );
