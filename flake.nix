@@ -71,7 +71,7 @@
             composer dump-autoload --no-dev --optimize
 
             mkdir -p "$out"
-            cp -r src static-deploy.php uninstall.php vendor views "$out"
+            cp -r composer.json src static-deploy.php uninstall.php vendor views "$out"
           '';
         staticDeployWpOrgSrc =
           buildStaticDeploySrc "${wpOrgExtras}/wp-org/constants.php";
