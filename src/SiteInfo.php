@@ -205,11 +205,6 @@ class SiteInfo {
         return $url_host;
     }
 
-
-    public function debug(): void {
-        var_export( self::$info );
-    }
-
     /**
      *  Get all WP site info
      *
