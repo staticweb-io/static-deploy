@@ -163,6 +163,20 @@ class FilesHelper {
     }
 
     /**
+     * Returns true if the filename exists and is writable.
+     * The filename may refer to either a directory or a file.
+     */
+    public static function isWriteable(
+        string $filename,
+    ): bool {
+        if ( ! defined( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS' )
+        || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
+            return wp_is_writable( $filename );
+        }
+        return is_writeable( $filename );
+    }
+
+    /**
      * Returns a normalized path, resolving . and .. when possible.
      * May still contain .. if the path is not absolute and contains
      * more ..s than directories.

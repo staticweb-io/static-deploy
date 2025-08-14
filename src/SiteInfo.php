@@ -151,7 +151,7 @@ class SiteInfo {
          */
         $uploads_dir = self::$info['uploads_path'];
 
-        return file_exists( $uploads_dir ) && is_writeable( $uploads_dir );
+        return file_exists( $uploads_dir ) && FilesHelper::isWriteable( $uploads_dir );
     }
 
     public static function permalinksAreCompatible(): bool {
