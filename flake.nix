@@ -46,12 +46,12 @@
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
             == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
         };
-        wpOrgExtras = pkgs.lib.cleanSourceWith {
+        releaseExtras = pkgs.lib.cleanSourceWith {
           src = self;
           filter = path: type:
             let base = baseNameOf path;
-            in type == "directory" && base == "wp-org"
-            || pkgs.lib.hasInfix "/wp-org/" path;
+            in type == "directory" && base == "release"
+            || pkgs.lib.hasInfix "/release/" path;
         };
         buildStaticDeploySrc = constantsFile:
           runCommand "static-deploy-source" {
@@ -74,9 +74,9 @@
             cp -r composer.json src static-deploy.php uninstall.php vendor views "$out"
           '';
         staticDeployWpOrgSrc =
-          buildStaticDeploySrc "${wpOrgExtras}/wp-org/constants.php";
+          buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php";
         staticDeployGitHubSrc =
-          buildStaticDeploySrc "${staticDeploySrc}/constants.php";
+          buildStaticDeploySrc "${releaseExtras}/release/github/constants.php";
         pluginZip = source:
           runCommand name { } ''
             mkdir "$TMPDIR/${name}"
