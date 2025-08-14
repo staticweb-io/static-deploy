@@ -119,7 +119,7 @@ class LocalDeployer {
                     ++$this->deploy_error_ct;
                 }
             } else {
-                WsLog::l( 'No content to write for ' . $path_info->path );
+                WsLog::w( 'No content to write for ' . $path_info->path );
                 ++$this->deploy_error_ct;
             }
         }
