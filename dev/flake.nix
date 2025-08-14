@@ -296,6 +296,7 @@
               }
             ];
           };
+          localstackImage = "docker.io/localstack/localstack:4.7.0";
         in with finalPkgs; {
           # `process-compose.foo` will add a flake package output called "foo".
           # Therefore, this will add a default package that you can build using
@@ -343,11 +344,11 @@
             # We can't run docker in nix flake check,
             # so we run AWS tests in the dev environment.
             settings.processes."localstack-image1" = {
-              command = "docker pull docker.io/localstack/localstack:4.6.0";
+              command = "docker pull ${localstackImage}";
             };
             settings.processes."localstack1" = {
               command =
-                "docker run --rm docker.io/localstack/localstack:4.6.0 -p 4566:4566";
+                "docker run --rm ${localstackImage} -p 4566:4566";
               depends_on."localstack-image1".condition =
                 "process_completed_successfully";
             };
