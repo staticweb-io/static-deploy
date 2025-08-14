@@ -117,6 +117,8 @@
             inherit (pkgs) system;
             overlays = [ overlay ];
           };
+        in with finalPkgs;
+        let
           nginxHttpConfig = data-root: phpfpm-socket: ''
             server {
               listen ${toString serverPort} default_server;
@@ -212,19 +214,20 @@
               };
             };
           wpInstaller = dbHost: dbUser: dataDir:
-            pkgs.writeShellApplication {
+            writeShellApplication {
               name = "wordpress-installer";
+              runtimeInputs = [ update-wordpress wp-cli ];
               text = ''
                 set -eu
                 mkdir -p ${dataDir}
                 chmod ug+w ${dataDir}/wp-config.php || true
                 cp "${wpConfig dbHost dbUser}" "${dataDir}/wp-config.php"
-                ${update-wordpress}/bin/update-wordpress ${dataDir} ${wordpress}
+                update-wordpress ${dataDir} ${wordpress}
                 cd ${dataDir}
-                ${pkgs.wp-cli}/bin/wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
-                ${pkgs.wp-cli}/bin/wp option update permalink_structure "/%postname%/"
                 rm -rf "./wp-content/plugins/static-deploy"
-                ${pkgs.wp-cli}/bin/wp plugin install --activate ${staticDeploy}/static-deploy.zip
+                wp core install --url="https://example.com" --title=WordPress --admin_user=user --admin_email="user@example.com" --admin_password=pass
+                wp option update permalink_structure "/%postname%/"
+                wp plugin install --activate ${staticDeploy}/static-deploy.zip
               '';
             };
           wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
