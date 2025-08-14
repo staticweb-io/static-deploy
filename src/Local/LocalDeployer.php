@@ -53,6 +53,7 @@ class LocalDeployer {
             $out_dir = $dir_path;
         }
 
+        $out_dir = FilesHelper::normalizePath( $out_dir );
         if ( ! is_dir( $out_dir ) ) {
             if ( ! FilesHelper::createDir( $out_dir ) ) {
                 throw WsLog::ex( 'Failed to create local deployment directory: ' . $out_dir );
