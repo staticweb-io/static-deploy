@@ -71,7 +71,7 @@ class PostProcessor {
                 ++$this->skipped;
             } else {
                 WsLog::w(
-                    'No contents found for crawled path: ' . json_encode( $path )
+                    'No contents found for crawled path: ' . json_encode( $path_info )
                 );
                 ++$this->skipped;
             }
