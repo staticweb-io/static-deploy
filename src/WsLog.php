@@ -91,7 +91,7 @@ class WsLog {
                 'error' => \WP_CLI::error_multi_line( [ $colorized ] ),
                 'info' => \WP_CLI::log( $colorized ),
                 'warn' => \WP_CLI::warning( $colorized ),
-                default => self::ex( "Invalid log level: $level" ),
+                default => throw self::ex( "Invalid log level: $level" ),
             };
         }
     }
