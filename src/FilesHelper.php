@@ -4,6 +4,13 @@ namespace StaticDeploy;
 
 class FilesHelper {
     /**
+     * Whether WP_Filesystem has been initialized.
+     * true if successful, false if failed,
+     * and null if not attempted yet.
+     */
+    private static ?bool $wpfs_initialized = null;
+
+    /**
      * Creates a directory at path and any parent directories that
      * don't already exist. Returns true if the directory already
      * exists.
@@ -94,6 +101,60 @@ class FilesHelper {
             return $base_dir . $relative_path . 'index.html';
         }
         return $base_dir . $relative_path;
+    }
+
+    /**
+     * Initialize the WP_Filesystem
+     *
+     * @param ?string $form_action_url The URL that the credentials form will
+     *   be submitted to, if a credentials form is needed. Provide null if
+     *   calling from a context outside of the WP Admin.
+     * @return bool true on success, false on failure.
+     */
+    public static function initFS(
+        ?string $form_action_url,
+        bool $throw_on_failure = false,
+    ): bool {
+        if ( isset( self::$wpfs_initialized ) ) {
+            $init = self::$wpfs_initialized;
+            if ( $throw_on_failure && ! $init ) {
+                throw WsLog::ex( 'WP_Filesystem failed to initialize' );
+            }
+            return $init;
+        }
+
+        $init_wpfs = function ( array|bool $creds ) use ( $throw_on_failure ): bool {
+            if ( $creds === true ) {
+                $init = WP_Filesystem();
+            } elseif ( $creds === false ) {
+                $init = false;
+            } else {
+                $init = WP_Filesystem( $creds );
+            }
+            if ( $init === null ) {
+                $init = false;
+            }
+            self::$wpfs_initialized = $init;
+            if ( $throw_on_failure && ! $init ) {
+                throw WsLog::ex( 'WP_Filesystem failed to initialize' );
+            }
+            return $init;
+        };
+
+        if ( $form_action_url === null ) {
+            if ( get_filesystem_method() === 'direct' ) {
+                return $init_wpfs( true );
+            }
+            throw WsLog::ex(
+                'Can\'t initialize WP_Filesystem without credentials',
+            );
+        }
+
+        $creds = request_filesystem_credentials( $form_action_url, '', false, '', null );
+        if ( $creds === false ) {
+            $creds = request_filesystem_credentials( $form_action_url, '', true, '', null );
+        }
+        return $init_wpfs( $creds );
     }
 
     /**
