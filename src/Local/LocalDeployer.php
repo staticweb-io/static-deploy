@@ -118,7 +118,10 @@ class LocalDeployer {
                     );
                     ++$this->deployed_ct;
                 } catch ( \Exception $e ) {
-                    WsLog::w( 'Failed to deploy ' . $path_info->path . ': ' . $e->getMessage() );
+                    WsLog::w(
+                        'Failed to deploy ' . $path_info->path .
+                        ': ' . $e->getMessage()
+                    );
                     ++$this->deploy_error_ct;
                 }
             } else {
