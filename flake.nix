@@ -77,13 +77,16 @@
           buildStaticDeploySrc "${wpOrgExtras}/wp-org/constants.php";
         staticDeployGitHubSrc =
           buildStaticDeploySrc "${staticDeploySrc}/constants.php";
-        staticDeploy = runCommand "static-deploy" { } ''
-          mkdir "$TMPDIR/${name}"
-          cd "$TMPDIR/${name}"
-          ln -s "${staticDeployGitHubSrc}" "${name}"
-          mkdir -p $out
-          ${zip}/bin/zip -r -9 $out/static-deploy.zip "${name}"
-        '';
+        pluginZip = source:
+          runCommand name { } ''
+            mkdir "$TMPDIR/${name}"
+            cd "$TMPDIR/${name}"
+            ln -s "${source}" "${name}"
+            mkdir -p "$out"
+            ${zip}/bin/zip -r -9 "$out"/"${name}.zip" "${name}"
+          '';
+        staticDeploy = pluginZip staticDeployGitHubSrc;
+        staticDeployWpOrg = pluginZip staticDeployWpOrgSrc;
         staticDeployCheck = stdenv.mkDerivation {
           pname = "static-deploy-check";
           version = version;
@@ -118,6 +121,7 @@
           inherit composerVendorDev composerVendor staticDeploy;
           plugin = staticDeploy;
           pluginGitHubSrc = staticDeployGitHubSrc;
+          pluginWpOrg = staticDeployWpOrg;
           pluginWpOrgSrc = staticDeployWpOrgSrc;
         };
       });
