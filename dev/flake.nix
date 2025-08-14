@@ -348,7 +348,7 @@
             };
             settings.processes."localstack1" = {
               command =
-                "docker run --rm ${localstackImage} -p 4566:4566";
+                "docker run --rm -p 4566:4566 ${localstackImage}";
               depends_on."localstack-image1".condition =
                 "process_completed_successfully";
             };
