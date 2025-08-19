@@ -33,6 +33,8 @@ jobs:
 
       - name: Build all checks and outputs
         run: |
+          bin/test-releases
+          bin/test-php-versions
           nix develop ./dev -c om ci
           cd dev
           nix develop -c om ci
