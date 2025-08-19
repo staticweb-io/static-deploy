@@ -56,7 +56,12 @@ class LocalDeployer {
         $out_dir = FilesHelper::normalizePath( $out_dir );
         if ( ! is_dir( $out_dir ) ) {
             if ( ! FilesHelper::createDir( $out_dir ) ) {
-                throw WsLog::ex( 'Failed to create local deployment directory: ' . $out_dir );
+                $msg = 'Failed to create local deployment directory: ' . $out_dir;
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
         }
         $out_dir = realpath( $out_dir );
@@ -75,9 +80,13 @@ class LocalDeployer {
         }
 
         if ( mb_strpos( (string) $out_dir, (string) $site_dir ) === 0 ) {
-            throw WsLog::ex(
-                'Local deployment directory must be outside of the WordPress directory: ' . $out_dir
-            );
+            $msg = 'Local deployment directory must be outside of the WordPress directory: '
+                . $out_dir;
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+            && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         WsLog::l( 'Deploying to ' . $out_dir );

@@ -59,8 +59,12 @@ class FilesHelper {
             $dir_files = scandir( $dir );
 
             if ( ! $dir_files ) {
-                $err = 'Trying to delete nonexistent dir: ' . $dir;
-                throw WsLog::ex( $err );
+                $msg = 'Trying to delete nonexistent dir: ' . $dir;
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
 
             $files = array_diff( $dir_files, [ '.', '..' ] );
@@ -90,7 +94,11 @@ class FilesHelper {
         }
 
         if ( ! $result ) {
-            throw WsLog::ex( 'Failed to delete file: ' . $filename );
+            $msg = 'Failed to delete file: ' . $filename;
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
     }
 
@@ -267,9 +275,12 @@ class FilesHelper {
                     $result = copy( $path_info->filename, $full_path );
                 }
             } else {
-                throw WsLog::ex(
-                    'No contents found for PathInfo: ' . json_encode( $path_info )
-                );
+                $msg = 'No contents found for PathInfo: ' . json_encode( $path_info );
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
         } catch ( \Throwable $e ) {
             if ( file_exists( $full_path ) ) {
@@ -282,9 +293,11 @@ class FilesHelper {
             if ( file_exists( $full_path ) ) {
                 self::deleteFile( $full_path );
             }
-            throw WsLog::ex(
-                'Unable to write file ' . $full_path
-            );
+            $msg = 'Unable to write file ' . $full_path;
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
     }
 }

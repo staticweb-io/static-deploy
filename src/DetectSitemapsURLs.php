@@ -165,6 +165,11 @@ class DetectSitemapsURLs {
                 }
             }
         } catch ( StaticDeployException $e ) {
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                // We can't use the parent exception due to
+                // https://github.com/WordPress/WordPress-Coding-Standards/issues/2447
+                throw WsLog::ex( esc_html( $e->getMessage() ) );
+            }
             throw WsLog::ex( $e->getMessage(), 0, $e );
         }
     }

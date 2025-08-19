@@ -91,7 +91,13 @@ class WsLog {
                 'error' => \WP_CLI::error_multi_line( [ $colorized ] ),
                 'info' => \WP_CLI::log( $colorized ),
                 'warn' => \WP_CLI::warning( $colorized ),
-                default => throw self::ex( "Invalid log level: $level" ),
+                default => function () use ( $level ) {
+                    if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                    && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                        throw self::ex( 'Invalid log level: ' . esc_html( $level ) );
+                    }
+                    throw self::ex( "Invalid log level: $level" );
+                }
             };
         }
     }

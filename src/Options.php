@@ -455,8 +455,11 @@ VALUES (%s, %s, %s);";
         $option_spec = self::optionSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            WsLog::d( "Unknown option: $name" );
-            throw new StaticDeployException( "Unknown option: $name" );
+            $msg = "Unknown option: $name";
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         return self::getOption( $option_spec )->value;
@@ -476,7 +479,11 @@ VALUES (%s, %s, %s);";
         $option_spec = self::optionSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            throw WsLog::ex( "Unknown option: $name" );
+            $msg = "Unknown option: $name";
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         return self::getOption( $option_spec )->blob_value;

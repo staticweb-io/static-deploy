@@ -21,11 +21,13 @@ class URLHelper {
                 return $uri->withHost( '' )->withPort( null )->withUserInfo( '' );
             }
         } catch ( \Exception $e ) {
-            throw WsLog::ex(
-                'Error making absolute path for ' . $uri . ': ' . $e->getMessage(),
-                0,
-                $e
-            );
+            $msg = 'Error making absolute path for ' . $uri . ': ' . $e->getMessage();
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                // We can't use the parent exception due to
+                // https://github.com/WordPress/WordPress-Coding-Standards/issues/2447
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg, 0, $e );
         }
 
         return $uri;

@@ -254,8 +254,18 @@ class SitemapParser {
             );
             return null;
         } catch ( GuzzleHttp\Exception\TransferException $e ) {
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                // We can't use the parent exception due to
+                // https://github.com/WordPress/WordPress-Coding-Standards/issues/2447
+                throw WsLog::ex( 'Unable to fetch URL contents' );
+            }
             throw WsLog::ex( 'Unable to fetch URL contents', 0, $e );
         } catch ( GuzzleHttp\Exception\GuzzleException $e ) {
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                // We can't use the parent exception due to
+                // https://github.com/WordPress/WordPress-Coding-Standards/issues/2447
+                throw WsLog::ex( 'GuzzleHttp exception' );
+            }
             throw WsLog::ex( 'GuzzleHttp exception', 0, $e );
         }
     }

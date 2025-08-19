@@ -38,9 +38,11 @@ final class OptionSpec {
         public readonly ?string $wp2static_table = null,
     ) {
         if ( $allowed_values !== null && ! in_array( $default_value, $allowed_values ) ) {
-            throw WsLog::ex(
-                "Default value $default_value not in allowed values for option $name"
-            );
+            $msg = "Default value $default_value not in allowed values for option $name";
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         if ( $input_type === null && $allowed_values !== null ) {

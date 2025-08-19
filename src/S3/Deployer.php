@@ -180,17 +180,25 @@ class Deployer {
 
                     if ( empty( $cmd_data['Key'] ) ) {
                         unset( $cmd_data['Body'] );
-                        throw WsLog::ex(
-                            'Invalid deploy data for path "' . $path_info->path .
-                            '": ' . json_encode( $cmd_data )
-                        );
+                        $msg = 'Invalid deploy data for path "' . $path_info->path .
+                            '": ' . json_encode( $cmd_data );
+                        if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                        && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                            throw WsLog::ex( esc_html( $msg ) );
+                        }
+                        throw WsLog::ex( $msg );
                     }
 
                     if ( ! isset( $cmd_data['Body'] )
                     && ! isset( $cmd_data['SourceFile'] )
                     && ! isset( $cmd_data['WebsiteRedirectLocation'] )
                     ) {
-                        throw WsLog::ex( 'Invalid deploy data: ' . json_encode( $file ) );
+                        $msg = 'Invalid deploy data: ' . json_encode( $file );
+                        if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                        && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                            throw WsLog::ex( esc_html( $msg ) );
+                        }
+                        throw WsLog::ex( $msg );
                     }
                 }
 

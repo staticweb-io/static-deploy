@@ -35,17 +35,23 @@ final class OptionData {
 
         if ( $option_spec->hasBlobValue() ) {
             if ( $blob_value === null ) {
-                throw WsLog::ex(
-                    'Option ' . $option_spec->name .
-                    ' must have a blob value, but a blob value was not provided.'
-                );
+                $msg = 'Option ' . $option_spec->name .
+                    ' must have a blob value, but a blob value was not provided.';
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
         } else {
             if ( $blob_value !== null && $blob_value !== '' ) {
-                throw WsLog::ex(
-                    'Option ' . $option_spec->name .
-                    ' cannot have a blob value, but a blob value was provided.'
-                );
+                $msg = 'Option ' . $option_spec->name .
+                    ' cannot have a blob value, but a blob value was provided.';
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
             // We get blank strings instead of null from MySQL,
             // so we have to set null ourselves.
@@ -174,9 +180,12 @@ final class OptionData {
             case 'object':
                 $json = json_decode( stripcslashes( strval( $user_input ) ) );
                 if ( ! is_object( $json ) ) {
-                    throw WsLog::ex(
-                        'Option ' . $option_spec->name . ' must be an object.'
-                    );
+                    $msg = 'Option ' . $option_spec->name . ' must be an object.';
+                    if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                    && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                        throw WsLog::ex( esc_html( $msg ) );
+                    }
+                    throw WsLog::ex( $msg );
                 }
                 $blob_value = json_encode( $json );
                 $value = '1';
@@ -189,10 +198,13 @@ final class OptionData {
                 $value = esc_url_raw( strval( $user_input ) );
                 break;
             default:
-                throw WsLog::ex(
-                    'Unknown option type: ' . $option_spec->type
-                    . ' for option: ' . $option_spec->name
-                );
+                $msg = 'Unknown option type: ' . $option_spec->type
+                    . ' for option: ' . $option_spec->name;
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
         }
 
         return new self(

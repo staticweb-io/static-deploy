@@ -103,10 +103,12 @@ class Memcached {
         $error_message = null;
         $sock = self::getSocket( $mc, $error_code, $error_message );
         if ( ! $sock ) {
-            throw WsLog::ex(
-                'Failed to connect to Memcached: ' .
-                $error_code . ' ' . $error_message
-            );
+            $msg = 'Failed to connect to Memcached: ' .
+                $error_code . ' ' . $error_message;
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         $result = stream_socket_sendto( $sock, $command . "\r\n" );

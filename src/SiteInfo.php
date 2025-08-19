@@ -94,6 +94,9 @@ class SiteInfo {
 
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo path';
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $err ) );
+            }
             throw WsLog::ex( $err );
         }
 
@@ -122,6 +125,9 @@ class SiteInfo {
 
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo URL';
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $err ) );
+            }
             throw WsLog::ex( $err );
         }
 
@@ -201,6 +207,9 @@ class SiteInfo {
 
         if ( ! $url_host ) {
             $err = 'Failed to get hostname from Site URL';
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $err ) );
+            }
             throw WsLog::ex( $err );
         }
 

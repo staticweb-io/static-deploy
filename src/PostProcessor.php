@@ -123,7 +123,12 @@ class PostProcessor {
         } elseif ( $path_info->filename ) {
             $s = file_get_contents( $path_info->filename );
             if ( $s === false ) {
-                throw WsLog::ex( 'Error reading file ' . $path_info->filename );
+                $msg = 'Error reading file ' . $path_info->filename;
+                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                    throw WsLog::ex( esc_html( $msg ) );
+                }
+                throw WsLog::ex( $msg );
             }
         }
 

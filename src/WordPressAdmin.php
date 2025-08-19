@@ -308,8 +308,11 @@ class WordPressAdmin {
         }
 
         if ( isset( $msg ) ) {
-            WsLog::l( $msg );
-            throw new \RuntimeException( $msg );
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+            && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         Controller::processQueue();

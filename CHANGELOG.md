@@ -47,6 +47,8 @@
   `wp-config.php`.
   - This was changed because direct file access is prohibited
     by the wordpress.org plugin guidelines.
+- Escape exception messages when
+  `STATIC_DEPLOY_ESCAPE_EXCEPTIONS` is true.
 
 ## 9.3.2 (2025-07-29)
 

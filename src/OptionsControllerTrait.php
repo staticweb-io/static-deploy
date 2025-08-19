@@ -64,7 +64,11 @@ trait OptionsControllerTrait {
         $option_spec = self::getSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            throw WsLog::ex( "Unknown option: $name" );
+            $msg = "Unknown option: $name";
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
+            }
+            throw WsLog::ex( $msg );
         }
 
         return Options::getOption( $option_spec )->value;

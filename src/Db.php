@@ -101,7 +101,11 @@ final class Db {
             }
             return $on_error( $wpdb->last_error ) || false;
         }
-        throw WsLog::ex( 'Error in query: ' . $wpdb->last_error );
+        $msg = 'Error in query: ' . $wpdb->last_error;
+        if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+            throw WsLog::ex( esc_html( $msg ) );
+        }
+        throw WsLog::ex( $msg );
     }
 
     /**
