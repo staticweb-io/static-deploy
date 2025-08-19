@@ -48,7 +48,15 @@ jobs:
           name: plugin
           path: plugin.zip
 
-      - name: Create GitHub Release
+      - name: Create Snapshot Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: plugin.zip
+          name: snapshot
+          prerelease: true
+          tag_name: snapshot
+
+      - name: Create Stable Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
