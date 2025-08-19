@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Test releases against the oldest and newest supported PHP versions
+for php in php84 php81; do
+  for pluginPkg in plugin pluginWpOrg; do
+    echo "Testing $pluginPkg with $php"
+    PHP_PACKAGE="$php" STATIC_DEPLOY_PACKAGE="$pluginPkg" nix flake check --impure ./dev
+  done
+done
