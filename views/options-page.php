@@ -26,7 +26,7 @@ $row = function ( $option_name ) use ( $options ) {
 
 <div class="wrap">
     <form
-        name="<?php echo Controller::getHookName( 'ui_options' ); ?>"
+        name="<?php echo esc_attr( Controller::getHookName( 'ui_options' ) ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
@@ -83,7 +83,7 @@ $row = function ( $option_name ) use ( $options ) {
                         type="url"
                         id="completionWebhook"
                         name="completionWebhook"
-                        value="<?php echo $options['completionWebhook']->value !== '' ? $options['completionWebhook']->value : ''; ?>"
+                        value="<?php echo $options['completionWebhook']->value !== '' ? esc_attr( $options['completionWebhook']->value ) : ''; ?>"
                     />
 
                     <select
@@ -107,7 +107,7 @@ $row = function ( $option_name ) use ( $options ) {
     <br>
 
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'ui_save_options' ); ?>" />
+    <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'ui_save_options' ) ); ?>" />
 
     <button class="button btn-primary" type="submit">Save options</button>
 

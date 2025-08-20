@@ -22,7 +22,7 @@
             <tr>
                 <td>PHP max_execution_time</td>
                 <td>
-                    <?php echo $view['maxExecutionTime'] === 0 ? 'Unlimited' : $view['maxExecutionTime'] . ' secs'; ?>
+                    <?php echo $view['maxExecutionTime'] === 0 ? 'Unlimited' : esc_html( $view['maxExecutionTime'] ) . ' secs'; ?>
 
                     <span
                         class="dashicons <?php echo $view['maxExecutionTime'] === 0 ? 'dashicons-yes' : 'dashicons-no'; ?>"
@@ -34,7 +34,7 @@
             <tr>
                 <td>PHP memory_limit</td>
                 <td>
-                    <?php echo $view['memoryLimit']; ?>
+                    <?php echo esc_html( $view['memoryLimit'] ); ?>
 
                 </td>
                 <td>Static Deploy will use as much memory as is available to it during processing. Allocating more of your system RAM to PHP should improve performance.</td>
@@ -94,7 +94,7 @@
                     ></span>
                 </td>
                 <td>
-                    <p>Due to the nature of how static sites work, you'll need to have some kind of permalinks structure defined in your <a href="<?php echo admin_url( 'options-permalink.php' ); ?>">Permalink Settings</a> within WordPress. To learn more on how to do this, please see WordPress's official guide to the <a href="https://codex.wordpress.org/Settings_Permalinks_Screen">Settings Permalinks Screen</a>. The permalinks must end in a trailing slash (/).</p>
+                    <p>Due to the nature of how static sites work, you'll need to have some kind of permalinks structure defined in your <a href="<?php echo esc_url( admin_url( 'options-permalink.php' ) ); ?>">Permalink Settings</a> within WordPress. To learn more on how to do this, please see WordPress's official guide to the <a href="https://codex.wordpress.org/Settings_Permalinks_Screen">Settings Permalinks Screen</a>. The permalinks must end in a trailing slash (/).</p>
                 </td>
             </tr>
         </tbody>
@@ -122,7 +122,7 @@
             echo '<tr>';
             foreach ( $list as $item ) {
                 $loaded_extension = strval( $item );
-                echo "<td>$loaded_extension</td>";
+                echo '<td>', esc_html( $loaded_extension ), '</td>';
             }
             echo '</tr>';
         }
@@ -146,8 +146,8 @@
             <?php foreach ( $view['options'] as $option ) : ?>
 
             <tr>
-            <td><?php echo $option->option_spec->label; ?></td>
-            <td><?php echo $option->value; ?></td>
+            <td><?php echo esc_html( $option->option_spec->label ); ?></td>
+            <td><?php echo esc_html( $option->value ); ?></td>
             </tr>
 
             <?php endforeach; ?>
@@ -169,8 +169,8 @@
             <?php
             foreach ( $view['site_info'] as $name => $value ) : ?>
             <tr>
-            <td><?php echo $name; ?></td>
-            <td><?php echo $value; ?></td>
+            <td><?php echo esc_html( $name ); ?></td>
+            <td><?php echo esc_html( $value ); ?></td>
             </tr>
 
             <?php endforeach; ?>
@@ -184,7 +184,7 @@
 
         <?php foreach ( $view['memcachedStats'] as $server => $stats ) : ?>
 
-    <h5>Server: <?php echo $server; ?></h5>
+    <h5>Server: <?php echo esc_html( $server ); ?></h5>
 
     <table class="widefat striped">
         <thead>
@@ -197,8 +197,8 @@
 
             <?php foreach ( $stats as $name => $value ) : ?>
             <tr>
-            <td><?php echo $name; ?></td>
-            <td><?php echo $value; ?></td>
+            <td><?php echo esc_html( $name ); ?></td>
+            <td><?php echo esc_html( $value ); ?></td>
             </tr>
 
             <?php endforeach; ?>

@@ -57,7 +57,7 @@ select.static-deploy-select {
 </style>
 
 <div class="wrap">
-    <p><i><a href="<?php echo Controller::getAdminUrl( 'caches' ); ?>">Refresh page</a> to see latest status</i><p>
+    <p><i><a href="<?php echo esc_url( Controller::getAdminUrl( 'caches' ) ); ?>">Refresh page</a> to see latest status</i><p>
 
     <table class="widefat striped">
         <thead>
@@ -70,18 +70,18 @@ select.static-deploy-select {
         <tbody>
             <tr>
                 <td>Detected Files</td>
-                <td><?php echo $detected_files_total; ?> files in database</td>
+                <td><?php echo (int) $detected_files_total; ?> files in database</td>
                 <td>
                     <form
-                        name="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>"
+                        name="<?php echo esc_attr( Controller::getHookName( 'detected_files_delete' ) ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo Controller::getHookName( 'detected_files_show' ); ?>">Show URLs</option>
-                            <option value="<?php echo Controller::getHookName( 'detected_files_delete' ); ?>">Delete Detected Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_show' ) ); ?>">Show URLs</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_delete' ) ); ?>">Delete Detected Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -91,18 +91,18 @@ select.static-deploy-select {
             </tr>
             <tr>
                 <td>Crawled Files</td>
-                <td><?php echo $crawled_files_total; ?> URLs in database</td>
+                <td><?php echo (int) $crawled_files_total; ?> URLs in database</td>
                 <td>
                     <form
-                        name="<?php echo Controller::getHookName( 'crawled_files_delete' ); ?>"
+                        name="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo Controller::getHookName( 'crawled_files_show' ); ?>">Show URLs</option>
-                            <option value="<?php echo Controller::getHookName( 'crawled_files_delete' ); ?>">Delete Crawled Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_show' ) ); ?>">Show URLs</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>">Delete Crawled Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -112,18 +112,18 @@ select.static-deploy-select {
             </tr>
             <tr>
                 <td>Generated Static Site</td>
-                <td><?php echo $exported_site_file_count; ?> files, using <?php echo $exported_site_disk_space; ?></td>
+                <td><?php echo (int) $exported_site_file_count; ?> files, using <?php echo esc_html( $exported_site_disk_space ); ?></td>
                 <td>
                     <form
-                        name="<?php echo Controller::getHookName( 'static_site_delete' ); ?>"
+                        name="<?php echo esc_attr( Controller::getHookName( 'static_site_delete' ) ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo Controller::getHookName( 'static_site_show' ); ?>">Show Paths</option>
-                            <option value="<?php echo Controller::getHookName( 'static_site_delete' ); ?>">Delete Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'static_site_show' ) ); ?>">Show Paths</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'static_site_delete' ) ); ?>">Delete Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -133,18 +133,18 @@ select.static-deploy-select {
             </tr>
             <tr>
                 <td>Post-processed Static Site</td>
-                <td><?php echo $processed_site_file_count; ?> files, using <?php echo $processed_site_disk_space; ?></td>
+                <td><?php echo (int) $processed_site_file_count; ?> files, using <?php echo esc_attr( $processed_site_disk_space ); ?></td>
                 <td>
                     <form
-                        name="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>"
+                        name="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_delete' ) ); ?>"
                         method="POST"
                         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo Controller::getHookName( 'post_processed_site_show' ); ?>">Show Paths</option>
-                            <option value="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>">Delete Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_show' ) ); ?>">Show Paths</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_delete' ) ); ?>">Delete Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -153,52 +153,54 @@ select.static-deploy-select {
                 </td>
             </tr>
 
-            <?php $deploy_cache_rows = count( $deploy_cache_total_paths ); ?>
             <tr>
-                <td rowspan="<?php echo $deploy_cache_rows; ?>">Deploy Cache</td>
+                <td rowspan="<?php echo count( $deploy_cache_total_paths ); ?>">Deploy Cache</td>
                     <?php $namespaces = array_keys( $deploy_cache_total_paths ); ?>
                     <?php if ( $namespaces ) { ?>
-                        <td><?php echo strval( $deploy_cache_total_paths[ $namespaces[0] ] ); ?> Paths in database for <code><?php echo $namespaces[0]; ?></code></td>
+                        <td><?php echo esc_html( strval( $deploy_cache_total_paths[ $namespaces[0] ] ) ); ?> Paths in database for <code><?php echo esc_html( $namespaces[0] ); ?></code></td>
                     <?php } else { ?>
                         <td>0 paths in database</td>
                     <?php } ?>
                     <td>
                         <form
-                            name="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>"
+                            name="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>"
                             method="POST"
                             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                             <select name="action" class="static-deploy-select">
-                                <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
-                                <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
+                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show Paths</option>
+                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete Deploy Cache</option>
                             </select>
 
-                            <input name="deploy_namespace" type="hidden" value="<?php echo $namespaces[0]; ?>" />
+                            <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[0] ); ?>" />
 
                             <button class="button btn-danger">Go</button>
 
                         </form>
                     </td>
-                    <?php for ( $i = 1; $i < $deploy_cache_rows; $i++ ) : ?>
+                    <?php
+                    $deploy_cache_rows = count( $deploy_cache_total_paths );
+                    for ( $i = 1; $i < $deploy_cache_rows; $i++ ) :
+                        ?>
                         </tr>
                         <tr>
-                        <td><?php echo strval( $deploy_cache_total_paths[ $namespaces[ $i ] ] ); ?> Paths in database for <code><?php echo strval( $namespaces[ $i ] ); ?></code></td>
+                        <td><?php echo esc_attr( strval( $deploy_cache_total_paths[ $namespaces[ $i ] ] ) ); ?> Paths in database for <code><?php echo esc_html( strval( $namespaces[ $i ] ) ); ?></code></td>
                         <td>
                             <form
-                                name="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>"
+                                name="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>"
                                 method="POST"
                                 action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                                 <select name="action" class="static-deploy-select">
-                                    <option value="<?php echo Controller::getHookName( 'deploy_cache_show' ); ?>">Show Paths</option>
-                                    <option value="<?php echo Controller::getHookName( 'deploy_cache_delete' ); ?>">Delete Deploy Cache</option>
+                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show Paths</option>
+                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete Deploy Cache</option>
                                 </select>
 
-                                <input name="deploy_namespace" type="hidden" value="<?php echo $namespaces[ $i ]; ?>" />
+                                <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[ $i ] ); ?>" />
 
                                 <button class="button btn-danger">Go</button>
 
@@ -212,13 +214,13 @@ select.static-deploy-select {
         <br>
 
         <form
-            name="<?php echo Controller::getHookName( 'delete_all_caches' ); ?>"
+            name="<?php echo esc_attr( Controller::getHookName( 'delete_all_caches' ) ); ?>"
             method="POST"
             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
-            <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'delete_all_caches' ); ?>" />
+            <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'delete_all_caches' ) ); ?>" />
 
             <button class="button btn-danger">Delete all caches</button>
 

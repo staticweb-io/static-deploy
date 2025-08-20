@@ -44,12 +44,12 @@ $logs = $view['logs'];
 
     <?php if ( $view['logs'] ) : ?>
         <form
-            name="<?php echo Controller::getHookName( 'log_delete' ); ?>"
+            name="<?php echo esc_attr( Controller::getHookName( 'log_delete' ) ); ?>"
             method="POST"
             action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
         <?php wp_nonce_field( $view['nonce_action'] ); ?>
-        <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'log_delete' ); ?>" />
+        <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'log_delete' ) ); ?>" />
 
         <button class="static-deploy-button button btn-danger">Delete Log</button>
 

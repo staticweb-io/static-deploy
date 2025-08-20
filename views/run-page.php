@@ -12,15 +12,15 @@ var latest_log_row = 0;
 
 jQuery(document).ready(function($){
     var run_data = {
-        action: "<?php echo StaticDeploy\Controller::getHookName( 'run' ); ?>",
-        security: '<?php echo $run_nonce; ?>',
+        action: "<?php echo esc_html( StaticDeploy\Controller::getHookName( 'run' ) ); ?>",
+        security: '<?php echo esc_html( $run_nonce ); ?>',
     };
 
     var log_data = {
         dataType: 'text',
-        action: "<?php echo StaticDeploy\Controller::getHookName( 'poll_log' ); ?>",
+        action: "<?php echo esc_html( StaticDeploy\Controller::getHookName( 'poll_log' ) ); ?>",
         startRow: latest_log_row,
-        security: '<?php echo $run_nonce; ?>',
+        security: '<?php echo esc_html( $run_nonce ); ?>',
     };
 
     function responseErrorHandler( jqXHR, textStatus, errorThrown ) {
