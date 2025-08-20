@@ -112,12 +112,7 @@ select.static-deploy-select {
             </tr>
             <tr>
                 <td>Generated Static Site</td>
-                <td><?php echo $exported_site_file_count; ?> files, using <?php echo $exported_site_disk_space; ?>
-                    <br>
-
-                    <a href="file://<?php echo \StaticDeploy\StaticSite::getPath(); ?>" />Path</a>
-
-                </td>
+                <td><?php echo $exported_site_file_count; ?> files, using <?php echo $exported_site_disk_space; ?></td>
                 <td>
                     <form
                         name="<?php echo Controller::getHookName( 'static_site_delete' ); ?>"
@@ -138,11 +133,7 @@ select.static-deploy-select {
             </tr>
             <tr>
                 <td>Post-processed Static Site</td>
-                <td><?php echo $processed_site_file_count; ?> files, using <?php echo $processed_site_disk_space; ?>
-                    <br>
-
-                    <a href="file://<?php echo \StaticDeploy\ProcessedSite::getPath(); ?>" />Path</a>
-                </td>
+                <td><?php echo $processed_site_file_count; ?> files, using <?php echo $processed_site_disk_space; ?></td>
                 <td>
                     <form
                         name="<?php echo Controller::getHookName( 'post_processed_site_delete' ); ?>"
