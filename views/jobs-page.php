@@ -21,14 +21,7 @@ $jobs = $view['jobs'];
 $options = $view['jobOptions'];
 
 $input = ( fn( $name ): string => OptionRenderer::optionInput( $options[ $name ] ) );
-
 $label = ( fn( $name, $description = false ): string => OptionRenderer::optionLabel( $options[ $name ], $description ) );
-
-$row = function ( $name ) use ( $options ) {
-    $opt = $options[ $name ];
-    return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
-            '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
-}
 
 ?>
 
