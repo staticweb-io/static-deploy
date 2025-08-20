@@ -8,14 +8,19 @@ use StaticDeploy\OptionRenderer;
  * @var mixed[] $view
  */
 
+/**
+ * @var array<string, \StaticDeploy\OptionData> $options
+ */
 $options = $view['options'];
 
 $row = function ( $option_name ) use ( $options ) {
-    $opt = $options[ $option_name ];
-    return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
-            '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
+    $option_data = $options[ $option_name ];
+    echo '<tr><td style="width: 50%">';
+    OptionRenderer::echoLabel( $option_data, true );
+    echo '</td><td>';
+    OptionRenderer::echoInput( $option_data );
+    echo '</td></tr>';
 };
-
 
 echo '<h2>' . $view['title'] . '</h2>';
 ?>
@@ -33,7 +38,7 @@ foreach ( $view['sections'] as $section ) {
     echo '<h3>' . $section['title'] . '</h3>';
     echo '<table class="widefat striped"><tbody>';
     foreach ( $section['options'] as $option_name ) {
-        echo $row( $option_name );
+        $row( $option_name );
     }
     echo '</tbody></table>';
 }

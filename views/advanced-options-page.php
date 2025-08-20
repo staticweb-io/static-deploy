@@ -10,16 +10,18 @@ use StaticDeploy\OptionRenderer;
  */
 
 /**
- * @var array<string, mixed> $options
+ * @var array<string, \StaticDeploy\OptionData> $options
  */
 $options = $view['options'];
 
-$row = function ( $name ) use ( $options ) {
-    $opt = $options[ $name ];
-    return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
-            '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
-}
-
+$row = function ( $option_name ) use ( $options ) {
+    $option_data = $options[ $option_name ];
+    echo '<tr><td style="width: 50%">';
+    OptionRenderer::echoLabel( $option_data, true );
+    echo '</td><td>';
+    OptionRenderer::echoInput( $option_data );
+    echo '</td></tr>';
+};
 ?>
 
 <div class="wrap">
@@ -34,7 +36,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'maxLogRows' ); ?>
+            <?php $row( 'maxLogRows' ); ?>
         </tbody>
     </table>
 
@@ -44,7 +46,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'pathsToIgnore' ); ?>
+            <?php $row( 'pathsToIgnore' ); ?>
         </tbody>
     </table>
 
@@ -54,8 +56,8 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'crawledSitePath' ); ?>
-            <?php echo $row( 'crawlConcurrency' ); ?>
+            <?php $row( 'crawledSitePath' ); ?>
+            <?php $row( 'crawlConcurrency' ); ?>
         </tbody>
     </table>
 
@@ -65,9 +67,9 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'processedSitePath' ); ?>
-            <?php echo $row( 'skipURLRewrite' ); ?>
-            <?php echo $row( 'hostsToRewrite' ); ?>
+            <?php $row( 'processedSitePath' ); ?>
+            <?php $row( 'skipURLRewrite' ); ?>
+            <?php $row( 'hostsToRewrite' ); ?>
         </tbody>
     </table>
 
@@ -77,7 +79,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'adminBarMenuItems' ); ?>
+            <?php $row( 'adminBarMenuItems' ); ?>
         </tbody>
     </table>
 

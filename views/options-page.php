@@ -10,16 +10,18 @@ use StaticDeploy\OptionRenderer;
  */
 
 /**
- * @var array<string, mixed> $options
+ * @var array<string, \StaticDeploy\OptionData> $options
  */
 $options = $view['options'];
 
-$row = function ( $name ) use ( $options ) {
-    $opt = $options[ $name ];
-    return '<tr><td style="width: 50%">' . OptionRenderer::optionLabel( $opt, true ) .
-            '</td><td>' . OptionRenderer::optionInput( $opt ) . '</td></tr>';
-}
-
+$row = function ( $option_name ) use ( $options ) {
+    $option_data = $options[ $option_name ];
+    echo '<tr><td style="width: 50%">';
+    OptionRenderer::echoLabel( $option_data, true );
+    echo '</td><td>';
+    OptionRenderer::echoInput( $option_data );
+    echo '</td></tr>';
+};
 ?>
 
 <div class="wrap">
@@ -42,10 +44,10 @@ $row = function ( $name ) use ( $options ) {
             </tr>
         </thead>
         <tbody>
-            <?php echo $row( 'detectCustomPostTypes' ); ?>
-            <?php echo $row( 'detectPages' ); ?>
-            <?php echo $row( 'detectPosts' ); ?>
-            <?php echo $row( 'detectUploads' ); ?>
+            <?php $row( 'detectCustomPostTypes' ); ?>
+            <?php $row( 'detectPages' ); ?>
+            <?php $row( 'detectPosts' ); ?>
+            <?php $row( 'detectUploads' ); ?>
         </tbody>
     </table>
 
@@ -53,8 +55,8 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'basicAuthUser' ); ?>
-            <?php echo $row( 'basicAuthPassword' ); ?>
+            <?php $row( 'basicAuthUser' ); ?>
+            <?php $row( 'basicAuthPassword' ); ?>
         </tbody>
     </table>
 
@@ -62,7 +64,7 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'deploymentURL' ); ?>
+            <?php $row( 'deploymentURL' ); ?>
         </tbody>
     </table>
 
@@ -70,10 +72,10 @@ $row = function ( $name ) use ( $options ) {
 
     <table class="widefat striped">
         <tbody>
-            <?php echo $row( 'completionEmail' ); ?>
+            <?php $row( 'completionEmail' ); ?>
             <tr>
                 <td style="width:50%;">
-                    <?php echo OptionRenderer::optionLabel( $options['completionWebhook'] ); ?>
+                    <?php OptionRenderer::echoLabel( $options['completionWebhook'] ); ?>
                 </td>
                 <td>
                     <input

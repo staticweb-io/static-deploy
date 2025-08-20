@@ -16,13 +16,13 @@ use StaticDeploy\Utils;
 $jobs = $view['jobs'];
 
 /**
- * @var array<string, mixed> $options
+ * @var array<string, \StaticDeploy\OptionData> $options
  */
 $options = $view['jobOptions'];
 
-$input = ( fn( $name ): string => OptionRenderer::optionInput( $options[ $name ] ) );
-$label = ( fn( $name, $description = false ): string => OptionRenderer::optionLabel( $options[ $name ], $description ) );
+$input = ( fn( string $name ) => OptionRenderer::echoInput( $options[ $name ] ) );
 
+$label = ( fn( string $name, bool $description = false ) => OptionRenderer::echoLabel( $options[ $name ], $description ) );
 ?>
 
 <div class="wrap">
@@ -50,24 +50,24 @@ $label = ( fn( $name, $description = false ): string => OptionRenderer::optionLa
         <tbody>
             <tr>
                 <td style="width:33%;">
-                    <?php echo $label( 'queueJobOnPostSave' ); ?>
+                    <?php $label( 'queueJobOnPostSave' ); ?>
                 </td>
                 <td>
                     <?php echo $options['queueJobOnPostSave']->option_spec->description; ?>
                 </td>
                 <td>
-                    <?php echo $input( 'queueJobOnPostSave' ); ?>
+                    <?php $input( 'queueJobOnPostSave' ); ?>
                 </td>
             </tr>
             <tr>
                 <td style="width:33%;">
-                    <?php echo $label( 'queueJobOnPostDelete' ); ?>
+                    <?php $label( 'queueJobOnPostDelete' ); ?>
                 </td>
                 <td>
                     <?php echo $options['queueJobOnPostDelete']->option_spec->description; ?>
                 </td>
                 <td>
-                    <?php echo $input( 'queueJobOnPostDelete' ); ?>
+                    <?php $input( 'queueJobOnPostDelete' ); ?>
                 </td>
             </tr>
         </tbody>
@@ -80,33 +80,33 @@ $label = ( fn( $name, $description = false ): string => OptionRenderer::optionLa
         <thead>
             <tr>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueueDetection' ); ?>
+                    <?php $label( 'autoJobQueueDetection' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueueCrawling' ); ?>
+                    <?php $label( 'autoJobQueueCrawling' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueuePostProcessing' ); ?>
+                    <?php $label( 'autoJobQueuePostProcessing' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueueDeployment' ); ?>
+                    <?php $label( 'autoJobQueueDeployment' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueueDirectDeploy' ); ?>
+                    <?php $label( 'autoJobQueueDirectDeploy' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php echo $label( 'autoJobQueueDirectDeployPost' ); ?>
+                    <?php $label( 'autoJobQueueDirectDeployPost' ); ?>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr style="text-align:center;">
-                <td><?php echo $input( 'autoJobQueueDetection' ); ?></td>
-                <td><?php echo $input( 'autoJobQueueCrawling' ); ?></td>
-                <td><?php echo $input( 'autoJobQueuePostProcessing' ); ?></td>
-                <td><?php echo $input( 'autoJobQueueDeployment' ); ?></td>
-                <td><?php echo $input( 'autoJobQueueDirectDeploy' ); ?></td>
-                <td><?php echo $input( 'autoJobQueueDirectDeployPost' ); ?></td>
+                <td><?php $input( 'autoJobQueueDetection' ); ?></td>
+                <td><?php $input( 'autoJobQueueCrawling' ); ?></td>
+                <td><?php $input( 'autoJobQueuePostProcessing' ); ?></td>
+                <td><?php $input( 'autoJobQueueDeployment' ); ?></td>
+                <td><?php $input( 'autoJobQueueDirectDeploy' ); ?></td>
+                <td><?php $input( 'autoJobQueueDirectDeployPost' ); ?></td>
             </tr>
         </tbody>
     </table>
@@ -117,7 +117,7 @@ $label = ( fn( $name, $description = false ): string => OptionRenderer::optionLa
         <tbody>
             <tr>
                 <td style="width: 50%">
-                    <?php echo $label( 'processQueueInterval', true ); ?>
+                    <?php $label( 'processQueueInterval', true ); ?>
                     <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp static-deploy process_queue` or call the hook `<?php echo Controller::getHookName( 'process_queue' ); ?>` from within your own theme or plugin.</i></p>
                 </td>
                 <td>
@@ -143,7 +143,7 @@ $label = ( fn( $name, $description = false ): string => OptionRenderer::optionLa
             </tr>
             <tr>
                 <td style="width: 50%">
-                    <?php echo $label( 'processQueueImmediately', true ); ?>
+                    <?php $label( 'processQueueImmediately', true ); ?>
                 </td>
                 <td>
                     <select
