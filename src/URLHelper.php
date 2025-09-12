@@ -62,7 +62,7 @@ class URLHelper {
         $url = $scheme . '://' . $_SERVER['HTTP_HOST'];
 
         // Only include port number if needed
-        if ( ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ] ) ) {
+        if ( ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ], true ) ) {
             $url .= ':' . $_SERVER['SERVER_PORT'];
         }
 

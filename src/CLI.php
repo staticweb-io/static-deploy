@@ -259,7 +259,7 @@ class CLI {
         $value = $args[2] ?? null;
         $reveal_sensitive_values = isset( $assoc_args['reveal-sensitive-values'] );
 
-        if ( ! in_array( $action, [ 'get', 'set', 'list' ] ) ) {
+        if ( ! in_array( $action, [ 'get', 'set', 'list' ], true ) ) {
             WP_CLI::error( 'Missing required argument: <get|set|list>' );
         }
 

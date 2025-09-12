@@ -55,7 +55,6 @@
     <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
     <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
     <exclude name="WordPress.PHP.DiscouragedPHPFunctions" />
-    <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
     <exclude name="WordPress.PHP.YodaConditions.NotYoda" />
     <!-- Forcing exceptions to be escaped is bad practice.
      See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2374 -->
