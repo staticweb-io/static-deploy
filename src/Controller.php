@@ -288,13 +288,13 @@ class Controller {
     }
 
     public static function UISaveOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_options' ) );
+
         Options::savePosted( 'core' );
 
         do_action(
             self::getHookName( 'addon_ui_save_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'options' ) );
         exit;
@@ -441,13 +441,13 @@ class Controller {
     }
 
     public static function adminUISaveJobsOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_job_options' ) );
+
         Options::savePosted( 'jobs' );
 
         do_action(
             self::getHookName( 'addon_ui_save_job_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
@@ -467,13 +467,13 @@ class Controller {
     }
 
     public static function adminUISaveAdvancedOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
+
         Options::savePosted( 'advanced' );
 
         do_action(
             self::getHookName( 'addon_ui_save_advanced_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'advanced' ) );
         exit;
