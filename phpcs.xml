@@ -60,7 +60,6 @@
      See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2374 -->
     <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
     <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
-    <exclude name="WordPress.Security.NonceVerification" />
     <exclude name="WordPress.Security.ValidatedSanitizedInput" />
     <exclude name="WordPress.WP.AlternativeFunctions" />
     <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
