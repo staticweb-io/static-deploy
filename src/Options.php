@@ -633,6 +633,7 @@ VALUES (%s, %s, %s);";
     ): void {
         foreach ( $option_specs as $option_spec ) {
             $name = $option_spec->name;
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by calling function
             $v = $_POST[ $name ] ?? '';
             OptionData::fromUserInput( $option_spec, $v )->save();
         }
