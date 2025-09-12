@@ -71,7 +71,7 @@ class AdminBar {
         $ajax_job_queue_url = Controller::getAdminAjaxUrl( 'job_queue' );
         ?>
     <script>
-    var static_deploy_job_queue_url = "<?php echo $ajax_job_queue_url; ?>";
+    var static_deploy_job_queue_url = "<?php echo esc_js( $ajax_job_queue_url ); ?>";
     var static_deploy_last_interval = 30000;
     var static_deploy_job_type_labels = {
         detect: "Detecting URLs",

@@ -44,8 +44,8 @@ $paginator_last_page = $view['paginatorLastPage'];
     <br>
 
     <form id="posts-filter" method="GET">
-        <input type="hidden" name="page" value="<?php echo $paginator_index; ?>" />
-        <input type="hidden" name="paged" value="<?php echo $paginator_page; ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr( $paginator_index ); ?>" />
+        <input type="hidden" name="paged" value="<?php echo esc_attr( $paginator_page ); ?>" />
 
         <p class="search-box">
             <label class="screen-reader-text" for="post-search-input">Search Detected Files:</label>
@@ -71,22 +71,22 @@ $paginator_last_page = $view['paginatorLastPage'];
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
                     <?php else : ?>
-                        <a class="first-page button" href="<?php echo URLHelper::modifyUrl( [ 'paged' => 1 ] ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
-                        <a class="prev-page button" href="<?php echo URLHelper::modifyUrl( [ 'paged' => $paginator_page - 1 ] ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
+                        <a class="first-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => 1 ] ) ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
+                        <a class="prev-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page - 1 ] ) ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
                     <?php endif; ?>
                     <span class="paging-input">
                         <label for="current-page-selector" class="screen-reader-text">Current Page</label>
-                        <input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo $paginator_page; ?>" size="3" aria-describedby="table-paging">
+                        <input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo esc_attr( $paginator_page ); ?>" size="3" aria-describedby="table-paging">
                         <span class="tablenav-paging-text"> of
-                            <span class="total-pages"><?php echo $paginator_last_page; ?></span>
+                            <span class="total-pages"><?php echo esc_html( $paginator_last_page ); ?></span>
                         </span>
                     </span>
                     <?php if ( $paginator_page === $paginator_last_page ) : ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">›</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">»</span>
                     <?php else : ?>
-                        <a class="next-page button" href="<?php echo URLHelper::modifyUrl( [ 'paged' => $paginator_page + 1 ] ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
-                        <a class="last-page button" href="<?php echo URLHelper::modifyUrl( [ 'paged' => $paginator_last_page ] ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
+                        <a class="next-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page + 1 ] ) ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_last_page ] ) ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
                     <?php endif; ?>
                 </span>
             </div>
@@ -115,16 +115,16 @@ $paginator_last_page = $view['paginatorLastPage'];
                 <?php foreach ( $view['paginatorRecords'] as $paginator_id => $paginator_path ) : ?>
                     <tr>
                         <th scope="row" class="check-column">
-                            <label class="screen-reader-text" for="cb-select-<?php echo $paginator_id; ?>">
-                                Select <?php echo $paginator_path; ?>
+                            <label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $paginator_id ); ?>">
+                                Select <?php echo esc_html( $paginator_path ); ?>
                             </label>
-                            <input id="cb-select-<?php echo $paginator_id; ?>" type="checkbox" name="id[]" value="<?php echo $paginator_id; ?>">
+                            <input id="cb-select-<?php echo esc_attr( $paginator_id ); ?>" type="checkbox" name="id[]" value="<?php echo esc_attr( $paginator_id ); ?>">
                             <div class="locked-indicator">
                                 <span class="locked-indicator-icon" aria-hidden="true"></span>
-                                <span class="screen-reader-text"><?php echo $paginator_path; ?></span>
+                                <span class="screen-reader-text"><?php echo esc_html( $paginator_path ); ?></span>
                             </div>
                         </th>
-                        <td><?php echo $paginator_path; ?></td>
+                        <td><?php echo esc_html( $paginator_path ); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

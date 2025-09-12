@@ -27,7 +27,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
 <div class="wrap">
     <form
-        name="<?php echo Controller::getHookName( 'job_options' ); ?>"
+        name="<?php echo esc_attr( Controller::getHookName( 'job_options' ) ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
@@ -53,7 +53,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
                     <?php $label( 'queueJobOnPostSave' ); ?>
                 </td>
                 <td>
-                    <?php echo $options['queueJobOnPostSave']->option_spec->description; ?>
+                    <?php echo esc_html( $options['queueJobOnPostSave']->option_spec->description ); ?>
                 </td>
                 <td>
                     <?php $input( 'queueJobOnPostSave' ); ?>
@@ -64,7 +64,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
                     <?php $label( 'queueJobOnPostDelete' ); ?>
                 </td>
                 <td>
-                    <?php echo $options['queueJobOnPostDelete']->option_spec->description; ?>
+                    <?php echo esc_html( $options['queueJobOnPostDelete']->option_spec->description ); ?>
                 </td>
                 <td>
                     <?php $input( 'queueJobOnPostDelete' ); ?>
@@ -118,7 +118,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
             <tr>
                 <td style="width: 50%">
                     <?php $label( 'processQueueInterval', true ); ?>
-                    <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp static-deploy process_queue` or call the hook `<?php echo Controller::getHookName( 'process_queue' ); ?>` from within your own theme or plugin.</i></p>
+                    <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp static-deploy process_queue` or call the hook `<?php echo esc_html( Controller::getHookName( 'process_queue' ) ); ?>` from within your own theme or plugin.</i></p>
                 </td>
                 <td>
                     <select
@@ -170,18 +170,18 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
     <button class="button btn-primary">Save Job Automation Settings</button>
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'ui_save_job_options' ); ?>" />
+    <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'ui_save_job_options' ) ); ?>" />
     </form>
 
     <p/>
 
     <form
-        name="<?php echo Controller::getHookName( 'manually_enqueue_jobs' ); ?>"
+        name="<?php echo esc_attr( Controller::getHookName( 'manually_enqueue_jobs' ) ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
         <?php wp_nonce_field( Controller::getHookName( 'manually_enqueue_jobs' ) ); ?>
-        <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'manually_enqueue_jobs' ); ?>" />
+        <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'manually_enqueue_jobs' ) ); ?>" />
 
         <button class="button">Manually Enqueue Jobs Now</button>
     </form>
@@ -190,7 +190,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
     <h3>Job Queue/History</h3>
 
-    <p><i><a href="<?php echo Controller::getAdminUrl( 'jobs' ); ?>">Refresh page</a> to see latest status</i><p>
+    <p><i><a href="<?php echo esc_url( Controller::getAdminUrl( 'jobs' ) ); ?>">Refresh page</a> to see latest status</i><p>
 
     <hr>
 
@@ -208,12 +208,12 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
             foreach ( $jobs as $job ) : ?>
             <tr>
                 <td>
-                    <?php echo $job->created_at; ?>
-                    (<?php echo human_time_diff( Utils::wpDateTime( $job->created_at )->getTimestamp() ); ?> ago)
+                    <?php echo esc_html( $job->created_at ); ?>
+                    (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $job->created_at )->getTimestamp() ) ); ?> ago)
                 </td>
-                <td><?php echo $job->job_type; ?></td>
-                <td><?php echo $job->status; ?>
-                (<?php echo human_time_diff( Utils::wpDateTime( $job->status_updated_at )->getTimestamp() ); ?> ago)
+                <td><?php echo esc_html( $job->job_type ); ?></td>
+                <td><?php echo esc_html( $job->status ); ?>
+                (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $job->status_updated_at )->getTimestamp() ) ); ?> ago)
                 </td>
                 <td>
                 <?php
@@ -226,7 +226,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
                 if ( $job->status !== 'waiting' ) {
                     $interval = Utils::formatIntervalPretty( $from->diff( $to ), 2 );
-                    echo $interval ?? '1 second';
+                    echo esc_html( $interval ?? '1 second' );
                 }
 
                 if ( $job->status === 'processing' ) {
@@ -242,12 +242,12 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
     <br>
 
     <form
-        name="<?php echo Controller::getHookName( 'delete_jobs_queue' ); ?>"
+        name="<?php echo esc_attr( Controller::getHookName( 'delete_jobs_queue' ) ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
     <?php wp_nonce_field( Controller::getHookName( 'delete_jobs_queue' ) ); ?>
-    <input name="action" type="hidden" value="<?php echo Controller::getHookName( 'delete_jobs_queue' ); ?>" />
+    <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'delete_jobs_queue' ) ); ?>" />
 
     <button class="static-deploy-button button btn-danger">Delete all Jobs from Queue</button>
 

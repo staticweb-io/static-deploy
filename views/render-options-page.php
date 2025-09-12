@@ -22,20 +22,20 @@ $row = function ( $option_name ) use ( $options ) {
     echo '</td></tr>';
 };
 
-echo '<h2>' . $view['title'] . '</h2>';
+echo '<h2>' . esc_html( $view['title'] ) . '</h2>';
 ?>
 
 <form
-    name="<?php echo $view['nonce_action']; ?>"
+    name="<?php echo esc_attr( $view['nonce_action'] ); ?>"
     method="POST"
     action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
     <?php wp_nonce_field( $view['nonce_action'] ); ?>
-    <input name="action" type="hidden" value="<?php echo $view['nonce_action']; ?>" />
+    <input name="action" type="hidden" value="<?php echo esc_attr( $view['nonce_action'] ); ?>" />
 
 <?php
 foreach ( $view['sections'] as $section ) {
-    echo '<h3>' . $section['title'] . '</h3>';
+    echo '<h3>' . esc_html( $section['title'] ) . '</h3>';
     echo '<table class="widefat striped"><tbody>';
     foreach ( $section['options'] as $option_name ) {
         $row( $option_name );

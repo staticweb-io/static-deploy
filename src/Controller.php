@@ -806,7 +806,7 @@ class Controller {
 
         $logs = WsLog::poll();
 
-        echo $logs;
+        echo esc_html( $logs );
 
         wp_die();
     }
