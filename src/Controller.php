@@ -92,11 +92,9 @@ class Controller {
         if ( $network_wide ) {
             global $wpdb;
 
-            $query = 'SELECT blog_id FROM %s WHERE site_id = %d;';
-
             $site_ids = $wpdb->get_col(
-                sprintf(
-                    $query,
+                $wpdb->prepare(
+                    'SELECT blog_id FROM %i WHERE site_id = %d;',
                     $wpdb->blogs,
                     $wpdb->siteid
                 )
@@ -132,11 +130,9 @@ class Controller {
         if ( $network_wide ) {
             global $wpdb;
 
-            $query = 'SELECT blog_id FROM %s WHERE site_id = %d;';
-
             $site_ids = $wpdb->get_col(
-                sprintf(
-                    $query,
+                $wpdb->prepare(
+                    'SELECT blog_id FROM %s WHERE site_id = %d;',
                     $wpdb->blogs,
                     $wpdb->siteid
                 )
@@ -288,13 +284,13 @@ class Controller {
     }
 
     public static function UISaveOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_options' ) );
+
         Options::savePosted( 'core' );
 
         do_action(
             self::getHookName( 'addon_ui_save_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'options' ) );
         exit;
@@ -441,13 +437,13 @@ class Controller {
     }
 
     public static function adminUISaveJobsOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_job_options' ) );
+
         Options::savePosted( 'jobs' );
 
         do_action(
             self::getHookName( 'addon_ui_save_job_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_job_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'jobs' ) );
         exit;
@@ -467,13 +463,13 @@ class Controller {
     }
 
     public static function adminUISaveAdvancedOptions(): void {
+        check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
+
         Options::savePosted( 'advanced' );
 
         do_action(
             self::getHookName( 'addon_ui_save_advanced_options' )
         );
-
-        check_admin_referer( self::getHookName( 'ui_advanced_options' ) );
 
         wp_safe_redirect( self::getAdminUrl( 'advanced' ) );
         exit;
@@ -525,8 +521,13 @@ class Controller {
 
         $table_name = Addons::getTableName();
 
-        $addon_type =
-            $wpdb->get_var( "SELECT type FROM $table_name WHERE slug = '$addon_slug'" );
+        $addon_type = $wpdb->get_var(
+            $wpdb->prepare(
+                'SELECT type FROM %i WHERE slug = %s',
+                $table_name,
+                $addon_slug
+            )
+        );
 
         // if deploy type, disable other deployers when enabling this one
         if ( $enabled && $addon_type === 'deploy' ) {
@@ -578,8 +579,13 @@ class Controller {
         $table_name = Addons::getTableName();
 
         // get target addon's current state
-        $enabled =
-            $wpdb->get_var( "SELECT enabled FROM $table_name WHERE slug = '$addon_slug'" );
+        $enabled = $wpdb->get_var(
+            $wpdb->prepare(
+                'SELECT enabled FROM %i WHERE slug = %s',
+                $table_name,
+                $addon_slug
+            )
+        );
 
         self::adminSetAddonState( $addon_slug, ! $enabled );
     }

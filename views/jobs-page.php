@@ -27,7 +27,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
 <div class="wrap">
     <form
-        name="<?php echo esc_html( Controller::getHookName( 'job_options' ) ); ?>"
+        name="<?php echo esc_attr( Controller::getHookName( 'job_options' ) ); ?>"
         method="POST"
         action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
@@ -170,7 +170,7 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
 
     <button class="button btn-primary">Save Job Automation Settings</button>
     <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-    <input name="action" type="hidden" value="<?php echo esc_html( Controller::getHookName( 'ui_save_job_options' ) ); ?>" />
+    <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'ui_save_job_options' ) ); ?>" />
     </form>
 
     <p/>

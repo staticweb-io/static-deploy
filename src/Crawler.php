@@ -161,7 +161,7 @@ class Crawler {
             function ( $response ) use ( &$detected, &$site_urls ) {
                 $status = $response->getStatusCode();
 
-                if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
+                if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
                     $location = $response->getHeaderLine( 'Location' );
                     $redirect_to = (string) str_replace( $site_urls, '', $location );
                     $path_info = new PathInfo(
@@ -302,7 +302,7 @@ class Crawler {
 
             if ( $path->status === 404 ) {
                 $is_cacheable = false;
-            } elseif ( in_array( $path->status, STATIC_DEPLOY_REDIRECT_CODES ) ) {
+            } elseif ( in_array( $path->status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
                 $is_cacheable = false;
             }
 

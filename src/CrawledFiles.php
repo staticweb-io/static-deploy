@@ -43,7 +43,7 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_col( "SELECT path_hash FROM $table_name" );
+        return $wpdb->get_col( $wpdb->prepare( 'SELECT path_hash FROM %i', $table_name ) );
     }
 
     public static function getTableName(): string {
@@ -68,25 +68,6 @@ class CrawledFiles {
                 $paths[] = $path;
             }
 
-            $placeholders = implode(
-                ',',
-                array_fill(
-                    0,
-                    count( $paths ),
-                    '(%s,%s,%s,%s,%s,NOW())'
-                )
-            );
-            $sql = "INSERT INTO $table_name
-                    (path,content_type,redirect_to,status,content_hash,crawled_at)
-                    VALUES $placeholders ON DUPLICATE KEY
-                    UPDATE
-                      path = VALUES(path),
-                      content_type = VALUES(content_type),
-                      redirect_to = VALUES(redirect_to),
-                      status = VALUES(status),
-                      content_hash = VALUES(content_hash),
-                      crawled_at = VALUES(crawled_at)";
-
             $values = [];
             foreach ( $paths as $path ) {
                 array_push(
@@ -99,7 +80,23 @@ class CrawledFiles {
                 );
             }
 
-            $query = $wpdb->prepare( $sql, ...$values );
+            $placeholders = array_fill( 0, count( $paths ), '(%s,%s,%s,%s,%s,NOW())' );
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+            $query = $wpdb->prepare(
+                'INSERT INTO %i ' .
+                '(path,content_type,redirect_to,status,content_hash,crawled_at) ' .
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'VALUES ' . implode( ',', $placeholders ) .
+                'ON DUPLICATE KEY UPDATE ' .
+                'path = VALUES(path), ' .
+                'content_type = VALUES(content_type), ' .
+                'redirect_to = VALUES(redirect_to), ' .
+                'status = VALUES(status), ' .
+                'content_hash = VALUES(content_hash), ' .
+                'crawled_at = VALUES(crawled_at)',
+                $table_name,
+                ...$values
+            );
             Db::query( $query );
 
             foreach ( $paths as $path ) {
@@ -122,22 +119,18 @@ class CrawledFiles {
         $last_id = 0;
         $static_site_path = StaticSite::getPath();
         while ( true ) {
-            $qs = "SELECT
-                cc.id,
-                cc.content_hash,
-                cc.content_type,
-                cq.filename,
-                cc.path,
-                cc.redirect_to,
-                cc.status
-              FROM $table_name AS cc
-              JOIN $queue_table_name AS cq
-              ON cc.path_hash = cq.path_hash
-              WHERE cc.id > %d
-              ORDER BY cc.id ASC
-              LIMIT %d";
-            $q = $wpdb->prepare( $qs, $last_id, $batch_size );
-            $rows = $wpdb->get_results( $q );
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT cc.id, cc.content_hash, cc.content_type, cq.filename, ' .
+                    'cc.path, cc.redirect_to, cc.status ' .
+                    'FROM %i AS cc JOIN %i AS cq ON cc.path_hash = cq.path_hash ' .
+                    'WHERE cc.id > %d ORDER BY cc.id ASC LIMIT %d',
+                    $table_name,
+                    $queue_table_name,
+                    $last_id,
+                    $batch_size,
+                ),
+            );
 
             foreach ( $rows as $row ) {
                 if ( ! $row->filename ) {
@@ -227,24 +220,22 @@ class CrawledFiles {
     ): void {
         global $wpdb;
 
-        $table_name = self::getTableName();
-        $sql = "insert into {$table_name} (crawled_at, path, content_hash, status, redirect_to)
-                VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY
-                UPDATE crawled_at = %s, content_hash = %s, status = %s, redirect_to = %s";
-        $sql = $wpdb->prepare(
-            $sql,
-            current_time( 'mysql' ),
-            $path,
-            $content_hash,
-            $status,
-            $redirect_to,
-            current_time( 'mysql' ),
-            $content_hash,
-            $status,
-            $redirect_to
+        $wpdb->query(
+            $wpdb->prepare(
+                'INSERT INTO %i (crawled_at, path, content_hash, status, redirect_to) ' .
+                'VALUES (NOW(), %s, %s, %s, %s) ' .
+                'ON DUPLICATE KEY UPDATE crawled_at = NOW(), content_hash = %s, ' .
+                'status = %s, redirect_to = %s',
+                self::getTableName(),
+                $path,
+                $content_hash,
+                $status,
+                $redirect_to,
+                $content_hash,
+                $status,
+                $redirect_to,
+            ),
         );
-
-        $wpdb->query( $sql );
     }
 
     public static function getUrl( string $path, string $content_hash ): string {
@@ -254,13 +245,12 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $sql = $wpdb->prepare(
-            "SELECT path FROM $table_name WHERE" .
-            ' path_hash = %s and content_hash = %s  LIMIT 1',
-            [ $path_hash, $content_hash ]
-        );
+        $sql = 'SELECT path FROM %i WHERE path_hash = %s and content_hash = %s LIMIT 1';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $query = $wpdb->prepare( $sql, $table_name, $path_hash, $content_hash );
 
-        $path = $wpdb->get_var( $sql );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $path = $wpdb->get_var( $query );
 
         return (string) $path;
     }
@@ -283,13 +273,9 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $rows = $wpdb->get_results(
-            "
-            SELECT id, path_hash, path, content_hash
-            FROM $table_name
-            ORDER BY path
-            "
-        );
+        $sql = 'SELECT id, path_hash, path, content_hash FROM %i ORDER BY path';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $rows = $wpdb->get_results( $wpdb->prepare( $sql, $table_name ) );
 
         foreach ( $rows as $row ) {
             $paths[ $row->id ] = $row;
@@ -317,11 +303,12 @@ class CrawledFiles {
     public static function rmUrlsById( array $ids ): void {
         global $wpdb;
 
-        $ids = implode( ',', array_map( 'absint', $ids ) );
-
+        $ids = array_map( 'absint', $ids );
         $table_name = self::getTableName();
-
-        $wpdb->query( "DELETE FROM $table_name WHERE ID IN($ids)" );
+        $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+        $sql = "DELETE FROM %i WHERE ID IN($placeholders)";
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query( $wpdb->prepare( $sql, $table_name, ...$ids ) );
     }
 
     /**
@@ -334,7 +321,9 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
+        $sql = 'TRUNCATE TABLE %i';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query( $wpdb->prepare( $sql, $table_name ) );
 
         $total_crawled_files = self::getTotal();
 
@@ -351,7 +340,9 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_var( "SELECT count(*) FROM $table_name" );
+        $sql = 'SELECT count(*) FROM %i';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        return $wpdb->get_var( $wpdb->prepare( $sql, $table_name ) );
     }
 
     /**
@@ -362,8 +353,11 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
+        $sql = 'SELECT path, redirect_to FROM %i WHERE 0 < LENGTH(redirect_to)';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results(
-            "SELECT path, redirect_to FROM $table_name WHERE 0 < LENGTH(redirect_to)"
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            $wpdb->prepare( $sql, $table_name )
         );
     }
 }

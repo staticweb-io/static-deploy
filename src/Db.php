@@ -43,9 +43,8 @@ final class Db {
         );
 
         if ( 0 === $indexes ) {
-            // Ignore prepare rule because the query has already
-            // been prepared by the caller.
-            // phpcs:ignore WordPress.DB.PreparedSQL
+            // Caller prepares the query
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $result = $wpdb->query( $create_index_sql );
             if ( false === $result ) {
                 WsLog::l( "Failed to create $index_name index on $table_name." );
@@ -95,9 +94,8 @@ final class Db {
     ): int|bool {
         global $wpdb;
 
-        // Ignore prepare rule because the query has already
-        // been prepared by the caller.
-        // phpcs:ignore WordPress.DB.PreparedSQL
+        // Caller prepares the query
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $result = $wpdb->query( $query );
         if ( $result !== false ) {
             return $result;

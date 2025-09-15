@@ -60,9 +60,13 @@ class URLDiscovery {
                     continue;
                 }
                 $placeholders = array_fill( 0, count( $uris ), '(%s)' );
-                $sql = "INSERT IGNORE INTO $table_name (path)
-                  VALUES " . implode( ',', $placeholders );
-                $query = $wpdb->prepare( $sql, ...array_keys( $uris ) );
+                // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+                $query = $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                    'INSERT IGNORE INTO %i (path) VALUES ' . implode( ',', $placeholders ),
+                    $table_name,
+                    ...array_keys( $uris )
+                );
                 Db::query( $query );
                 yield $path_info;
             } else {

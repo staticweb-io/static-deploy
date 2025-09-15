@@ -55,7 +55,7 @@ class Subcommand {
     public static function addHiddenCommands(): void {
         global $argv;
 
-        $start = array_search( 'static-deploy', $argv );
+        $start = array_search( 'static-deploy', $argv, true );
 
         if ( $start === false || $start === count( $argv ) - 1 ) {
             return;

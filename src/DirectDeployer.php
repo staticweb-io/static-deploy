@@ -60,11 +60,15 @@ class DirectDeployer {
         $this->deployPaths( $detected );
 
         while ( true ) {
-            $sql = $wpdb->prepare(
-                "SELECT COUNT(*) FROM $queue_table WHERE detected_at > %s",
-                $last_now
+            $new_ct = intval(
+                $wpdb->get_var(
+                    $wpdb->prepare(
+                        'SELECT COUNT(*) FROM %i WHERE detected_at > %s',
+                        $queue_table,
+                        $last_now,
+                    ),
+                ),
             );
-            $new_ct = intval( $wpdb->get_var( $sql ) );
             if ( 0 === $new_ct ) {
                 break;
             }

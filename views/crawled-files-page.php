@@ -120,15 +120,15 @@ $paginator_last_page = $view['paginatorLastPage'];
                     <tr>
                         <th scope="row" class="check-column">
                             <label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $paginator_id ); ?>">
-                                Select <?php echo esc_html( $record_path ); ?>
+                                Select <?php echo esc_html( $record->path ); ?>
                             </label>
                             <input id="cb-select-<?php echo esc_attr( $paginator_id ); ?>" type="checkbox" name="id[]" value="<?php echo esc_attr( $paginator_id ); ?>">
                             <div class="locked-indicator">
                                 <span class="locked-indicator-icon" aria-hidden="true"></span>
-                                <span class="screen-reader-text"><?php esc_html( $record_path ); ?></span>
+                                <span class="screen-reader-text"><?php echo esc_html( $record->path ); ?></span>
                             </div>
                         </th>
-                        <td><?php echo esc_html( $record_path ); ?></td>
+                        <td><?php echo esc_html( $record->path ); ?></td>
                         <td><?php echo esc_html( $record->content_hash ); ?></td>
                     </tr>
                     <?php endforeach; ?>

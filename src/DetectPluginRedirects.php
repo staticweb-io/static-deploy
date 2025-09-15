@@ -45,7 +45,10 @@ class DetectPluginRedirects {
         // We only need the URLs because we will crawl them
         // to determine the actual status and location.
         $rows = $wpdb->get_results(
-            "SELECT url FROM $table_name WHERE status='enabled'"
+            $wpdb->prepare(
+                "SELECT url FROM %i WHERE status='enabled'",
+                $table_name,
+            )
         );
 
         $ct = 0;
@@ -92,7 +95,10 @@ class DetectPluginRedirects {
         // We only need the URLs because we will crawl them
         // to determine the actual status and location.
         $rows = $wpdb->get_results(
-            "SELECT `match` FROM $table_name WHERE status=1"
+            $wpdb->prepare(
+                'SELECT `match` FROM %i WHERE status=1',
+                $table_name,
+            )
         );
 
         $ct = 0;

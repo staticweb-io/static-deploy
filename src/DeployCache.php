@@ -76,13 +76,17 @@ class DeployCache {
                 $to_lookup,
             );
 
-            $placeholders = implode( ',', array_fill( 0, count( $path_hashes ), '%s' ) );
-            $table_name = self::getTableName();
-            $sql = "SELECT path_hash,data_hash,namespace
-                 FROM $table_name
-                 WHERE path_hash IN ($placeholders)";
-            $query = $wpdb->prepare( $sql, ...$path_hashes );
-            $results = $wpdb->get_results( $query );
+            $placeholders = array_fill( 0, count( $path_hashes ), '%s' );
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+                $wpdb->prepare(
+                    'SELECT path_hash,data_hash,namespace FROM %i' .
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                    ' WHERE path_hash IN (' . implode( ',', $placeholders ) . ')',
+                    self::getTableName(),
+                    ...$path_hashes,
+                ),
+            );
 
             $results_by_hash = [];
             foreach ( $results as $result ) {
@@ -115,24 +119,20 @@ class DeployCache {
     ): void {
         global $wpdb;
 
-        $table_name = self::getTableName();
-
-        $sql = "INSERT INTO $table_name
-                (path,data_hash,namespace,deployed_at)
-                VALUES (%s,%s,%s,NOW())
-                ON DUPLICATE KEY UPDATE
-                    path = VALUES(path),
-                    data_hash = VALUES(data_hash),
-                    deployed_at = VALUES(deployed_at)";
-
-        $sql = $wpdb->prepare(
-            $sql,
-            $path,
-            $data_hash,
-            $ns,
+        $wpdb->query(
+            $wpdb->prepare(
+                'INSERT INTO %i (path,data_hash,namespace,deployed_at)' .
+                ' VALUES (%s,%s,%s,NOW())' .
+                ' ON DUPLICATE KEY UPDATE
+                  path = VALUES(path),
+                  data_hash = VALUES(data_hash),
+                  deployed_at = VALUES(deployed_at)',
+                self::getTableName(),
+                $path,
+                $data_hash,
+                $ns,
+            ),
         );
-
-        $wpdb->query( $sql );
     }
 
     public static function truncate(
@@ -145,12 +145,18 @@ class DeployCache {
         $table_name = self::getTableName();
 
         if ( ! $ns ) {
-            $sql = "TRUNCATE TABLE $table_name";
+            $wpdb->query(
+                $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ),
+            );
         } else {
-            $sql = "DELETE FROM $table_name WHERE namespace = %s";
-            $sql = $wpdb->prepare( $sql, $ns );
+            $wpdb->query(
+                $wpdb->prepare(
+                    'DELETE FROM %i WHERE namespace = %s',
+                    $table_name,
+                    $ns,
+                ),
+            );
         }
-        $wpdb->query( $sql );
     }
 
     /**
@@ -163,10 +169,13 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
-        $sql = "SELECT count(*) FROM $table_name WHERE namespace = %s";
-        $sql = $wpdb->prepare( $sql, $ns );
-
-        return $wpdb->get_var( $sql );
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                'SELECT count(*) FROM %i WHERE namespace = %s',
+                $table_name,
+                $ns,
+            ),
+        );
     }
 
     /**
@@ -180,8 +189,12 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
-        $sql = "SELECT namespace, COUNT(*) AS count FROM $table_name GROUP BY namespace";
-        $rows = $wpdb->get_results( $sql );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT namespace, COUNT(*) AS count FROM %i GROUP BY namespace',
+                $table_name,
+            ),
+        );
 
         foreach ( $rows as $row ) {
             $counts[ $row->namespace ] = $row->count;
@@ -203,9 +216,12 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
-        $sql = "SELECT path FROM $table_name WHERE namespace = %s ORDER BY path";
-        $sql = $wpdb->prepare( $sql, $ns );
-
-        return $wpdb->get_col( $sql );
+        return $wpdb->get_col(
+            $wpdb->prepare(
+                'SELECT path FROM %i WHERE namespace = %s ORDER BY path',
+                $table_name,
+                $ns,
+            ),
+        );
     }
 }

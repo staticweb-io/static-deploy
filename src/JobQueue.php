@@ -49,10 +49,12 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $query_string = "INSERT INTO $table_name
-        (job_type, status, triggering_post_id)
-        VALUES (%s, 'waiting', %s);";
-        $query = $wpdb->prepare( $query_string, $job_type, $post_id );
+        $query = $wpdb->prepare(
+            "INSERT INTO %i (job_type, status, triggering_post_id) VALUES (%s, 'waiting', %s);",
+            $table_name,
+            $job_type,
+            $post_id
+        );
 
         Db::query( $query );
         return $wpdb->insert_id;
@@ -74,11 +76,10 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $query_string = "INSERT INTO $table_name
-        (job_type,status,triggering_post_id,created_at,status_updated_at)
-        VALUES (%s,'completed',%s,%s,NOW());";
         $query = $wpdb->prepare(
-            $query_string,
+            "INSERT INTO %i (job_type,status,triggering_post_id,created_at,status_updated_at)
+             VALUES (%s,'completed',%s,%s,NOW())",
+            $table_name,
             $job_type,
             $post_id,
             $started_at->format( 'Y-m-d H:i:s' ),
@@ -97,9 +98,12 @@ class JobQueue {
         global $wpdb;
         $urls = [];
 
-        $table_name = self::getTableName();
-
-        $rows = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY id DESC" );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i ORDER BY id DESC',
+                self::getTableName(),
+            ),
+        );
 
         foreach ( $rows as $row ) {
             $urls[] = $row;
@@ -119,8 +123,10 @@ class JobQueue {
         $table_name = self::getTableName();
 
         $jobs_in_progress = $wpdb->get_var(
-            "SELECT COUNT(*) FROM $table_name
-            WHERE status = 'processing'"
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM %i WHERE status = 'processing'",
+                $table_name
+            )
         );
 
         return $jobs_in_progress > 0;
@@ -138,9 +144,10 @@ class JobQueue {
         $table_name = self::getTableName();
 
         $rows = $wpdb->get_results(
-            "SELECT * FROM $table_name
-            WHERE status = 'waiting'
-            ORDER BY id ASC"
+            $wpdb->prepare(
+                "SELECT * FROM %i WHERE status = 'waiting' ORDER BY id ASC",
+                $table_name
+            )
         );
 
         foreach ( $rows as $row ) {
@@ -159,10 +166,13 @@ class JobQueue {
         global $wpdb;
         $jobs = [];
 
-        $table_name = self::getTableName();
-        $query = "SELECT job_type, count(*) FROM $table_name GROUP BY job_type";
-
-        $rows = $wpdb->get_results( $query, 'ARRAY_N' );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT job_type, count(*) FROM %i GROUP BY job_type',
+                self::getTableName(),
+            ),
+            ARRAY_N,
+        );
         foreach ( $rows as $row ) {
             $jobs[ $row[0] ] = $row[1];
         }
@@ -194,18 +204,23 @@ class JobQueue {
                 // Don't collapse direct_deploy_post jobs that target a specific
                 // single post
                 $waiting_jobs = $wpdb->get_results(
-                    "SELECT * FROM $table_name
-                    WHERE job_type = '$job_type'
-                    AND status = 'waiting'
-                    AND triggering_post_id IS NULL
-                    ORDER BY created_at DESC"
+                    $wpdb->prepare(
+                        "SELECT * FROM %i
+                         WHERE job_type = %s AND status = 'waiting' AND triggering_post_id IS NULL
+                         ORDER BY created_at DESC",
+                        $table_name,
+                        $job_type
+                    )
                 );
             } else {
                 $waiting_jobs = $wpdb->get_results(
-                    "SELECT * FROM $table_name
-                    WHERE job_type = '$job_type'
-                    AND status = 'waiting'
-                    ORDER BY created_at DESC"
+                    $wpdb->prepare(
+                        "SELECT * FROM %i
+                         WHERE job_type = %s AND status = 'waiting'
+                         ORDER BY created_at DESC",
+                        $table_name,
+                        $job_type
+                    )
                 );
             }
 
@@ -237,7 +252,8 @@ class JobQueue {
         $table_name = self::getTableName();
 
         $query = $wpdb->prepare(
-            "UPDATE $table_name SET status = %s, status_updated_at = NOW() WHERE id = %d",
+            'UPDATE %i SET status = %s, status_updated_at = NOW() WHERE id = %d',
+            $table_name,
             $status,
             $id
         );
@@ -262,7 +278,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+        return $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
     }
 
     public static function getWaitingJobs(): int {
@@ -279,7 +295,12 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name WHERE status = 'waiting'" );
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM %i WHERE status = 'waiting'",
+                $table_name,
+            ),
+        );
     }
 
     /**
@@ -292,7 +313,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
+        $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
 
         $total_jobs = self::getTotalJobs();
 
@@ -317,14 +338,20 @@ class JobQueue {
         foreach ( $job_types as $job_type ) {
             try {
                 $lock = Db::getLockName( self::getTableName(), $job_type );
-                $query = "SELECT IS_FREE_LOCK('$lock') AS free";
-                $free = intval( $wpdb->get_row( $query )->free );
+                $free = intval(
+                    $wpdb->get_row(
+                        $wpdb->prepare( 'SELECT IS_FREE_LOCK(%s) AS free', $lock )
+                    )->free
+                );
 
                 if ( $free ) {
                     $failed_jobs = $wpdb->query(
-                        "UPDATE $table_name
-                         SET status = 'failed'
-                         WHERE job_type = '{$job_type}' AND status = 'processing'"
+                        $wpdb->prepare(
+                            "UPDATE %i SET status = 'failed'" .
+                            " WHERE job_type = %s AND status = 'processing'",
+                            $table_name,
+                            $job_type
+                        )
                     );
                     if ( $failed_jobs ) {
                         $s = $failed_jobs === 1 ? '' : 's';
@@ -347,8 +374,11 @@ class JobQueue {
         global $wpdb;
 
         $lock = Db::getLockName( self::getTableName(), $job->job_type );
-        $query = "SELECT GET_LOCK('$lock', 30) AS lck";
-        $locked = intval( $wpdb->get_row( $query )->lck );
+        $locked = intval(
+            $wpdb->get_row(
+                $wpdb->prepare( 'SELECT GET_LOCK(%s, 30) AS lck', $lock )
+            )->lck
+        );
         if ( ! $locked ) {
             WsLog::l( "Failed to acquire \"$lock\" lock." );
             return;
@@ -420,13 +450,14 @@ class JobQueue {
             // Skip all waiting jobs when one fails.
             $table_name = self::getTableName();
             $wpdb->query(
-                "UPDATE $table_name
-                    SET status = 'skipped'
-                    WHERE status = 'waiting'"
+                $wpdb->prepare(
+                    "UPDATE %i SET status = 'skipped' WHERE status = 'waiting'",
+                    $table_name
+                )
             );
             throw $e;
         } finally {
-            $wpdb->query( "DO RELEASE_LOCK('$lock')" );
+            $wpdb->query( $wpdb->prepare( 'DO RELEASE_LOCK(%s)', $lock ) );
         }
     }
 }
