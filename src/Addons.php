@@ -58,27 +58,15 @@ class Addons {
      *
      * @return mixed[] array of Addon objects
      */
-    public static function getAll( string $type = 'all' ): array {
+    public static function getAll(): array {
         global $wpdb;
 
-        $table_name = self::getTableName();
-
-        if ( $type !== 'all' ) {
-            return $wpdb->get_results(
-                $wpdb->prepare(
-                    'SELECT * FROM %i WHERE type = %s ORDER BY type DESC',
-                    $table_name,
-                    $type
-                )
-            );
-        } else {
-            return $wpdb->get_results(
-                $wpdb->prepare(
-                    'SELECT * FROM %i ORDER BY type DESC',
-                    $table_name
-                )
-            );
-        }
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i ORDER BY type DESC',
+                self::getTableName(),
+            ),
+        );
     }
 
     /**
