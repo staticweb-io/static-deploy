@@ -213,8 +213,10 @@ class AdminBar {
         $table_name = JobQueue::getTableName();
 
         return $wpdb->get_results(
-            "SELECT * FROM $table_name
-            WHERE status = 'processing'"
+            $wpdb->prepare(
+                "SELECT * FROM %i WHERE status = 'processing'",
+                $table_name
+            )
         );
     }
 

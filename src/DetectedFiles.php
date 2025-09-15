@@ -68,11 +68,17 @@ class DetectedFiles {
                 $paths[] = $path;
             }
 
-            $placeholders = implode( ',', array_fill( 0, count( $hashes ), '%s' ) );
-            $sql = "SELECT path, filename FROM $table_name WHERE path_hash IN ($placeholders)";
+            $placeholders = array_fill( 0, count( $hashes ), '%s' );
             $existing_urls = $wpdb->get_results(
-                $wpdb->prepare( $sql, ...$hashes ),
-                OBJECT_K
+                // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+                $wpdb->prepare(
+                    'SELECT path, filename FROM %i' .
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                    ' WHERE path_hash IN (' . implode( ',', $placeholders ) . ')',
+                    $table_name,
+                    ...$hashes
+                ),
+                OBJECT_K,
             );
 
             $insert_values = [];
@@ -106,11 +112,16 @@ class DetectedFiles {
             if ( count( $insert_values ) > 0 ) {
                 $insert_rows = count( $insert_values ) / 2;
                 $placeholders = array_fill( 0, $insert_rows, '(%s,%s)' );
-                $query_string =
-                    "INSERT IGNORE INTO $table_name (path, filename) " .
-                    ' VALUES ' . implode( ',', $placeholders );
-                $query = $wpdb->prepare( $query_string, ...$insert_values );
-                $wpdb->query( $query );
+                $wpdb->query(
+                    // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+                    $wpdb->prepare(
+                        'INSERT IGNORE INTO %i (path, filename)' .
+                        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                        ' VALUES ' . implode( ',', $placeholders ),
+                        $table_name,
+                        ...$insert_values
+                    )
+                );
             }
 
             // UPDATE changed filenames
@@ -119,12 +130,14 @@ class DetectedFiles {
                 for ( $i = 0; $i < $update_rows; $i++ ) {
                     $filename = $update_values[ $i * 2 ];
                     $hash = $update_values[ $i * 2 + 1 ];
-                    $query_string =
-                        "UPDATE $table_name
-                        SET filename = %s, detected_at = NOW()
-                        WHERE path_hash = %s";
-                    $query = $wpdb->prepare( $query_string, $filename, $hash );
-                    $wpdb->query( $query );
+                    $wpdb->query(
+                        $wpdb->prepare(
+                            'UPDATE %i SET filename = %s, detected_at = NOW() WHERE path_hash = %s',
+                            $table_name,
+                            $filename,
+                            $hash,
+                        )
+                    );
                 }
             }
 
@@ -156,13 +169,17 @@ class DetectedFiles {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, path, filename
-            FROM $table_name
-            WHERE id > %d AND detected_at < %s
-            ORDER BY id ASC
-            LIMIT %d";
-            $q = $wpdb->prepare( $qs, $last_id, $db_now, $batch_size );
-            $rows = $wpdb->get_results( $q );
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT id, path, filename FROM %i
+                     WHERE id > %d AND detected_at < %s
+                     ORDER BY id ASC LIMIT %d',
+                    $table_name,
+                    $last_id,
+                    $db_now,
+                    $batch_size,
+                )
+            );
 
             foreach ( $rows as $row ) {
                 $uri = Psr7Utils::uriFor( $row->path );
@@ -204,18 +221,17 @@ class DetectedFiles {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
-            $qs = "SELECT id, path, filename
-            FROM $table_name
-            WHERE id > %d AND detected_at >= %s
-            ORDER BY id ASC
-            LIMIT %d";
-            $q = $wpdb->prepare(
-                $qs,
-                $last_id,
-                $detected_since,
-                $batch_size
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT id, path, filename FROM %i
+                     WHERE id > %d AND detected_at >= %s
+                     ORDER BY id ASC LIMIT %d',
+                    $table_name,
+                    $last_id,
+                    $detected_since,
+                    $batch_size,
+                ),
             );
-            $rows = $wpdb->get_results( $q );
 
             foreach ( $rows as $row ) {
                 $uri = Psr7Utils::uriFor( $row->path );
@@ -261,11 +277,18 @@ class DetectedFiles {
     public static function rmUrlsById( array $ids ): void {
         global $wpdb;
 
-        $ids = implode( ',', array_map( 'absint', $ids ) );
-
+        $ids = array_map( 'absint', $ids );
         $table_name = self::getTableName();
-
-        $wpdb->query( "DELETE FROM $table_name WHERE ID IN($ids)" );
+        $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+        $wpdb->query(
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+            $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "DELETE FROM %i WHERE ID IN($placeholders)",
+                $table_name,
+                ...$ids
+            )
+        );
     }
 
     public static function rmUrl( string $url ): void {
@@ -289,7 +312,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+        return $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
     }
 
     /**
@@ -302,7 +325,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
+        $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
 
         $total_urls = self::getTotalCrawlableURLs();
 
@@ -319,6 +342,6 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_var( "SELECT count(*) FROM $table_name" );
+        return $wpdb->get_var( $wpdb->prepare( 'SELECT count(*) FROM %i', $table_name ) );
     }
 }

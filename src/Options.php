@@ -396,18 +396,16 @@ class Options {
 
         $table_name = self::getTableName();
 
-        $query_string =
-            "INSERT IGNORE INTO $table_name (name, value, blob_value)
-VALUES (%s, %s, %s);";
-
         foreach ( $option_specs as $option_spec ) {
-            $query = $wpdb->prepare(
-                $query_string,
-                $option_spec->name,
-                $option_spec->default_value,
-                $option_spec->default_blob_value
+            $wpdb->query(
+                $wpdb->prepare(
+                    'INSERT IGNORE INTO %i (name, value, blob_value) VALUES (%s, %s, %s);',
+                    $table_name,
+                    $option_spec->name,
+                    $option_spec->default_value,
+                    $option_spec->default_blob_value,
+                ),
             );
-            $wpdb->query( $query );
         }
     }
 
@@ -423,12 +421,13 @@ VALUES (%s, %s, %s);";
 
         $table_name = self::getTableName();
 
-        $sql = $wpdb->prepare(
-            "SELECT value,blob_value FROM $table_name WHERE name=%s",
-            $name
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                'SELECT value,blob_value FROM %i WHERE name=%s',
+                $table_name,
+                $name,
+            ),
         );
-
-        $row = $wpdb->get_row( $sql );
 
         if ( $row ) {
             return new OptionData(
@@ -546,11 +545,12 @@ VALUES (%s, %s, %s);";
             $option_specs = self::optionSpecs();
         }
 
-        $table_name = self::getTableName();
-
-        $sql = "SELECT name, value, blob_value FROM $table_name";
-
-        $options = $wpdb->get_results( $sql );
+        $options = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT name, value, blob_value FROM %i',
+                self::getTableName(),
+            ),
+        );
 
         $options_map = [];
         foreach ( $options as $opt ) {
@@ -746,7 +746,8 @@ VALUES (%s, %s, %s);";
 
             $wp2static_option = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT value, blob_value FROM $wp2static_table_name WHERE name = %s;",
+                    'SELECT value, blob_value FROM %i WHERE name = %s;',
+                    $wp2static_table_name,
                     $wp2static_name
                 )
             );
@@ -781,7 +782,8 @@ VALUES (%s, %s, %s);";
         } else {
             $wp2static_option = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT value FROM $wp2static_table_name WHERE name = %s;",
+                    'SELECT value FROM %i WHERE name = %s;',
+                    $wp2static_table_name,
                     $wp2static_name
                 )
             );

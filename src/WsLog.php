@@ -116,13 +116,15 @@ class WsLog {
 
         $table_name = self::getTableName();
 
-        $query = "INSERT INTO $table_name (log) VALUES " .
+        $sql = 'INSERT INTO %i (log) VALUES ' .
             implode(
                 ',',
                 array_fill( 0, count( $lines ), '(%s)' )
             );
-
-        $wpdb->query( $wpdb->prepare( $query, $lines ) );
+        // There doesn't appear to be any way to avoid
+        // this false positive other than ignoring it.
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query( $wpdb->prepare( $sql, $table_name, ...$lines ) );
     }
 
     /**
@@ -135,13 +137,13 @@ class WsLog {
 
         $table_name = self::getTableName();
 
-        $max_id = $wpdb->get_var( "SELECT MAX(id) FROM $table_name" );
+        $max_id = $wpdb->get_var( $wpdb->prepare( 'SELECT MAX(id) FROM %i', $table_name ) );
 
         // When near the max range of MEDIUMINT SIGNED, we need to
         // truncate the table and reset the id sequence.
         if ( $max_id > 8300000 ) {
-            $wpdb->query( "TRUNCATE TABLE $table_name" );
-            $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 1" );
+            $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
+            $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i AUTO_INCREMENT = 1', $table_name ) );
             self::l( 'Truncated log table to avoid AUTO_INCREMENT overflow' );
             return 0;
         }
@@ -152,18 +154,20 @@ class WsLog {
             return 0;
         }
 
-        $total_logs = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+        $total_logs = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
 
         if ( $total_logs > $max_log_rows ) {
             $wpdb->query(
-                "
-                DELETE FROM $table_name
-                WHERE id NOT IN (
-                    SELECT id FROM (
-                        SELECT id FROM $table_name ORDER BY id DESC LIMIT $max_log_rows
-                    ) AS sub
+                $wpdb->prepare(
+                    'DELETE FROM %i
+                     WHERE id NOT IN
+                       (SELECT id FROM
+                         (SELECT id FROM %i ORDER BY id DESC LIMIT %d
+                       ) AS sub)',
+                    $table_name,
+                    $table_name,
+                    $max_log_rows
                 )
-            "
             );
         }
 
@@ -182,7 +186,12 @@ class WsLog {
 
         $table_name = self::getTableName();
 
-        return $wpdb->get_results( "SELECT time, log FROM $table_name ORDER BY id DESC" );
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT time, log FROM %i ORDER BY id DESC',
+                $table_name,
+            ),
+        );
     }
 
     /**
@@ -196,9 +205,10 @@ class WsLog {
         $table_name = self::getTableName();
 
         $logs = $wpdb->get_col(
-            "SELECT CONCAT_WS(': ', time, log)
-            FROM $table_name
-            ORDER BY id DESC"
+            $wpdb->prepare(
+                "SELECT CONCAT_WS(': ', time, log) FROM %i ORDER BY id DESC",
+                $table_name
+            )
         );
 
         return implode( PHP_EOL, $logs );
@@ -212,7 +222,7 @@ class WsLog {
 
         $table_name = self::getTableName();
 
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
+        $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
 
         self::l( 'Deleted all Logs' );
     }

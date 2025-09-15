@@ -39,14 +39,18 @@ class Addons {
 
         global $wpdb;
 
-        $table_name = self::getTableName();
-
-        $sql = "INSERT IGNORE INTO {$table_name} (slug,type,name,docs_url,description)" .
-            ' VALUES (%s,%s,%s,%s,%s)';
-
-        $sql = $wpdb->prepare( $sql, $slug, $type, $name, $docs_url, $description );
-
-        $wpdb->query( $sql );
+        $wpdb->query(
+            $wpdb->prepare(
+                'INSERT IGNORE INTO %i (slug,type,name,docs_url,description)' .
+                ' VALUES (%s,%s,%s,%s,%s)',
+                self::getTableName(),
+                $slug,
+                $type,
+                $name,
+                $docs_url,
+                $description,
+            ),
+        );
     }
 
     /**
@@ -59,17 +63,22 @@ class Addons {
 
         $table_name = self::getTableName();
 
-        $query_string = "SELECT * FROM $table_name";
-        $query_params = [];
         if ( $type !== 'all' ) {
-            $query_string .= ' WHERE type = %s';
-            $query_params[] = $type;
+            return $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT * FROM %i WHERE type = %s ORDER BY type DESC',
+                    $table_name,
+                    $type
+                )
+            );
+        } else {
+            return $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT * FROM %i ORDER BY type DESC',
+                    $table_name
+                )
+            );
         }
-        $query_string .= ' ORDER BY type DESC';
-
-        return $wpdb->get_results(
-            $wpdb->prepare( $query_string, $query_params )
-        );
     }
 
     /**
@@ -81,14 +90,13 @@ class Addons {
     public static function getType( string $type ): array {
         global $wpdb;
 
-        $table_name = self::getTableName();
-
-        $query = $wpdb->prepare(
-            "SELECT * FROM $table_name WHERE type = %s AND enabled = 1 ORDER BY slug",
-            $type
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i WHERE type = %s AND enabled = 1 ORDER BY slug',
+                self::getTableName(),
+                $type,
+            ),
         );
-
-        return $wpdb->get_results( $query );
     }
 
     /**
@@ -99,7 +107,7 @@ class Addons {
 
         $table_name = self::getTableName();
 
-        $wpdb->query( "TRUNCATE TABLE $table_name" );
+        $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
 
         WsLog::l( 'Deregistered all Addons' );
     }

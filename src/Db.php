@@ -34,13 +34,17 @@ final class Db {
     ): bool {
         global $wpdb;
 
-        $query = $wpdb->prepare(
-            "SHOW INDEX FROM $table_name WHERE key_name = %s",
-            $index_name
+        $indexes = $wpdb->query(
+            $wpdb->prepare(
+                'SHOW INDEX FROM %i WHERE key_name = %s',
+                $table_name,
+                $index_name,
+            ),
         );
-        $indexes = $wpdb->query( $query );
 
         if ( 0 === $indexes ) {
+            // Caller prepares the query
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $result = $wpdb->query( $create_index_sql );
             if ( false === $result ) {
                 WsLog::l( "Failed to create $index_name index on $table_name." );
@@ -90,6 +94,8 @@ final class Db {
     ): int|bool {
         global $wpdb;
 
+        // Caller prepares the query
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $result = $wpdb->query( $query );
         if ( $result !== false ) {
             return $result;
