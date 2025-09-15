@@ -47,10 +47,15 @@ $addons = $view['addons'];
                         <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'toggle_addon' ) ); ?>" />
                         <input name="addon_slug" type="hidden" value="<?php echo esc_attr( $addon->slug ); ?>" />
 
-                        <button><?php if ( $addon->enabled ) {
+                        <button>
+                        <?php
+                        if ( $addon->enabled ) {
                             echo 'Enabled';
-                                } else {
-                                    echo 'Disabled'; } ?></button>
+                        } else {
+                            echo 'Disabled';
+                        }
+                        ?>
+                        </button>
 
                         </form>
 

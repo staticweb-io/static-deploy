@@ -119,14 +119,17 @@ $paginator_last_page = $view['paginatorLastPage'];
                     </tr>
                 <?php endif; ?>
 
-                <?php foreach ( $view['paginatorRecords'] as $paginator_id => $url ) :
+                <?php
+                foreach ( $view['paginatorRecords'] as $paginator_id => $url ) :
                     // Plugin Check Plugin forces us to escape the same values
                     // repeatedly.
                     ?>
                     <tr>
                         <th scope="row" class="check-column">
-                            <label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $paginator_id ); ?>">
-                                Select <?php echo esc_url( $url );
+                            <label class="screen-reader-text" for=<?php echo '"cb-select-', esc_attr( $paginator_id ), '"'; ?>>
+                                Select 
+                                <?php
+                                echo esc_url( $url );
                                 ?>
                             </label>
                             <input id="cb-select-<?php echo esc_attr( $paginator_id ); ?>" type="checkbox" name="id[]" value="<?php echo esc_attr( $paginator_id ); ?>">

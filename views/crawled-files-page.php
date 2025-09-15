@@ -113,7 +113,8 @@ $paginator_last_page = $view['paginatorLastPage'];
                     </tr>
                 <?php endif; ?>
 
-                <?php foreach ( $view['paginatorRecords'] as $paginator_id => $record ) :
+                <?php
+                foreach ( $view['paginatorRecords'] as $paginator_id => $record ) :
                     // Plugin Check Plugin forces us to repeatedly escape
                     // the same values.
                     ?>
