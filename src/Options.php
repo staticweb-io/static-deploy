@@ -634,7 +634,12 @@ class Options {
         foreach ( $option_specs as $option_spec ) {
             $name = $option_spec->name;
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by calling function
-            $v = $_POST[ $name ] ?? '';
+            if ( isset( $_POST[ $name ] ) ) {
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing
+                $v = sanitize_text_field( wp_unslash( $_POST[ $name ] ) );
+            } else {
+                $v = '';
+            }
             OptionData::fromUserInput( $option_spec, $v )->save();
         }
     }
