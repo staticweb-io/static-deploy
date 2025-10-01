@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Test releases against the oldest and newest supported PHP versions
-parallel --tagstring "{1} {2}" --line-buffer '
+parallel -j "$(nproc)" --tagstring "{1} {2}" --line-buffer '
   echo "Testing {2} with {1}"
   PHP_PACKAGE="{1}" STATIC_DEPLOY_PACKAGE="{2}" nix flake check --impure ./dev
 ' ::: php84 php81 ::: plugin pluginWpOrg
