@@ -34,6 +34,7 @@ final class Db {
     ): bool {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $indexes = $wpdb->query(
             $wpdb->prepare(
                 'SHOW INDEX FROM %i WHERE key_name = %s',
@@ -44,7 +45,7 @@ final class Db {
 
         if ( 0 === $indexes ) {
             // Caller prepares the query
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB
             $result = $wpdb->query( $create_index_sql );
             if ( false === $result ) {
                 WsLog::l( "Failed to create $index_name index on $table_name." );
@@ -94,8 +95,8 @@ final class Db {
     ): int|bool {
         global $wpdb;
 
-        // Caller prepares the query
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        // Caller prepares the query and handles caching
+        // phpcs:ignore WordPress.DB
         $result = $wpdb->query( $query );
         if ( $result !== false ) {
             return $result;
@@ -123,6 +124,7 @@ final class Db {
     public static function tableExists( string $table_name ): bool {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $result = $wpdb->get_var(
             $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
         );

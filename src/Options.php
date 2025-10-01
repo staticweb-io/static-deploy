@@ -397,6 +397,7 @@ class Options {
         $table_name = self::getTableName();
 
         foreach ( $option_specs as $option_spec ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query(
                 $wpdb->prepare(
                     'INSERT IGNORE INTO %i (name, value, blob_value) VALUES (%s, %s, %s);',
@@ -719,6 +720,7 @@ class Options {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->update(
             $table_name,
             [ 'value' => $value ],
@@ -749,6 +751,7 @@ class Options {
 
         if ( $blob ) {
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wp2static_option = $wpdb->get_row(
                 $wpdb->prepare(
                     'SELECT value, blob_value FROM %i WHERE name = %s;',
@@ -776,6 +779,7 @@ class Options {
 
             $table_name = self::getTableName();
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->update(
                 $table_name,
                 [
@@ -785,6 +789,7 @@ class Options {
                 [ 'name' => $option_spec->name ]
             );
         } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wp2static_option = $wpdb->get_row(
                 $wpdb->prepare(
                     'SELECT value FROM %i WHERE name = %s;',
@@ -811,6 +816,7 @@ class Options {
 
             $table_name = self::getTableName();
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->update(
                 $table_name,
                 [ 'value' => $opt->value ],

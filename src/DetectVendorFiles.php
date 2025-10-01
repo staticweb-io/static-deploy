@@ -57,6 +57,7 @@ class DetectVendorFiles {
                 WHERE meta_key = '%s'
                 ";
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $posts = $wpdb->get_results(
                 $wpdb->prepare(
                     'SELECT meta_value FROM %i WHERE meta_key = %s',

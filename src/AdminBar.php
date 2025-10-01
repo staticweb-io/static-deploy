@@ -212,6 +212,7 @@ class AdminBar {
 
         $table_name = JobQueue::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM %i WHERE status = 'processing'",

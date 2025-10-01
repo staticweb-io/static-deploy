@@ -61,6 +61,7 @@ class DirectDeployer {
 
         while ( true ) {
             $new_ct = intval(
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $wpdb->get_var(
                     $wpdb->prepare(
                         'SELECT COUNT(*) FROM %i WHERE detected_at > %s',

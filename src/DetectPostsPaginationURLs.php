@@ -17,6 +17,7 @@ class DetectPostsPaginationURLs {
         global $wpdb, $wp_rewrite;
         $unique_post_types = [];
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $posts = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT ID,post_type FROM %i WHERE post_status = %s AND post_type NOT IN (%s,%s)',
@@ -38,6 +39,7 @@ class DetectPostsPaginationURLs {
         $default_posts_per_page = get_option( 'posts_per_page' );
 
         foreach ( $post_types as $post_type ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $post_type_total = $wpdb->get_var(
                 $wpdb->prepare(
                     'SELECT COUNT(*) FROM %i WHERE post_status = %s AND post_type = %s',

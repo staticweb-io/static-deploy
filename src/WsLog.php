@@ -75,6 +75,7 @@ class WsLog {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->insert(
             $table_name,
             [
@@ -123,8 +124,11 @@ class WsLog {
             );
         // There doesn't appear to be any way to avoid
         // this false positive other than ignoring it.
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->query( $wpdb->prepare( $sql, $table_name, ...$lines ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        $wpdb->query(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            $wpdb->prepare( $sql, $table_name, ...$lines ),
+        );
     }
 
     /**
@@ -137,12 +141,14 @@ class WsLog {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $max_id = $wpdb->get_var( $wpdb->prepare( 'SELECT MAX(id) FROM %i', $table_name ) );
 
         // When near the max range of MEDIUMINT SIGNED, we need to
         // truncate the table and reset the id sequence.
         if ( $max_id > 8300000 ) {
             $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ) );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i AUTO_INCREMENT = 1', $table_name ) );
             self::l( 'Truncated log table to avoid AUTO_INCREMENT overflow' );
             return 0;
@@ -154,9 +160,11 @@ class WsLog {
             return 0;
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $total_logs = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
 
         if ( $total_logs > $max_log_rows ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query(
                 $wpdb->prepare(
                     'DELETE FROM %i
@@ -186,6 +194,7 @@ class WsLog {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT time, log FROM %i ORDER BY id DESC',
@@ -204,6 +213,7 @@ class WsLog {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $logs = $wpdb->get_col(
             $wpdb->prepare(
                 "SELECT CONCAT_WS(': ', time, log) FROM %i ORDER BY id DESC",

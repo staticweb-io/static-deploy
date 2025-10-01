@@ -39,6 +39,7 @@ class Addons {
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query(
             $wpdb->prepare(
                 'INSERT IGNORE INTO %i (slug,type,name,docs_url,description)' .
@@ -61,6 +62,7 @@ class Addons {
     public static function getAll(): array {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT * FROM %i ORDER BY type DESC',
@@ -78,6 +80,7 @@ class Addons {
     public static function getType( string $type ): array {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT * FROM %i WHERE type = %s AND enabled = 1 ORDER BY slug',

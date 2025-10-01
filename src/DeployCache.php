@@ -77,6 +77,7 @@ class DeployCache {
             );
 
             $placeholders = array_fill( 0, count( $path_hashes ), '%s' );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $results = $wpdb->get_results(
                 // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
                 $wpdb->prepare(
@@ -119,6 +120,7 @@ class DeployCache {
     ): void {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query(
             $wpdb->prepare(
                 'INSERT INTO %i (path,data_hash,namespace,deployed_at)' .
@@ -149,6 +151,7 @@ class DeployCache {
                 $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ),
             );
         } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query(
                 $wpdb->prepare(
                     'DELETE FROM %i WHERE namespace = %s',
@@ -169,6 +172,7 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var(
             $wpdb->prepare(
                 'SELECT count(*) FROM %i WHERE namespace = %s',
@@ -189,6 +193,7 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT namespace, COUNT(*) AS count FROM %i GROUP BY namespace',
@@ -216,6 +221,7 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_col(
             $wpdb->prepare(
                 'SELECT path FROM %i WHERE namespace = %s ORDER BY path',

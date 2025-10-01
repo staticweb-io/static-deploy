@@ -92,6 +92,7 @@ class Controller {
         if ( $network_wide ) {
             global $wpdb;
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $site_ids = $wpdb->get_col(
                 $wpdb->prepare(
                     'SELECT blog_id FROM %i WHERE site_id = %d;',
@@ -130,6 +131,7 @@ class Controller {
         if ( $network_wide ) {
             global $wpdb;
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $site_ids = $wpdb->get_col(
                 $wpdb->prepare(
                     'SELECT blog_id FROM %s WHERE site_id = %d;',
@@ -521,6 +523,7 @@ class Controller {
 
         $table_name = Addons::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $addon_type = $wpdb->get_var(
             $wpdb->prepare(
                 'SELECT type FROM %i WHERE slug = %s',
@@ -531,6 +534,7 @@ class Controller {
 
         // if deploy type, disable other deployers when enabling this one
         if ( $enabled && $addon_type === 'deploy' ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->update(
                 $table_name,
                 [ 'enabled' => 0 ],
@@ -542,6 +546,7 @@ class Controller {
         }
 
         // toggle the target addon's state
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->update(
             $table_name,
             [ 'enabled' => $enabled ],
@@ -579,6 +584,7 @@ class Controller {
         $table_name = Addons::getTableName();
 
         // get target addon's current state
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $enabled = $wpdb->get_var(
             $wpdb->prepare(
                 'SELECT enabled FROM %i WHERE slug = %s',

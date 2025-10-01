@@ -20,5 +20,6 @@ $tables_to_drop = [
 foreach ( $tables_to_drop as $table_to_drop ) {
     $table_name = StaticDeploy\Db::getTableName( $table_to_drop );
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
 }

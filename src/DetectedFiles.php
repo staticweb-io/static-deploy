@@ -69,6 +69,7 @@ class DetectedFiles {
             }
 
             $placeholders = array_fill( 0, count( $hashes ), '%s' );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $existing_urls = $wpdb->get_results(
                 // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
                 $wpdb->prepare(
@@ -112,6 +113,7 @@ class DetectedFiles {
             if ( count( $insert_values ) > 0 ) {
                 $insert_rows = count( $insert_values ) / 2;
                 $placeholders = array_fill( 0, $insert_rows, '(%s,%s)' );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $wpdb->query(
                     // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
                     $wpdb->prepare(
@@ -130,6 +132,7 @@ class DetectedFiles {
                 for ( $i = 0; $i < $update_rows; $i++ ) {
                     $filename = $update_values[ $i * 2 ];
                     $hash = $update_values[ $i * 2 + 1 ];
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                     $wpdb->query(
                         $wpdb->prepare(
                             'UPDATE %i SET filename = %s, detected_at = NOW() WHERE path_hash = %s',
@@ -169,6 +172,7 @@ class DetectedFiles {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $rows = $wpdb->get_results(
                 $wpdb->prepare(
                     'SELECT id, path, filename FROM %i
@@ -221,6 +225,7 @@ class DetectedFiles {
         $batch_size = 1000;
         $last_id = 0;
         while ( true ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $rows = $wpdb->get_results(
                 $wpdb->prepare(
                     'SELECT id, path, filename FROM %i
@@ -280,6 +285,7 @@ class DetectedFiles {
         $ids = array_map( 'absint', $ids );
         $table_name = self::getTableName();
         $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query(
             // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
             $wpdb->prepare(
@@ -296,6 +302,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->delete(
             $table_name,
             [ 'path_hash' => md5( $url ) ],
@@ -312,6 +319,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
     }
 
@@ -342,6 +350,7 @@ class DetectedFiles {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var( $wpdb->prepare( 'SELECT count(*) FROM %i', $table_name ) );
     }
 }

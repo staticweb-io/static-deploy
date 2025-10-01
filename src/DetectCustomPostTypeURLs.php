@@ -16,6 +16,7 @@ class DetectCustomPostTypeURLs {
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $post_ids = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->posts}

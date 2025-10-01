@@ -98,6 +98,7 @@ class JobQueue {
         global $wpdb;
         $urls = [];
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT * FROM %i ORDER BY id DESC',
@@ -122,6 +123,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $jobs_in_progress = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(*) FROM %i WHERE status = 'processing'",
@@ -143,6 +145,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM %i WHERE status = 'waiting' ORDER BY id ASC",
@@ -166,6 +169,7 @@ class JobQueue {
         global $wpdb;
         $jobs = [];
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT job_type, count(*) FROM %i GROUP BY job_type',
@@ -203,6 +207,7 @@ class JobQueue {
             if ( $job_type === 'direct_deploy_post' ) {
                 // Don't collapse direct_deploy_post jobs that target a specific
                 // single post
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $waiting_jobs = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM %i
@@ -213,6 +218,7 @@ class JobQueue {
                     )
                 );
             } else {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $waiting_jobs = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM %i
@@ -236,6 +242,7 @@ class JobQueue {
 
             // set all but most recent one to 'skipped'
             foreach ( $waiting_jobs as $waiting_job ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $wpdb->update(
                     $table_name,
                     [ 'status' => 'skipped' ],
@@ -278,6 +285,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
     }
 
@@ -295,6 +303,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(*) FROM %i WHERE status = 'waiting'",
@@ -333,18 +342,21 @@ class JobQueue {
         $job_types = [ 'detect', 'crawl', 'post_process', 'deploy', 'direct_deploy' ];
         $table_name = self::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query( 'START TRANSACTION' );
 
         foreach ( $job_types as $job_type ) {
             try {
                 $lock = Db::getLockName( self::getTableName(), $job_type );
                 $free = intval(
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                     $wpdb->get_row(
                         $wpdb->prepare( 'SELECT IS_FREE_LOCK(%s) AS free', $lock )
                     )->free
                 );
 
                 if ( $free ) {
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                     $failed_jobs = $wpdb->query(
                         $wpdb->prepare(
                             "UPDATE %i SET status = 'failed'" .
@@ -359,8 +371,10 @@ class JobQueue {
                     }
                 }
 
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $wpdb->query( 'COMMIT' );
             } catch ( \Throwable $e ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                 $wpdb->query( 'ROLLBACK' );
                 throw $e;
             }
@@ -375,6 +389,7 @@ class JobQueue {
 
         $lock = Db::getLockName( self::getTableName(), $job->job_type );
         $locked = intval(
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->get_row(
                 $wpdb->prepare( 'SELECT GET_LOCK(%s, 30) AS lck', $lock )
             )->lck
@@ -449,6 +464,7 @@ class JobQueue {
             // We don't want to crawl and deploy if the detect step fails.
             // Skip all waiting jobs when one fails.
             $table_name = self::getTableName();
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query(
                 $wpdb->prepare(
                     "UPDATE %i SET status = 'skipped' WHERE status = 'waiting'",
@@ -457,6 +473,7 @@ class JobQueue {
             );
             throw $e;
         } finally {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
             $wpdb->query( $wpdb->prepare( 'DO RELEASE_LOCK(%s)', $lock ) );
         }
     }

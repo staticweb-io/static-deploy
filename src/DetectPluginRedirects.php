@@ -44,6 +44,7 @@ class DetectPluginRedirects {
 
         // We only need the URLs because we will crawl them
         // to determine the actual status and location.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT url FROM %i WHERE status='enabled'",
@@ -94,6 +95,7 @@ class DetectPluginRedirects {
 
         // We only need the URLs because we will crawl them
         // to determine the actual status and location.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT `match` FROM %i WHERE status=1',
