@@ -626,7 +626,7 @@ class Options {
     /**
      * Save options saved from the admin UI
      *
-     * @param array<OptionData> $option_specs
+     * @param array<OptionSpec> $option_specs
      */
     public static function saveFromAdmin(
         array $option_specs,
