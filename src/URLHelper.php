@@ -50,23 +50,39 @@ class URLHelper {
     }
 
     public static function isSecure(): bool {
-        return ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ||
-            $_SERVER['SERVER_PORT'] === 443;
+        if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) {
+            return true;
+        }
+
+        if ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] === 443 ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Returns the current full URL including querystring
      */
     public static function getCurrent(): string {
-        $scheme = self::isSecure() ? 'https' : 'http';
-        $url = $scheme . '://' . $_SERVER['HTTP_HOST'];
-
-        // Only include port number if needed
-        if ( ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ], true ) ) {
-            $url .= ':' . $_SERVER['SERVER_PORT'];
+        if ( ! isset( $_SERVER['HTTP_HOST'] ) ) {
+            throw WsLog::ex( 'HTTP_HOST not set' );
         }
 
-        return $url . $_SERVER['REQUEST_URI'];
+        $scheme = self::isSecure() ? 'https' : 'http';
+        $url = $scheme . '://' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+
+        // Only include port number if needed
+        if ( isset( $_SERVER['SERVER_PORT'] )
+        && ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ], true ) ) {
+            $url .= ':' . (int) $_SERVER['SERVER_PORT'];
+        }
+
+        if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+            $url = $url . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+        }
+
+        return $url;
     }
 
     /**
