@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for php in php84 php83 php82 php81; do
-  echo "Testing $php"
-  PHP_PACKAGE="$php" nix flake check --impure ./dev
-done
+parallel -j "$(nproc)" --tagstring "{1}" --line-buffer '
+  echo "Testing {1}"
+  PHP_PACKAGE="{1}" nix flake check --impure ./dev
+' ::: php84 php83 php82 php81
