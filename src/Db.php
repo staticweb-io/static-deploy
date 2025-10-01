@@ -56,6 +56,18 @@ final class Db {
     }
 
     /**
+     * Return the database's current time in MySQL's datetime format.
+     *
+     * @return string The current time in MySQL's datetime format
+     */
+    public static function now(): string {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        return $wpdb->get_var( 'SELECT NOW()' );
+    }
+
+    /**
      * Returns a lock name for an "attribute"
      * of a table. The "attribute" is any MySQL-legal
      * string whose meaning is defined by the caller.

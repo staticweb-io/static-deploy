@@ -48,7 +48,7 @@ class DirectDeployer {
         global $wpdb;
 
         $queue_table = DetectedFiles::getTableName();
-        $last_now = $wpdb->get_var( 'SELECT NOW()' );
+        $last_now = Db::now();
 
         if ( $this->config->do_detect ) {
             $detected = URLDetector::detectURLsIter();
@@ -75,7 +75,7 @@ class DirectDeployer {
             }
             WsLog::l( "Found $new_ct new URLs during crawling." );
             $detected = DetectedFiles::getPathsIter( $last_now );
-            $last_now = $wpdb->get_var( 'SELECT NOW()' );
+            $last_now = Db::now();
             $added = DetectedFiles::withPathsIter( $detected );
             $this->deployPaths( $added, false );
         }

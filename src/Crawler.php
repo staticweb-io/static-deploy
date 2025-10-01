@@ -104,7 +104,7 @@ class Crawler {
             $url_discovery = new URLDiscovery();
 
             $detected = DetectedFiles::getPathsIter();
-            $last_now = $wpdb->get_var( 'SELECT NOW()' );
+            $last_now = Db::now();
             $crawled = $crawler->crawlIter( $detected );
             $crawled = CrawledFiles::removeOutdated( $crawled );
             $crawled = $crawler->writeFilesIter( $crawled );
@@ -118,7 +118,7 @@ class Crawler {
             $has_new = true;
             while ( $has_new ) {
                 $detected = DetectedFiles::getPathsIter( $last_now );
-                $last_now = $wpdb->get_var( 'SELECT NOW()' );
+                $last_now = Db::now();
                 $crawled = $crawler->crawlIter( $detected );
                 $crawled = $crawler->writeFilesIter( $crawled );
                 $crawled = CrawledFiles::addPathsIter( $crawled );

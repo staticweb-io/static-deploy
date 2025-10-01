@@ -161,7 +161,7 @@ class DetectedFiles {
     public static function withPathsIter( \Iterator $paths ): \Iterator {
         global $wpdb;
 
-        $db_now = $wpdb->get_var( 'SELECT NOW()' );
+        $db_now = Db::now();
 
         $table_name = self::getTableName();
 
