@@ -79,7 +79,7 @@ class URLHelper {
         }
 
         if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-            $url = $url . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+            return $url . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
         }
 
         return $url;
