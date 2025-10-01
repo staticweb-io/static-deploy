@@ -13,7 +13,10 @@
     };
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
-    wordpress-flake.url = "github:staticweb-io/wordpress-flake";
+    wordpress-flake = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:staticweb-io/wordpress-flake";
+    };
     static-deploy.url = ./..;
   };
   outputs = inputs:
