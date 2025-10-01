@@ -337,11 +337,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1754102467,
-        "narHash": "sha256-FhPxuDNSyynCbfqG70tWDgD1YrbAOJk0zynHiUjtFQM=",
+        "lastModified": 1759339262,
+        "narHash": "sha256-gTKWojGr7JJswOk7smp7su8RTgYGDjAM+D9dGocaVF4=",
         "owner": "staticweb-io",
         "repo": "wordpress-flake",
-        "rev": "6f472d6fa308283e9efac1fbfac9e9a249bc209f",
+        "rev": "41866edcb3f566526f5a0b1119526707978cdc5b",
         "type": "github"
       },
       "original": {
