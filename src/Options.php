@@ -570,8 +570,8 @@ class Options {
             } else {
                 $opt = new OptionData(
                     $option_spec,
-                    $option_spec->default_blob_value,
-                    $option_spec->default_value,
+                    null,
+                    null,
                 );
             }
             $ret[ $name ] = $opt;
