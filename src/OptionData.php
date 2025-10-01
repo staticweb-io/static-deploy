@@ -11,6 +11,10 @@ declare(strict_types=1);
 namespace StaticDeploy;
 
 final class OptionData {
+    public const string CACHE_GROUP = 'static_deploy_option_data';
+    // It's very cheap to fetch options, so there is no point
+    // caching them for long.
+    public const int CACHE_TTL_SEC = 300;
 
     public readonly ?string $blob_value;
     public readonly OptionSpec $option_spec;
@@ -142,11 +146,30 @@ final class OptionData {
             );
         }
 
+        $cacheable = ! $this->option_spec->hasBlobValue();
+
+        if ( $cacheable ) {
+            wp_cache_delete(
+                $this->option_spec->name . '_blob_value',
+                self::CACHE_GROUP,
+            );
+        }
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->update(
             $table_name,
             $updates,
             [ 'name' => $this->option_spec->name ],
         );
+
+        if ( $cacheable ) {
+            wp_cache_set(
+                $this->option_spec->name . '_blob_value',
+                $this->blob_value,
+                self::CACHE_GROUP,
+                self::CACHE_TTL_SEC,
+            );
+        }
     }
 
     public static function fromUserInput(

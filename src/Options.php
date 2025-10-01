@@ -422,6 +422,26 @@ class Options {
 
         $table_name = self::getTableName();
 
+        $cacheable = ! $option_spec->hasBlobValue();
+
+        if ( $cacheable ) {
+            $found = false;
+            $v = wp_cache_get(
+                $option_spec->name . '_value',
+                OptionData::CACHE_GROUP,
+                false,
+                $found,
+            );
+            if ( $found ) {
+                return new OptionData(
+                    $option_spec,
+                    null,
+                    $v,
+                );
+            }
+        }
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 'SELECT value,blob_value FROM %i WHERE name=%s',
@@ -431,6 +451,19 @@ class Options {
         );
 
         if ( $row ) {
+            if ( $cacheable ) {
+                $v = wp_cache_set(
+                    $option_spec->name . '_value',
+                    $row->value,
+                    OptionData::CACHE_GROUP,
+                    OptionData::CACHE_TTL_SEC,
+                );
+                return new OptionData(
+                    $option_spec,
+                    null,
+                    $row->value,
+                );
+            }
             return new OptionData(
                 $option_spec,
                 $row->blob_value,
@@ -546,6 +579,7 @@ class Options {
             $option_specs = self::optionSpecs();
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $options = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT name, value, blob_value FROM %i',
@@ -576,6 +610,14 @@ class Options {
                 );
             }
             $ret[ $name ] = $opt;
+            if ( ! $option_spec->hasBlobValue() ) {
+                wp_cache_set(
+                    $name . '_value',
+                    $opt->value,
+                    OptionData::CACHE_GROUP,
+                    OptionData::CACHE_TTL_SEC,
+                );
+            }
         }
 
         return $ret;
