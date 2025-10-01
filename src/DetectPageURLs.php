@@ -14,17 +14,16 @@ class DetectPageURLs {
             WsLog::d( 'Detecting page URLs' );
         }
 
-        global $wpdb;
-
-        $page_ids = $wpdb->get_col(
-            "SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = 'publish'
-            AND post_type = 'page'"
+        $pages = get_posts(
+            [
+                'post_type' => 'page',
+                'post_status' => 'publish',
+                'posts_per_page' => -1,
+            ],
         );
 
-        foreach ( $page_ids as $page_id ) {
-            $permalink = get_page_link( $page_id );
+        foreach ( $pages as $page ) {
+            $permalink = get_page_link( $page );
 
             if ( str_contains( $permalink, '?post_type' ) ) {
                 continue;

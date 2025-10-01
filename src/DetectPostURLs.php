@@ -14,17 +14,16 @@ class DetectPostURLs {
             WsLog::d( 'Detecting post URLs' );
         }
 
-        global $wpdb;
-
-        $post_ids = $wpdb->get_col(
-            "SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = 'publish'
-            AND post_type = 'post'"
+        $posts = get_posts(
+            [
+                'post_type' => 'post',
+                'post_status' => 'publish',
+                'posts_per_page' => -1,
+            ],
         );
 
-        foreach ( $post_ids as $post_id ) {
-            $permalink = get_permalink( $post_id );
+        foreach ( $posts as $post ) {
+            $permalink = get_permalink( $post );
 
             if ( ! $permalink ) {
                 continue;
