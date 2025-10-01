@@ -425,6 +425,7 @@ class Options {
         $cacheable = ! $option_spec->hasBlobValue();
 
         if ( $cacheable ) {
+            /** @var bool $found */
             $found = false;
             $v = wp_cache_get(
                 $option_spec->name . '_value',
