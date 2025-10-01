@@ -414,6 +414,7 @@
               jq
               inputs.microvm.packages.${system}.microvm
               omnix
+              parallel
               php
               phpunit
               phpPackages.composer
