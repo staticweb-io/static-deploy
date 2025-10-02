@@ -5,7 +5,7 @@
  * Description:       Generate static sites for deployment as files or S3-compatible storage.
  * Version:           9.4.0
  * Author:            StaticWeb.io
- * Author URI:        https://github.com/staticweb-io/static-deploy
+ * Author URI:        https://staticweb.io
  * Text Domain:       static-deploy
  * Requires at least: 6.4
  * Requires PHP:      8.1
