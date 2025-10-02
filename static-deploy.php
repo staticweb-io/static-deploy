@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Static Deploy
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
- * Description:       Static site generator functionality for WordPress.
+ * Description:       Generate static sites for deployment as files or S3-compatible storage.
  * Version:           9.3.2
  * Author:            StaticWeb.io
  * Author URI:        https://github.com/staticweb-io/static-deploy
