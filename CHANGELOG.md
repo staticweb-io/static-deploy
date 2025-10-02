@@ -52,6 +52,7 @@
 - Fix a security issue where the nonce was not verified
   for some actions until after the action had been performed.
 - Cache option values. BLOB values are not cached.
+- Fix an issue where uninstall failed.
 
 ## 9.3.2 (2025-07-29)
 

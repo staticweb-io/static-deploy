@@ -7,7 +7,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-$tables_to_drop = [
+// Note that the plugin is deactivated at this point, so we
+// can't call code in any of our other files.
+
+$table_slugs = [
     'crawled_files',
     'deploy_cache', // An older version of deployed_files
     'deployed_files',
@@ -17,8 +20,8 @@ $tables_to_drop = [
     'options',
 ];
 
-foreach ( $tables_to_drop as $table_to_drop ) {
-    $table_name = StaticDeploy\Db::getTableName( $table_to_drop );
+foreach ( $table_slugs as $table_slug ) {
+    $table_name = $wpdb->prefix . 'static_deploy_' . $table_slug;
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
