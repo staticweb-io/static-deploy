@@ -44,7 +44,8 @@
             || type == "directory" && base == "views"
             || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml";
+            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml"
+            || base == "readme.txt";
         };
         releaseExtras = pkgs.lib.cleanSourceWith {
           src = self;
@@ -71,7 +72,7 @@
             composer dump-autoload --no-dev --optimize
 
             mkdir -p "$out"
-            cp -r composer.json src static-deploy.php uninstall.php vendor views "$out"
+            cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
           '';
         staticDeployWpOrgSrc =
           buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php";
