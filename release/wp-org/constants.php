@@ -23,6 +23,6 @@ define( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS', true );
 // but we would not use when we aren't forced to.
 // e.g. using wp_rand instead of mt_rand in a context
 // where a CSPRNG adds no value.
-// This is just to enable useless functions, not WP
-// functions that do serve some purpose.
+// This is just to force useless behaviors, not
+// for anything that could be useful in some context.
 define( 'STATIC_DEPLOY_WP_ORG_MODE', true );
