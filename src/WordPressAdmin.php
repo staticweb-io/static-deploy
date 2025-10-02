@@ -19,6 +19,10 @@ class WordPressAdmin {
      * @param string $bootstrap_file main plugin filepath
      */
     public static function buildUpdateChecker( string $bootstrap_file ): void {
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
+            return;
+        }
+
         PucFactory::buildUpdateChecker(
             // phpcs:disable Generic.Files.LineLength
             'https://raw.githubusercontent.com/staticweb-io/static-deploy/refs/heads/develop/update.json',
