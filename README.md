@@ -57,6 +57,10 @@ you can build the plugin with your changes by running
 `nix build .#plugin`.
 This will create a zip file at `result/static-deploy.zip`.
 
+There is a slightly different build for the WordPress.org repo.
+This has a few differences like getting updates from WordPress.org instead of from GitHub.
+You can build it with `nix build .#pluginWpOrg`.
+
 If you make changes to composer.json, or composer.lock,
 you will need to update the vendorHashes in flake.nix
 by running
@@ -69,6 +73,9 @@ with this plugin installed.
 The WordPress site is available at
 `http://localhost:8888`
 with credentials "user" and "pass".
+
+The `release` dir contains the `constants.php` files that are used for each build.
+[Rector](https://github.com/rectorphp/rector) rewrites the code for each build based on the defined constants.
 
 ### Testing
 
