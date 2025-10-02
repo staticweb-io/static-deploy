@@ -3,7 +3,7 @@
  * Plugin Name:       Static Deploy Page Cache (Drop-in)
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
  * Description:       Advanced page caching and optimization.
- * Version:           9.3.2
+ * Version:           9.4.0
  * Author:            StaticWeb.io
  * Author URI:        https://github.com/staticweb-io/static-deploy
  * Text Domain:       static-deploy

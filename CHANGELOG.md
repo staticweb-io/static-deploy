@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.4.0 (2025-10-02)
+
 - Show job duration with more precision on the jobs
   page. E.g., "1 minute 20 seconds" instead of
   "1 minute".
