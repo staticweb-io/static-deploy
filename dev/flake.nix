@@ -412,6 +412,7 @@
               inputs.hyperfine-flake.packages.${system}.default
               inputs.hyperfine-flake.packages.${system}.scripts
               jq
+              just
               inputs.microvm.packages.${system}.microvm
               omnix
               parallel
