@@ -16,7 +16,7 @@ Turns your WordPress site into a secure, lightning-fast static website.
 
 = Features =
 * Deploy website directly to S3 and CloudFront
-* Export website as to a directory that can be served by your web server
+* Export website to a directory that can be served by your web server
 * Full WP-CLI support
 
 = Speed =
@@ -28,7 +28,7 @@ The greatly increased speed generally improves SEO performance.
 = Security =
 
 Making the public version of your website a static website allows you to restrict access to your WordPress server.
-This dramatically reduces the attack surface of your website, and makes expensive WAF services unnecessary,
+This dramatically reduces the attack surface of your website and makes expensive WAF services unnecessary.
 
 == Changelog ==
 
