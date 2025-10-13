@@ -307,7 +307,7 @@ class Deployer {
             // Work-around for localstack.
             // Docs suggest to use s3.localhost.localstack.cloud,
             // but the DNS lookups fail in test.
-            if ( str_starts_with( $endpoint, 'http://localhost:4566' ) ) {
+            if ( str_starts_with( $endpoint, 'http://localhost:4668' ) ) {
                 $opts['use_path_style_endpoint'] = true;
             }
         }

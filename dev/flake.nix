@@ -360,7 +360,7 @@
               command = "docker pull ${localstackImage}";
             };
             settings.processes."localstack1" = {
-              command = "docker run --rm -p 4566:4566 ${localstackImage}";
+              command = "docker run --rm -p 4668:4566 ${localstackImage}";
               depends_on."localstack-image1".condition =
                 "process_completed_successfully";
             };

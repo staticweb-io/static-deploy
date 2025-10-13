@@ -13,7 +13,7 @@ final class S3DeployTest extends TestCase {
         $s3 = new \Aws\S3\S3Client(
             [
                 'region' => 'us-east-1',
-                'endpoint' => 'http://localhost:4566',
+                'endpoint' => 'http://localhost:4668',
                 'credentials' => [
                     'key' => 'test',
                     'secret' => 'test',
@@ -32,7 +32,7 @@ final class S3DeployTest extends TestCase {
         $this->setOptionValue( 's3_bucketName', 'static-deploy-bucket' );
         $this->setOptionValue( 's3_awsAccessKeyId', 'test' );
         $this->setOptionValue( 's3_awsSecretAccessKey', 'test' );
-        $this->setOptionValue( 's3_awsEndpoint', 'http://localhost:4566' );
+        $this->setOptionValue( 's3_awsEndpoint', 'http://localhost:4668' );
         $this->setOptionValue( 's3_awsRegion', 'us-east-1' );
     }
 
