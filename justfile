@@ -10,17 +10,19 @@ format:
     just --fmt --unstable
     just phpcbf || true && just phpcs
 
-update-composer-deps: && update-hashes
+_update-composer-deps: && update-hashes
     composer update
 
-update-deps: update-flakes update-composer-deps
+update-deps: _update-flakes _update-composer-deps
 
-update-flakes:
+_update-flakes:
     nix flake update
     fd flake.nix -j 4 -x bash -c 'echo "Updating flake inputs in {//}"; cd "{//}" && nix flake update --inputs-from "$0"' "{{ repo_root }}"
 
+# Update the vendorHash after a composer.json change
 update-hashes:
     ./bin/update-hashes
 
+# Update the update.json file with current values
 update-json:
     ./bin/update-json
