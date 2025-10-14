@@ -15,6 +15,7 @@ format:
 _update-composer-deps: && update-hashes
     composer update
 
+# Upgrade dependencies
 update-deps: _update-flakes _update-composer-deps
 
 _update-flakes:
