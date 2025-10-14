@@ -1,5 +1,6 @@
 repo_root := `pwd`
 
+alias b := build
 alias fmt := format
 
 # List available recipes
