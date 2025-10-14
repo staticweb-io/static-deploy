@@ -5,8 +5,10 @@ help:
   # First command in the file is invoked by default
   @just --list
 
+# Format source and then check for unfixable issues
 format:
-  composer phpcbf || true && composer phpcs
+  just --fmt --unstable
+  just phpcbf || true && just phpcs
 
 update-composer-deps: && update-hashes
   composer update
