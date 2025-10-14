@@ -36,9 +36,8 @@ inclusion: always
 
 ## Quality Assurance Commands
 ```bash
-composer phpcs      # Code style check (must pass)
-composer phpstan    # Static analysis (must pass)
-composer test       # Full test suite (must pass)
+just fmt        # Format and check (must pass)
+just test       # Full test suite (must pass)
 ```
 
 ## WordPress Integration Rules
