@@ -1,7 +1,9 @@
 repo_root := `pwd`
+wordpress_dir := `realpath ./dev/data/wordpress1`
 
 alias b := build
 alias fmt := format
+alias t := test
 
 # List available recipes
 help:
@@ -28,6 +30,24 @@ rector:
     # We sometimes get errors running without --debug
     php ./vendor/bin/rector --debug
 
+# Validate and run tests in a sandbox
+test: _validate _phpcs _test-integration
+
+# Run AWS tests against a live dev server
+_test-aws:
+    WORDPRESS_DIR={{ wordpress_dir }} php ./vendor/bin/phpunit --testsuite AWS
+
+# Run integration tests in a sandbox
+_test-integration:
+    nix flake check ./dev
+
+# Run integration tests against a live dev server
+_test-integration-live:
+    WORDPRESS_DIR={{ wordpress_dir }} php ./vendor/bin/phpunit --testsuite Integration
+
+# Run tests against a live dev server
+test-live: _test-integration-live _test-aws
+
 _update-composer-deps: && update-hashes
     composer update
 
@@ -45,3 +65,6 @@ update-hashes:
 # Update the update.json file with current values
 update-json:
     ./bin/update-json
+
+_validate:
+    composer validate --strict
