@@ -5,10 +5,11 @@ alias b := build
 alias fmt := format
 alias t := test
 
-# List available recipes
-help:
+# Interactive recipe chooser
+[private]
+choose:
     # First command in the file is invoked by default
-    @just --list
+    @just --choose
 
 # Build plugin zip
 build:
