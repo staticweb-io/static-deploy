@@ -12,9 +12,13 @@ choose:
     # First command in the file is invoked by default
     @just --choose
 
-# Build plugin zip
+# Build plugin zip for GitHub release
 build:
     nix build .#plugin
+
+# Build plugin zip for wordpress.org release
+build-wp-org:
+    nix build .#pluginWpOrg
 
 # Run development server
 [working-directory('dev')]
