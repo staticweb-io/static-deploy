@@ -120,11 +120,11 @@
         "spectrum": "spectrum"
       },
       "locked": {
-        "lastModified": 1760236243,
-        "narHash": "sha256-u2HvURFrR6UnPbCltTOWQBvX6N8XSpCE5m0p4c8UOKA=",
+        "lastModified": 1760452571,
+        "narHash": "sha256-hIR+64P8kOFAWWqvismsoSCTMQbCAU0bX7sef3boNBY=",
         "owner": "microvm-nix",
         "repo": "microvm.nix",
-        "rev": "67c23f6fc72e78cc4b8e46b8b9b1d3982d27bee4",
+        "rev": "caebc2da4de266cca6023a8776538893b11dd32f",
         "type": "github"
       },
       "original": {
@@ -210,11 +210,11 @@
     },
     "services-flake": {
       "locked": {
-        "lastModified": 1760230039,
-        "narHash": "sha256-fbb61j0wOz/aH8wRjK/BDaQTdN61Kug41jp/4VyFfvw=",
+        "lastModified": 1760379866,
+        "narHash": "sha256-9AsNoEWvQVZfmdFgI7niiggLkZ8nxVECN2N0BTxUAAk=",
         "owner": "juspay",
         "repo": "services-flake",
-        "rev": "479bcf2b08b6e41e59034a6b092d08eca96db2d9",
+        "rev": "50190532b9e93701ed97d8189808b235f47c9da4",
         "type": "github"
       },
       "original": {
