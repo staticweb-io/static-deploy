@@ -14,7 +14,13 @@ build:
 # Format source and then check for unfixable issues
 format:
     just --fmt --unstable
-    just phpcbf || true && just phpcs
+    just _phpcbf || true && just _phpcs
+
+_phpcbf:
+    php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php
+
+_phpcs:
+    php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php
 
 _update-composer-deps: && update-hashes
     composer update
