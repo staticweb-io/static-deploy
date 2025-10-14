@@ -7,6 +7,10 @@ help:
     # First command in the file is invoked by default
     @just --list
 
+# Build plugin zip
+build:
+    nix build .#plugin
+
 # Format source and then check for unfixable issues
 format:
     just --fmt --unstable
