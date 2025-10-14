@@ -1,5 +1,5 @@
 repo_root := `pwd`
-wordpress_dir := `realpath ./dev/data/wordpress1`
+wordpress_dir := "./dev/data/wordpress1"
 
 alias b := build
 alias fmt := format
@@ -48,7 +48,7 @@ test: _validate _phpcs _test-integration
 
 # Run AWS tests against a live dev server
 _test-aws:
-    WORDPRESS_DIR={{ wordpress_dir }} php ./vendor/bin/phpunit --testsuite AWS
+    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite AWS
 
 # Run integration tests in a sandbox
 _test-integration:
@@ -56,7 +56,7 @@ _test-integration:
 
 # Run integration tests against a live dev server
 _test-integration-live:
-    WORDPRESS_DIR={{ wordpress_dir }} php ./vendor/bin/phpunit --testsuite Integration
+    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite Integration
 
 # Run tests against a live dev server
 test-live: _test-integration-live _test-aws
