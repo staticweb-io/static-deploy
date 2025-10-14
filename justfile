@@ -1,5 +1,10 @@
 repo_root := `pwd`
 
+# List available recipes
+help:
+  # First command in the file is invoked by default
+  @just --list
+
 format:
   composer phpcbf || true && composer phpcs
 
