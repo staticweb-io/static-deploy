@@ -22,6 +22,11 @@ _phpcbf:
 _phpcs:
     php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php
 
+# Run rector code transformations
+rector:
+    # We sometimes get errors running without --debug
+    php ./vendor/bin/rector --debug
+
 _update-composer-deps: && update-hashes
     composer update
 
