@@ -98,6 +98,7 @@
           nativeCheckInputs = [ jq just phpPackages.composer ];
 
           doCheck = true;
+          dontUseJustInstall = true;
 
           buildPhase = ''
             mkdir -p $out
