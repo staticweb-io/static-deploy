@@ -2,6 +2,11 @@
 // phpcs:disable Generic.Files.LineLength.MaxExceeded
 // phpcs:disable Generic.Files.LineLength.TooLong
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * @var mixed[] $view
  */
