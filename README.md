@@ -51,23 +51,25 @@ if you have them.
 
 Development requires installing
 [Nix](https://docs.determinate.systems/determinate-nix/#getting-started).
+You can enter a development shell via `nix develop ./dev`,
+or automatically using [direnv](https://direnv.net/).
 
 After checking out this repository and making changes,
 you can build the plugin with your changes by running
-`nix build .#plugin`.
+`just build`.
 This will create a zip file at `result/static-deploy.zip`.
 
 There is a slightly different build for the WordPress.org repo.
 This has a few differences like getting updates from WordPress.org instead of from GitHub.
-You can build it with `nix build .#pluginWpOrg`.
+You can build it with `just build-wp-org`.
 
 If you make changes to composer.json, or composer.lock,
 you will need to update the vendorHashes in flake.nix
 by running
-`nix develop ./dev -c bin/update-hashes`.
+`just update-hashes`.
 
 You can run the development environment via
-`cd dev && nix run`.
+`just dev`.
 This starts MySQL, PHP-FPM, and Nginx running WordPress
 with this plugin installed.
 The WordPress site is available at
@@ -79,7 +81,7 @@ The `release` dir contains the `constants.php` files that are used for each buil
 
 ### Testing
 
-To run the tests, run `nix flake check ./dev` from
+To run the tests, run `just test` from
 within this repository.
 
 Test results are available on the
