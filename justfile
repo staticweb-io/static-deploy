@@ -1,5 +1,7 @@
 repo_root := `pwd`
 
+alias fmt := format
+
 # List available recipes
 help:
     # First command in the file is invoked by default
