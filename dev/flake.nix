@@ -421,6 +421,7 @@
               phpunit
               phpPackages.composer
               shellcheck
+              watchexec
               wp-cli
             ];
             inputsFrom =

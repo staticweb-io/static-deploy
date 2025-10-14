@@ -4,6 +4,7 @@ wordpress_dir := `realpath ./dev/data/wordpress1`
 alias b := build
 alias fmt := format
 alias t := test
+alias w := watch-dev
 
 # Interactive recipe chooser
 [private]
@@ -75,3 +76,9 @@ update-json:
 
 _validate:
     composer validate --strict
+
+_watch-dev-cmd: format _validate test-live
+
+# Run formatters and dev server tests when files change
+watch-dev:
+    @watchexec --exts json,nix,php --on-busy-update=queue --stdin-quit -- just _watch-dev-cmd
