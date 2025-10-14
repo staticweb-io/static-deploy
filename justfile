@@ -4,6 +4,7 @@ wordpress_dir := `realpath ./dev/data/wordpress1`
 alias b := build
 alias fmt := format
 alias t := test
+alias u := update-deps
 alias w := watch-dev
 
 # Interactive recipe chooser
