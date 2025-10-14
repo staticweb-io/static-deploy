@@ -24,14 +24,14 @@
           pname = "${name}-composer-deps";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-+sh6pk4qVXvorw0n/8qFy4g3VgDpkOPaWkqlxajMYgs=";
+          vendorHash = "sha256-uxqFPZf4DKSpU2E37QRcxqcRsqduDcVQOF3+cLh1ckI=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-GZravcDrOvhhkbMGiVUWujPnHU9MzJ3dxSiUcXPydyE=";
+          vendorHash = "sha256-6Pk/vN2+ovqooTPLs0QCh+7apsk+NW4QKnWOIvTSn8c=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -44,8 +44,8 @@
             || type == "directory" && base == "views"
             || pkgs.lib.hasInfix "/views/" path || type == "regular"
             && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "phpcs.xml" || base == "phpunit.xml"
-            || base == "readme.txt";
+            == "composer.lock" || base == "justfile" || base == "phpcs.xml"
+            || base == "phpunit.xml" || base == "readme.txt";
         };
         releaseExtras = pkgs.lib.cleanSourceWith {
           src = self;
@@ -56,7 +56,7 @@
         };
         buildStaticDeploySrc = constantsFile:
           runCommand "static-deploy-source" {
-            nativeBuildInputs = [ php phpPackages.composer ];
+            nativeBuildInputs = [ just php phpPackages.composer ];
           } ''
             export PLUGIN_DIR="$TMPDIR/${name}"
             mkdir -p "$PLUGIN_DIR"
@@ -65,7 +65,7 @@
 
             # Lock certain constants and run rector to remove dead code
             cp ${constantsFile} constants.php
-            composer rector
+            just rector
 
             rm -rf vendor
             cp -r --no-preserve=mode "${composerVendor}/vendor" .
@@ -95,7 +95,7 @@
           src = staticDeploySrc;
 
           nativeBuildInputs = [ bash php ];
-          nativeCheckInputs = [ jq phpPackages.composer ];
+          nativeCheckInputs = [ jq just phpPackages.composer ];
 
           doCheck = true;
 
@@ -110,7 +110,7 @@
             cp -a "${composerVendorDev}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
             composer lint
-            composer phpcs
+            just _phpcs
             # Run directly because composer swallows the exit code
             php vendor/bin/rector --debug --dry-run
           '';

@@ -68,25 +68,6 @@
         }
     },
     "scripts": {
-        "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
-        "phpcbf": "php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php",
-        "phpcs": "php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php",
-        "lint": "php ./vendor/bin/parallel-lint --exclude integration-tests --exclude vendor .",
-        "rector": "php ./vendor/bin/rector --debug",
-        "test": [
-            "composer validate --strict",
-            "@lint",
-            "@phpcs",
-            "@phpstan",
-            "@test-integration"
-        ],
-        "test-aws": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit --testsuite AWS",
-        "test-integration": "nix flake check ./dev",
-        "test-integration-live": "WORDPRESS_DIR=$(realpath ./dev/data/wordpress1) php ./vendor/bin/phpunit --testsuite Integration",
-        "test-live": [
-            "@test-integration-live",
-            "@test-aws"
-        ],
-        "build": "nix build .#plugin"
+        "lint": "php ./vendor/bin/parallel-lint --exclude integration-tests --exclude vendor ."
     }
 }
