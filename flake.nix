@@ -6,8 +6,15 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       with import nixpkgs { inherit system; };
       with pkgs;
       let
@@ -15,9 +22,12 @@
         version = "9.4.0";
         composerSrc = pkgs.lib.cleanSourceWith {
           src = self;
-          filter = path: type:
-            let rel = baseNameOf path;
-            in rel == "composer.json" || rel == "composer.lock";
+          filter =
+            path: type:
+            let
+              rel = baseNameOf path;
+            in
+            rel == "composer.json" || rel == "composer.lock";
         };
         composerVendor = php.mkComposerVendor (finalAttrs: {
           composerNoDev = true;
@@ -35,50 +45,67 @@
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
-          filter = path: type:
-            let base = baseNameOf path;
-            in type == "directory" && base == "src"
-            || pkgs.lib.hasInfix "/src/" path || type == "directory" && base
-            == "tests" || pkgs.lib.hasInfix "/tests/" path || type
-            == "directory" && base == "util" || pkgs.lib.hasInfix "/util/" path
+          filter =
+            path: type:
+            let
+              base = baseNameOf path;
+            in
+            type == "directory" && base == "src"
+            || pkgs.lib.hasInfix "/src/" path
+            || type == "directory" && base == "tests"
+            || pkgs.lib.hasInfix "/tests/" path
+            || type == "directory" && base == "util"
+            || pkgs.lib.hasInfix "/util/" path
             || type == "directory" && base == "views"
-            || pkgs.lib.hasInfix "/views/" path || type == "regular"
-            && pkgs.lib.hasSuffix ".php" base || base == "composer.json" || base
-            == "composer.lock" || base == "justfile" || base == "phpcs.xml"
-            || base == "phpunit.xml" || base == "readme.txt";
+            || pkgs.lib.hasInfix "/views/" path
+            || type == "regular" && pkgs.lib.hasSuffix ".php" base
+            || base == "composer.json"
+            || base == "composer.lock"
+            || base == "justfile"
+            || base == "phpcs.xml"
+            || base == "phpunit.xml"
+            || base == "readme.txt";
         };
         releaseExtras = pkgs.lib.cleanSourceWith {
           src = self;
-          filter = path: type:
-            let base = baseNameOf path;
-            in type == "directory" && base == "release"
-            || pkgs.lib.hasInfix "/release/" path;
+          filter =
+            path: type:
+            let
+              base = baseNameOf path;
+            in
+            type == "directory" && base == "release" || pkgs.lib.hasInfix "/release/" path;
         };
-        buildStaticDeploySrc = constantsFile:
-          runCommand "static-deploy-source" {
-            nativeBuildInputs = [ just php phpPackages.composer ];
-          } ''
-            export PLUGIN_DIR="$TMPDIR/${name}"
-            mkdir -p "$PLUGIN_DIR"
-            cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
-            cp -r --no-preserve=mode "${staticDeploySrc}"/* .
+        buildStaticDeploySrc =
+          constantsFile:
+          runCommand "static-deploy-source"
+            {
+              nativeBuildInputs = [
+                just
+                php
+                phpPackages.composer
+              ];
+            }
+            ''
+              export PLUGIN_DIR="$TMPDIR/${name}"
+              mkdir -p "$PLUGIN_DIR"
+              cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
+              cp -r --no-preserve=mode "${staticDeploySrc}"/* .
 
-            # Lock certain constants and run rector to remove dead code
-            cp ${constantsFile} constants.php
-            just rector
+              # Lock certain constants and run rector to remove dead code
+              cp ${constantsFile} constants.php
+              just rector
 
-            rm -rf vendor
-            cp -r --no-preserve=mode "${composerVendor}/vendor" .
-            composer dump-autoload --no-dev --optimize
+              rm -rf vendor
+              cp -r --no-preserve=mode "${composerVendor}/vendor" .
+              composer dump-autoload --no-dev --optimize
 
-            mkdir -p "$out"
-            cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
-          '';
-        staticDeployWpOrgSrc =
-          buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php";
-        staticDeployGitHubSrc =
-          buildStaticDeploySrc "${releaseExtras}/release/github/constants.php";
-        pluginZip = source:
+              mkdir -p "$out"
+              cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
+            '';
+        staticDeployWpOrgSrc = buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php";
+        staticDeployGitHubSrc = buildStaticDeploySrc "${releaseExtras}/release/github/constants.php";
+        pluginZip =
+          source:
           runCommand name { } ''
             mkdir "$TMPDIR/${name}"
             cd "$TMPDIR/${name}"
@@ -94,8 +121,15 @@
 
           src = staticDeploySrc;
 
-          nativeBuildInputs = [ bash php ];
-          nativeCheckInputs = [ jq just phpPackages.composer ];
+          nativeBuildInputs = [
+            bash
+            php
+          ];
+          nativeCheckInputs = [
+            jq
+            just
+            phpPackages.composer
+          ];
 
           doCheck = true;
           dontUseJustInstall = true;
@@ -116,7 +150,8 @@
             php vendor/bin/rector --debug --dry-run
           '';
         };
-      in {
+      in
+      {
         checks = { inherit staticDeployCheck; };
         lib = { inherit staticDeploySrc; };
         packages = {
@@ -126,5 +161,6 @@
           pluginWpOrg = staticDeployWpOrg;
           pluginWpOrgSrc = staticDeployWpOrgSrc;
         };
-      });
+      }
+    );
 }
