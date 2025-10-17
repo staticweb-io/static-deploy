@@ -415,6 +415,7 @@
               jq
               just
               inputs.microvm.packages.${system}.microvm
+              nixfmt-rfc-style
               omnix
               parallel
               php

@@ -30,6 +30,7 @@ dev CLEAN="false":
 # Format source and then check for unfixable issues
 format:
     just --fmt --unstable
+    fd --glob "*.nix" -x nixfmt
     just _phpcbf || true && just _phpcs
 
 _phpcbf:
