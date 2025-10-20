@@ -53,13 +53,21 @@ $exported_site_disk_space = $view['exportedSiteDiskSpace'];
  */
 $processed_site_disk_space = $view['processedSiteDiskSpace'];
 
-?>
+wp_register_style(
+    'static-deploy-select',
+    '',
+    [],
+    1,
+);
+wp_enqueue_style( 'static-deploy-select' );
+wp_add_inline_style(
+    'static-deploy-select',
+    '.static-deploy-select {
+        width: 165px;
+    }'
+);
 
-<style>
-select.static-deploy-select {
-    width: 165px;
-}
-</style>
+?>
 
 <div class="wrap">
     <p><i><a href="<?php echo esc_url( Controller::getAdminUrl( 'caches' ) ); ?>">Refresh page</a> to see latest status</i><p>

@@ -3,6 +3,7 @@
 - Fix broken links on settings pages when the server host
   is on a non-standard port.
 - Sanitize all query args on admin pages.
+- Use wp_add_inline_style on caches-page.php.
 
 ## 9.4.0 (2025-10-02)
 
