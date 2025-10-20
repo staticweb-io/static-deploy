@@ -3,7 +3,7 @@ Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4
 Tested up to: 6.8
-Stable tag: 9.4.0
+Stable tag: 9.4.1
 Requires PHP: 8.1
 License: Unlicense
 License URI: https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
@@ -32,10 +32,10 @@ This dramatically reduces the attack surface of your website and makes expensive
 
 == Changelog ==
 
-= 9.4.0 =
+= 9.4.1 =
 Initial submission to WordPress.org.
 
 == Upgrade Notice ==
 
-= 9.4.0 =
+= 9.4.1 =
 Initial submission to WordPress.org.

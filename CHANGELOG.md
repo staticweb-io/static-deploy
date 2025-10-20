@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.4.1 (2025-10-20)
+
 - Fix broken links on settings pages when the server host
   is on a non-standard port.
 - Sanitize all query args on admin pages.
