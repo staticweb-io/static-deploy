@@ -10,7 +10,6 @@
   -->
   <arg name="colors" />
   <arg name="tab-width" value="2" />
-  <rule ref="Squiz.PHP.DiscouragedFunctions" />
   <!-- Custom line length validation -->
   <rule ref="Generic.Files.LineLength">
     <properties>
@@ -31,6 +30,10 @@
     <exclude name="Squiz.Commenting.FunctionComment"/>
     <exclude name="Squiz.Commenting.VariableComment"/>
     <exclude name="Squiz.Commenting.LongConditionClosingComment"/>
+  </rule>
+  <rule ref="Squiz.PHP.DiscouragedFunctions" />
+  <rule ref="Squiz.PHP.Heredoc" >
+    <exclude-pattern>*/tests/*$</exclude-pattern>
   </rule>
   <rule ref="WordPress">
     <exclude name="Generic.Commenting.DocComment.ShortNotCapital" />
