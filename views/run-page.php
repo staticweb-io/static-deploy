@@ -10,55 +10,90 @@ if ( ! defined( 'ABSPATH' ) ) {
 StaticDeploy\Controller::init();
 
 $run_nonce = wp_create_nonce( StaticDeploy\Controller::getHookName( 'run_page' ) );
-?>
 
-<script type="text/javascript">
+// Enqueue jQuery (WordPress core dependency)
+wp_enqueue_script( 'jquery' );
+
+// Enqueue and localize the run page script
+wp_enqueue_script(
+    'static-deploy-run-page',
+    '',
+    [ 'jquery' ],
+    STATIC_DEPLOY_VERSION,
+    true
+);
+
+// Add inline script with localized data
+$script_data = [
+    'runAction' => StaticDeploy\Controller::getHookName( 'run' ),
+    'pollLogAction' => StaticDeploy\Controller::getHookName( 'poll_log' ),
+    'nonce' => $run_nonce,
+    'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+];
+
+wp_register_script(
+    'static-deploy-run-page',
+    '',
+    [],
+    1,
+    [
+        'in_footer' => false,
+    ],
+);
+wp_enqueue_script( 'static-deploy-run-page' );
+
+wp_add_inline_script(
+    'static-deploy-run-page',
+    'var staticDeployRunPage = ' . wp_json_encode( $script_data ) . ';'
+);
+
+wp_add_inline_script(
+    'static-deploy-run-page',
+    '
 var latest_log_row = 0;
 
 jQuery(document).ready(function($){
     var run_data = {
-        action: "<?php echo esc_js( StaticDeploy\Controller::getHookName( 'run' ) ); ?>",
-        security: '<?php echo esc_js( $run_nonce ); ?>',
+        action: staticDeployRunPage.runAction,
+        security: staticDeployRunPage.nonce,
     };
 
     var log_data = {
-        dataType: 'text',
-        action: "<?php echo esc_js( StaticDeploy\Controller::getHookName( 'poll_log' ) ); ?>",
+        dataType: "text",
+        action: staticDeployRunPage.pollLogAction,
         startRow: latest_log_row,
-        security: '<?php echo esc_js( $run_nonce ); ?>',
+        security: staticDeployRunPage.nonce,
     };
 
     function responseErrorHandler( jqXHR, textStatus, errorThrown ) {
         $("#static-deploy-spinner").removeClass("is-active");
-        $("#static-deploy-run" ).prop('disabled', false);
+        $("#static-deploy-run" ).prop("disabled", false);
 
         console.log(errorThrown);
         console.log(jqXHR.responseText);
 
-        alert(`${jqXHR.status} error code returned from server.
-Please check your server's error logs or try increasing your max_execution_time limit in PHP if this consistently fails after the same duration.
-More information of the error may be logged in your browser's console.`);
+        alert(jqXHR.status + " error code returned from server.\nPlease check your server\'s error logs or try increasing your max_execution_time limit in PHP if this consistently fails after the same duration.\nMore information of the error may be logged in your browser\'s console.");
     }
 
     function pollLogs() {
-        $.post(ajaxurl, log_data, function(response) {
-            $('#static-deploy-run-log').val(response);
-            $("#static-deploy-poll-logs" ).prop('disabled', false);
+        $.post(staticDeployRunPage.ajaxUrl, log_data, function(response) {
+            $("#static-deploy-run-log").val(response);
+            $("#static-deploy-poll-logs" ).prop("disabled", false);
         });
     }
 
     $( "#static-deploy-run" ).click(function() {
         $("#static-deploy-spinner").addClass("is-active");
-        $("#static-deploy-run" ).prop('disabled', true);
+        $("#static-deploy-run" ).prop("disabled", true);
 
         $.ajax({
-            url: ajaxurl,
-            type: 'POST',
+            url: staticDeployRunPage.ajaxUrl,
+            type: "POST",
             data: run_data,
             timeout: 0,
             success: function() {
                 $("#static-deploy-spinner").removeClass("is-active");
-                $("#static-deploy-run" ).prop('disabled', false);
+                $("#static-deploy-run" ).prop("disabled", false);
                 pollLogs();
             },
             error: responseErrorHandler
@@ -67,11 +102,13 @@ More information of the error may be logged in your browser's console.`);
     });
 
     $( "#static-deploy-poll-logs" ).click(function() {
-        $("#static-deploy-poll-logs" ).prop('disabled', true);
+        $("#static-deploy-poll-logs" ).prop("disabled", true);
         pollLogs();
     });
 });
-</script>
+'
+);
+?>
 
 <div class="wrap">
     <br>
