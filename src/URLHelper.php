@@ -72,17 +72,19 @@ class URLHelper {
         $scheme = self::isSecure() ? 'https' : 'http';
         $url = $scheme . '://' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
 
-        // Only include port number if needed
-        if ( isset( $_SERVER['SERVER_PORT'] )
-        && ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ], true ) ) {
-            $url .= ':' . (int) $_SERVER['SERVER_PORT'];
-        }
-
         if ( isset( $_SERVER['REQUEST_URI'] ) ) {
             $url .= sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
         }
 
-        return Psr7Utils::uriFor( $url );
+        $uri = Psr7Utils::uriFor( $url );
+
+        // Only include port number if needed
+        if ( isset( $_SERVER['SERVER_PORT'] )
+        && ! in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ], true ) ) {
+            return $uri->withPort( (int) $_SERVER['SERVER_PORT'] );
+        }
+
+        return $uri;
     }
 
     /**

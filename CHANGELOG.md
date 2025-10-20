@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Fix broken links on settings pages when the server host
+  is on a non-standard port.
+
 ## 9.4.0 (2025-10-02)
 
 - Show job duration with more precision on the jobs
