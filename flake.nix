@@ -34,14 +34,14 @@
           pname = "${name}-composer-deps";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-uxqFPZf4DKSpU2E37QRcxqcRsqduDcVQOF3+cLh1ckI=";
+          vendorHash = "sha256-yhWkpetOXx1uYFlxJagBJ7rann9O5y1RifR3ezjft9g=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-6Pk/vN2+ovqooTPLs0QCh+7apsk+NW4QKnWOIvTSn8c=";
+          vendorHash = "sha256-jVlDf/RmIbR9fUdpJeV4ELmOBINtkMCEd4pQqOn4JOA=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
