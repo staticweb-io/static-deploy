@@ -302,9 +302,8 @@ class WordPressAdmin {
             $method = strval( $method );
             $msg = "Invalid method in request to admin-post.php (adminPostProcessQueue): $method";
         }
-        $nonce = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_URL );
-        $nonce_valid = $nonce && wp_verify_nonce(
-            strval( $nonce ),
+        $nonce_valid = isset( $_POST['_wpnonce'] ) && wp_verify_nonce(
+            sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ),
             Controller::getHookName( 'process_queue' )
         );
         if ( ! $nonce_valid ) {
