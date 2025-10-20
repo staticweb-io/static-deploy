@@ -358,7 +358,13 @@ class Controller {
     public static function adminDeployCacheDelete(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
+        $deploy_namespace = strval(
+            filter_input(
+                INPUT_POST,
+                'deploy_namespace',
+                FILTER_SANITIZE_URL,
+            )
+        );
         if ( $deploy_namespace !== '' ) {
             DeployCache::truncate( $deploy_namespace );
         } else {
@@ -372,7 +378,13 @@ class Controller {
     public static function adminDeployCacheShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        $deploy_namespace = strval( filter_input( INPUT_POST, 'deploy_namespace' ) );
+        $deploy_namespace = strval(
+            filter_input(
+                INPUT_POST,
+                'deploy_namespace',
+                FILTER_SANITIZE_URL,
+            )
+        );
         $admin_url = self::getAdminUrl( 'deploy_cache' );
         if ( $deploy_namespace !== '' ) {
             wp_safe_redirect(
@@ -520,7 +532,13 @@ class Controller {
         } else {
             check_admin_referer( self::getHookName( 'addons_page' ) );
 
-            $addon_slug = sanitize_text_field( strval( filter_input( INPUT_POST, 'addon_slug' ) ) );
+            $addon_slug = strval(
+                filter_input(
+                    INPUT_POST,
+                    'addon_slug',
+                    FILTER_SANITIZE_URL,
+                )
+            );
         }
 
         global $wpdb;
@@ -580,7 +598,13 @@ class Controller {
         } else {
             check_admin_referer( self::getHookName( 'addons_page' ) );
 
-            $addon_slug = sanitize_text_field( strval( filter_input( INPUT_POST, 'addon_slug' ) ) );
+            $addon_slug = strval(
+                filter_input(
+                    INPUT_POST,
+                    'addon_slug',
+                    FILTER_SANITIZE_URL,
+                )
+            );
         }
 
         global $wpdb;

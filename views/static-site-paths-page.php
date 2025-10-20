@@ -16,7 +16,7 @@ use StaticDeploy\URLHelper;
 /**
  * @var string $paginator_index
  */
-$paginator_index = filter_input( INPUT_GET, 'page' );
+$paginator_index = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_URL );
 
 /**
  * @var int $paginator_page

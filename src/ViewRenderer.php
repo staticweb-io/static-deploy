@@ -69,11 +69,11 @@ class ViewRenderer {
             die( 'Forbidden' );
         }
 
-        $action = filter_input( INPUT_GET, 'action' );
+        $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_URL );
         /**
          * @var string[] $url_id
          */
-        $url_id = filter_input( INPUT_GET, 'id' );
+        $url_id = filter_input( INPUT_GET, 'id', FILTER_SANITIZE_URL );
 
         if ( $action === 'remove' && is_array( $url_id ) ) {
             DetectedFiles::rmUrlsById( $url_id );
@@ -81,7 +81,7 @@ class ViewRenderer {
 
         $urls = iterator_to_array( DetectedFiles::getCrawlablePaths() );
         // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's' ) );
+        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
         if ( $search_term !== '' ) {
             $urls = array_filter(
                 $urls,
@@ -110,11 +110,11 @@ class ViewRenderer {
             die( 'Forbidden' );
         }
 
-        $action = filter_input( INPUT_GET, 'action' );
+        $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_URL );
         /**
          * @var string[] $url_id
          */
-        $url_id = filter_input( INPUT_GET, 'id' );
+        $url_id = filter_input( INPUT_GET, 'id', FILTER_SANITIZE_URL );
 
         if ( $action === 'remove' && is_array( $url_id ) ) {
             CrawledFiles::rmUrlsById( $url_id );
@@ -122,7 +122,7 @@ class ViewRenderer {
 
         $urls = CrawledFiles::getURLs();
         // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's' ) );
+        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
         if ( $search_term !== '' ) {
             $urls = array_filter(
                 $urls,
@@ -154,7 +154,7 @@ class ViewRenderer {
         $paths = ProcessedSite::getPaths();
 
         // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's' ) );
+        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
@@ -186,7 +186,7 @@ class ViewRenderer {
         $paths = StaticSite::getPaths();
 
         // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's' ) );
+        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
@@ -215,13 +215,19 @@ class ViewRenderer {
             die( 'Forbidden' );
         }
 
-        $deploy_namespace = strval( filter_input( INPUT_GET, 'deploy_namespace' ) );
+        $deploy_namespace = strval(
+            filter_input(
+                INPUT_GET,
+                'deploy_namespace',
+                FILTER_SANITIZE_URL,
+            )
+        );
         $paths = $deploy_namespace !== ''
             ? DeployCache::getPaths( $deploy_namespace )
             : DeployCache::getPaths();
 
         // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's' ) );
+        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
         if ( $search_term !== '' ) {
             $paths = array_filter(
                 $paths,
