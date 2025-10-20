@@ -64,7 +64,7 @@ class URLHelper {
     /**
      * Returns the current full URL including querystring
      */
-    public static function getCurrent(): string {
+    public static function getCurrent(): Uri {
         if ( ! isset( $_SERVER['HTTP_HOST'] ) ) {
             throw WsLog::ex( 'HTTP_HOST not set' );
         }
@@ -79,10 +79,10 @@ class URLHelper {
         }
 
         if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-            return $url . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+            $url .= sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
         }
 
-        return $url;
+        return Psr7Utils::uriFor( $url );
     }
 
     /**
@@ -96,10 +96,10 @@ class URLHelper {
     public static function modifyUrl( array $changes, string $url = '' ): string {
         // If $url wasn't passed in, use the current url
         if ( $url === '' ) {
-            $url = self::getCurrent();
+            $uri = self::getCurrent();
+        } else {
+            $uri = Psr7Utils::uriFor( $url );
         }
-
-        $uri = Psr7Utils::uriFor( $url );
 
         return Uri::withQueryValues( $uri, $changes );
     }
