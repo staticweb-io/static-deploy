@@ -7,11 +7,10 @@ alias t := test
 alias u := update-deps
 alias w := watch-dev
 
-# Interactive recipe chooser
 [private]
-choose:
-    # First command in the file is invoked by default
-    @just --choose
+list:
+    @# First command in the file is invoked by default
+    @just --list
 
 # Build plugin zip for GitHub release
 build:
