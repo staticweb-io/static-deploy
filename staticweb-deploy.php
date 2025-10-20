@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:       Static Deploy
+ * Plugin Name:       StaticWeb Deploy
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
  * Description:       Generate static sites for deployment as files or S3-compatible storage.
  * Version:           9.5.1
  * Author:            StaticWeb.io
  * Author URI:        https://staticweb.io
- * Text Domain:       static-deploy
+ * Text Domain:       staticweb-deploy
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * License URI:       https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
@@ -49,7 +49,7 @@ StaticDeploy\Controller::init();
 function static_deploy_plugin_action_links( $links ) {
     $settings_link =
         '<a href="admin.php?page=static-deploy">' .
-        __( 'Settings', 'static-deploy' ) .
+        __( 'Settings', 'staticweb-deploy' ) .
         '</a>';
     array_unshift( $links, $settings_link );
 

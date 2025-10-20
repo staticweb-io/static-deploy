@@ -28,7 +28,7 @@ class Controller {
     }
 
     public static function init(): Controller {
-        $bootstrap_file = STATIC_DEPLOY_PATH . 'static-deploy.php';
+        $bootstrap_file = STATIC_DEPLOY_PATH . 'staticweb-deploy.php';
         $plugin_instance = self::getInstance();
 
         register_activation_hook(

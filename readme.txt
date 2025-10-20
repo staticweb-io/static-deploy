@@ -1,4 +1,4 @@
-=== Static Deploy ===
+=== StaticWeb Deploy ===
 Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4

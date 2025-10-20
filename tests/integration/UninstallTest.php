@@ -10,9 +10,17 @@ final class UninstallTest extends TestCase {
 
     public function testUninstall(): void
     {
-        $this->wpCli( [ 'plugin', 'uninstall', 'static-deploy', '--deactivate', '--skip-delete' ] );
+        $this->wpCli(
+            [
+                'plugin',
+                'uninstall',
+                'staticweb-deploy',
+                '--deactivate',
+                '--skip-delete',
+            ]
+        );
         // Reactivate so that when running tests against the dev server,
         // I don't have to manually activate it again.
-        $this->wpCli( [ 'plugin', 'activate', 'static-deploy' ] );
+        $this->wpCli( [ 'plugin', 'activate', 'staticweb-deploy' ] );
     }
 }

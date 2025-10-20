@@ -35,7 +35,7 @@ return RectorConfig::configure()
             __DIR__ . '/views',
         ]
     )
-    ->withRootFiles() // Include static-deploy.php and uninstall.php
+    ->withRootFiles() // Include staticweb-deploy.php and uninstall.php
     ->withPhpSets() // Detects PHP version from composer.json
     ->withRules(
         [

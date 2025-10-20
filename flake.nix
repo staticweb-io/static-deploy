@@ -18,7 +18,7 @@
       with import nixpkgs { inherit system; };
       with pkgs;
       let
-        name = "static-deploy";
+        name = "staticweb-deploy";
         version = "9.5.1";
         composerSrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -92,7 +92,7 @@
               composer install --no-cache --no-dev --optimize-autoloader
 
               mkdir -p "$out"
-              cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
+              cp -r composer.json readme.txt src staticweb-deploy.php uninstall.php vendor views "$out"
             '';
         staticDeployWpOrgSrc = buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php" ''
           composer remove yahnis-elsts/plugin-update-checker --minimal-changes --no-cache

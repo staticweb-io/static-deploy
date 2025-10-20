@@ -23,7 +23,7 @@ and install it in your WordPress site.
 [Nix](https://docs.determinate.systems/determinate-nix/#getting-started)
 installed, you can build from source via
 `nix build github:staticweb-io/static-deploy#plugin`.
-This will create a zip file at `result/static-deploy.zip`
+This will create a zip file at `result/staticweb-deploy.zip`
 which you can then install in your WordPress site.
 
 ## Support
@@ -57,7 +57,7 @@ or automatically using [direnv](https://direnv.net/).
 After checking out this repository and making changes,
 you can build the plugin with your changes by running
 `just build`.
-This will create a zip file at `result/static-deploy.zip`.
+This will create a zip file at `result/staticweb-deploy.zip`.
 
 There is a slightly different build for the WordPress.org repo.
 This has a few differences like getting updates from WordPress.org instead of from GitHub.

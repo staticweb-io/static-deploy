@@ -9,7 +9,7 @@ trait ITTrait {
     public function setUp(): void {
         $plugins = $this->wpCli( [ 'plugin', 'list', '--format=json' ] )['final_line'];
         foreach ( json_decode( (string) $plugins, true ) as $plugin ) {
-            if ( $plugin['name'] !== 'static-deploy' ) {
+            if ( $plugin['name'] !== 'staticweb-deploy' ) {
                 $this->wpCli( [ 'plugin', 'deactivate', $plugin['name'] ] );
                 $this->wpCli( [ 'plugin', 'uninstall', $plugin['name'] ] );
             }
@@ -18,7 +18,7 @@ trait ITTrait {
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getLocalDeployDir() ) );
         exec( 'rm -rf ' . escapeshellarg( ITEnv::getTestContentDir() ) );
 
-        $this->wpCli( [ 'plugin', 'activate', 'static-deploy' ] );
+        $this->wpCli( [ 'plugin', 'activate', 'staticweb-deploy' ] );
         $this->pluginCli( [ 'delete-all-cache', '--force' ] );
         $this->pluginCli( [ 'jobs', 'delete', '--yes' ] );
     }

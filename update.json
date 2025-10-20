@@ -1,5 +1,5 @@
 {
-  "name": "Static Deploy",
+  "name": "StaticWeb Deploy",
   "version": "9.5.1",
   "download_url": "https://github.com/staticweb-io/static-deploy/releases/download/v9.5.1/plugin.zip",
   "requires": "6.4",

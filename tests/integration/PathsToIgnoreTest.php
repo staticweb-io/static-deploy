@@ -58,14 +58,14 @@ final class PathsToIgnoreTest extends TestCase {
     public function testVendorIgnores(): void {
         $wordpress_dir = ITEnv::getWordPressDir();
         file_put_contents(
-            $wordpress_dir . '/wp-content/plugins/static-deploy/vendor/findme.html',
+            $wordpress_dir . '/wp-content/plugins/staticweb-deploy/vendor/findme.html',
             '<html>'
         );
 
         $this->pluginCli( [ 'detect' ] );
         $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
         $this->assertNotContains(
-            '/wp-content/plugins/static-deploy/vendor/findme.html',
+            '/wp-content/plugins/staticweb-deploy/vendor/findme.html',
             $lines,
             'Vendored files are ignored'
         );

@@ -9,7 +9,7 @@ static-deploy/
 ├── dev/                    # Development environment (Nix-based)
 ├── vendor/                 # Composer dependencies
 ├── bin/                    # Executable scripts
-├── static-deploy.php          # Main plugin file
+├── staticweb-deploy.php          # Main plugin file
 └── composer.json          # Dependencies and scripts
 ```
 
