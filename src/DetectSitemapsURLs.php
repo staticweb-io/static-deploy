@@ -102,7 +102,7 @@ class DetectSitemapsURLs {
                 foreach ( $robotsmaps as $robotsmap ) {
                     $sitemaps[ $robotsmap ] = [];
                 }
-                if ( STATIC_DEPLOY_DEBUG && count( $sitemaps ) > 0 ) {
+                if ( STATIC_DEPLOY_DEBUG && $sitemaps !== [] ) {
                     WsLog::d( 'Found sitemaps: ' . implode( ', ', array_keys( $sitemaps ) ) );
                 }
             }

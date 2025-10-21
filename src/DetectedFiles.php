@@ -104,7 +104,7 @@ class DetectedFiles {
             }
 
             // INSERT IGNORE new paths
-            if ( count( $insert_values ) > 0 ) {
+            if ( $insert_values !== [] ) {
                 $insert_rows = count( $insert_values ) / 2;
                 $placeholders = array_fill( 0, $insert_rows, '(%s,%s)' );
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery
@@ -121,7 +121,7 @@ class DetectedFiles {
             }
 
             // UPDATE changed filenames
-            if ( count( $update_values ) > 0 ) {
+            if ( $update_values !== [] ) {
                 $update_rows = count( $update_values ) / 2;
                 for ( $i = 0; $i < $update_rows; $i++ ) {
                     $filename = $update_values[ $i * 2 ];

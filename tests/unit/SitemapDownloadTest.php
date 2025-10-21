@@ -17,7 +17,7 @@ class SitemapDownloadTest extends TestCase {
         $parser->parse( $url );
         $this->assertTrue( is_array( $parser->getSitemaps() ) );
         $this->assertTrue( is_array( $parser->getURLs() ) );
-        $this->assertTrue( count( $parser->getSitemaps() ) > 0 || count( $parser->getURLs() ) > 0 );
+        $this->assertTrue( $parser->getSitemaps() !== [] || $parser->getURLs() !== [] );
         foreach ( $parser->getSitemaps() as $url => $tags ) {
             $this->assertTrue( is_string( $url ) );
             $this->assertTrue( is_array( $tags ) );
