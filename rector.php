@@ -5,6 +5,10 @@ require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
 require_once __DIR__ . '/util/rector/ReplaceKnownDefinedWithBooleanRector.php';
 require_once __DIR__ . '/util/rector/ReplaceNegatedBooleanRector.php';
 
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
+use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Constants\Rector\FuncCall\ReplaceKnownDefinedWithBooleanRector;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
@@ -42,6 +46,7 @@ return RectorConfig::configure()
     ->withSets(
         [
             SetList::CODE_QUALITY,
+            SetList::CODING_STYLE,
             SetList::DEAD_CODE,
             SetList::EARLY_RETURN,
             SetList::INSTANCEOF,
@@ -49,6 +54,10 @@ return RectorConfig::configure()
     )
     ->withSkip(
         [
+            CatchExceptionNameMatchingTypeRector::class,
+            EncapsedStringsToSprintfRector::class,
+            NewlineAfterStatementRector::class,
+            NewlineBeforeNewAssignSetRector::class,
             // Allow explicit loops to consume iterators for side-effects
             RemoveDeadContinueRector::class,
             TernaryToElvisRector::class,
