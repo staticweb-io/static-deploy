@@ -14,25 +14,19 @@ class LocalDeployer {
 
     const DEFAULT_NAMESPACE = 'static-deploy-addon-local/default';
 
-    /**
-     * @var integer
-     */
-    private $deployed_ct = 0;
+    private int $deployed_ct = 0;
 
-    /**
-     * @var integer
-     */
-    private $deploy_cache_ct = 0;
+    private int $deploy_cache_ct = 0;
 
-    /**
-     * @var integer
-     */
-    private $deploy_error_ct = 0;
+    private int $deploy_error_ct = 0;
 
     public static function getDeployerSlug(): string {
         return 'static-deploy-addon-local';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getDeployerData(): array {
         return [
             'description' => 'Deploys to a local directory',

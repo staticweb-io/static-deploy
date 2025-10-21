@@ -8,7 +8,7 @@ use WP_Mock;
 final class DetectAuthorsURLsTest extends TestCase {
 
 
-    public function testDetect() {
+    public function testDetect(): void {
         $site_url = 'https://foo.com/';
         $users = [];
 

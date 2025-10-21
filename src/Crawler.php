@@ -25,22 +25,13 @@ define( 'STATIC_DEPLOY_REDIRECT_CODES', [ 301, 302, 303, 307, 308 ] );
 
 class Crawler {
 
-    /**
-     * @var Client
-     */
-    private $client;
+    private readonly \GuzzleHttp\Client $client;
 
     private readonly Uri $site_uri;
 
-    /**
-     * @var integer
-     */
-    private $crawled = 0;
+    private int $crawled = 0;
 
-    /**
-     * @var integer
-     */
-    private $cache_hits = 0;
+    private int $cache_hits = 0;
 
     private int $concurrency;
 
@@ -145,6 +136,9 @@ class Crawler {
         do_action( Controller::getHookName( 'crawling_complete' ), $args );
     }
 
+    /**
+     * @param string[] $site_urls
+     */
     public function crawlPath( PathInfo $detected, array $site_urls ): PromiseInterface {
         $absolute_uri = URLHelper::normalize( $this->site_uri . $detected->path );
         try {
@@ -158,7 +152,7 @@ class Crawler {
         }
 
         return $this->client->sendAsync( $request )->then(
-            function ( $response ) use ( &$detected, &$site_urls ) {
+            function ( $response ) use ( &$detected, &$site_urls ): array {
                 $status = $response->getStatusCode();
 
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
@@ -202,7 +196,7 @@ class Crawler {
                     'path' => $path_info,
                 ];
             },
-            function () use ( &$detected ) {
+            function () use ( &$detected ): array {
                 return [
                     'error' => 'Error crawling ' . $detected->path,
                     'path' => $detected,

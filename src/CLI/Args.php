@@ -6,6 +6,9 @@ use StaticDeploy\WsLog;
 use WP_CLI;
 
 class Args {
+    /**
+     * @param array<int, mixed> $args
+     */
     public static function parse(
         array $args,
         ?array $assoc_args = null,

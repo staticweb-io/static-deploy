@@ -12,7 +12,7 @@ class Options {
     /**
      * @var ?array<string, OptionSpec>
      */
-    private static $cached_option_specs;
+    private static ?array $cached_option_specs = null;
 
     /**
      * @var ?array<string, OptionSpec>
@@ -573,7 +573,7 @@ class Options {
      */
     public static function getAll(
         ?array $option_specs = null
-    ) {
+    ): array {
         global $wpdb;
 
         if ( $option_specs === null ) {

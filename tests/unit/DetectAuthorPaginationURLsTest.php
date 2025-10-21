@@ -9,7 +9,7 @@ use WP_Mock;
 final class DetectAuthorPaginationURLsTest extends TestCase {
 
 
-    public function testDetect() {
+    public function testDetect(): void {
         $site_url = 'https://foo.com/';
 
         // Set the WordPress pagination base

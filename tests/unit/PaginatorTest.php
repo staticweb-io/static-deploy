@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 final class PaginatorTest extends TestCase {
 
 
-    public function testLastPage() {
+    public function testLastPage(): void {
         $records = array_fill( 0, 9, 0 );
         $expected = 2;
         $actual = ( new Paginator( $records, 5, 1 ) )->lastPage();
@@ -25,7 +25,7 @@ final class PaginatorTest extends TestCase {
         );
     }
 
-    public function testDifferentPageSizes() {
+    public function testDifferentPageSizes(): void {
         // 9 records, page size of 10
         $records = array_fill( 0, 9, 0 );
         $expected = 1;
@@ -54,7 +54,7 @@ final class PaginatorTest extends TestCase {
         );
     }
 
-    public function testPageSize() {
+    public function testPageSize(): void {
         // 9 records, page size of 10, page 1
         $records = array_fill( 0, 9, 0 );
         $expected = 9;
@@ -83,7 +83,7 @@ final class PaginatorTest extends TestCase {
         );
     }
 
-    public function testRecords() {
+    public function testRecords(): void {
         $records = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
         $expected = [ 1, 2, 3 ];
         $actual = ( new Paginator( $records, 3, 1 ) )->records();

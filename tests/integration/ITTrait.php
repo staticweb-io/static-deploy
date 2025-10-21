@@ -23,6 +23,9 @@ trait ITTrait {
         $this->pluginCli( [ 'jobs', 'delete', '--yes' ] );
     }
 
+    /**
+     * @return array<string, int|string|list<string>|null>
+     */
     public function wpCli( array $args, array $expect_warnings = [] ): array
     {
         $wordpress_dir = ITEnv::getWordPressDir();
@@ -40,7 +43,7 @@ trait ITTrait {
         foreach ( $expect_warnings as $pattern => $expected_count ) {
             $matches = array_filter(
                 $output,
-                fn( $line ): bool => preg_match( $pattern, $line ) === 1,
+                fn( string $line ): bool => preg_match( $pattern, $line ) === 1,
             );
             $this->assertCount(
                 $expected_count,

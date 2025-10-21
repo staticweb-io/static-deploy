@@ -10,10 +10,7 @@ use GuzzleHttp\Psr7\Utils as Psr7Utils;
 */
 class SiteInfo {
 
-    /**
-     * @var SiteInfo
-     */
-    private static $instance;
+    private static ?SiteInfo $instance = null;
 
     /**
      * Site info.

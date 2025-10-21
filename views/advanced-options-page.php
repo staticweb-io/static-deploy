@@ -19,7 +19,7 @@ use StaticDeploy\OptionRenderer;
  */
 $options = $view['options'];
 
-$row = function ( $option_name ) use ( $options ) {
+$row = function ( $option_name ) use ( $options ): void {
     $option_data = $options[ $option_name ];
     echo '<tr><td style="width: 50%">';
     OptionRenderer::echoLabel( $option_data, true );

@@ -9,7 +9,7 @@ use WP_Mock;
 final class DetectPostURLsTest extends TestCase {
 
 
-    public function testDetect() {
+    public function testDetect(): void {
         global $wpdb;
 
         // Create 3 attachments

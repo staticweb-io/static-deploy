@@ -12,7 +12,7 @@ class SitemapStripCommentsTest extends TestCase {
      * @param string $url URL
      * @param string $body URL body content
      */
-    public function testStrict( $url, $body ) {
+    public function testStrict( string $url, string $body ): void {
         $parser = new SitemapParser();
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url, $body );
@@ -47,9 +47,9 @@ class SitemapStripCommentsTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return array<int, string[]>
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'https://www.bellinghambaymarathon.org/sitemap_index.xml',

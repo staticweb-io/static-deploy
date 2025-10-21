@@ -16,7 +16,7 @@ class S3Options {
     /**
      * @var array<string, OptionSpec>
      */
-    private static $cached_option_specs;
+    private static ?array $cached_option_specs = null;
 
     public static function getAdminAction(): string {
         return Controller::getHookName( 's3_save_options' );
@@ -213,6 +213,9 @@ class S3Options {
         return $ret;
     }
 
+    /**
+     * @return array<string, array<mixed, array<string, string[]|string>>|string>
+     */
     public static function getPageData(): array {
         return [
             'title' => 'S3 Deployment Options',

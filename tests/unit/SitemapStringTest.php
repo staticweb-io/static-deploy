@@ -11,7 +11,7 @@ class SitemapStringTest extends TestCase {
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testString( $url ) {
+    public function testString( string $url ): void {
         $parser = new SitemapParser( 'SitemapParser', [ 'strict' => false ] );
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url );
@@ -36,9 +36,9 @@ class SitemapStringTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return array<int, string[]>
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'https://www.xml-sitemaps.com/urllist.txt',

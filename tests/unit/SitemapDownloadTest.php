@@ -11,7 +11,7 @@ class SitemapDownloadTest extends TestCase {
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testDownload( $url ) {
+    public function testDownload( string $url ): void {
         $parser = new SitemapParser( 'SitemapParser' );
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url );
@@ -35,9 +35,9 @@ class SitemapDownloadTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return string[][]
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'http://www.google.com/sitemap.xml',

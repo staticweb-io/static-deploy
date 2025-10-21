@@ -18,35 +18,20 @@ class Deployer {
 
     const DEFAULT_NAMESPACE = 'static-deploy-addon-s3/default';
 
-    /**
-     * @var integer
-     */
-    private $cf_max_paths = 0;
+    private int $cf_max_paths;
 
     /**
      * @var array
      */
     private $cf_stale_paths = [];
 
-    /**
-     * @var integer
-     */
-    private $deployed_ct = 0;
+    private int $deployed_ct = 0;
 
-    /**
-     * @var integer
-     */
-    private $deploy_cache_ct = 0;
+    private int $deploy_cache_ct = 0;
 
-    /**
-     * @var integer
-     */
-    private $deploy_error_ct = 0;
+    private int $deploy_error_ct = 0;
 
-    /**
-     * @var S3Client
-     */
-    private $s3_client;
+    private S3Client $s3_client;
 
     public function __construct() {
         $cf_max_paths_str = S3Options::getValue( 'maxPathsToInvalidate' );
@@ -58,6 +43,9 @@ class Deployer {
         return 'static-deploy-addon-s3';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getDeployerData(): array {
         return [
             'description' => 'Deploys to Amazon S3',
@@ -261,7 +249,7 @@ class Deployer {
                 },
                 // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
                 'rejected' =>
-                function ( $reason, $iter_key, $promise ) use ( &$items_by_iter_key ): void {
+                function ( string $reason, $iter_key, $promise ) use ( &$items_by_iter_key ): void {
                     $item = $items_by_iter_key[ $iter_key ];
                     WsLog::e( 'Error uploading file ' . $item['cache_key'] . ': ' . $reason );
                     unset( $items_by_iter_key[ $iter_key ] );

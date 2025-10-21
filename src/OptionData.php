@@ -173,7 +173,7 @@ final class OptionData {
     public static function fromUserInput(
         OptionSpec $option_spec,
         string $user_input,
-    ) {
+    ): self {
         $blob_value = null;
 
         switch ( $option_spec->type ) {

@@ -9,7 +9,7 @@ use WP_Mock;
 final class DetectPostsPaginationURLsTest extends TestCase {
 
 
-    public function testDetectWithoutPostsPage() {
+    public function testDetectWithoutPostsPage(): void {
         global $wpdb;
         // Set the WordPress pagination base
         global $wp_rewrite;
@@ -228,7 +228,7 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    public function testDetectWithPostsPage() {
+    public function testDetectWithPostsPage(): void {
         global $wpdb;
         // Set the WordPress pagination base
         global $wp_rewrite;

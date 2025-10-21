@@ -11,9 +11,9 @@ class SitemapIndexTest extends TestCase {
      * @dataProvider generateDataForTest
      * @param string $url URL
      * @param string $body URL body content
-     * @param array $result Test result to match
+     * @param array<string, array<string, string>> $result Test result to match
      */
-    public function testSitemapIndex( $url, $body, $result ) {
+    public function testSitemapIndex( string $url, string $body, array $result ): void {
         $parser = new SitemapParser( 'SitemapParser' );
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parse( $url, $body );
@@ -24,9 +24,9 @@ class SitemapIndexTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return array<int, array<string|array<string, array<string, string>>>>
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'http://www.example.com/sitemap.xml',

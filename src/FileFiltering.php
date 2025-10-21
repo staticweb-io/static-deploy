@@ -8,7 +8,7 @@ class FileFiltering {
      * @var array<FileIgnorePattern>
      * Files and directories to ignore
      */
-    private $patterns_to_ignore = [];
+    private array $patterns_to_ignore = [];
 
     public function __construct() {
         $paths_to_ignore = Options::getLineDelimitedBlobValue( 'pathsToIgnore' );
@@ -38,7 +38,7 @@ class FileFiltering {
         $filter_iter = new \RecursiveCallbackFilterIterator(
             $dir_iter,
             // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
-            function ( $current, $key, $iterator ) use ( $abs_base_dir ) {
+            function ( $current, $key, $iterator ) use ( $abs_base_dir ): bool {
                 // Filter out both directories and files
                 foreach ( $this->patterns_to_ignore as $pattern_to_ignore ) {
                     if ( $pattern_to_ignore->matches( $abs_base_dir, $current ) ) {

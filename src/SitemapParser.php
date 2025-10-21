@@ -50,13 +50,6 @@ class SitemapParser {
     const ROBOTSTXT_PATH = '/robots.txt';
 
     /**
-     * Configuration options
-     *
-     * @var mixed[]
-     */
-    protected $config = [];
-
-    /**
      * Sitemaps discovered
      *
      * @var mixed[]
@@ -102,18 +95,19 @@ class SitemapParser {
          * User-Agent to send with every HTTP(S) request
          */
         protected $user_agent = self::DEFAULT_USER_AGENT,
-        array $config = []
+        /**
+         * Configuration options
+         */
+        protected array $config = []
     ) {
-        $this->config = $config;
     }
 
     /**
      * Parse Recursive
      *
      * @param string $url
-     * @return void
      */
-    public function parseRecursive( $url ) {
+    public function parseRecursive( $url ): void {
         $this->addToQueue( [ $url ] );
         $todo = $this->getQueue();
         $ct = count( $todo );
@@ -174,10 +168,9 @@ class SitemapParser {
      *
      * @param string $url URL to parse
      * @param string|null $url_content URL body content (provide to skip download)
-     * @return void
      * @throws StaticDeployException
      */
-    public function parse( $url, $url_content = null ) {
+    public function parse( $url, $url_content = null ): void {
         $this->clean();
         $this->current_url = $this->urlEncode( $url );
         if ( ! $this->urlValidate( $this->current_url ) ) {
@@ -226,7 +219,7 @@ class SitemapParser {
      * @return ?string Raw body content
      * @throws StaticDeployException
      */
-    protected function getContent() {
+    protected function getContent(): ?string {
         $this->current_url =
             $this->urlEncode( (string) $this->current_url );
 
@@ -325,10 +318,9 @@ class SitemapParser {
      * Validate URL arrays and add them to their corresponding arrays
      *
      * @param string $type sitemap|url
-     * @param mixed[] $arr Tag array
-     * @return bool
+     * @param array<string, string> $arr Tag array
      */
-    protected function addArray( $type, array $arr ) {
+    protected function addArray( $type, array $arr ): bool {
         if ( ! isset( $arr['loc'] ) ) {
             return false;
         }
@@ -353,11 +345,11 @@ class SitemapParser {
     /**
      * Check for missing values and set them to null
      *
-     * @param mixed[] $tags Tags check if exists
-     * @param mixed[] $arr Array to check
+     * @param string[] $tags Tags check if exists
+     * @param array<string, mixed> $arr Array to check
      * @return mixed[]
      */
-    protected function fixMissingTags( array $tags, array $arr ) {
+    protected function fixMissingTags( array $tags, array $arr ): array {
         foreach ( $tags as $tag ) {
             if ( empty( $arr[ $tag ] ) ) {
                 $arr[ $tag ] = null;
@@ -369,10 +361,9 @@ class SitemapParser {
      * Generate the \SimpleXMLElement object if the XML is valid
      *
      * @param string $xml
-     * @return \SimpleXMLElement|bool
      * @throws StaticDeployException
      */
-    protected function generateXMLObject( $xml ) {
+    protected function generateXMLObject( $xml ): \SimpleXMLElement|false {
         // strip XML comments from files
         // if they occur at the beginning of the file it will invalidate the XML
         // this occurs with certain versions of Yoast
@@ -396,9 +387,8 @@ class SitemapParser {
      * Parse line separated text string
      *
      * @param string $str
-     * @return bool
      */
-    protected function parseString( $str ) {
+    protected function parseString( $str ): bool {
         if ( ! isset( $this->config['strict'] ) || $this->config['strict'] !== false ) {
             // Strings are not part of any documented sitemap standard
             return false;
@@ -423,9 +413,8 @@ class SitemapParser {
      * Check if the URL may contain an Sitemap
      *
      * @param string $url
-     * @return bool
      */
-    protected function isSitemapURL( $url ) {
+    protected function isSitemapURL( $url ): bool {
         $path = Psr7Utils::uriFor( $this->urlEncode( $url ) )->getPath();
         return $this->urlValidate( $url ) && (
                 substr(
@@ -444,9 +433,8 @@ class SitemapParser {
      *
      * @param string $type Sitemap or URL
      * @param \SimpleXMLElement $json object
-     * @return bool
      */
-    protected function parseJson( $type, \SimpleXMLElement $json ) {
+    protected function parseJson( $type, \SimpleXMLElement $json ): bool {
         if ( ! isset( $json->$type ) ) {
             return false;
         }

@@ -9,7 +9,7 @@ use WP_Mock;
 final class DetectCustomPostTypeURLsTest extends TestCase {
 
 
-    public function testDetect() {
+    public function testDetect(): void {
         global $wpdb;
         $site_url = 'https://foo.com/';
 

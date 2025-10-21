@@ -10,7 +10,7 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider protocolRelativeURLProvider
      */
-    public function testgetProtocolRelativeURL( $url, $expectation ) {
+    public function testgetProtocolRelativeURL( string $url, string $expectation ): void {
         $protocol_relative_url = URLHelper::getProtocolRelativeURL( $url );
 
         $this->assertEquals(
@@ -19,7 +19,10 @@ final class URLHelperTest extends TestCase {
         );
     }
 
-    public function protocolRelativeURLProvider() {
+    /**
+     * @return array<string, string[]>
+     */
+    public function protocolRelativeURLProvider(): array {
         return [
             'http link becomes protocol relative' => [
                 'http://myplaceholderdomain.com/some-post/',
@@ -51,14 +54,17 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider startsWithHashProvider
      */
-    public function teststartsWithHash( $url, $expectation ) {
+    public function teststartsWithHash( string $url, bool $expectation ): void {
         $this->assertEquals(
             $expectation,
             URLHelper::startsWithHash( $url )
         );
     }
 
-    public function startsWithHashProvider() {
+    /**
+     * @return array<string, array<string|bool>>
+     */
+    public function startsWithHashProvider(): array {
         return [
             'doc relative url starting with hash returns true' => [
                 '#somehash',
@@ -74,14 +80,17 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider isMailtoProvider
      */
-    public function testisMailto( $url, $expectation ) {
+    public function testisMailto( string $url, bool $expectation ): void {
         $this->assertEquals(
             $expectation,
             URLHelper::isMailto( $url )
         );
     }
 
-    public function isMailtoProvider() {
+    /**
+     * @return array<string, array<string|bool>>
+     */
+    public function isMailtoProvider(): array {
         return [
             'doc relative url starting with mailto returns true' => [
                 'mailto:leon@wp2static.com',
@@ -97,14 +106,17 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider isProtocolRelativeProvider
      */
-    public function testisProtocolRelative( $url, $expectation ) {
+    public function testisProtocolRelative( string $url, bool $expectation ): void {
         $this->assertEquals(
             $expectation,
             URLHelper::isProtocolRelative( $url )
         );
     }
 
-    public function isProtocolRelativeProvider() {
+    /**
+     * @return array<string, array<string|bool>>
+     */
+    public function isProtocolRelativeProvider(): array {
         return [
             'protocol relative URL returns true' => [
                 '//mydomain.com/animage.jpg',
@@ -121,10 +133,10 @@ final class URLHelperTest extends TestCase {
      * @dataProvider protocolRelativeToAbsoluteURLProvider
      */
     public function testprotocolRelativeToAbsoluteURL(
-        $url,
-        $site_url,
-        $expectation
-    ) {
+        string $url,
+        string $site_url,
+        string $expectation
+    ): void {
         $url = URLHelper::protocolRelativeToAbsoluteURL( $url, $site_url );
 
         $this->assertEquals(
@@ -133,7 +145,10 @@ final class URLHelperTest extends TestCase {
         );
     }
 
-    public function protocolRelativeToAbsoluteURLProvider() {
+    /**
+     * @return array<string, string[]>
+     */
+    public function protocolRelativeToAbsoluteURLProvider(): array {
         return [
             'same domain host returns abs url' => [
                 '//mydomain.com/animage.jpg',
@@ -152,17 +167,20 @@ final class URLHelperTest extends TestCase {
      * @dataProvider isInternalLinkProvider
      */
     public function testisInternalLink(
-        $url,
-        $site_url_host,
-        $expectation
-    ) {
+        string $url,
+        string $site_url_host,
+        bool $expectation
+    ): void {
         $this->assertEquals(
             $expectation,
             URLHelper::isInternalLink( $url, $site_url_host )
         );
     }
 
-    public function isInternalLinkProvider() {
+    /**
+     * @return array<string, array<string|bool>>
+     */
+    public function isInternalLinkProvider(): array {
         return [
             'first char /, 2nd char other is site root rel internal link' => [
                 '/somelink',

@@ -11,7 +11,7 @@ class SitemapRecursiveTest extends TestCase {
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testRecursive( $url ) {
+    public function testRecursive( string $url ): void {
         $parser = new SitemapParser( 'SitemapParser' );
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
         $parser->parseRecursive( $url );
@@ -37,9 +37,9 @@ class SitemapRecursiveTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return array<int, string[]>
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'https://edenapartmentsqueenanne.com/sitemap_index.xml',

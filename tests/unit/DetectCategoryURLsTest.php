@@ -9,7 +9,7 @@ use WP_Mock;
 final class DetectCategoryURLsTest extends TestCase {
 
 
-    public function testDetect() {
+    public function testDetect(): void {
         $site_url = 'https://foo.com/';
         $taxonomies = [
             (object) [ 'name' => 'category' ],

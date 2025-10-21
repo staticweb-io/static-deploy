@@ -10,13 +10,13 @@ class FileIgnorePattern {
      * @var bool
      * Match only directories and not files.
      */
-    private $only_directories;
+    private bool $only_directories;
 
     /**
      * @var string
      * Regex tested against relative URLs.
      */
-    private $url_regex;
+    private readonly string $url_regex;
 
     /**
      * Following gitignore rules:

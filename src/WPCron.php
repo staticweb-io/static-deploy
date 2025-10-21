@@ -54,7 +54,7 @@ class WPCron {
     /**
      * Register custom WP Cron schedule intervals
      *
-     * @param mixed[] $schedules array of CRON schedules
+     * @param array<string, mixed> $schedules array of CRON schedules
      * @return mixed[] array of CRON schedules
      */
     public static function customCronSchedules( array $schedules ): array {
@@ -79,7 +79,7 @@ class WPCron {
     /**
      * Override WP-Cron to use http basic auth creds if set
      *
-     * @param mixed[] $cron_request WP-Cron request
+     * @param array<string, mixed> $cron_request WP-Cron request
      * @return mixed[] WP-Cron request
      */
     public static function cronWithBasicAuth( array $cron_request ): array {

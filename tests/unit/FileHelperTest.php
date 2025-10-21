@@ -26,10 +26,8 @@ final class FileHelperTest extends TestCase {
 
     /**
      * Test deleteDirWithFiles method
-     *
-     * @return void
      */
-    public function testDeleteDirWithFiles() {
+    public function testDeleteDirWithFiles(): void {
         // Set up a virual folder structure
         $structure = [
             // Latin characters
@@ -97,10 +95,8 @@ final class FileHelperTest extends TestCase {
 
     /**
      * Test getListOfLocalFilesByDir method
-     *
-     * @return void
      */
-    public function testGetListOfLocalFilesByDir() {
+    public function testGetListOfLocalFilesByDir(): void {
         $paths_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'pathsToIgnore'
         );
@@ -182,10 +178,8 @@ final class FileHelperTest extends TestCase {
 
     /**
      * Test pathLooksCrawlable method
-     *
-     * @return void
      */
-    public function testPathLooksCrawlable() {
+    public function testPathLooksCrawlable(): void {
         $paths_to_ignore = Options::getDefaultLineDelimitedBlobValue(
             'pathsToIgnore'
         );
@@ -249,10 +243,8 @@ final class FileHelperTest extends TestCase {
     /**
      * Test pathLooksCrawlable method's $file_extensions_to_ignore argument
      * filter.
-     *
-     * @return void
      */
-    public function testPathLooksCrawlableExtension() {
+    public function testPathLooksCrawlableExtension(): void {
         $looks_crawlable = ( fn( $file_name ) => FilesHelper::pathLooksCrawlable(
             $file_name,
             [],

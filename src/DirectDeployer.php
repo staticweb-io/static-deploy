@@ -8,12 +8,12 @@
 namespace StaticDeploy;
 
 class DirectDeployer {
-    private $crawler;
-    private $deployer;
+    private readonly Crawler $crawler;
+    private readonly object $deployer;
     public DirectDeployConfig $config;
-    private $processor;
+    private readonly PostProcessor $processor;
     public bool $ready = false;
-    private $url_discovery;
+    private readonly URLDiscovery $url_discovery;
 
     public function __construct(
         ?DirectDeployConfig $config = null,

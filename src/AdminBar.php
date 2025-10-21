@@ -254,7 +254,7 @@ window.onload = (event) => {
         }
     }
 
-    public static function listInvalidationsInProgress( int $max_items = 5 ) {
+    public static function listInvalidationsInProgress( int $max_items = 5 ): ?array {
         $invalidations = self::listInvalidations( $max_items );
         if ( ! $invalidations ) {
             return null;

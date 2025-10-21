@@ -41,10 +41,8 @@ final class SimpleRewriterTest extends TestCase {
 
     /**
      * Test deleteDirWithFiles method
-     *
-     * @return void
      */
-    public function testRewrite() {
+    public function testRewrite(): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -71,6 +69,9 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
+    /**
+     * @return array<string, string[]>
+     */
     public function rewriteFileContentsProvider() {
         return [
             'no changes needed' => [
@@ -107,7 +108,7 @@ final class SimpleRewriterTest extends TestCase {
     /**
      * @dataProvider rewriteFileContentsProvider
      */
-    public function testRewriteFileContents( $raw_html, $expected ) {
+    public function testRewriteFileContents( $raw_html, $expected ): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -126,7 +127,7 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( addcslashes( (string) $expected, '/' ), $actual );
     }
 
-    public function testRewriteFileContentsHttpToHttps() {
+    public function testRewriteFileContentsHttpToHttps(): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -145,7 +146,7 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    public function testRewriteFileContentsHttpsToHttp() {
+    public function testRewriteFileContentsHttpsToHttp(): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -164,7 +165,7 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    public function testRewriteFileContentsSkipURLRewrite() {
+    public function testRewriteFileContentsSkipURLRewrite(): void {
         // Mock the methods and functions used by SimpleRewriter
         Mockery::mock( 'overload:\StaticDeploy\Options' )
                 ->shouldReceive( 'getValue' )
@@ -186,7 +187,7 @@ final class SimpleRewriterTest extends TestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    public function testRewriteFileContentsHostsToRewrite() {
+    public function testRewriteFileContentsHostsToRewrite(): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -208,7 +209,7 @@ final class SimpleRewriterTest extends TestCase {
     /**
      * @dataProvider rewriteFileContentsProvider
      */
-    public function testRewriteFileContentsDestinationUrlFilter( $raw_html, $expected ) {
+    public function testRewriteFileContentsDestinationUrlFilter( $raw_html, $expected ): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )
@@ -237,7 +238,7 @@ final class SimpleRewriterTest extends TestCase {
     /**
      * @dataProvider rewriteFileContentsProvider
      */
-    public function testRewriteFileContentsSiteUrlFilter( $raw_html, $expected ) {
+    public function testRewriteFileContentsSiteUrlFilter( $raw_html, $expected ): void {
         // Mock the methods and functions used by SimpleRewriter
         self::optionsMock()
             ->shouldreceive( 'getValue' )

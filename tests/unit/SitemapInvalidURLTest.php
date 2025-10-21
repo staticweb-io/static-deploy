@@ -11,7 +11,7 @@ class SitemapInvalidURLTest extends TestCase {
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testInvalidURL( $url ) {
+    public function testInvalidURL( string $url ): void {
         $this->expectException( \StaticDeploy\StaticDeployException::class );
         $parser = new SitemapParser( 'SitemapParser' );
         $this->assertInstanceOf( \StaticDeploy\SitemapParser::class, $parser );
@@ -21,9 +21,9 @@ class SitemapInvalidURLTest extends TestCase {
     /**
      * Generate test data
      *
-     * @return array
+     * @return string[][]
      */
-    public function generateDataForTest() {
+    public function generateDataForTest(): array {
         return [
             [
                 'htt://www.example.c/',

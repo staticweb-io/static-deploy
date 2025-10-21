@@ -16,7 +16,7 @@ class LocalOptions {
     /**
      * @var array<string, OptionSpec>
      */
-    private static $cached_option_specs;
+    private static ?array $cached_option_specs = null;
 
     public static function getAdminAction(): string {
         return Controller::getHookName( 'local_save_options' );
@@ -63,6 +63,9 @@ class LocalOptions {
         return $ret;
     }
 
+    /**
+     * @return array<string, array<int, array<string, string[]|string>>|string>
+     */
     public static function getPageData(): array {
         return [
             'title' => 'Local Deployment Options',

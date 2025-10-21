@@ -267,7 +267,7 @@ class JobQueue {
         Db::query(
             $query,
             // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-            on_error: function ( $error ) use ( $query ) {
+            on_error: function ( $error ) use ( $query ): int|bool {
                 // Try to create status_update_at column
                 self::createTable();
                 return Db::query( $query );
