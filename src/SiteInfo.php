@@ -82,7 +82,7 @@ class SiteInfo {
      * @throws StaticDeployException
      */
     public static function getPath( string $name ): string {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -114,7 +114,7 @@ class SiteInfo {
      * @throws StaticDeployException
      */
     public static function getUrl( string $name ): string {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -139,7 +139,7 @@ class SiteInfo {
     // TODO Use WP_Http 'curl_enabled' => $this->hasCurlSupport(),
     // didn't see the method vailable in WP_Http
     public static function hasCURLSupport(): bool {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -147,7 +147,7 @@ class SiteInfo {
     }
 
     public static function isUploadsWritable(): bool {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -160,7 +160,7 @@ class SiteInfo {
     }
 
     public static function permalinksAreCompatible(): bool {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -173,7 +173,7 @@ class SiteInfo {
     }
 
     public static function getPermalinks(): string {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -191,7 +191,7 @@ class SiteInfo {
      * @throws StaticDeployException
      */
     public static function getSiteURLHost(): string {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
@@ -219,7 +219,7 @@ class SiteInfo {
      *  @return mixed[]
      */
     public static function getAllInfo(): array {
-        if ( self::$instance === null ) {
+        if ( ! self::$instance instanceof SiteInfo ) {
             self::$instance = new SiteInfo();
         }
 
