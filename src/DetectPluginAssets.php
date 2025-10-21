@@ -44,7 +44,7 @@ class DetectPluginAssets {
                 function ( $active_plugin ) {
                     $dir = explode( '/', $active_plugin )[0];
                     if ( STATIC_DEPLOY_DEBUG ) {
-                        WsLog::d( "Active plugin dir: $dir" );
+                        WsLog::d( "Active plugin dir: {$dir}" );
                     }
                     return $dir;
                 },

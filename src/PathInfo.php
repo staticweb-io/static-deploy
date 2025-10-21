@@ -39,9 +39,9 @@ class PathInfo {
         $msg = self::pathErrorMessage( $uri );
         if ( $msg ) {
             if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
-                throw WsLog::ex( esc_html( "$msg: $path" ) );
+                throw WsLog::ex( esc_html( "{$msg}: {$path}" ) );
             }
-            throw WsLog::ex( "$msg: $path" );
+            throw WsLog::ex( "{$msg}: {$path}" );
         }
 
         $this->filename = $filename === '' ? null : $filename;

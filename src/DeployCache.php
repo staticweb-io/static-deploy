@@ -18,7 +18,7 @@ class DeployCache {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             path VARCHAR(2083) NOT NULL,
             path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
@@ -26,7 +26,7 @@ class DeployCache {
             namespace VARCHAR(128) NOT NULL,
             deployed_at datetime DEFAULT NOW() NOT NULL,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -34,13 +34,13 @@ class DeployCache {
         Db::ensureIndex(
             $table_name,
             'path_hash_ns_idx',
-            "CREATE UNIQUE INDEX path_hash_ns_idx ON $table_name (path_hash, namespace)"
+            "CREATE UNIQUE INDEX path_hash_ns_idx ON {$table_name} (path_hash, namespace)"
         );
 
         Db::ensureIndex(
             $table_name,
             'deployed_at_idx',
-            "CREATE INDEX deployed_at_idx ON $table_name (deployed_at)"
+            "CREATE INDEX deployed_at_idx ON {$table_name} (deployed_at)"
         );
     }
 

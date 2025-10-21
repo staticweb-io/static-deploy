@@ -209,8 +209,8 @@ class URLDetector {
 
                     if ( $now - $last_log_time >= 60 ) {
                         WsLog::l( 'Detected ' . $path );
-                        $notice = "Detection progress: $detected_ct unique URLs found."
-                        . " $ct_ignored ignored.";
+                        $notice = "Detection progress: {$detected_ct} unique URLs found."
+                        . " {$ct_ignored} ignored.";
                         WsLog::l( $notice );
                         $last_log_time = microtime( true );
                     }
@@ -223,7 +223,7 @@ class URLDetector {
         $detected_ct = count( $unique_urls ) - $ct_ignored;
 
         WsLog::l(
-            "Detection complete. $detected_ct URLs found. $ct_ignored ignored."
+            "Detection complete. {$detected_ct} URLs found. {$ct_ignored} ignored."
         );
     }
 

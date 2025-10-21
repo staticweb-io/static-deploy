@@ -62,7 +62,7 @@ final class FileHelperTest extends TestCase {
         // vfsStream's tests but it gives peace of mind and will confirm
         // our below tests are actually doing something.
         foreach ( array_keys( $structure ) as $folder ) {
-            $filepath = vfsStream::url( "root/$folder" );
+            $filepath = vfsStream::url( "root/{$folder}" );
             $expected = true;
             $actual = is_dir( $filepath );
             $this->assertEquals( $expected, $actual );

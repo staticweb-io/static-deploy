@@ -234,8 +234,8 @@ class Crawler {
 
         $site_host = $this->site_uri->getHost();
         $site_port = $this->site_uri->getPort();
-        $site_host = $site_port ? $site_host . ":$site_port" : $site_host;
-        $site_urls = [ "http://$site_host", "https://$site_host" ];
+        $site_host = $site_port ? $site_host . ":{$site_port}" : $site_host;
+        $site_urls = [ "http://{$site_host}", "https://{$site_host}" ];
 
         $in_flight = [];
         $start_next = function () use ( &$in_flight, &$path_iter, &$site_urls ): void {

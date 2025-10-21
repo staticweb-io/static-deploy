@@ -680,7 +680,7 @@ class Controller {
         WsLog::l( 'Running in headless mode' );
         WsLog::l( 'Starting URL detection' );
         $detected_count = URLDetector::enqueueURLs();
-        WsLog::l( "URL detection completed ($detected_count URLs detected)" );
+        WsLog::l( "URL detection completed ({$detected_count} URLs detected)" );
 
         self::crawl();
 

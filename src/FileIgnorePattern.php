@@ -71,7 +71,7 @@ class FileIgnorePattern {
     ): bool {
         if ( preg_match( $this->url_regex, $path ) ) {
             if ( STATIC_DEPLOY_DEBUG ) {
-                WsLog::d( "Ignoring $path with regex $this->url_regex" );
+                WsLog::d( "Ignoring {$path} with regex $this->url_regex" );
             }
             return true;
         }

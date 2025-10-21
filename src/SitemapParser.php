@@ -314,7 +314,7 @@ class SitemapParser {
                 yield $url;
             } else {
                 WsLog::l(
-                    "Invalid sitemap URL in robots.txt: $url"
+                    "Invalid sitemap URL in robots.txt: {$url}"
                     . '\nEnsure that it is a valid absolute URL.'
                 );
             }

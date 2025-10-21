@@ -45,14 +45,14 @@ trait ITTrait {
             $this->assertCount(
                 $expected_count,
                 $matches,
-                "Expected $expected_count matches for pattern: $pattern"
+                "Expected {$expected_count} matches for pattern: {$pattern}"
             );
         }
 
         $this->assertSame(
             0,
             $exit_code,
-            "WP CLI command failed: $cmd\nOutput: " . implode( "\n", $output )
+            "WP CLI command failed: {$cmd}\nOutput: " . implode( "\n", $output )
         );
 
         return [
@@ -70,8 +70,8 @@ trait ITTrait {
         string $base_dir,
         string $path,
     ): string {
-        $content = file_get_contents( "{$base_dir}/$path" );
-        $this->assertNotFalse( $content, "Failed to read file: {$base_dir}/$path" );
+        $content = file_get_contents( "{$base_dir}/{$path}" );
+        $this->assertNotFalse( $content, "Failed to read file: {$base_dir}/{$path}" );
         return $content;
     }
 

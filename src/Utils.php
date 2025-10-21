@@ -49,7 +49,7 @@ class Utils {
         foreach ( $map as $key => [ $singular, $plural ] ) {
             $value = $interval->$key;
             if ( $value ) {
-                $parts[] = "$value " . ( $value === 1 ? $singular : $plural );
+                $parts[] = "{$value} " . ( $value === 1 ? $singular : $plural );
             }
             if ( count( $parts ) >= $max_parts ) {
                 break;

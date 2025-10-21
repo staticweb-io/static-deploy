@@ -11,7 +11,7 @@ class CrawledFiles {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             path VARCHAR(2083) NOT NULL,
             path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
@@ -21,7 +21,7 @@ class CrawledFiles {
             redirect_to VARCHAR(2083) NULL,
             content_type VARCHAR(255) DEFAULT '' NOT NULL,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -29,7 +29,7 @@ class CrawledFiles {
         Db::ensureIndex(
             $table_name,
             'path_hash',
-            "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
+            "CREATE UNIQUE INDEX path_hash ON {$table_name} (path_hash)"
         );
     }
 
@@ -313,7 +313,7 @@ class CrawledFiles {
         $ids = array_map( 'absint', $ids );
         $table_name = self::getTableName();
         $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-        $sql = "DELETE FROM %i WHERE ID IN($placeholders)";
+        $sql = "DELETE FROM %i WHERE ID IN({$placeholders})";
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

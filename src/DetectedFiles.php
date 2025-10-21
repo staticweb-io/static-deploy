@@ -13,14 +13,14 @@ class DetectedFiles {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             path VARCHAR(2083) NOT NULL,
             path_hash CHAR(32) AS ( md5(path) ) PERSISTENT,
             filename VARCHAR(2083) DEFAULT '' NOT NULL,
             detected_at datetime DEFAULT NOW() NOT NULL,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -28,13 +28,13 @@ class DetectedFiles {
         Db::ensureIndex(
             $table_name,
             'path_hash',
-            "CREATE UNIQUE INDEX path_hash ON $table_name (path_hash)"
+            "CREATE UNIQUE INDEX path_hash ON {$table_name} (path_hash)"
         );
 
         Db::ensureIndex(
             $table_name,
             'detected_at',
-            "CREATE INDEX detected_at ON $table_name (detected_at)"
+            "CREATE INDEX detected_at ON {$table_name} (detected_at)"
         );
     }
 
@@ -186,7 +186,7 @@ class DetectedFiles {
                 if ( $msg ) {
                     WsLog::w(
                         'Skipping invalid path found in detected files table:'
-                        . " $row->path ($msg)"
+                        . " $row->path ({$msg})"
                     );
                     continue;
                 }
@@ -239,7 +239,7 @@ class DetectedFiles {
                 if ( $msg ) {
                     WsLog::w(
                         'Skipping invalid path found in detected files table:'
-                        . " $row->path ($msg)"
+                        . " $row->path ({$msg})"
                     );
                     continue;
                 }
@@ -284,7 +284,7 @@ class DetectedFiles {
             // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
             $wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "DELETE FROM %i WHERE ID IN($placeholders)",
+                "DELETE FROM %i WHERE ID IN({$placeholders})",
                 $table_name,
                 ...$ids
             )

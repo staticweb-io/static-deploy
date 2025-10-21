@@ -48,7 +48,7 @@ class URLDiscovery {
                     if ( $msg ) {
                         WsLog::w(
                             'Skipping invalid path found in detected files table: '
-                            . "$uri ($msg)",
+                            . "{$uri} ({$msg})",
                         );
                         continue;
                     }

@@ -70,9 +70,9 @@ class FilesHelper {
             $files = array_diff( $dir_files, [ '.', '..' ] );
 
             foreach ( $files as $file ) {
-                ( is_dir( "$dir/$file" ) ) ?
-                self::deleteDirWithFiles( "$dir/$file" ) :
-                self::deleteFile( "$dir/$file" );
+                ( is_dir( "{$dir}/{$file}" ) ) ?
+                self::deleteDirWithFiles( "{$dir}/{$file}" ) :
+                self::deleteFile( "{$dir}/{$file}" );
             }
 
             rmdir( $dir );

@@ -246,7 +246,7 @@ window.onload = (event) => {
             return $cloudfront->listInvalidations(
                 [
                     'DistributionId' => $distribution_id,
-                    'MaxItems' => "$max_items",
+                    'MaxItems' => "{$max_items}",
                 ]
             );
         } catch ( AwsException $e ) {

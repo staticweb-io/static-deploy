@@ -223,7 +223,7 @@ class Deployer {
                     }
                     $pi = $path_info->withBody( '' );
                     WsLog::d(
-                        "Command $cmd_name: " . json_encode( $d )
+                        "Command {$cmd_name}: " . json_encode( $d )
                         . ' for : ' . json_encode( $pi )
                     );
                 }
@@ -286,7 +286,7 @@ class Deployer {
                 self::invalidateItems( $distribution_id, [ '/*' ] );
             } else {
                 $path_text = ( $num_stale === 1 ) ? 'path' : 'paths';
-                WsLog::l( "Invalidating $num_stale CloudFront $path_text" );
+                WsLog::l( "Invalidating {$num_stale} CloudFront {$path_text}" );
                 self::invalidateItems( $distribution_id, $this->cf_stale_paths );
             }
         }

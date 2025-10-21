@@ -15,13 +15,13 @@ class WsLog {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             level ENUM('debug', 'info', 'warn', 'error') NOT NULL DEFAULT 'info',
             log TEXT NOT NULL,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -86,7 +86,7 @@ class WsLog {
 
         if ( defined( 'WP_CLI' ) ) {
             $date = current_time( 'c' );
-            $colorized = \WP_CLI::colorize( "%W[$date] %n$text" );
+            $colorized = \WP_CLI::colorize( "%W[{$date}] %n{$text}" );
             match ( $level ) {
                 'debug' => \WP_CLI::debug( $colorized ),
                 'error' => \WP_CLI::error_multi_line( [ $colorized ] ),
@@ -97,7 +97,7 @@ class WsLog {
                     && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
                         throw self::ex( 'Invalid log level: ' . esc_html( $level ) );
                     }
-                    throw self::ex( "Invalid log level: $level" );
+                    throw self::ex( "Invalid log level: {$level}" );
                 }
             };
         }

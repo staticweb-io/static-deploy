@@ -28,7 +28,7 @@ final class DetectPageURLsTest extends TestCase {
                 [
                     'times' => 1,
                     'args' => [ $i ],
-                    'return' => "{$site_url}page/$i/",
+                    'return' => "{$site_url}page/{$i}/",
                 ]
             );
         }

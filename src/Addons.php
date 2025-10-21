@@ -14,7 +14,7 @@ class Addons {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             slug VARCHAR(191) NOT NULL,
             type VARCHAR(249) NOT NULL,
             name VARCHAR(249) NOT NULL,
@@ -22,7 +22,7 @@ class Addons {
             description VARCHAR(249) NOT NULL,
             enabled TINYINT(1) UNSIGNED DEFAULT 0 NOT NULL,
             PRIMARY KEY  (slug)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );

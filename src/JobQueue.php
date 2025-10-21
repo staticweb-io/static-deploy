@@ -15,7 +15,7 @@ class JobQueue {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             job_type VARCHAR(30) NOT NULL,
@@ -23,7 +23,7 @@ class JobQueue {
             status_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             triggering_post_id BIGINT(20) UNSIGNED NULL,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -31,7 +31,7 @@ class JobQueue {
         Db::ensureIndex(
             $table_name,
             'status',
-            "CREATE INDEX status ON $table_name (status)"
+            "CREATE INDEX status ON {$table_name} (status)"
         );
     }
 
@@ -367,7 +367,9 @@ class JobQueue {
                     );
                     if ( $failed_jobs ) {
                         $s = $failed_jobs === 1 ? '' : 's';
-                        WsLog::l( "$failed_jobs processing {$job_type} job$s marked as failed." );
+                        WsLog::l(
+                            "{$failed_jobs} processing {$job_type} job{$s} marked as failed."
+                        );
                     }
                 }
 
@@ -395,7 +397,7 @@ class JobQueue {
             )->lck
         );
         if ( $locked === 0 ) {
-            WsLog::l( "Failed to acquire \"$lock\" lock." );
+            WsLog::l( "Failed to acquire \"{$lock}\" lock." );
             return;
         }
         try {
@@ -405,7 +407,7 @@ class JobQueue {
                 case 'detect':
                     WsLog::l( 'Starting URL detection' );
                     $detected_count = URLDetector::enqueueURLs();
-                    WsLog::l( "URL detection completed ($detected_count URLs detected)" );
+                    WsLog::l( "URL detection completed ({$detected_count} URLs detected)" );
                     break;
                 case 'crawl':
                     Controller::crawl();

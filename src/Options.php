@@ -35,13 +35,13 @@ class Options {
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE $table_name (
+        $sql = "CREATE TABLE {$table_name} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name VARCHAR(191) NOT NULL,
             value VARCHAR(249) NOT NULL,
             blob_value BLOB,
             PRIMARY KEY  (id)
-        ) $charset_collate;";
+        ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
@@ -49,7 +49,7 @@ class Options {
         Db::ensureIndex(
             $table_name,
             'name',
-            "CREATE UNIQUE INDEX name ON $table_name (name)"
+            "CREATE UNIQUE INDEX name ON {$table_name} (name)"
         );
     }
 
@@ -415,7 +415,7 @@ class Options {
     ): OptionData {
         $name = $option_spec->name;
         if ( STATIC_DEPLOY_DEBUG ) {
-            WsLog::d( "Getting value of option: $name", );
+            WsLog::d( "Getting value of option: {$name}", );
         }
 
         global $wpdb;
@@ -489,7 +489,7 @@ class Options {
         $option_spec = self::optionSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            $msg = "Unknown option: $name";
+            $msg = "Unknown option: {$name}";
             if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
                 throw WsLog::ex( esc_html( $msg ) );
             }
@@ -507,13 +507,13 @@ class Options {
      */
     public static function getBlobValue( string $name ): string {
         if ( STATIC_DEPLOY_DEBUG ) {
-            WsLog::d( "Getting blob value of option: $name" );
+            WsLog::d( "Getting blob value of option: {$name}" );
         }
 
         $option_spec = self::optionSpecs()[ $name ];
 
         if ( ! $option_spec ) {
-            $msg = "Unknown option: $name";
+            $msg = "Unknown option: {$name}";
             if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
                 throw WsLog::ex( esc_html( $msg ) );
             }

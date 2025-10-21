@@ -48,7 +48,7 @@ final class Db {
             // phpcs:ignore WordPress.DB
             $result = $wpdb->query( $create_index_sql );
             if ( false === $result ) {
-                WsLog::l( "Failed to create $index_name index on $table_name." );
+                WsLog::l( "Failed to create {$index_name} index on {$table_name}." );
             }
             return $result;
         }

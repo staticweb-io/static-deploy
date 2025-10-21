@@ -109,7 +109,7 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-function processQueueImmediately_filter ( $val ) {
+function processQueueImmediately_filter ( {$val} ) {
     return '1';
 }
 add_filter( 'static_deploy_option_processQueueImmediately', 'processQueueImmediately_filter' );

@@ -73,7 +73,7 @@ class DirectDeployer {
             if ( 0 === $new_ct ) {
                 break;
             }
-            WsLog::l( "Found $new_ct new URLs during crawling." );
+            WsLog::l( "Found {$new_ct} new URLs during crawling." );
             $detected = DetectedFiles::getPathsIter( $last_now );
             $last_now = Db::now();
             $added = DetectedFiles::withPathsIter( $detected );
