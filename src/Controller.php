@@ -752,7 +752,7 @@ class Controller {
     }
 
     public static function emailDeployNotification(): void {
-        if ( empty( Options::getValue( 'completionEmail' ) ) ) {
+        if ( Options::getValue( 'completionEmail' ) === '0' ) {
             return;
         }
 
@@ -774,7 +774,7 @@ class Controller {
     public static function webhookDeployNotification(): void {
         $webhook_url = Options::getValue( 'completionWebhook' );
 
-        if ( empty( $webhook_url ) ) {
+        if ( $webhook_url === '' ) {
             return;
         }
 
@@ -829,7 +829,7 @@ class Controller {
         }
 
         $crawlers = Addons::getType( 'crawl' );
-        $crawler_slug = empty( $crawlers ) ? 'static-deploy' : $crawlers[0]->slug;
+        $crawler_slug = $crawlers === [] ? 'static-deploy' : $crawlers[0]->slug;
         do_action(
             self::getHookName( 'crawl' ),
             $crawler_slug,

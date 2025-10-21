@@ -130,7 +130,7 @@ final class OptionData {
 
         $value = $this->value;
 
-        if ( ! empty( $value ) && $this->option_spec->type === 'password' ) {
+        if ( $value !== '' && $this->option_spec->type === 'password' ) {
             $value = Options::encrypt_decrypt( 'encrypt', $value );
         }
 

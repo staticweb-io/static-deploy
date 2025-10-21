@@ -55,7 +55,7 @@ class URLDiscovery {
 
                     $uris[ (string) $uri ] = true;
                 }
-                if ( empty( $uris ) ) {
+                if ( $uris === [] ) {
                     yield $path_info;
                     continue;
                 }

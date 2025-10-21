@@ -17,7 +17,7 @@ class Utils {
             }
         }
 
-        if ( ! empty( $chunk ) ) {
+        if ( $chunk !== [] ) {
             yield $chunk;
         }
     }
@@ -56,7 +56,7 @@ class Utils {
             }
         }
 
-        if ( empty( $parts ) ) {
+        if ( $parts === [] ) {
             return null;
         }
 

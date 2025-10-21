@@ -221,7 +221,7 @@ class FilesHelper {
             if ( '..' !== $part ) {
                 $acc[] = $part;
                 // .. pops the last directory off if there is one
-            } elseif ( ! empty( $acc ) ) {
+            } elseif ( $acc !== [] ) {
                 array_pop( $acc );
                 // If there is nothing to pop and we aren't an absolute
                 // path, keep .. in the normalized path.

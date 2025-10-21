@@ -67,7 +67,7 @@ class DeployCache {
                 }
             }
 
-            if ( empty( $to_lookup ) ) {
+            if ( $to_lookup === [] ) {
                 continue;
             }
 

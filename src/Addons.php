@@ -113,7 +113,7 @@ class Addons {
     public static function getDeployer() {
         $addons = self::getType( 'deploy' );
 
-        if ( empty( $addons ) ) {
+        if ( $addons === [] ) {
             return false;
         }
 

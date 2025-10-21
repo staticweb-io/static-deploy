@@ -105,7 +105,7 @@ class CLI {
         array $assoc_args
     ): void {
         // We don't accept any arguments or parameters for this command
-        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
+        if ( $args !== [] || $assoc_args !== [] ) {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
 
@@ -676,7 +676,7 @@ class CLI {
      */
     public function full_workflow( array $args, array $assoc_args ): void {
         // We don't accept any arguments or parameters for this command
-        if ( ! empty( $args ) || ! empty( $assoc_args ) ) {
+        if ( $args !== [] || $assoc_args !== [] ) {
             WP_CLI::error( 'No arguments or parameters are accepted for this command.' );
         }
         WsLog::deleteOldLogs();
@@ -727,7 +727,7 @@ class CLI {
      */
     public function addons( array $args, array $assoc_args ): void {
         // We don't accept any parameters for this command
-        if ( ! empty( $assoc_args ) ) {
+        if ( $assoc_args !== [] ) {
             WP_CLI::error( 'No parameters are accepted for this command.' );
         }
         $action = $args[0] ?? null;
