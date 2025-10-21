@@ -118,7 +118,7 @@ class PathInfo {
     }
 
     public function getPathHash(): string {
-        if ( isset( $this->path_hash ) ) {
+        if ( $this->path_hash !== null ) {
             return $this->path_hash;
         }
 
