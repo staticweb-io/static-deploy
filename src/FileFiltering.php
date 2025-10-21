@@ -8,11 +8,9 @@ class FileFiltering {
      * @var array<FileIgnorePattern>
      * Files and directories to ignore
      */
-    private $patterns_to_ignore;
+    private $patterns_to_ignore = [];
 
     public function __construct() {
-        $this->patterns_to_ignore = [];
-
         $paths_to_ignore = Options::getLineDelimitedBlobValue( 'pathsToIgnore' );
 
         foreach ( $paths_to_ignore as $path_to_ignore ) {
