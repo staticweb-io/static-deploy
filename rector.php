@@ -50,6 +50,9 @@ return RectorConfig::configure()
             SetList::DEAD_CODE,
             SetList::EARLY_RETURN,
             SetList::INSTANCEOF,
+            SetList::PRIVATIZATION,
+            SetList::TYPE_DECLARATION,
+            SetList::TYPE_DECLARATION_DOCBLOCKS,
         ]
     )
     ->withSkip(
