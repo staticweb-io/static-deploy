@@ -92,18 +92,12 @@ class DetectedFiles {
                 $hash = md5( $url );
                 if ( ! isset( $existing_urls[ $p ] ) ) {
                     $yield_paths[] = $path;
-                    array_push(
-                        $insert_values,
-                        $url,
-                        $filename
-                    );
+                    $insert_values[] = $url;
+                    $insert_values[] = $filename;
                 } elseif ( $filename !== $existing_urls[ $p ]->filename ) {
                     $yield_paths[] = $path;
-                    array_push(
-                        $update_values,
-                        $filename,
-                        $hash
-                    );
+                    $update_values[] = $filename;
+                    $update_values[] = $hash;
                 } elseif ( ! $omit_unchanged_paths ) {
                     $yield_paths[] = $path;
                 }

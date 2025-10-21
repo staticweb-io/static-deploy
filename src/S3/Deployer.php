@@ -352,7 +352,7 @@ class Deployer {
                 $path = substr( $path, 0, -10 );
             }
             $path = str_replace( ' ', '%20', $path );
-            array_push( $this->cf_stale_paths, $path );
+            $this->cf_stale_paths[] = $path;
         }
     }
 

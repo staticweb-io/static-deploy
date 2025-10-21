@@ -71,14 +71,11 @@ class CrawledFiles {
 
             $values = [];
             foreach ( $paths as $path ) {
-                array_push(
-                    $values,
-                    $path->path,
-                    $path->content_type,
-                    $path->redirect_to,
-                    $path->status,
-                    $path->getContentHash(),
-                );
+                $values[] = $path->path;
+                $values[] = $path->content_type;
+                $values[] = $path->redirect_to;
+                $values[] = $path->status;
+                $values[] = $path->getContentHash();
             }
 
             $placeholders = array_fill( 0, count( $paths ), '(%s,%s,%s,%s,%s,NOW())' );

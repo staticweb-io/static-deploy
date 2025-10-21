@@ -268,7 +268,7 @@ window.onload = (event) => {
         $arr = [];
         foreach ( $inv_items as $inv_item ) {
             if ( 'InProgress' === $inv_item['Status'] ) {
-                array_push( $arr, $inv_item );
+                $arr[] = $inv_item;
             }
         }
         return [ 'Invalidations' => $arr ];
