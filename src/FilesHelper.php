@@ -181,7 +181,7 @@ class FilesHelper {
         || ! STATIC_DEPLOY_DIRECT_FILE_ACCESS ) {
             return wp_is_writable( $filename );
         }
-        return is_writeable( $filename );
+        return is_writable( $filename );
     }
 
     /**
