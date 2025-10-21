@@ -257,7 +257,7 @@ window.onload = (event) => {
     public static function listInvalidationsInProgress( int $max_items = 5 ) {
         $invalidations = self::listInvalidations( $max_items );
         if ( ! $invalidations ) {
-            return;
+            return null;
         }
 
         if ( is_a( $invalidations, 'Aws\Exception\AwsException' ) ) {
