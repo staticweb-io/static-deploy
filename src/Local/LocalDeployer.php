@@ -52,15 +52,13 @@ class LocalDeployer {
         : $dir_path;
 
         $out_dir = FilesHelper::normalizePath( $out_dir );
-        if ( ! is_dir( $out_dir ) ) {
-            if ( ! FilesHelper::createDir( $out_dir ) ) {
-                $msg = 'Failed to create local deployment directory: ' . $out_dir;
-                if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
-                && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
-                    throw WsLog::ex( esc_html( $msg ) );
-                }
-                throw WsLog::ex( $msg );
+        if ( ! is_dir( $out_dir ) && ! FilesHelper::createDir( $out_dir ) ) {
+            $msg = 'Failed to create local deployment directory: ' . $out_dir;
+            if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' )
+            && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
+                throw WsLog::ex( esc_html( $msg ) );
             }
+            throw WsLog::ex( $msg );
         }
         $out_dir = realpath( $out_dir );
         $out_dir = trailingslashit( $out_dir );

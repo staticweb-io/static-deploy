@@ -92,10 +92,8 @@ final class OptionData {
         }
 
         // default deploymentURL is '/', else remove trailing slash
-        if ( $this->option_spec->name === 'deploymentURL' ) {
-            if ( $value !== '/' ) {
-                $value = untrailingslashit( $value );
-            }
+        if ( $this->option_spec->name === 'deploymentURL' && $value !== '/' ) {
+            $value = untrailingslashit( $value );
         }
 
         $value = apply_filters(

@@ -246,10 +246,8 @@ class FilesHelper {
         $full_path = self::getFilePath( $base_dir, $path_info->path );
         $directory = dirname( $full_path );
 
-        if ( ! is_dir( $directory ) ) {
-            if ( ! self::createDir( $directory ) ) {
-                WsLog::w( 'Couldn\'t make directory: ' . $directory );
-            }
+        if ( ! is_dir( $directory ) && ! self::createDir( $directory ) ) {
+            WsLog::w( 'Couldn\'t make directory: ' . $directory );
         }
 
         try {
