@@ -21,14 +21,7 @@ define( 'STATIC_DEPLOY_VERSION', '9.4.1' );
 define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
 if ( ! defined( 'STATIC_DEPLOY_DEBUG' ) ) {
-    if (
-        WP_DEBUG
-        || ( defined( 'WP_CLI' ) && WP_CLI::get_config( 'debug' ) )
-    ) {
-        $enabled = true;
-    } else {
-        $enabled = false;
-    }
+    $enabled = WP_DEBUG || ( defined( 'WP_CLI' ) && WP_CLI::get_config( 'debug' ) );
     define( 'STATIC_DEPLOY_DEBUG', $enabled );
 }
 
@@ -36,15 +29,13 @@ if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {
     require_once STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 }
 
-if ( ! class_exists( \StaticDeploy\Controller::class ) ) {
-    if ( file_exists( STATIC_DEPLOY_PATH . 'src/StaticDeployException.php' ) ) {
-        require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
-
-        throw new StaticDeploy\StaticDeployException(
-            'Looks like you\'re trying to activate Static Deploy from source code' .
-            ', without compiling it first.'
-        );
-    }
+if ( ! class_exists( \StaticDeploy\Controller::class )
+    && file_exists( STATIC_DEPLOY_PATH . 'src/StaticDeployException.php' ) ) {
+    require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
+    throw new StaticDeploy\StaticDeployException(
+        'Looks like you\'re trying to activate Static Deploy from source code' .
+        ', without compiling it first.'
+    );
 }
 
 StaticDeploy\Controller::init();
