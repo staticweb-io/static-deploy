@@ -371,8 +371,8 @@ class Options {
                 'skipURLRewrite',
                 '0',
                 'Skip URL Rewrite',
-                'Don\'t rewrite any URLs. This may give a slight speed-up when the'
-                . ' deployment URL is the same as WordPress\'s URL.'
+                "Don't rewrite any URLs. This may give a slight speed-up when the"
+                . " deployment URL is the same as WordPress's URL."
             ),
         ];
 

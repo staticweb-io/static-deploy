@@ -159,7 +159,7 @@ class FilesHelper {
                 return $init_wpfs( true );
             }
             throw WsLog::ex(
-                'Can\'t initialize WP_Filesystem without credentials',
+                "Can't initialize WP_Filesystem without credentials",
             );
         }
 
@@ -247,7 +247,7 @@ class FilesHelper {
         $directory = dirname( $full_path );
 
         if ( ! is_dir( $directory ) && ! self::createDir( $directory ) ) {
-            WsLog::w( 'Couldn\'t make directory: ' . $directory );
+            WsLog::w( "Couldn't make directory: " . $directory );
         }
 
         try {

@@ -33,7 +33,7 @@ if ( ! class_exists( \StaticDeploy\Controller::class )
     && file_exists( STATIC_DEPLOY_PATH . 'src/StaticDeployException.php' ) ) {
     require_once STATIC_DEPLOY_PATH . 'src/StaticDeployException.php';
     throw new StaticDeploy\StaticDeployException(
-        'Looks like you\'re trying to activate Static Deploy from source code' .
+        "Looks like you're trying to activate Static Deploy from source code" .
         ', without compiling it first.'
     );
 }

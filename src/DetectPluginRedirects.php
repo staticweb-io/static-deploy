@@ -58,7 +58,7 @@ class DetectPluginRedirects {
             $msg = PathInfo::pathErrorMessage( $uri );
             if ( $msg ) {
                 WsLog::l(
-                    'Can\'t use path pattern from Redirection plugin: '
+                    "Can't use path pattern from Redirection plugin: "
                     . $uri . ' - ' . $msg
                 );
                 continue;
@@ -109,7 +109,7 @@ class DetectPluginRedirects {
             $msg = PathInfo::pathErrorMessage( $uri );
             if ( $msg ) {
                 WsLog::l(
-                    'Can\'t use path pattern from Redirect Redirection plugin: '
+                    "Can't use path pattern from Redirect Redirection plugin: "
                     . $uri . ' - ' . $msg
                 );
                 continue;
