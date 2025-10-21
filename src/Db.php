@@ -112,7 +112,7 @@ final class Db {
             return $result;
         }
 
-        if ( $on_error ) {
+        if ( $on_error !== null ) {
             if ( STATIC_DEPLOY_DEBUG ) {
                 WsLog::d( 'Detected error in query: ' . $wpdb->last_error );
             }
