@@ -91,15 +91,10 @@ class URLDiscovery {
 
         $path = $uri->getPath();
         $scheme = $uri->getScheme();
-
-        if ( ( 'http' === $scheme || 'https' === $scheme )
+        return ( 'http' === $scheme || 'https' === $scheme )
         && $uri->getHost() === $this->destination_host
         && $path !== ''
-        && $this->file_filtering->pathLooksCrawlable( $path ) ) {
-            return true;
-        }
-
-        return false;
+        && $this->file_filtering->pathLooksCrawlable( $path );
     }
 
     /**

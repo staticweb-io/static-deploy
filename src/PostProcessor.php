@@ -25,17 +25,12 @@ class PostProcessor {
         if ( ! $content_type ) {
             return false;
         }
-
-        if ( str_starts_with( $content_type, 'text/html' ) ||
-            str_starts_with( $content_type, 'text/css' ) ||
-            str_starts_with( $content_type, 'application/xml' ) ||
-            str_starts_with( $content_type, 'text/plain' ) ||
-            str_starts_with( $content_type, 'application/javascript' ) ) {
-            if ( $path_info->body || $path_info->filename ) {
-                return true;
-            }
-        }
-        return false;
+        return ( str_starts_with( $content_type, 'text/html' )
+        || str_starts_with( $content_type, 'text/css' )
+        || str_starts_with( $content_type, 'application/xml' )
+        || str_starts_with( $content_type, 'text/plain' )
+        || str_starts_with( $content_type, 'application/javascript' ) )
+        && ( $path_info->body || $path_info->filename );
     }
 
     /**

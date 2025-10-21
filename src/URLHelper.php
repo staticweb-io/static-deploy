@@ -53,12 +53,7 @@ class URLHelper {
         if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) {
             return true;
         }
-
-        if ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] === 443 ) {
-            return true;
-        }
-
-        return false;
+        return isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] === 443;
     }
 
     /**
@@ -122,33 +117,23 @@ class URLHelper {
         );
     }
 
-    public static function startsWithHash( string $url ): bool {
+    public static function startsWithHash( string $url ): bool
+    {
         // TODO: this won't fire for absolute URLs unless strip site_url first?
         // quickly abort for invalid URLs
-        if ( $url[0] === '#' ) {
-            return true;
-        }
-
-        return false;
+        return $url[0] === '#';
     }
 
-    public static function isMailto( string $url ): bool {
-        if ( str_starts_with( $url, 'mailto:' ) ) {
-            return true;
-        }
-
-        return false;
+    public static function isMailto( string $url ): bool
+    {
+        return str_starts_with( $url, 'mailto:' );
     }
 
     public static function isProtocolRelative( string $url ): bool {
         if ( $url[0] !== '/' ) {
             return false;
         }
-        if ( $url[1] === '/' ) {
-            return true;
-        }
-
-        return false;
+        return $url[1] === '/';
     }
 
     public static function protocolRelativeToAbsoluteURL(
@@ -181,18 +166,11 @@ class URLHelper {
         }
 
         // site root relative URLs, like /alink
-        if ( $url[0] === '/' ) {
-            if ( $url[1] !== '/' ) {
-                return true;
-            }
-        }
-
-        $url_host = Psr7Utils::uriFor( $url )->getHost();
-
-        if ( $url_host === $site_url_host ) {
+        if ( $url[0] === '/' && $url[1] !== '/' ) {
             return true;
         }
 
-        return false;
+        $url_host = Psr7Utils::uriFor( $url )->getHost();
+        return $url_host === $site_url_host;
     }
 }

@@ -50,11 +50,7 @@ class FileFiltering {
                     return true;
                 }
                 // Filter out broken links
-                if ( ! $current->isReadable() ) {
-                    return false;
-                }
-
-                return true;
+                return (bool) $current->isReadable();
             }
         );
 
