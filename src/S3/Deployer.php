@@ -135,13 +135,13 @@ class Deployer {
                 if ( ! $content_type && $filename ) {
                     $content_type = MimeTypes::guessMimeType( $filename );
                     if ( str_starts_with( $content_type, 'text/' ) ) {
-                        $content_type = $content_type . '; charset=UTF-8';
+                        $content_type .= '; charset=UTF-8';
                     }
                 }
 
                 $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
                 if ( mb_substr( $cache_key, -1 ) === '/' ) {
-                    $s3_key = $s3_key . 'index.html';
+                    $s3_key .= 'index.html';
                 }
 
                 if ( $status === 404 ) {

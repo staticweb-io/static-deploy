@@ -94,7 +94,7 @@ trait DeployerTrait {
                 }
 
                 if ( mb_substr( $path, -1 ) === '/' ) {
-                    $path = $path . 'index.html';
+                    $path .= 'index.html';
                 }
 
                 yield new PathInfo(
