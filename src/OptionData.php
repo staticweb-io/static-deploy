@@ -186,9 +186,7 @@ final class OptionData {
                 $value = '1';
                 break;
             case 'boolean':
-                $value = $user_input === ''
-                || $user_input === '0'
-                || $user_input === 'false' ? '0' : '1';
+                $value = in_array( $user_input, [ '', '0', 'false' ], true ) ? '0' : '1';
                 break;
             case 'integer':
                 $value = (string) intval( $user_input );
