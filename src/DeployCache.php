@@ -146,7 +146,7 @@ class DeployCache {
 
         $table_name = self::getTableName();
 
-        if ( ! $ns ) {
+        if ( $ns === '' ) {
             $wpdb->query(
                 $wpdb->prepare( 'TRUNCATE TABLE %i', $table_name ),
             );

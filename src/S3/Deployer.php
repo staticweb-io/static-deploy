@@ -50,10 +50,7 @@ class Deployer {
 
     public function __construct() {
         $cf_max_paths_str = S3Options::getValue( 'maxPathsToInvalidate' );
-        if ( $cf_max_paths_str ) {
-            $this->cf_max_paths = intval( $cf_max_paths_str );
-        }
-
+        $this->cf_max_paths = intval( $cf_max_paths_str );
         $this->s3_client = self::s3Client();
     }
 
@@ -80,12 +77,12 @@ class Deployer {
         ];
 
         $cache_control = S3Options::getValue( 'headerCacheControl' );
-        if ( $cache_control ) {
+        if ( $cache_control !== '' ) {
             $base_put_data['CacheControl'] = $cache_control;
         }
 
         $s3_remote_path = S3Options::getValue( 'bucketPrefix' );
-        $s3_prefix = $s3_remote_path ? $s3_remote_path . '/' : '';
+        $s3_prefix = $s3_remote_path !== '' ? $s3_remote_path . '/' : '';
 
         $items_by_iter_key = [];
 
@@ -301,7 +298,7 @@ class Deployer {
         ];
 
         $endpoint = S3Options::getValue( 'awsEndpoint' );
-        if ( $endpoint ) {
+        if ( $endpoint !== '' ) {
             $opts['endpoint'] = $endpoint;
 
             // Work-around for localstack.
@@ -333,7 +330,7 @@ class Deployer {
             ];
         } else {
             $profile = S3Options::getValue( 'awsProfile' );
-            if ( $profile ) {
+            if ( $profile !== '' ) {
                 $opts['profile'] = $profile;
             }
         }

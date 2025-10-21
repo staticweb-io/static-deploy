@@ -475,7 +475,7 @@ class Controller {
     }
 
     public static function trashedPostHandler(): void {
-        if ( Options::getValue( 'queueJobOnPostDelete' ) ) {
+        if ( Options::getValue( 'queueJobOnPostDelete' ) === '1' ) {
             self::enqueueJobs();
         }
     }
@@ -728,7 +728,7 @@ class Controller {
         int $post_id = 0,
         ?WP_Post $post = null,
     ): void {
-        if ( ! $post ) {
+        if ( ! $post instanceof \WP_Post ) {
             return;
         }
 
@@ -824,7 +824,7 @@ class Controller {
     public static function crawl(
         ?CrawlConfig $crawl_config = null
     ): void {
-        if ( ! $crawl_config ) {
+        if ( ! $crawl_config instanceof CrawlConfig ) {
             $crawl_config = new CrawlConfig();
         }
 

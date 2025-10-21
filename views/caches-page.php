@@ -169,7 +169,7 @@ wp_add_inline_style(
             <tr>
                 <td rowspan="<?php echo count( $deploy_cache_total_paths ); ?>">Deploy Cache</td>
                     <?php $namespaces = array_keys( $deploy_cache_total_paths ); ?>
-                    <?php if ( $namespaces ) { ?>
+                    <?php if ( $namespaces !== [] ) { ?>
                         <td><?php echo esc_html( strval( $deploy_cache_total_paths[ $namespaces[0] ] ) ); ?> Paths in database for <code><?php echo esc_html( $namespaces[0] ); ?></code></td>
                     <?php } else { ?>
                         <td>0 paths in database</td>

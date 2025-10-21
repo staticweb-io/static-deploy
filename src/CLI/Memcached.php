@@ -130,7 +130,7 @@ class Memcached {
 
         // The guaranteed keys
         $keys = [ 'key', 'exp', 'la', 'cas', 'fetch' ];
-        if ( $output ) {
+        if ( $output !== [] ) {
             // Merge any additional keys that are present
             $extra_keys = array_diff( array_keys( $output[0] ), $keys );
             sort( $extra_keys );

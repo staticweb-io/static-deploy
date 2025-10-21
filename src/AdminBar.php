@@ -237,7 +237,7 @@ window.onload = (event) => {
     public static function listInvalidations( int $max_items = 5 ) {
         $distribution_id = S3\S3Options::getValue( 'distributionId' );
 
-        if ( ! $distribution_id ) {
+        if ( $distribution_id === '' ) {
             return;
         }
 

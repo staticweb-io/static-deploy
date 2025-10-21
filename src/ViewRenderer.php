@@ -40,7 +40,7 @@ class ViewRenderer {
         $view['extensions'] = get_loaded_extensions();
 
         $mc = Memcached::getMemcached();
-        if ( $mc ) {
+        if ( $mc instanceof \Memcached ) {
             $view['memcachedStats'] = $mc->getStats();
         }
 

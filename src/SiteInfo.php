@@ -205,7 +205,7 @@ class SiteInfo {
 
         $url_host = Psr7Utils::uriFor( $site_url )->getHost();
 
-        if ( ! $url_host ) {
+        if ( $url_host === '' ) {
             $err = 'Failed to get hostname from Site URL';
             if ( defined( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS' ) && STATIC_DEPLOY_ESCAPE_EXCEPTIONS ) {
                 throw WsLog::ex( esc_html( $err ) );

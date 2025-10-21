@@ -355,7 +355,7 @@ class JobQueue {
                     )->free
                 );
 
-                if ( $free ) {
+                if ( $free !== 0 ) {
                     // phpcs:ignore WordPress.DB.DirectDatabaseQuery
                     $failed_jobs = $wpdb->query(
                         $wpdb->prepare(
@@ -394,7 +394,7 @@ class JobQueue {
                 $wpdb->prepare( 'SELECT GET_LOCK(%s, 30) AS lck', $lock )
             )->lck
         );
-        if ( ! $locked ) {
+        if ( $locked === 0 ) {
             WsLog::l( "Failed to acquire \"$lock\" lock." );
             return;
         }

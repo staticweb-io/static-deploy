@@ -26,10 +26,10 @@ class DetectSitemapsURLs {
 
         $auth_user = Options::getValue( 'basicAuthUser' );
 
-        if ( $auth_user ) {
+        if ( $auth_user !== '' ) {
             $auth_password = Options::getValue( 'basicAuthPassword' );
 
-            if ( $auth_password ) {
+            if ( $auth_password !== '' ) {
                 if ( STATIC_DEPLOY_DEBUG ) {
                     WsLog::d( 'Using basic auth credentials to crawl' );
                 }

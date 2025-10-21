@@ -79,10 +79,10 @@ class Crawler {
 
         $auth_user = Options::getValue( 'basicAuthUser' );
 
-        if ( $auth_user ) {
+        if ( $auth_user !== '' ) {
             $auth_password = Options::getValue( 'basicAuthPassword' );
 
-            if ( $auth_password ) {
+            if ( $auth_password !== '' ) {
                 WsLog::l( 'Using basic auth credentials to crawl' );
                 $opts['auth'] = [ $auth_user, $auth_password ];
             }
