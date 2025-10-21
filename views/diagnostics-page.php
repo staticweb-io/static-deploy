@@ -62,8 +62,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <?php echo PHP_VERSION; ?>
 
                     <span
-                        class="dashicons <?php echo ! $view['phpOutOfDate'] ? 'dashicons-yes' : 'dashicons-no'; ?>"
-                        style="color: <?php echo ! $view['phpOutOfDate'] ? 'green' : 'red'; ?>;"
+                        class="dashicons <?php echo $view['phpOutOfDate'] ? 'dashicons-no' : 'dashicons-yes'; ?>"
+                        style="color: <?php echo $view['phpOutOfDate'] ? 'red' : 'green'; ?>;"
                     ></span>
                 </td>
                 <td>
