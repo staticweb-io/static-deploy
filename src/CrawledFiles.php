@@ -143,9 +143,9 @@ class CrawledFiles {
                 }
                 yield new PathInfo(
                     $row->path,
+                    filename: $row->filename,
                     content_hash: $row->content_hash,
                     content_type: $row->content_type,
-                    filename: $row->filename,
                     redirect_to: $row->redirect_to,
                     status: $row->status,
                 );

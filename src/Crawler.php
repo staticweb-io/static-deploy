@@ -184,8 +184,8 @@ class Crawler {
                 } elseif ( $detected->filename ) {
                     $path_info = new PathInfo(
                         $detected->path,
-                        content_type: $response->getHeaderLine( 'Content-Type' ),
                         filename: $detected->filename,
+                        content_type: $response->getHeaderLine( 'Content-Type' ),
                         status: $status,
                     );
                 } else {
