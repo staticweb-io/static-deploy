@@ -44,11 +44,7 @@ class PathInfo {
             throw WsLog::ex( "$msg: $path" );
         }
 
-        if ( $filename === '' ) {
-            $this->filename = null;
-        } else {
-            $this->filename = $filename;
-        }
+        $this->filename = $filename === '' ? null : $filename;
 
         $this->path = $path;
 

@@ -85,11 +85,9 @@ final class Db {
             $prefix = DB_NAME . '.' . $table_name;
             $lock_name = $prefix . '.' . $attribute;
             if ( strlen( $lock_name ) > 64 ) {
-                if ( strlen( $attribute ) <= 32 ) {
-                    $lock_name = md5( $prefix ) . '.' . $attribute;
-                } else {
-                    $lock_name = md5( $lock_name );
-                }
+                return strlen( $attribute ) <= 32
+                ? md5( $prefix ) . '.' . $attribute
+                : md5( $lock_name );
             }
             return $lock_name;
         }

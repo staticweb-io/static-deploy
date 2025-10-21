@@ -182,11 +182,7 @@ class Controller {
         ];
 
         foreach ( $submenu_pages as $slug => $method ) {
-            if ( $slug === 'run' ) {
-                $page = 'static-deploy';
-            } else {
-                $page = self::getHookName( $slug );
-            }
+            $page = $slug === 'run' ? 'static-deploy' : self::getHookName( $slug );
 
             $title = ucfirst( $slug );
 
@@ -260,31 +256,19 @@ class Controller {
     }
 
     public static function getAdminUrl( string $slug ): string {
-        if ( $slug === 'run' ) {
-            $page = 'static-deploy';
-        } else {
-            $page = self::getHookName( $slug );
-        }
+        $page = $slug === 'run' ? 'static-deploy' : self::getHookName( $slug );
 
         return admin_url( 'admin.php?page=' . $page );
     }
 
     public static function getAdminAjaxUrl( string $slug ): string {
-        if ( $slug === 'run' ) {
-            $action = 'static-deploy';
-        } else {
-            $action = self::getHookName( $slug );
-        }
+        $action = $slug === 'run' ? 'static-deploy' : self::getHookName( $slug );
 
         return admin_url( 'admin-ajax.php?action=' . $action );
     }
 
     public static function getAdminPostUrl( string $slug ): string {
-        if ( $slug === 'run' ) {
-            $page = 'static-deploy';
-        } else {
-            $page = self::getHookName( $slug );
-        }
+        $page = $slug === 'run' ? 'static-deploy' : self::getHookName( $slug );
 
         return admin_url( 'admin-post.php?page=' . $page );
     }

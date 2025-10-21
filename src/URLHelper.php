@@ -97,11 +97,7 @@ class URLHelper {
      */
     public static function modifyUrl( array $changes, string $url = '' ): string {
         // If $url wasn't passed in, use the current url
-        if ( $url === '' ) {
-            $uri = self::getCurrent();
-        } else {
-            $uri = Psr7Utils::uriFor( $url );
-        }
+        $uri = $url === '' ? self::getCurrent() : Psr7Utils::uriFor( $url );
 
         return Uri::withQueryValues( $uri, $changes );
     }

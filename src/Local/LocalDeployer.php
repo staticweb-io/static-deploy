@@ -47,11 +47,9 @@ class LocalDeployer {
     public function uploadFilesIter( \Iterator $path_infos ): void {
         $dir_path = LocalOptions::getValue( 'dirPath' );
         // Make $out_dir absolute
-        if ( empty( $dir_path ) || $dir_path[0] !== '/' ) {
-            $out_dir = SiteInfo::getPath( 'site' ) . $dir_path;
-        } else {
-            $out_dir = $dir_path;
-        }
+        $out_dir = $dir_path === '' || $dir_path[0] !== '/'
+        ? SiteInfo::getPath( 'site' ) . $dir_path
+        : $dir_path;
 
         $out_dir = FilesHelper::normalizePath( $out_dir );
         if ( ! is_dir( $out_dir ) ) {
