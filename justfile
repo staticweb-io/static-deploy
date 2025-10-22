@@ -27,9 +27,11 @@ dev CLEAN="false":
     nix run
 
 # Format source and then check for unfixable issues
-format:
+format: && _format-php
     just --fmt --unstable
     fd --glob "*.nix" -x nixfmt
+
+_format-php:
     just _phpcbf || true && just _phpcs
 
 _phpcbf:
@@ -39,7 +41,7 @@ _phpcs:
     php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php
 
 # Run rector code transformations
-rector:
+rector: && _format-php
     # We sometimes get errors running without --debug
     php ./vendor/bin/rector --debug
 
