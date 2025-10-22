@@ -35,7 +35,7 @@ _format-php:
     just _phpcbf || true && just _phpcs
 
 _phpcbf:
-    php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php
+    php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php || true
 
 _phpcs:
     php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php
