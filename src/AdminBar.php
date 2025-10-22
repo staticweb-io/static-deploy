@@ -70,8 +70,20 @@ class AdminBar {
     public static function afterAdminBarRender(): void {
         $ajax_job_queue_url = esc_js( Controller::getAdminAjaxUrl( 'job_queue' ) );
 
-        $script = sprintf(
-            '<script>
+        wp_register_script(
+            'static-deploy-admin-bar',
+            '',
+            [],
+            1,
+            [
+                'in_footer' => false,
+            ],
+        );
+        wp_enqueue_script( 'static-deploy-admin-bar' );
+        wp_add_inline_script(
+            'static-deploy-admin-bar',
+            sprintf(
+                '<script>
 var static_deploy_job_queue_url = "%s";
 var static_deploy_last_interval = 30000;
 var static_deploy_job_type_labels = {
@@ -185,19 +197,9 @@ window.onload = (event) => {
     setTimeout(static_deploy_init, 1);
 };
 </script>',
-            $ajax_job_queue_url
+                $ajax_job_queue_url
+            )
         );
-        wp_register_script(
-            'static-deploy-admin-bar',
-            '',
-            [],
-            1,
-            [
-                'in_footer' => false,
-            ],
-        );
-        wp_enqueue_script( 'static-deploy-admin-bar' );
-        wp_add_inline_script( 'static-deploy-admin-bar', $script );
     }
 
     public static function ajaxJobQueue(): void {
