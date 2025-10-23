@@ -104,7 +104,11 @@ wp_add_inline_style(
             </tr>
             <tr>
                 <td>Crawled Files</td>
-                <td><?php echo (int) $crawled_files_total; ?> URLs in database</td>
+                <td>
+                    <?php echo (int) $crawled_files_total; ?> URLs in database
+                    <br>
+                    <?php echo (int) $exported_site_file_count; ?> files, using <?php echo esc_html( $exported_site_disk_space ); ?>
+                </td>
                 <td>
                     <form
                         name="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>"
@@ -116,27 +120,6 @@ wp_add_inline_style(
                         <select name="action" class="static-deploy-select">
                             <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_show' ) ); ?>">Show URLs</option>
                             <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>">Delete Crawled Files</option>
-                        </select>
-
-                        <button class="button btn-danger">Go</button>
-
-                    </form>
-                </td>
-            </tr>
-            <tr>
-                <td>Generated Static Site</td>
-                <td><?php echo (int) $exported_site_file_count; ?> files, using <?php echo esc_html( $exported_site_disk_space ); ?></td>
-                <td>
-                    <form
-                        name="<?php echo esc_attr( Controller::getHookName( 'static_site_delete' ) ); ?>"
-                        method="POST"
-                        action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-
-                        <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
-
-                        <select name="action" class="static-deploy-select">
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'static_site_show' ) ); ?>">Show Paths</option>
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'static_site_delete' ) ); ?>">Delete Files</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>

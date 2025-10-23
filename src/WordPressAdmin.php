@@ -182,20 +182,6 @@ class WordPressAdmin {
         );
 
         add_action(
-            'admin_post_' . Controller::getHookName( 'static_site_delete' ),
-            Controller::adminStaticSiteDelete( ... ),
-            10,
-            0
-        );
-
-        add_action(
-            'admin_post_' . Controller::getHookName( 'static_site_show' ),
-            Controller::adminStaticSiteShow( ... ),
-            10,
-            0
-        );
-
-        add_action(
             'admin_post_' . Controller::getHookName( 'ui_save_job_options' ),
             Controller::adminUISaveJobsOptions( ... ),
             10,

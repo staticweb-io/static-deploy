@@ -214,38 +214,6 @@ class ViewRenderer {
         require_once STATIC_DEPLOY_PATH . 'views/files-paginated-page.php';
     }
 
-    public static function renderStaticSitePaths(): void {
-        if ( ! is_admin() ) {
-            http_response_code( 403 );
-            die( 'Forbidden' );
-        }
-
-        $paths = StaticSite::getPaths();
-
-        // Apply search
-        $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
-        if ( $search_term !== '' ) {
-            $paths = array_filter(
-                $paths,
-                fn( string $path ): bool => stripos( $path, $search_term ) !== false
-            );
-        }
-
-        $page_size = 200;
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- GET parameter for pagination, no nonce needed
-        $page = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
-        $paginator = new Paginator( $paths, $page_size, $page );
-        $view = [
-            'paginatorFirstPage' => $paginator->firstPage(),
-            'paginatorLastPage' => $paginator->lastPage(),
-            'paginatorPage' => $paginator->page(),
-            'paginatorRecords' => $paginator->records(),
-            'paginatorTotalRecords' => $paginator->totalRecords(),
-        ];
-
-        require_once STATIC_DEPLOY_PATH . 'views/static-site-paths-page.php';
-    }
-
     public static function renderDeployCache(): void {
         if ( ! is_admin() ) {
             http_response_code( 403 );

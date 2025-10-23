@@ -223,15 +223,6 @@ class Controller {
 
         add_submenu_page(
             '',
-            'Static Deploy Static Site',
-            'Static Site',
-            'manage_options',
-            self::getHookName( 'static_site' ),
-            ViewRenderer::renderStaticSitePaths( ... )
-        );
-
-        add_submenu_page(
-            '',
             'Static Deploy Post Processed Site',
             'Post Processed Site',
             'manage_options',
@@ -416,22 +407,6 @@ class Controller {
         WsLog::truncate();
 
         wp_safe_redirect( self::getAdminUrl( 'logs' ) );
-        exit;
-    }
-
-    public static function adminStaticSiteDelete(): void {
-        check_admin_referer( self::getHookName( 'caches_page' ) );
-
-        StaticSite::delete();
-
-        wp_safe_redirect( self::getAdminUrl( 'caches' ) );
-        exit;
-    }
-
-    public static function adminStaticSiteShow(): void {
-        check_admin_referer( self::getHookName( 'caches_page' ) );
-
-        wp_safe_redirect( self::getAdminUrl( 'static_site' ) );
         exit;
     }
 

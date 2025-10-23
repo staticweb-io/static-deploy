@@ -7,6 +7,9 @@
   it's recommended to use a cron job that calls
   `wp static-deploy process-queue`. This has an
   unlimited max_execution_time by default.
+- Remove "Generated Static Site" page in admin.
+  This provided basically the same data as the
+  "Crawled Files" page with less detail.
 
 ## 9.4.1 (2025-10-20)
 
