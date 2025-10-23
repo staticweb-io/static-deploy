@@ -247,7 +247,6 @@ class Controller {
             return true;
         }
 
-        require_once ABSPATH . 'wp-includes/pluggable.php';
         return is_admin();
     }
 
