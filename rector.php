@@ -5,7 +5,6 @@ require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
 require_once __DIR__ . '/util/rector/ReduceKnownBooleanAnd.php';
 require_once __DIR__ . '/util/rector/ReduceKnownBooleanOr.php';
 require_once __DIR__ . '/util/rector/ReplaceKnownDefinedWithBooleanRector.php';
-require_once __DIR__ . '/util/rector/ReplaceNegatedBooleanRector.php';
 
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
@@ -18,7 +17,6 @@ use Rector\DeadCode\Rector\If_\RemoveAlwaysFalseIfStatementRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector2;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Set\ValueObject\SetList;
-use Rector\Transform\Rector\BooleanNot\ReplaceNegatedBooleanRector;
 use StaticDeploy\Rector\ReduceKnownBooleanAnd;
 use StaticDeploy\Rector\ReduceKnownBooleanOr;
 
@@ -46,7 +44,6 @@ return RectorConfig::configure()
             ReduceKnownBooleanAnd::class,
             ReduceKnownBooleanOr::class,
             ReplaceKnownDefinedWithBooleanRector::class,
-            ReplaceNegatedBooleanRector::class,
         ]
     )
     ->withSets(
