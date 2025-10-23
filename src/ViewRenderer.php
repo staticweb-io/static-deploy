@@ -141,19 +141,33 @@ class ViewRenderer {
             );
         }
 
+        $records = array_map(
+            fn( object $url ): array => [
+                $url->path,
+                $url->content_hash,
+            ],
+            $urls,
+        );
+
         $page_size = 200;
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- GET parameter for pagination, no nonce needed
         $page = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
-        $paginator = new Paginator( $urls, $page_size, $page );
+        $paginator = new Paginator( $records, $page_size, $page );
         $view = [
+            'colHeadings' => [
+                'Crawled Files',
+                'Content MD5 Hash',
+            ],
+            'emptyMessage' => 'There are no crawled files.',
             'paginatorFirstPage' => $paginator->firstPage(),
             'paginatorLastPage' => $paginator->lastPage(),
             'paginatorPage' => $paginator->page(),
             'paginatorRecords' => $paginator->records(),
             'paginatorTotalRecords' => $paginator->totalRecords(),
+            'title' => 'Crawled Files',
         ];
 
-        require_once STATIC_DEPLOY_PATH . 'views/crawled-files-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/files-paginated-page.php';
     }
 
     public static function renderPostProcessedSitePaths(): void {
