@@ -310,7 +310,7 @@ class CrawledFiles {
     public static function rmUrlsById( array $ids ): void {
         global $wpdb;
 
-        $ids = array_map( 'absint', $ids );
+        $ids = array_map( absint( ... ), $ids );
         $table_name = self::getTableName();
         $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
         $sql = "DELETE FROM %i WHERE ID IN({$placeholders})";

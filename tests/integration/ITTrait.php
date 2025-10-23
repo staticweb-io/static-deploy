@@ -32,7 +32,7 @@ trait ITTrait {
         $cmd = implode(
             ' ',
             array_map(
-                'escapeshellarg',
+                escapeshellarg( ... ),
                 array_merge( [ 'wp', '--path=' . $wordpress_dir ], $args )
             )
         );
