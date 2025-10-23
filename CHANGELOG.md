@@ -10,6 +10,8 @@
 - Remove "Generated Static Site" page in admin.
   This provided basically the same data as the
   "Crawled Files" page with less detail.
+- Improve consistency and screen reader text on
+  admin cache pages.
 
 ## 9.4.1 (2025-10-20)
 

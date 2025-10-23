@@ -93,8 +93,8 @@ wp_add_inline_style(
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_show' ) ); ?>">Show URLs</option>
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_delete' ) ); ?>">Delete Detected Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_show' ) ); ?>">Show</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'detected_files_delete' ) ); ?>">Delete</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -118,8 +118,8 @@ wp_add_inline_style(
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_show' ) ); ?>">Show URLs</option>
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>">Delete Crawled Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_show' ) ); ?>">Show</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'crawled_files_delete' ) ); ?>">Delete</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -128,7 +128,7 @@ wp_add_inline_style(
                 </td>
             </tr>
             <tr>
-                <td>Post-processed Static Site</td>
+                <td>Post-Processed Files</td>
                 <td><?php echo (int) $processed_site_file_count; ?> files, using <?php echo esc_attr( $processed_site_disk_space ); ?></td>
                 <td>
                     <form
@@ -139,8 +139,8 @@ wp_add_inline_style(
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                         <select name="action" class="static-deploy-select">
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_show' ) ); ?>">Show Paths</option>
-                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_delete' ) ); ?>">Delete Files</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_show' ) ); ?>">Show</option>
+                            <option value="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_delete' ) ); ?>">Delete</option>
                         </select>
 
                         <button class="button btn-danger">Go</button>
@@ -150,7 +150,7 @@ wp_add_inline_style(
             </tr>
 
             <tr>
-                <td rowspan="<?php echo count( $deploy_cache_total_paths ); ?>">Deploy Cache</td>
+                <td rowspan="<?php echo count( $deploy_cache_total_paths ); ?>">Deployed Files</td>
                     <?php $namespaces = array_keys( $deploy_cache_total_paths ); ?>
                     <?php if ( $namespaces !== [] ) { ?>
                         <td><?php echo esc_html( strval( $deploy_cache_total_paths[ $namespaces[0] ] ) ); ?> Paths in database for <code><?php echo esc_html( $namespaces[0] ); ?></code></td>
@@ -166,8 +166,8 @@ wp_add_inline_style(
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                             <select name="action" class="static-deploy-select">
-                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show Paths</option>
-                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete Deploy Cache</option>
+                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show</option>
+                                <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete</option>
                             </select>
 
                             <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[0] ); ?>" />
@@ -192,8 +192,8 @@ wp_add_inline_style(
                             <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
 
                                 <select name="action" class="static-deploy-select">
-                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show Paths</option>
-                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete Deploy Cache</option>
+                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_show' ) ); ?>">Show</option>
+                                    <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete</option>
                                 </select>
 
                                 <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[ $i ] ); ?>" />
