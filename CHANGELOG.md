@@ -15,6 +15,9 @@
 - Add nonces for GET requests to cache pages in WP.org
   build. These don't serve any security purpose, but
   are required by WP.org.
+- Remove memcached stats from the diagnostics and CLI.
+  This has been moved to a new plugin at
+  https://github.com/staticweb-io/snapcache
 
 ## 9.4.1 (2025-10-20)
 

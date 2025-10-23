@@ -38,11 +38,6 @@ class ViewRenderer {
         $view['domDocumentAvailable'] = class_exists( 'DOMDocument' );
         $view['extensions'] = get_loaded_extensions();
 
-        $mc = Memcached::getMemcached();
-        if ( $mc instanceof \Memcached ) {
-            $view['memcachedStats'] = $mc->getStats();
-        }
-
         require_once STATIC_DEPLOY_PATH . 'views/diagnostics-page.php';
     }
 

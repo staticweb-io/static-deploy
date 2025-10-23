@@ -13,7 +13,6 @@ class CLI {
         WP_CLI::add_command( 'static-deploy', self::class );
         $jobs = new CLI\Jobs();
         $jobs->registerCommands();
-        CLI\Memcached::registerCommands();
 
         WP_CLI::add_hook(
             'find_command_to_run_pre',
