@@ -10,15 +10,13 @@ namespace StaticDeploy;
 class DirectDeployer {
     private readonly Crawler $crawler;
     private readonly object $deployer;
-    public DirectDeployConfig $config;
     private readonly PostProcessor $processor;
     public bool $ready = false;
     private readonly URLDiscovery $url_discovery;
 
     public function __construct(
-        ?DirectDeployConfig $config = null,
+        public ?DirectDeployConfig $config = new DirectDeployConfig(),
     ) {
-        $this->config = $config ?? new DirectDeployConfig();
         $deployer = Addons::getDeployer();
 
         if ( ! $deployer ) {
