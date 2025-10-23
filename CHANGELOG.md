@@ -1,5 +1,13 @@
 ## Unreleased
 
+- (breaking) Remove setting of max_execution_time.
+  This isn't allowed to be set on all hosts, and
+  was set far too broadly. If your site is too large
+  to crawl within your normal max_execution_time,
+  it's recommended to use a cron job that calls
+  `wp static-deploy process-queue`. This has an
+  unlimited max_execution_time by default.
+
 ## 9.4.1 (2025-10-20)
 
 - Fix broken links on settings pages when the server host

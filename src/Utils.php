@@ -63,31 +63,6 @@ class Utils {
         return implode( ', ', $parts );
     }
 
-    /*
-     * Adjusts the max_execution_time ini option
-     *
-     */
-    public static function setMaxExecutionTime(): void {
-        if (
-            ! function_exists( 'set_time_limit' ) ||
-            ! function_exists( 'ini_get' )
-        ) {
-            return;
-        }
-
-        $current_max_execution_time  = intval( ini_get( 'max_execution_time' ) );
-        $proposed_max_execution_time =
-            ( $current_max_execution_time === 30 ) ? 31 : 30;
-        // phpcs:disable Squiz.PHP.DiscouragedFunctions
-        set_time_limit( $proposed_max_execution_time );
-        $current_max_execution_time = intval( ini_get( 'max_execution_time' ) );
-
-        if ( $proposed_max_execution_time === $current_max_execution_time ) {
-            // phpcs:disable Squiz.PHP.DiscouragedFunctions
-            set_time_limit( 0 );
-        }
-    }
-
     public static function strReplaceFirst(
         string $search,
         string $replace,

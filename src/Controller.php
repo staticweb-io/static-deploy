@@ -53,8 +53,6 @@ class Controller {
 
         WordPressAdmin::addAdminUIElements();
 
-        Utils::setMaxExecutionTime();
-
         Local\LocalDeployer::registerHooks();
         Local\LocalOptions::registerHooks();
         S3\Deployer::registerHooks();
