@@ -68,6 +68,20 @@ class ViewRenderer {
             die( 'Forbidden' );
         }
 
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' )
+            && STATIC_DEPLOY_WP_ORG_MODE
+        && ! wp_verify_nonce(
+            filter_input(
+                INPUT_GET,
+                '_wpnonce',
+                FILTER_SANITIZE_URL
+            ),
+            Controller::getHookName( 'caches_page' )
+        )
+        ) {
+            wp_die( 'Invalid nonce' );
+        }
+
         $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_URL );
         /**
          * @var string[] $url_id
@@ -119,6 +133,20 @@ class ViewRenderer {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
+        }
+
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' )
+            && STATIC_DEPLOY_WP_ORG_MODE
+        && ! wp_verify_nonce(
+            filter_input(
+                INPUT_GET,
+                '_wpnonce',
+                FILTER_SANITIZE_URL
+            ),
+            Controller::getHookName( 'caches_page' )
+        )
+        ) {
+            wp_die( 'Invalid nonce' );
         }
 
         $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_URL );
@@ -176,6 +204,20 @@ class ViewRenderer {
             die( 'Forbidden' );
         }
 
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' )
+            && STATIC_DEPLOY_WP_ORG_MODE
+        && ! wp_verify_nonce(
+            filter_input(
+                INPUT_GET,
+                '_wpnonce',
+                FILTER_SANITIZE_URL
+            ),
+            Controller::getHookName( 'caches_page' )
+        )
+        ) {
+            wp_die( 'Invalid nonce' );
+        }
+
         $paths = ProcessedSite::getPaths();
 
         // Apply search
@@ -218,6 +260,20 @@ class ViewRenderer {
         if ( ! is_admin() ) {
             http_response_code( 403 );
             die( 'Forbidden' );
+        }
+
+        if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' )
+            && STATIC_DEPLOY_WP_ORG_MODE
+        && ! wp_verify_nonce(
+            filter_input(
+                INPUT_GET,
+                '_wpnonce',
+                FILTER_SANITIZE_URL
+            ),
+            Controller::getHookName( 'caches_page' )
+        )
+        ) {
+            wp_die( 'Invalid nonce' );
         }
 
         $deploy_namespace = strval(

@@ -12,6 +12,9 @@
   "Crawled Files" page with less detail.
 - Improve consistency and screen reader text on
   admin cache pages.
+- Add nonces for GET requests to cache pages in WP.org
+  build. These don't serve any security purpose, but
+  are required by WP.org.
 
 ## 9.4.1 (2025-10-20)
 

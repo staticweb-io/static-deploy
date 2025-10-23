@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+use StaticDeploy\Controller;
 use StaticDeploy\URLHelper;
 
 /**
@@ -43,6 +44,12 @@ $paginator_first_page = $view['paginatorFirstPage'];
  */
 $paginator_last_page = $view['paginatorLastPage'];
 
+$uri = URLHelper::getCurrent();
+if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
+    $nonce = wp_create_nonce( Controller::getHookName( 'caches_page' ) );
+    $uri = URLHelper::modifyUrl( [ '_wpnonce' => $nonce ], $uri );
+}
+
 ?>
 
 <div class="wrap">
@@ -77,8 +84,8 @@ $paginator_last_page = $view['paginatorLastPage'];
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
                     <?php else : ?>
-                        <a class="first-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => 1 ] ) ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
-                        <a class="prev-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page - 1 ] ) ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
+                        <a class="first-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => 1 ], $uri ) ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
+                        <a class="prev-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page - 1 ], $uri ) ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
                     <?php endif; ?>
                     <span class="paging-input">
                         <label for="current-page-selector" class="screen-reader-text">Current Page</label>
@@ -91,8 +98,8 @@ $paginator_last_page = $view['paginatorLastPage'];
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">›</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">»</span>
                     <?php else : ?>
-                        <a class="next-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page + 1 ] ) ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
-                        <a class="last-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_last_page ] ) ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
+                        <a class="next-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page + 1 ], $uri ) ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_last_page ], $uri ) ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
                     <?php endif; ?>
                 </span>
             </div>

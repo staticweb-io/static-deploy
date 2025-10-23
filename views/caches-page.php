@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use StaticDeploy\Controller;
+use StaticDeploy\URLHelper;
 
 /**
  * @var mixed[] $view
@@ -66,6 +67,11 @@ wp_add_inline_style(
         width: 165px;
     }'
 );
+
+$uri = URLHelper::getCurrent();
+if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
+    $uri = URLHelper::modifyUrl( [ '_wpnonce' => wp_create_nonce( strval( $view['nonce_action'] ) ) ], $uri );
+}
 
 ?>
 

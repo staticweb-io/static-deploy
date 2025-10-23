@@ -286,7 +286,14 @@ class Controller {
     public static function adminDetectedFilesShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( self::getAdminUrl( 'detected_files' ) );
+        $nonce = filter_input(
+            INPUT_POST,
+            '_wpnonce',
+            FILTER_SANITIZE_URL,
+        );
+        $admin_url = self::getAdminUrl( 'detected_files' ) . '&_wpnonce=' . $nonce;
+
+        wp_safe_redirect( $admin_url );
         exit;
     }
 
@@ -357,7 +364,12 @@ class Controller {
                 FILTER_SANITIZE_URL,
             )
         );
-        $admin_url = self::getAdminUrl( 'deploy_cache' );
+        $nonce = filter_input(
+            INPUT_POST,
+            '_wpnonce',
+            FILTER_SANITIZE_URL,
+        );
+        $admin_url = self::getAdminUrl( 'deploy_cache' ) . '&_wpnonce=' . $nonce;
         if ( $deploy_namespace !== '' ) {
             wp_safe_redirect(
                 $admin_url . '&deploy_namespace=' . urlencode( $deploy_namespace )
@@ -381,7 +393,14 @@ class Controller {
     public static function adminCrawledFilesShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( self::getAdminUrl( 'crawled_files' ) );
+        $nonce = filter_input(
+            INPUT_POST,
+            '_wpnonce',
+            FILTER_SANITIZE_URL,
+        );
+        $admin_url = self::getAdminUrl( 'crawled_files' ) . '&_wpnonce=' . $nonce;
+
+        wp_safe_redirect( $admin_url );
         exit;
     }
 
@@ -397,7 +416,14 @@ class Controller {
     public static function adminPostProcessedSiteShow(): void {
         check_admin_referer( self::getHookName( 'caches_page' ) );
 
-        wp_safe_redirect( self::getAdminUrl( 'post_processed_site' ) );
+        $nonce = filter_input(
+            INPUT_POST,
+            '_wpnonce',
+            FILTER_SANITIZE_URL,
+        );
+        $admin_url = self::getAdminUrl( 'post_processed_site' ) . '&_wpnonce=' . $nonce;
+
+        wp_safe_redirect( $admin_url );
         exit;
     }
 
