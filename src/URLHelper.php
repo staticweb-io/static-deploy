@@ -85,14 +85,12 @@ class URLHelper {
     /**
      * Returns a URL with given querystring modifications
      *
-     * @param array<string|int> $changes  List of querystring params to set
-     * @param string $url             A complete URL. Leave empty to use current URL
-     * @return string                 The new URL
+     * @param array<string|null> $changes  List of querystring params to set
      * @throws StaticDeployException
      */
-    public static function modifyUrl( array $changes, string $url = '' ): string {
-        // If $url wasn't passed in, use the current url
-        $uri = $url === '' ? self::getCurrent() : Psr7Utils::uriFor( $url );
+    public static function modifyUrl( array $changes, ?Uri $uri = null ): Uri {
+        // If $uri wasn't passed in, use the current page
+        $uri ??= self::getCurrent();
 
         return Uri::withQueryValues( $uri, $changes );
     }
