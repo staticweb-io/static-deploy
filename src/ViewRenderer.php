@@ -234,19 +234,31 @@ class ViewRenderer {
             );
         }
 
+        $records = array_map(
+            fn( string $path ): array => [
+                $path,
+            ],
+            $paths,
+        );
+
         $page_size = 200;
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- GET parameter for pagination, no nonce needed
         $page = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
-        $paginator = new Paginator( $paths, $page_size, $page );
+        $paginator = new Paginator( $records, $page_size, $page );
         $view = [
+            'colHeadings' => [
+                'Deployed Files',
+            ],
+            'emptyMessage' => 'There are no deployed files.',
             'paginatorFirstPage' => $paginator->firstPage(),
             'paginatorLastPage' => $paginator->lastPage(),
             'paginatorPage' => $paginator->page(),
             'paginatorRecords' => $paginator->records(),
             'paginatorTotalRecords' => $paginator->totalRecords(),
+            'title' => 'Deployed Files',
         ];
 
-        require_once STATIC_DEPLOY_PATH . 'views/deploy-cache-page.php';
+        require_once STATIC_DEPLOY_PATH . 'views/files-paginated-page.php';
     }
 
     public static function renderJobsPage(): void {
