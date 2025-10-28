@@ -159,12 +159,20 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
                     <option
                         <?php echo (int) $options['processQueueImmediately']->value === 0 ? 'selected' : ''; ?>
                         value="0">disabled</option>
+                    <?php
+                    if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) :
+                        ?>
+                    <option
+                        <?php echo (int) $options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
+                        value="1">enabled</option>
+                    <?php else : ?>
                     <option
                         <?php echo (int) $options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
                         value="1">Using wp-admin.php</option>
                     <option
                         <?php echo (int) $options['processQueueImmediately']->value === 2 ? 'selected' : ''; ?>
                         value="2">Using WordPress CLI</option>
+                    <?php endif; ?>
                     </select>
                 </td>
             </tr>

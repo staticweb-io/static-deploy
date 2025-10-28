@@ -493,7 +493,11 @@ class Controller {
         }
 
         $immediate_mode = intval( Options::getValue( 'processQueueImmediately' ) );
-        if ( $immediate_mode === 1 ) {
+        if ( ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) ) {
+            if ( $immediate_mode === 1 ) {
+                self::processQueueAdminPost();
+            }
+        } elseif ( $immediate_mode === 1 ) {
             self::processQueueAdminPost();
         } elseif ( $immediate_mode === 2 ) {
             shell_exec( 'wp static-deploy process_queue > /dev/null 2>&1 &' );
