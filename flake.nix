@@ -69,7 +69,7 @@
             type == "directory" && base == "release" || pkgs.lib.hasInfix "/release/" path;
         };
         buildStaticDeploySrc =
-          constantsFile:
+          constantsFile: preComposerInstall:
           runCommand "static-deploy-source"
             {
               nativeBuildInputs = [
@@ -88,13 +88,17 @@
               cp ${constantsFile} constants.php
               just rector
 
+              ${preComposerInstall}
               composer install --no-cache --no-dev --optimize-autoloader
 
               mkdir -p "$out"
               cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
             '';
-        staticDeployWpOrgSrc = buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php";
-        staticDeployGitHubSrc = buildStaticDeploySrc "${releaseExtras}/release/github/constants.php";
+        staticDeployWpOrgSrc = buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php" ''
+          composer remove yahnis-elsts/plugin-update-checker --minimal-changes --no-cache
+          sed -i '/^use YahnisElsts\\PluginUpdateChecker/d' src/WordPressAdmin.php
+        '';
+        staticDeployGitHubSrc = buildStaticDeploySrc "${releaseExtras}/release/github/constants.php" "";
         pluginZip =
           source:
           runCommand name { } ''
