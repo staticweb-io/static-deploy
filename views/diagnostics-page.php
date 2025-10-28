@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <tr>
                 <td>PHP version</td>
                 <td>
-                    <?php echo PHP_VERSION; ?>
+                    <?php echo esc_html( PHP_VERSION ); ?>
 
                     <span
                         class="dashicons <?php echo $view['phpOutOfDate'] ? 'dashicons-no' : 'dashicons-yes'; ?>"
