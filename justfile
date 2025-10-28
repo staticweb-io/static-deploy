@@ -22,6 +22,7 @@ build-wp-org:
 
 # Run tests and other checks
 check: _lint _validate _phpcs && test
+    php ./vendor/bin/rector --debug --dry-run
 
 # Run development server
 [working-directory('dev')]
