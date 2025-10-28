@@ -21,7 +21,9 @@ build-wp-org:
     nix build .#pluginWpOrg
 
 # Run tests and other checks
-check: _lint _validate _phpcs && test
+check: _check_no_test test
+
+_check_no_test: _lint _validate _phpcs
     php ./vendor/bin/rector --debug --dry-run
 
 # Run development server

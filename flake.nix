@@ -144,9 +144,7 @@
             cd "$PLUGIN_DIR"
             cp -a "${composerVendorDev}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
-            just _lint _validate _phpcs
-            # Run directly because composer swallows the exit code
-            php vendor/bin/rector --debug --dry-run
+            just _check_no_test
           '';
         };
       in
