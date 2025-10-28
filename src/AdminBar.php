@@ -218,7 +218,7 @@ window.onload = (event) => {
             'job_count' => $job_count,
             'jobs' => $jobs,
         ];
-        echo( json_encode( $arr ) );
+        echo( wp_json_encode( $arr ) );
         die();
     }
 
