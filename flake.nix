@@ -34,14 +34,14 @@
           pname = "${name}-composer-deps";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-cd1eaFxqDBhFAHOqWPfIVS0cQePgJiHJ0Otz566GWdc=";
+          vendorHash = "sha256-FAX0tSuV5Gw0Xs4AYOiYqot8hWpdDzGpLxTwzlcFgz0=";
         });
         composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-ud/3r4pxFF3fDRuejr5djdH/z+EaNNzGqmUfz9WCZU8=";
+          vendorHash = "sha256-a4/RNWhY/fLt+mqBDdkEtp9nh2bt2vIb2HD+yyox56Q=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
@@ -144,8 +144,7 @@
             cd "$PLUGIN_DIR"
             cp -a "${composerVendorDev}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
-            composer lint
-            just _validate _phpcs
+            just _lint _validate _phpcs
             # Run directly because composer swallows the exit code
             php vendor/bin/rector --debug --dry-run
           '';

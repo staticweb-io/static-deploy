@@ -21,7 +21,7 @@ build-wp-org:
     nix build .#pluginWpOrg
 
 # Run tests and other checks
-check: _validate _phpcs test
+check: _lint _validate _phpcs && test
 
 # Run development server
 [working-directory('dev')]
@@ -36,6 +36,9 @@ format: && _format-php
 
 _format-php:
     just _phpcbf || true && just _phpcs
+
+_lint:
+    php ./vendor/bin/parallel-lint src views
 
 _phpcbf:
     php ./vendor/bin/phpcbf -d memory_limit=512M --standard=./phpcs.xml --extensions=php src tests views *.php || true

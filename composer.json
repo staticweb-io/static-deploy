@@ -66,8 +66,5 @@
         "platform": {
             "php": "8.1.33"
         }
-    },
-    "scripts": {
-        "lint": "php ./vendor/bin/parallel-lint --exclude integration-tests --exclude vendor ."
     }
 }
