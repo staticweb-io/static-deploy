@@ -20,6 +20,9 @@ build:
 build-wp-org:
     nix build .#pluginWpOrg
 
+# Run tests and other checks
+check: _validate _phpcs test
+
 # Run development server
 [working-directory('dev')]
 dev CLEAN="false":
@@ -45,8 +48,8 @@ rector: && _phpcbf
     # We sometimes get errors running without --debug
     php ./vendor/bin/rector --debug
 
-# Validate and run tests in a sandbox
-test: _validate _phpcs _test-integration
+# Run tests in a sandbox
+test: _test-integration
 
 # Run AWS tests against a live dev server
 _test-aws:
