@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.5.0 (2025-10-28)
+
 - (breaking) Remove setting of max_execution_time.
   This isn't allowed to be set on all hosts, and
   was set far too broadly. If your site is too large
