@@ -93,7 +93,7 @@ update-json:
 _validate:
     composer validate --strict
 
-_watch-dev-cmd: format _validate _test-integration
+_watch-dev-cmd: _lint format _validate _test-integration
 
 # Run formatters and dev server tests when files change
 watch-dev:
