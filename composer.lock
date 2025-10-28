@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.357.2",
+            "version": "3.358.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7020346835259ad07ce320b04bea912055d4a5bc"
+                "reference": "2bc4dbeef5ab70b87651f4420deace09c504a537"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7020346835259ad07ce320b04bea912055d4a5bc",
-                "reference": "7020346835259ad07ce320b04bea912055d4a5bc",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2bc4dbeef5ab70b87651f4420deace09c504a537",
+                "reference": "2bc4dbeef5ab70b87651f4420deace09c504a537",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.357.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.358.1"
             },
-            "time": "2025-10-24T19:16:19+00:00"
+            "time": "2025-10-28T18:13:37+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -948,16 +948,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v6.4.24",
+            "version": "v6.4.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "73089124388c8510efb8d2d1689285d285937b08"
+                "reference": "a1b6aa435d2fba50793b994a839c32b6064f063b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/73089124388c8510efb8d2d1689285d285937b08",
-                "reference": "73089124388c8510efb8d2d1689285d285937b08",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/a1b6aa435d2fba50793b994a839c32b6064f063b",
+                "reference": "a1b6aa435d2fba50793b994a839c32b6064f063b",
                 "shasum": ""
             },
             "require": {
@@ -992,7 +992,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v6.4.24"
+                "source": "https://github.com/symfony/finder/tree/v6.4.27"
             },
             "funding": [
                 {
@@ -1012,7 +1012,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-07-15T12:02:45+00:00"
+            "time": "2025-10-15T18:32:00+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1755,16 +1755,16 @@
         },
         {
             "name": "phpcsstandards/phpcsextra",
-            "version": "1.4.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSExtra.git",
-                "reference": "882b8c947ada27eb002870fe77fee9ce0a454cdb"
+                "reference": "8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/882b8c947ada27eb002870fe77fee9ce0a454cdb",
-                "reference": "882b8c947ada27eb002870fe77fee9ce0a454cdb",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e",
+                "reference": "8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e",
                 "shasum": ""
             },
             "require": {
@@ -1833,7 +1833,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-09-05T06:54:52+00:00"
+            "time": "2025-10-28T17:00:02+00:00"
         },
         {
             "name": "phpcsstandards/phpcsutils",

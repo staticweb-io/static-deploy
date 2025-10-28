@@ -34,7 +34,7 @@
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-a4/RNWhY/fLt+mqBDdkEtp9nh2bt2vIb2HD+yyox56Q=";
+          vendorHash = "sha256-qEROxYTyKsPl6uMO6urEWZkr+tuKihi0UURfwZM1oqw=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
