@@ -145,7 +145,7 @@
             cp -a "${composerVendorDev}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
             composer lint
-            just _phpcs
+            just _validate _phpcs
             # Run directly because composer swallows the exit code
             php vendor/bin/rector --debug --dry-run
           '';
