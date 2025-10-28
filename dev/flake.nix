@@ -417,7 +417,7 @@
                       TMPDIR="$(realpath ./tmp)"
                       mkdir -p "$TMPDIR"
                       echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${toString dbPort}" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
-                      cp -r --no-preserve=mode ${staticDeployPkgs.composerVendorDev}/. .
+                      cp -r --no-preserve=mode ${staticDeployPkgs.composerVendor}/. .
                       cp -r ${staticDeployLib.staticDeploySrc}/. .
                       composer dump-autoload
                       WORDPRESS_DIR="$(realpath ./data/wordpress1)"

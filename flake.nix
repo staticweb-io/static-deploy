@@ -30,13 +30,6 @@
             rel == "composer.json" || rel == "composer.lock";
         };
         composerVendor = php.mkComposerVendor (finalAttrs: {
-          composerNoDev = true;
-          pname = "${name}-composer-deps";
-          version = "1.0.0";
-          src = composerSrc;
-          vendorHash = "sha256-FAX0tSuV5Gw0Xs4AYOiYqot8hWpdDzGpLxTwzlcFgz0=";
-        });
-        composerVendorDev = php.mkComposerVendor (finalAttrs: {
           composerNoDev = false;
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
@@ -88,16 +81,14 @@
             ''
               export PLUGIN_DIR="$TMPDIR/${name}"
               mkdir -p "$PLUGIN_DIR"
-              cp -r --no-preserve=mode "${composerVendorDev}/vendor" .
+              cp -r --no-preserve=mode "${composerVendor}/vendor" .
               cp -r --no-preserve=mode "${staticDeploySrc}"/* .
 
               # Lock certain constants and run rector to remove dead code
               cp ${constantsFile} constants.php
               just rector
 
-              rm -rf vendor
-              cp -r --no-preserve=mode "${composerVendor}/vendor" .
-              composer dump-autoload --no-dev --optimize
+              composer install --no-cache --no-dev --optimize-autoloader
 
               mkdir -p "$out"
               cp -r composer.json readme.txt src static-deploy.php uninstall.php vendor views "$out"
@@ -142,7 +133,7 @@
             export PLUGIN_DIR="$TMPDIR/${name}"
             mkdir -p "$PLUGIN_DIR"
             cd "$PLUGIN_DIR"
-            cp -a "${composerVendorDev}/vendor" .
+            cp -a "${composerVendor}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
             just _check_no_test
           '';
@@ -152,7 +143,7 @@
         checks = { inherit staticDeployCheck; };
         lib = { inherit staticDeploySrc; };
         packages = {
-          inherit composerVendorDev composerVendor staticDeploy;
+          inherit composerVendor staticDeploy;
           plugin = staticDeploy;
           pluginGitHubSrc = staticDeployGitHubSrc;
           pluginWpOrg = staticDeployWpOrg;
