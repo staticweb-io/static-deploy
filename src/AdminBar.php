@@ -83,8 +83,7 @@ class AdminBar {
         wp_add_inline_script(
             'static-deploy-admin-bar',
             sprintf(
-                '<script>
-var static_deploy_job_queue_url = "%s";
+                'var static_deploy_job_queue_url = "%s";
 var static_deploy_last_interval = 30000;
 var static_deploy_job_type_labels = {
     detect: "Detecting URLs",
@@ -195,8 +194,7 @@ function static_deploy_init() {
 window.onload = (event) => {
     setInterval(static_deploy_check_idle, 1000);
     setTimeout(static_deploy_init, 1);
-};
-</script>',
+};',
                 $ajax_job_queue_url
             )
         );

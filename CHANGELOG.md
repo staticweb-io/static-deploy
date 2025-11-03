@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Remove extra <script> tag from admin bar enqueue
+
 ## 9.5.0 (2025-10-28)
 
 - (breaking) Remove setting of max_execution_time.
