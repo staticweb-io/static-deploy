@@ -3,7 +3,7 @@
  * Plugin Name:       Static Deploy
  * Plugin URI:        https://github.com/staticweb-io/static-deploy
  * Description:       Generate static sites for deployment as files or S3-compatible storage.
- * Version:           9.5.0
+ * Version:           9.5.1
  * Author:            StaticWeb.io
  * Author URI:        https://staticweb.io
  * Text Domain:       static-deploy
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
 
-define( 'STATIC_DEPLOY_VERSION', '9.5.0' );
+define( 'STATIC_DEPLOY_VERSION', '9.5.1' );
 define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
 if ( ! defined( 'STATIC_DEPLOY_DEBUG' ) ) {

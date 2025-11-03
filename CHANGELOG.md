@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.5.1 (2025-11-03)
+
 - Remove extra <script> tag from admin bar enqueue
 
 ## 9.5.0 (2025-10-28)
