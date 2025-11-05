@@ -1,5 +1,6 @@
 repo_root := `pwd`
 svn_dir := "./wp-org-svn"
+svn_user := "staticwebio"
 wordpress_dir := "./dev/data/wordpress1"
 
 alias b := build
@@ -58,6 +59,19 @@ rector: && _phpcbf
 # Checkout WordPress.org subversion repo
 svn-checkout:
     svn co https://plugins.svn.wordpress.org/staticweb-deploy "{{ svn_dir }}"
+
+# Release latest source build using version in update.json
+svn-release:
+    just _svn-sync-trunk "$(nix build .#pluginWpOrgSrc --print-out-paths)"
+    just _svn-release-version "$(jq -r .version update.json)"
+
+_svn-release-version VERSION:
+    svn cp "{{ svn_dir }}"/trunk "{{ svn_dir }}"/tags/"{{ VERSION }}"
+    svn ci "{{ svn_dir }}" --username "{{ svn_user }}" -m "tagging version {{ VERSION }}"
+
+_svn-sync-trunk SRC:
+    rsync -av --delete --chmod=F664,D775 --owner "{{ SRC }}"/* "{{ svn_dir }}"/trunk/
+    svn add --force "{{ svn_dir }}"/trunk/*
 
 # Update subversion repo from WordPress.org
 svn-update:
