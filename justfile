@@ -59,6 +59,10 @@ rector: && _phpcbf
 svn-checkout:
     svn co https://plugins.svn.wordpress.org/staticweb-deploy "{{ svn_dir }}"
 
+# Update subversion repo from WordPress.org
+svn-update:
+    svn up "{{ svn_dir }}"
+
 # Run tests in a sandbox
 test: _test-integration
 
