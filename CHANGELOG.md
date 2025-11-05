@@ -2,6 +2,10 @@
 
 ## 9.6.0 (2025-11-05)
 
+- (breaking) Change plugin name and slug from "Static Deploy"
+  / "static-deploy" to "StaticWeb Deploy" / "staticweb-deploy".
+  The wordpress.org plugin repository would not allow submission
+  under the name "Static Deploy".
 - Remove unused services from AWS SDK dependency. This
   reduces the plugin zip size from 6.5MB to 1.3MB.
 
