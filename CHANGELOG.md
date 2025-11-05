@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Don't load plugin code unless in the CLI or an admin.
+  This should provide a small speed boost for non-admin
+  users.
+
 ## 9.6.0 (2025-11-05)
 
 - (breaking) Change plugin name and slug from "Static Deploy"

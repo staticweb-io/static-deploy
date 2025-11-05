@@ -17,6 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
 
+// Only run code for admins and the CLI
+// We don't directly change any behavior on the public site
+if ( ! defined( 'WP_CLI' ) && ! is_admin() ) {
+    return;
+}
+
 define( 'STATIC_DEPLOY_VERSION', '9.6.0' );
 define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
