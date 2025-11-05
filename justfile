@@ -1,4 +1,5 @@
 repo_root := `pwd`
+svn_dir := "./wp-org-svn"
 wordpress_dir := "./dev/data/wordpress1"
 
 alias b := build
@@ -53,6 +54,10 @@ _phpcs:
 rector: && _phpcbf
     # We sometimes get errors running without --debug
     php ./vendor/bin/rector --debug
+
+# Checkout WordPress.org subversion repo
+svn-checkout:
+    svn co https://plugins.svn.wordpress.org/staticweb-deploy "{{ svn_dir }}"
 
 # Run tests in a sandbox
 test: _test-integration

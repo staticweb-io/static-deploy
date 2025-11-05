@@ -453,6 +453,7 @@
               phpunit
               phpPackages.composer
               shellcheck
+              subversion
               watchexec
               wp-cli
             ];
