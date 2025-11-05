@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.6.0 (2025-11-05)
+
 - Remove unused services from AWS SDK dependency. This
   reduces the plugin zip size from 6.5MB to 1.3MB.
 
