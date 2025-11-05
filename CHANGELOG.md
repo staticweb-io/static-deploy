@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Remove unused services from AWS SDK dependency. This
+  reduces the plugin zip size from 6.5MB to 1.3MB.
+
 ## 9.5.1 (2025-11-03)
 
 - Remove extra <script> tag from admin bar enqueue
