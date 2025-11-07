@@ -9,7 +9,7 @@ trait ITTrait {
     public function setUp(): void {
         $plugins = $this->wpCli( [ 'plugin', 'list', '--format=json' ] )['final_line'];
         foreach ( json_decode( (string) $plugins, true ) as $plugin ) {
-            if ( $plugin['name'] !== 'staticweb-deploy' ) {
+            if ( $plugin['name'] !== 'staticweb-deploy' && $plugin['status'] !== 'dropin' ) {
                 $this->wpCli( [ 'plugin', 'deactivate', $plugin['name'] ] );
                 $this->wpCli( [ 'plugin', 'uninstall', $plugin['name'] ] );
             }
