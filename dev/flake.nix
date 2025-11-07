@@ -292,6 +292,7 @@
                   services.nginx = {
                     enable = true;
                     httpConfig = nginxHttpConfig "/home/www/wordpress" config.services.phpfpm.pools.default.socket;
+                    port = serverPort;
                   };
                   services.phpfpm = {
                     pools = {
@@ -358,6 +359,7 @@
               imports = [ inputs.services-flake.processComposeModules.default ];
               services.memcached."memcached1" = {
                 enable = true;
+                port = memcachedConfig.port;
                 startArgs = [
                   "--memory-limit=${toString memcachedConfig.maxMemory}M"
                   "--port=${toString memcachedConfig.port}"
