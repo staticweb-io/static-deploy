@@ -30,6 +30,7 @@
       memcachedConfig = {
         enable = true;
         maxMemory = 100;
+        port = 11211;
       };
       mysqlConfig = {
         enable = true;
@@ -350,7 +351,10 @@
               imports = [ inputs.services-flake.processComposeModules.default ];
               services.memcached."memcached1" = {
                 enable = true;
-                startArgs = [ "--memory-limit=${toString memcachedConfig.maxMemory}M" ];
+                startArgs = [
+                  "--memory-limit=${toString memcachedConfig.maxMemory}M"
+                  "--port=${toString memcachedConfig.port}"
+                ];
               };
               services.mysql."mysql1" = {
                 enable = true;
