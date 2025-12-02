@@ -45,7 +45,7 @@ final class Db {
 
         if ( 0 === $indexes ) {
             // Caller prepares the query
-            // phpcs:ignore WordPress.DB
+            // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB
             $result = $wpdb->query( $create_index_sql );
             if ( false === $result ) {
                 WsLog::l( "Failed to create {$index_name} index on {$table_name}." );
@@ -106,7 +106,7 @@ final class Db {
         global $wpdb;
 
         // Caller prepares the query and handles caching
-        // phpcs:ignore WordPress.DB
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB
         $result = $wpdb->query( $query );
         if ( $result !== false ) {
             return $result;

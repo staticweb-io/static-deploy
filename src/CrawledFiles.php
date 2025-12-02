@@ -249,7 +249,7 @@ class CrawledFiles {
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $query = $wpdb->prepare( $sql, $table_name, $path_hash, $content_hash );
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         $path = $wpdb->get_var(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $query
@@ -277,7 +277,7 @@ class CrawledFiles {
         $table_name = self::getTableName();
 
         $sql = 'SELECT id, path_hash, path, content_hash FROM %i ORDER BY path';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->prepare( $sql, $table_name )
@@ -332,7 +332,7 @@ class CrawledFiles {
         $table_name = self::getTableName();
 
         $sql = 'TRUNCATE TABLE %i';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         $wpdb->query(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->prepare( $sql, $table_name )
@@ -354,7 +354,7 @@ class CrawledFiles {
         $table_name = self::getTableName();
 
         $sql = 'SELECT count(*) FROM %i';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_var(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->prepare( $sql, $table_name )
@@ -370,7 +370,7 @@ class CrawledFiles {
         $table_name = self::getTableName();
 
         $sql = 'SELECT path, redirect_to FROM %i WHERE 0 < LENGTH(redirect_to)';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         return $wpdb->get_results(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->prepare( $sql, $table_name )
