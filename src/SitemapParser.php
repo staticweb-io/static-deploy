@@ -357,6 +357,7 @@ class SitemapParser {
         }
         return $arr;
     }
+
     /**
      * Generate the \SimpleXMLElement object if the XML is valid
      *

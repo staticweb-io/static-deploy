@@ -12,9 +12,13 @@ namespace StaticDeploy;
 final class OptionSpec {
 
     public readonly string $name;
+
     public readonly string $default_value;
+
     public readonly ?array $allowed_values;
+
     public readonly string $filter_name;
+
     public readonly string $input_type;
 
     public function __construct(

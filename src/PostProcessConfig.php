@@ -5,8 +5,11 @@ namespace StaticDeploy;
 final class PostProcessConfig {
 
     public readonly ?string $destination_url;
+
     public readonly ?array $hosts_to_rewrite;
+
     public readonly ?array $replacement_patterns;
+
     public readonly ?string $site_url;
 
     public function __construct() {

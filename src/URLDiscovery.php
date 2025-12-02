@@ -10,7 +10,9 @@ use Psr\Http\Message\UriInterface;
 
 class URLDiscovery {
     private readonly string $destination_host;
+
     private readonly string $destination_url;
+
     private readonly FileFiltering $file_filtering;
 
     public function __construct() {

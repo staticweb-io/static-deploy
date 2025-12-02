@@ -9,7 +9,9 @@ namespace StaticDeploy;
 
 class PostProcessor {
     public PostProcessConfig $config;
+
     private int $processed = 0;
+
     private int $skipped = 0;
 
     /**

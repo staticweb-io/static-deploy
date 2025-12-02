@@ -19,6 +19,7 @@ class PathInfo {
     public readonly string $path;
 
     private ?string $content_hash;
+
     private ?string $path_hash = null;
 
     /**
