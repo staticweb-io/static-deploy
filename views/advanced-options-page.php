@@ -15,12 +15,12 @@ use StaticDeploy\OptionRenderer;
  */
 
 /**
- * @var array<string, \StaticDeploy\OptionData> $options
+ * @var array<string, \StaticDeploy\OptionData> $static_deploy_options
  */
-$options = $view['options'];
+$static_deploy_options = $view['options'];
 
-$row = function ( $option_name ) use ( $options ): void {
-    $option_data = $options[ $option_name ];
+$static_deploy_row = function ( $option_name ) use ( $static_deploy_options ): void {
+    $option_data = $static_deploy_options[ $option_name ];
     echo '<tr><td style="width: 50%">';
     OptionRenderer::echoLabel( $option_data, true );
     echo '</td><td>';
@@ -41,7 +41,7 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'maxLogRows' ); ?>
+            <?php $static_deploy_row( 'maxLogRows' ); ?>
         </tbody>
     </table>
 
@@ -51,7 +51,7 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'pathsToIgnore' ); ?>
+            <?php $static_deploy_row( 'pathsToIgnore' ); ?>
         </tbody>
     </table>
 
@@ -61,8 +61,8 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'crawledSitePath' ); ?>
-            <?php $row( 'crawlConcurrency' ); ?>
+            <?php $static_deploy_row( 'crawledSitePath' ); ?>
+            <?php $static_deploy_row( 'crawlConcurrency' ); ?>
         </tbody>
     </table>
 
@@ -72,9 +72,9 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'processedSitePath' ); ?>
-            <?php $row( 'skipURLRewrite' ); ?>
-            <?php $row( 'hostsToRewrite' ); ?>
+            <?php $static_deploy_row( 'processedSitePath' ); ?>
+            <?php $static_deploy_row( 'skipURLRewrite' ); ?>
+            <?php $static_deploy_row( 'hostsToRewrite' ); ?>
         </tbody>
     </table>
 
@@ -84,7 +84,7 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'adminBarMenuItems' ); ?>
+            <?php $static_deploy_row( 'adminBarMenuItems' ); ?>
         </tbody>
     </table>
 

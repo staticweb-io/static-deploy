@@ -10,7 +10,7 @@ global $wpdb;
 // Note that the plugin is deactivated at this point, so we
 // can't call code in any of our other files.
 
-$table_slugs = [
+$static_deploy_table_slugs = [
     'crawled_files',
     'deploy_cache', // An older version of deployed_files
     'deployed_files',
@@ -20,9 +20,9 @@ $table_slugs = [
     'options',
 ];
 
-foreach ( $table_slugs as $table_slug ) {
-    $table_name = $wpdb->prefix . 'static_deploy_' . $table_slug;
+foreach ( $static_deploy_table_slugs as $static_deploy_table_slug ) {
+    $static_deploy_table_name = $wpdb->prefix . 'static_deploy_' . $static_deploy_table_slug;
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-    $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
+    $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $static_deploy_table_name ) );
 }

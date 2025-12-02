@@ -15,44 +15,44 @@ use StaticDeploy\URLHelper;
  */
 
 /**
- * @var int $detected_files_total
+ * @var int $static_deploy_detected_files_total
  */
-$detected_files_total = $view['DetectedFilesTotal'];
+$static_deploy_detected_files_total = $view['DetectedFilesTotal'];
 
 /**
- * @var int $crawled_files_total
+ * @var int $static_deploy_crawled_files_total
  */
-$crawled_files_total = $view['crawledFilesTotal'];
+$static_deploy_crawled_files_total = $view['crawledFilesTotal'];
 
 /**
- * @var int $exported_site_file_count
+ * @var int $static_deploy_exported_site_file_count
  */
-$exported_site_file_count = $view['exportedSiteFileCount'];
+$static_deploy_exported_site_file_count = $view['exportedSiteFileCount'];
 
 /**
- * @var string $uploads_path
+ * @var string $static_deploy_uploads_path
  */
-$uploads_path = $view['uploads_path'];
+$static_deploy_uploads_path = $view['uploads_path'];
 
 /**
- * @var int $processed_site_file_count
+ * @var int $static_deploy_processed_site_file_count
  */
-$processed_site_file_count = $view['processedSiteFileCount'];
+$static_deploy_processed_site_file_count = $view['processedSiteFileCount'];
 
 /**
- * @var mixed[] $deploy_cache_total_paths
+ * @var mixed[] $static_deploy_deploy_cache_total_paths
  */
-$deploy_cache_total_paths = $view['deployCacheTotalPaths'];
+$static_deploy_deploy_cache_total_paths = $view['deployCacheTotalPaths'];
 
 /**
- * @var string $exported_site_disk_space
+ * @var string $static_deploy_exported_site_disk_space
  */
-$exported_site_disk_space = $view['exportedSiteDiskSpace'];
+$static_deploy_exported_site_disk_space = $view['exportedSiteDiskSpace'];
 
 /**
- * @var string $processed_site_disk_space
+ * @var string $static_deploy_processed_site_disk_space
  */
-$processed_site_disk_space = $view['processedSiteDiskSpace'];
+$static_deploy_processed_site_disk_space = $view['processedSiteDiskSpace'];
 
 wp_register_style(
     'static-deploy-select',
@@ -68,9 +68,9 @@ wp_add_inline_style(
     }'
 );
 
-$uri = URLHelper::getCurrent();
+$static_deploy_uri = URLHelper::getCurrent();
 if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
-    $uri = URLHelper::modifyUrl( [ '_wpnonce' => wp_create_nonce( strval( $view['nonce_action'] ) ) ], $uri );
+    $static_deploy_uri = URLHelper::modifyUrl( [ '_wpnonce' => wp_create_nonce( strval( $view['nonce_action'] ) ) ], $static_deploy_uri );
 }
 
 ?>
@@ -89,7 +89,7 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
         <tbody>
             <tr>
                 <td>Detected Files</td>
-                <td><?php echo (int) $detected_files_total; ?> files in database</td>
+                <td><?php echo (int) $static_deploy_detected_files_total; ?> files in database</td>
                 <td>
                     <form
                         name="<?php echo esc_attr( Controller::getHookName( 'detected_files_delete' ) ); ?>"
@@ -111,9 +111,9 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
             <tr>
                 <td>Crawled Files</td>
                 <td>
-                    <?php echo (int) $crawled_files_total; ?> URLs in database
+                    <?php echo (int) $static_deploy_crawled_files_total; ?> URLs in database
                     <br>
-                    <?php echo (int) $exported_site_file_count; ?> files, using <?php echo esc_html( $exported_site_disk_space ); ?>
+                    <?php echo (int) $static_deploy_exported_site_file_count; ?> files, using <?php echo esc_html( $static_deploy_exported_site_disk_space ); ?>
                 </td>
                 <td>
                     <form
@@ -135,7 +135,7 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
             </tr>
             <tr>
                 <td>Post-Processed Files</td>
-                <td><?php echo (int) $processed_site_file_count; ?> files, using <?php echo esc_attr( $processed_site_disk_space ); ?></td>
+                <td><?php echo (int) $static_deploy_processed_site_file_count; ?> files, using <?php echo esc_attr( $static_deploy_processed_site_disk_space ); ?></td>
                 <td>
                     <form
                         name="<?php echo esc_attr( Controller::getHookName( 'post_processed_site_delete' ) ); ?>"
@@ -156,10 +156,10 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
             </tr>
 
             <tr>
-                <td rowspan="<?php echo count( $deploy_cache_total_paths ); ?>">Deployed Files</td>
-                    <?php $namespaces = array_keys( $deploy_cache_total_paths ); ?>
-                    <?php if ( $namespaces !== [] ) { ?>
-                        <td><?php echo esc_html( strval( $deploy_cache_total_paths[ $namespaces[0] ] ) ); ?> Paths in database for <code><?php echo esc_html( $namespaces[0] ); ?></code></td>
+                <td rowspan="<?php echo count( $static_deploy_deploy_cache_total_paths ); ?>">Deployed Files</td>
+                    <?php $static_deploy_namespaces = array_keys( $static_deploy_deploy_cache_total_paths ); ?>
+                    <?php if ( $static_deploy_namespaces !== [] ) { ?>
+                        <td><?php echo esc_html( strval( $static_deploy_deploy_cache_total_paths[ $static_deploy_namespaces[0] ] ) ); ?> Paths in database for <code><?php echo esc_html( $static_deploy_namespaces[0] ); ?></code></td>
                     <?php } else { ?>
                         <td>0 paths in database</td>
                     <?php } ?>
@@ -176,19 +176,19 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
                                 <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete</option>
                             </select>
 
-                            <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[0] ); ?>" />
+                            <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $static_deploy_namespaces[0] ); ?>" />
 
                             <button class="button btn-danger">Go</button>
 
                         </form>
                     </td>
                     <?php
-                    $deploy_cache_rows = count( $deploy_cache_total_paths );
-                    for ( $i = 1; $i < $deploy_cache_rows; $i++ ) :
+                    $static_deploy_deploy_cache_rows = count( $static_deploy_deploy_cache_total_paths );
+                    for ( $static_deploy_i = 1; $static_deploy_i < $static_deploy_deploy_cache_rows; $static_deploy_i++ ) :
                         ?>
                         </tr>
                         <tr>
-                        <td><?php echo esc_attr( strval( $deploy_cache_total_paths[ $namespaces[ $i ] ] ) ); ?> Paths in database for <code><?php echo esc_html( strval( $namespaces[ $i ] ) ); ?></code></td>
+                        <td><?php echo esc_attr( strval( $static_deploy_deploy_cache_total_paths[ $static_deploy_namespaces[ $static_deploy_i ] ] ) ); ?> Paths in database for <code><?php echo esc_html( strval( $static_deploy_namespaces[ $static_deploy_i ] ) ); ?></code></td>
                         <td>
                             <form
                                 name="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>"
@@ -202,7 +202,7 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
                                     <option value="<?php echo esc_attr( Controller::getHookName( 'deploy_cache_delete' ) ); ?>">Delete</option>
                                 </select>
 
-                                <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $namespaces[ $i ] ); ?>" />
+                                <input name="deploy_namespace" type="hidden" value="<?php echo esc_attr( $static_deploy_namespaces[ $static_deploy_i ] ); ?>" />
 
                                 <button class="button btn-danger">Go</button>
 

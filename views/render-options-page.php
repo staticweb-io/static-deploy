@@ -14,12 +14,12 @@ use StaticDeploy\OptionRenderer;
  */
 
 /**
- * @var array<string, \StaticDeploy\OptionData> $options
+ * @var array<string, \StaticDeploy\OptionData> $static_deploy_options
  */
-$options = $view['options'];
+$static_deploy_options = $view['options'];
 
-$row = function ( $option_name ) use ( $options ): void {
-    $option_data = $options[ $option_name ];
+$static_deploy_row = function ( $option_name ) use ( $static_deploy_options ): void {
+    $option_data = $static_deploy_options[ $option_name ];
     echo '<tr><td style="width: 50%">';
     OptionRenderer::echoLabel( $option_data, true );
     echo '</td><td>';
@@ -29,23 +29,23 @@ $row = function ( $option_name ) use ( $options ): void {
 
 echo '<h2>', esc_html( $view['title'] ), '</h2>';
 
-$nonce_action = esc_attr( $view['nonce_action'] );
+$static_deploy_nonce_action = esc_attr( $view['nonce_action'] );
 ?>
 
 <form
-    name="<?php echo esc_attr( $nonce_action ); ?>"
+    name="<?php echo esc_attr( $static_deploy_nonce_action ); ?>"
     method="POST"
     action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
-    <?php wp_nonce_field( $nonce_action ); ?>
-    <input name="action" type="hidden" value="<?php echo esc_attr( $nonce_action ); ?>" />
+    <?php wp_nonce_field( $static_deploy_nonce_action ); ?>
+    <input name="action" type="hidden" value="<?php echo esc_attr( $static_deploy_nonce_action ); ?>" />
 
 <?php
-foreach ( $view['sections'] as $section ) {
-    echo '<h3>', esc_html( $section['title'] ), '</h3>';
+foreach ( $view['sections'] as $static_deploy_section ) {
+    echo '<h3>', esc_html( $static_deploy_section['title'] ), '</h3>';
     echo '<table class="widefat striped"><tbody>';
-    foreach ( $section['options'] as $option_name ) {
-        $row( $option_name );
+    foreach ( $static_deploy_section['options'] as $static_deploy_option_name ) {
+        $static_deploy_row( $static_deploy_option_name );
     }
     echo '</tbody></table>';
 }

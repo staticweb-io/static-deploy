@@ -14,9 +14,9 @@ use StaticDeploy\Controller;
  */
 
 /**
- * @var string[] $logs
+ * @var string[] $static_deploy_logs
  */
-$logs = $view['logs'];
+$static_deploy_logs = $view['logs'];
 ?>
 
 <div class="wrap">
@@ -30,16 +30,16 @@ $logs = $view['logs'];
             </tr>
         </thead>
         <tbody>
-            <?php if ( ! $logs ) : ?>
+            <?php if ( ! $static_deploy_logs ) : ?>
                 <tr>
                     <td colspan="2">Logs are empty.</td>
                 </tr>
             <?php endif; ?>
 
-            <?php foreach ( $logs as $log ) : ?>
+            <?php foreach ( $static_deploy_logs as $static_deploy_log ) : ?>
                 <tr>
-                    <td><?php echo esc_html( $log->time ); ?></td>
-                    <td><?php echo esc_html( $log->log ); ?></td>
+                    <td><?php echo esc_html( $static_deploy_log->time ); ?></td>
+                    <td><?php echo esc_html( $static_deploy_log->log ); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

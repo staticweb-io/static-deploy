@@ -101,21 +101,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <?php
     natcasesort( $view['extensions'] );
-    $ar_list = $view['extensions'];
-    $rows = (int) ceil( count( $ar_list ) / 5 );
+    $static_deploy_ar_list = $view['extensions'];
+    $static_deploy_rows = (int) ceil( count( $static_deploy_ar_list ) / 5 );
 
-    if ( $rows < 1 ) {
+    if ( $static_deploy_rows < 1 ) {
         echo '<tr>';
         echo '<td>No extensions loaded.</td>';
         echo '</tr>';
     } else {
-        $lists = array_chunk( $ar_list, $rows );
+        $static_deploy_lists = array_chunk( $static_deploy_ar_list, $static_deploy_rows );
 
-        foreach ( $lists as $list ) {
+        foreach ( $static_deploy_lists as $static_deploy_list ) {
             echo '<tr>';
-            foreach ( $list as $item ) {
-                $loaded_extension = strval( $item );
-                echo '<td>', esc_html( $loaded_extension ), '</td>';
+            foreach ( $static_deploy_list as $static_deploy_item ) {
+                $static_deploy_loaded_extension = strval( $static_deploy_item );
+                echo '<td>', esc_html( $static_deploy_loaded_extension ), '</td>';
             }
             echo '</tr>';
         }
@@ -136,11 +136,11 @@ if ( ! defined( 'ABSPATH' ) ) {
         </thead>
         <tbody>
 
-            <?php foreach ( $view['options'] as $option ) : ?>
+            <?php foreach ( $view['options'] as $static_deploy_option ) : ?>
 
             <tr>
-            <td><?php echo esc_html( $option->option_spec->label ); ?></td>
-            <td><?php echo esc_html( $option->value ); ?></td>
+            <td><?php echo esc_html( $static_deploy_option->option_spec->label ); ?></td>
+            <td><?php echo esc_html( $static_deploy_option->value ); ?></td>
             </tr>
 
             <?php endforeach; ?>
@@ -160,10 +160,10 @@ if ( ! defined( 'ABSPATH' ) ) {
         <tbody>
 
             <?php
-            foreach ( $view['site_info'] as $name => $value ) : ?>
+            foreach ( $view['site_info'] as $static_deploy_name => $static_deploy_value ) : ?>
             <tr>
-            <td><?php echo esc_html( $name ); ?></td>
-            <td><?php echo esc_html( $value ); ?></td>
+            <td><?php echo esc_html( $static_deploy_name ); ?></td>
+            <td><?php echo esc_html( $static_deploy_value ); ?></td>
             </tr>
 
             <?php endforeach; ?>

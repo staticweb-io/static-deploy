@@ -16,18 +16,18 @@ use StaticDeploy\OptionRenderer;
 use StaticDeploy\Utils;
 
 /**
- * @var mixed[] $jobs
+ * @var mixed[] $static_deploy_jobs
  */
-$jobs = $view['jobs'];
+$static_deploy_jobs = $view['jobs'];
 
 /**
- * @var array<string, \StaticDeploy\OptionData> $options
+ * @var array<string, \StaticDeploy\OptionData> $static_deploy_options
  */
-$options = $view['jobOptions'];
+$static_deploy_options = $view['jobOptions'];
 
-$input = ( fn( string $name ) => OptionRenderer::echoInput( $options[ $name ] ) );
+$static_deploy_input = ( fn( string $name ) => OptionRenderer::echoInput( $static_deploy_options[ $name ] ) );
 
-$label = ( fn( string $name, bool $description = false ) => OptionRenderer::echoLabel( $options[ $name ], $description ) );
+$static_deploy_label = ( fn( string $name, bool $description = false ) => OptionRenderer::echoLabel( $static_deploy_options[ $name ], $description ) );
 ?>
 
 <div class="wrap">
@@ -55,24 +55,24 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
         <tbody>
             <tr>
                 <td style="width:33%;">
-                    <?php $label( 'queueJobOnPostSave' ); ?>
+                    <?php $static_deploy_label( 'queueJobOnPostSave' ); ?>
                 </td>
                 <td>
-                    <?php echo esc_html( $options['queueJobOnPostSave']->option_spec->description ); ?>
+                    <?php echo esc_html( $static_deploy_options['queueJobOnPostSave']->option_spec->description ); ?>
                 </td>
                 <td>
-                    <?php $input( 'queueJobOnPostSave' ); ?>
+                    <?php $static_deploy_input( 'queueJobOnPostSave' ); ?>
                 </td>
             </tr>
             <tr>
                 <td style="width:33%;">
-                    <?php $label( 'queueJobOnPostDelete' ); ?>
+                    <?php $static_deploy_label( 'queueJobOnPostDelete' ); ?>
                 </td>
                 <td>
-                    <?php echo esc_html( $options['queueJobOnPostDelete']->option_spec->description ); ?>
+                    <?php echo esc_html( $static_deploy_options['queueJobOnPostDelete']->option_spec->description ); ?>
                 </td>
                 <td>
-                    <?php $input( 'queueJobOnPostDelete' ); ?>
+                    <?php $static_deploy_input( 'queueJobOnPostDelete' ); ?>
                 </td>
             </tr>
         </tbody>
@@ -85,33 +85,33 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
         <thead>
             <tr>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueueDetection' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueueDetection' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueueCrawling' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueueCrawling' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueuePostProcessing' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueuePostProcessing' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueueDeployment' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueueDeployment' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueueDirectDeploy' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueueDirectDeploy' ); ?>
                 </td>
                 <td style="text-align:center;">
-                    <?php $label( 'autoJobQueueDirectDeployPost' ); ?>
+                    <?php $static_deploy_label( 'autoJobQueueDirectDeployPost' ); ?>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr style="text-align:center;">
-                <td><?php $input( 'autoJobQueueDetection' ); ?></td>
-                <td><?php $input( 'autoJobQueueCrawling' ); ?></td>
-                <td><?php $input( 'autoJobQueuePostProcessing' ); ?></td>
-                <td><?php $input( 'autoJobQueueDeployment' ); ?></td>
-                <td><?php $input( 'autoJobQueueDirectDeploy' ); ?></td>
-                <td><?php $input( 'autoJobQueueDirectDeployPost' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueueDetection' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueueCrawling' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueuePostProcessing' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueueDeployment' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueueDirectDeploy' ); ?></td>
+                <td><?php $static_deploy_input( 'autoJobQueueDirectDeployPost' ); ?></td>
             </tr>
         </tbody>
     </table>
@@ -122,55 +122,55 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
         <tbody>
             <tr>
                 <td style="width: 50%">
-                    <?php $label( 'processQueueInterval', true ); ?>
+                    <?php $static_deploy_label( 'processQueueInterval', true ); ?>
                     <p><i>If WP-Cron is not expected to be triggered by site visitors, you can also call `wp-cron.php` directly, run the WP-CLI command `wp static-deploy process_queue` or call the hook `<?php echo esc_html( Controller::getHookName( 'process_queue' ) ); ?>` from within your own theme or plugin.</i></p>
                 </td>
                 <td>
                     <select
                         id="processQueueInterval"
                         name="processQueueInterval"
-                        value="<?php echo (int) $options['processQueueInterval']->value; ?>"
+                        value="<?php echo (int) $static_deploy_options['processQueueInterval']->value; ?>"
                     >
                     <option
-                        <?php echo (int) $options['processQueueInterval']->value === 0 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueInterval']->value === 0 ? 'selected' : ''; ?>
                         value="0">disable (never)</option>
                     <option
-                        <?php echo (int) $options['processQueueInterval']->value === 1 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueInterval']->value === 1 ? 'selected' : ''; ?>
                         value="1">every minute</option>
                     <option
-                        <?php echo (int) $options['processQueueInterval']->value === 5 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueInterval']->value === 5 ? 'selected' : ''; ?>
                         value="5">every 5 minutes</option>
                     <option
-                        <?php echo (int) $options['processQueueInterval']->value === 10 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueInterval']->value === 10 ? 'selected' : ''; ?>
                         value="10">every 10 minutes</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%">
-                    <?php $label( 'processQueueImmediately', true ); ?>
+                    <?php $static_deploy_label( 'processQueueImmediately', true ); ?>
                 </td>
                 <td>
                     <select
                         id="processQueueImmediately"
                         name="processQueueImmediately"
-                        value="<?php echo (int) $options['processQueueImmediately']->value; ?>"
+                        value="<?php echo (int) $static_deploy_options['processQueueImmediately']->value; ?>"
                     >
                     <option
-                        <?php echo (int) $options['processQueueImmediately']->value === 0 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueImmediately']->value === 0 ? 'selected' : ''; ?>
                         value="0">disabled</option>
                     <?php
                     if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) :
                         ?>
                     <option
-                        <?php echo (int) $options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
                         value="1">enabled</option>
                     <?php else : ?>
                     <option
-                        <?php echo (int) $options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueImmediately']->value === 1 ? 'selected' : ''; ?>
                         value="1">Using wp-admin.php</option>
                     <option
-                        <?php echo (int) $options['processQueueImmediately']->value === 2 ? 'selected' : ''; ?>
+                        <?php echo (int) $static_deploy_options['processQueueImmediately']->value === 2 ? 'selected' : ''; ?>
                         value="2">Using WordPress CLI</option>
                     <?php endif; ?>
                     </select>
@@ -218,35 +218,35 @@ $label = ( fn( string $name, bool $description = false ) => OptionRenderer::echo
         </thead>
         <tbody>
             <?php
-            foreach ( $jobs as $job ) : ?>
+            foreach ( $static_deploy_jobs as $static_deploy_job ) : ?>
             <tr>
                 <td>
-                    <?php echo esc_html( $job->created_at ); ?>
-                    (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $job->created_at )->getTimestamp() ) ); ?> ago)
+                    <?php echo esc_html( $static_deploy_job->created_at ); ?>
+                    (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $static_deploy_job->created_at )->getTimestamp() ) ); ?> ago)
                 </td>
-                <td><?php echo esc_html( $job->job_type ); ?></td>
-                <td><?php echo esc_html( $job->status ); ?>
-                (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $job->status_updated_at )->getTimestamp() ) ); ?> ago)
+                <td><?php echo esc_html( $static_deploy_job->job_type ); ?></td>
+                <td><?php echo esc_html( $static_deploy_job->status ); ?>
+                (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $static_deploy_job->status_updated_at )->getTimestamp() ) ); ?> ago)
                 </td>
                 <td>
                 <?php
-                $from = Utils::wpDateTime( $job->created_at );
-                if ( $job->status === 'processing' ) {
-                    $to = Utils::wpDateTime( 'now' );
+                $static_deploy_from = Utils::wpDateTime( $static_deploy_job->created_at );
+                if ( $static_deploy_job->status === 'processing' ) {
+                    $static_deploy_to = Utils::wpDateTime( 'now' );
                 } else {
-                    $to = Utils::wpDateTime( $job->status_updated_at );
+                    $static_deploy_to = Utils::wpDateTime( $static_deploy_job->status_updated_at );
                 }
 
-                if ( $job->status !== 'waiting' ) {
-                    $interval = Utils::formatIntervalPretty( $from->diff( $to ), 2 );
-                    if ( $interval ) {
-                        echo esc_html( $interval );
+                if ( $static_deploy_job->status !== 'waiting' ) {
+                    $static_deploy_interval = Utils::formatIntervalPretty( $static_deploy_from->diff( $static_deploy_to ), 2 );
+                    if ( $static_deploy_interval ) {
+                        echo esc_html( $static_deploy_interval );
                     } else {
                         echo '1 second';
                     }
                 }
 
-                if ( $job->status === 'processing' ) {
+                if ( $static_deploy_job->status === 'processing' ) {
                     echo ' (still in progress)';
                 }
                 ?>

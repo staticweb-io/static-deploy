@@ -27,8 +27,8 @@ define( 'STATIC_DEPLOY_VERSION', '9.6.0' );
 define( 'STATIC_DEPLOY_PATH', plugin_dir_path( __FILE__ ) );
 
 if ( ! defined( 'STATIC_DEPLOY_DEBUG' ) ) {
-    $enabled = WP_DEBUG || ( defined( 'WP_CLI' ) && WP_CLI::get_config( 'debug' ) );
-    define( 'STATIC_DEPLOY_DEBUG', $enabled );
+    $static_deploy_enabled = WP_DEBUG || ( defined( 'WP_CLI' ) && WP_CLI::get_config( 'debug' ) );
+    define( 'STATIC_DEPLOY_DEBUG', $static_deploy_enabled );
 }
 
 if ( file_exists( STATIC_DEPLOY_PATH . 'vendor/autoload.php' ) ) {

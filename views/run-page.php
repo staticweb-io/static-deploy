@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 StaticDeploy\Controller::init();
 
-$run_nonce = wp_create_nonce( StaticDeploy\Controller::getHookName( 'run_page' ) );
+$static_deploy_run_nonce = wp_create_nonce( StaticDeploy\Controller::getHookName( 'run_page' ) );
 
 // Enqueue jQuery (WordPress core dependency)
 wp_enqueue_script( 'jquery' );
@@ -24,10 +24,10 @@ wp_enqueue_script(
 );
 
 // Add inline script with localized data
-$script_data = [
+$static_deploy_script_data = [
     'runAction' => StaticDeploy\Controller::getHookName( 'run' ),
     'pollLogAction' => StaticDeploy\Controller::getHookName( 'poll_log' ),
-    'nonce' => $run_nonce,
+    'nonce' => $static_deploy_run_nonce,
     'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 ];
 
@@ -44,7 +44,7 @@ wp_enqueue_script( 'static-deploy-run-page' );
 
 wp_add_inline_script(
     'static-deploy-run-page',
-    'var staticDeployRunPage = ' . wp_json_encode( $script_data ) . ';'
+    'var staticDeployRunPage = ' . wp_json_encode( $static_deploy_script_data ) . ';'
 );
 
 wp_add_inline_script(

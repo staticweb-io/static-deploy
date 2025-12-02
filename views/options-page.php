@@ -15,12 +15,12 @@ use StaticDeploy\OptionRenderer;
  */
 
 /**
- * @var array<string, \StaticDeploy\OptionData> $options
+ * @var array<string, \StaticDeploy\OptionData> $static_deploy_options
  */
-$options = $view['options'];
+$static_deploy_options = $view['options'];
 
-$row = function ( $option_name ) use ( $options ): void {
-    $option_data = $options[ $option_name ];
+$static_deploy_row = function ( $option_name ) use ( $static_deploy_options ): void {
+    $option_data = $static_deploy_options[ $option_name ];
     echo '<tr><td style="width: 50%">';
     OptionRenderer::echoLabel( $option_data, true );
     echo '</td><td>';
@@ -49,10 +49,10 @@ $row = function ( $option_name ) use ( $options ): void {
             </tr>
         </thead>
         <tbody>
-            <?php $row( 'detectCustomPostTypes' ); ?>
-            <?php $row( 'detectPages' ); ?>
-            <?php $row( 'detectPosts' ); ?>
-            <?php $row( 'detectUploads' ); ?>
+            <?php $static_deploy_row( 'detectCustomPostTypes' ); ?>
+            <?php $static_deploy_row( 'detectPages' ); ?>
+            <?php $static_deploy_row( 'detectPosts' ); ?>
+            <?php $static_deploy_row( 'detectUploads' ); ?>
         </tbody>
     </table>
 
@@ -60,8 +60,8 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'basicAuthUser' ); ?>
-            <?php $row( 'basicAuthPassword' ); ?>
+            <?php $static_deploy_row( 'basicAuthUser' ); ?>
+            <?php $static_deploy_row( 'basicAuthPassword' ); ?>
         </tbody>
     </table>
 
@@ -69,7 +69,7 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'deploymentURL' ); ?>
+            <?php $static_deploy_row( 'deploymentURL' ); ?>
         </tbody>
     </table>
 
@@ -77,10 +77,10 @@ $row = function ( $option_name ) use ( $options ): void {
 
     <table class="widefat striped">
         <tbody>
-            <?php $row( 'completionEmail' ); ?>
+            <?php $static_deploy_row( 'completionEmail' ); ?>
             <tr>
                 <td style="width:50%;">
-                    <?php OptionRenderer::echoLabel( $options['completionWebhook'] ); ?>
+                    <?php OptionRenderer::echoLabel( $static_deploy_options['completionWebhook'] ); ?>
                 </td>
                 <td>
                     <input
@@ -88,7 +88,7 @@ $row = function ( $option_name ) use ( $options ): void {
                         type="url"
                         id="completionWebhook"
                         name="completionWebhook"
-                        value="<?php echo $options['completionWebhook']->value !== '' ? esc_attr( $options['completionWebhook']->value ) : ''; ?>"
+                        value="<?php echo $static_deploy_options['completionWebhook']->value !== '' ? esc_attr( $static_deploy_options['completionWebhook']->value ) : ''; ?>"
                     />
 
                     <select
@@ -97,11 +97,11 @@ $row = function ( $option_name ) use ( $options ): void {
                         >
                         <option
                             value="POST"
-                            <?php echo $options['completionWebhookMethod']->value === 'POST' ? 'selected' : ''; ?>
+                            <?php echo $static_deploy_options['completionWebhookMethod']->value === 'POST' ? 'selected' : ''; ?>
                             >POST</option>
                         <option
                             value="GET"
-                            <?php echo $options['completionWebhookMethod']->value === 'GET' ? 'selected' : ''; ?>
+                            <?php echo $static_deploy_options['completionWebhookMethod']->value === 'GET' ? 'selected' : ''; ?>
                             >GET</option>
                     </select>
                 </td>

@@ -15,39 +15,39 @@ use StaticDeploy\URLHelper;
  */
 
 /**
- * @var string $paginator_index
+ * @var string $static_deploy_paginator_index
  */
-$paginator_index = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_URL );
+$static_deploy_paginator_index = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_URL );
 
 /**
- * @var int $paginator_page
+ * @var int $static_deploy_paginator_page
  */
-$paginator_page = $view['paginatorPage'];
+$static_deploy_paginator_page = $view['paginatorPage'];
 
 /**
- * @var string $search_term
+ * @var string $static_deploy_search_term
  */
-$search_term = filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) ?? '';
+$static_deploy_search_term = filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) ?? '';
 
 /**
- * @var int $paginator_total_records
+ * @var int $static_deploy_paginator_total_records
  */
-$paginator_total_records = $view['paginatorTotalRecords'];
+$static_deploy_paginator_total_records = $view['paginatorTotalRecords'];
 
 /**
- * @var int $paginator_first_page
+ * @var int $static_deploy_paginator_first_page
  */
-$paginator_first_page = $view['paginatorFirstPage'];
+$static_deploy_paginator_first_page = $view['paginatorFirstPage'];
 
 /**
- * @var int $paginator_last_page
+ * @var int $static_deploy_paginator_last_page
  */
-$paginator_last_page = $view['paginatorLastPage'];
+$static_deploy_paginator_last_page = $view['paginatorLastPage'];
 
-$uri = URLHelper::getCurrent();
+$static_deploy_uri = URLHelper::getCurrent();
 if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
-    $nonce = wp_create_nonce( Controller::getHookName( 'caches_page' ) );
-    $uri = URLHelper::modifyUrl( [ '_wpnonce' => $nonce ], $uri );
+    $static_deploy_nonce = wp_create_nonce( Controller::getHookName( 'caches_page' ) );
+    $static_deploy_uri = URLHelper::modifyUrl( [ '_wpnonce' => $static_deploy_nonce ], $static_deploy_uri );
 }
 
 ?>
@@ -56,12 +56,12 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
     <br>
 
     <form id="posts-filter" method="GET">
-        <input type="hidden" name="page" value="<?php echo esc_attr( $paginator_index ); ?>" />
-        <input type="hidden" name="paged" value="<?php echo (int) $paginator_page; ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr( $static_deploy_paginator_index ); ?>" />
+        <input type="hidden" name="paged" value="<?php echo (int) $static_deploy_paginator_page; ?>" />
 
         <p class="search-box">
             <label class="screen-reader-text" for="post-search-input">Search <?php echo esc_html( $view['title'] ); ?>:</label>
-            <input type="search" id="post-search-input" name="s" value="<?php echo esc_attr( $search_term ); ?>">
+            <input type="search" id="post-search-input" name="s" value="<?php echo esc_attr( $static_deploy_search_term ); ?>">
             <input type="submit" id="search-submit" class="button" value="Search">
         </p>
 
@@ -78,28 +78,28 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
             <!-- start Paginator template partial -->
             <h2 class="screen-reader-text"><?php echo esc_html( $view['title'] ); ?> list navigation</h2>
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php echo number_format( $paginator_total_records ); ?> items</span>
+                <span class="displaying-num"><?php echo number_format( $static_deploy_paginator_total_records ); ?> items</span>
                 <span class="pagination-links">
-                    <?php if ( $paginator_page === $paginator_first_page ) : ?>
+                    <?php if ( $static_deploy_paginator_page === $static_deploy_paginator_first_page ) : ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
                     <?php else : ?>
-                        <a class="first-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => 1 ], $uri ) ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
-                        <a class="prev-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page - 1 ], $uri ) ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
+                        <a class="first-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => 1 ], $static_deploy_uri ) ); ?>"><span class="screen-reader-text">First page</span><span aria-hidden="true">«</span></a>
+                        <a class="prev-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $static_deploy_paginator_page - 1 ], $static_deploy_uri ) ); ?>"><span class="screen-reader-text">Previous page</span><span aria-hidden="true">‹</span></a>
                     <?php endif; ?>
                     <span class="paging-input">
                         <label for="current-page-selector" class="screen-reader-text">Current Page</label>
-                        <input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo (int) $paginator_page; ?>" size="3" aria-describedby="table-paging">
+                        <input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo (int) $static_deploy_paginator_page; ?>" size="3" aria-describedby="table-paging">
                         <span class="tablenav-paging-text"> of
-                            <span class="total-pages"><?php echo (int) $paginator_last_page; ?></span>
+                            <span class="total-pages"><?php echo (int) $static_deploy_paginator_last_page; ?></span>
                         </span>
                     </span>
-                    <?php if ( $paginator_page === $paginator_last_page ) : ?>
+                    <?php if ( $static_deploy_paginator_page === $static_deploy_paginator_last_page ) : ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">›</span>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">»</span>
                     <?php else : ?>
-                        <a class="next-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_page + 1 ], $uri ) ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
-                        <a class="last-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $paginator_last_page ], $uri ) ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
+                        <a class="next-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $static_deploy_paginator_page + 1 ], $static_deploy_uri ) ); ?>"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="<?php echo esc_url( URLHelper::modifyUrl( [ 'paged' => $static_deploy_paginator_last_page ], $static_deploy_uri ) ); ?>"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a>
                     <?php endif; ?>
                 </span>
             </div>
@@ -115,8 +115,8 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
                         <input id="cb-select-all-1" type="checkbox">
                     </td>
                     <?php
-                    foreach ( $view['colHeadings'] as $col_heading ) {
-                        echo '<th>' . esc_html( $col_heading ) . '</th>';
+                    foreach ( $view['colHeadings'] as $static_deploy_col_heading ) {
+                        echo '<th>' . esc_html( $static_deploy_col_heading ) . '</th>';
                     }
                     ?>
                 </tr>
@@ -129,24 +129,24 @@ if ( defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) && STATIC_DEPLOY_WP_ORG_MODE ) {
                 <?php endif; ?>
 
                 <?php
-                foreach ( $view['paginatorRecords'] as $paginator_id => $record ) :
+                foreach ( $view['paginatorRecords'] as $static_deploy_paginator_id => $static_deploy_record ) :
                     // Plugin Check Plugin forces us to repeatedly escape
                     // the same values.
                     ?>
                         <tr>
                             <th scope="row" class="check-column">
-                                <label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $paginator_id ); ?>">
-                                    Select <?php echo esc_html( $record[0] ); ?>
+                                <label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $static_deploy_paginator_id ); ?>">
+                                    Select <?php echo esc_html( $static_deploy_record[0] ); ?>
                                 </label>
-                                <input id="cb-select-<?php echo esc_attr( $paginator_id ); ?>" type="checkbox" name="id[]" value="<?php echo esc_attr( $paginator_id ); ?>">
+                                <input id="cb-select-<?php echo esc_attr( $static_deploy_paginator_id ); ?>" type="checkbox" name="id[]" value="<?php echo esc_attr( $static_deploy_paginator_id ); ?>">
                                 <div class="locked-indicator">
                                     <span class="locked-indicator-icon" aria-hidden="true"></span>
-                                    <span class="screen-reader-text"><?php echo esc_html( $record->path ); ?></span>
+                                    <span class="screen-reader-text"><?php echo esc_html( $static_deploy_record->path ); ?></span>
                                 </div>
                             </th>
                             <?php
-                            foreach ( $record as $v ) {
-                                echo '<td>' . esc_html( $v ) . '</td>';
+                            foreach ( $static_deploy_record as $static_deploy_v ) {
+                                echo '<td>' . esc_html( $static_deploy_v ) . '</td>';
                             }
                             ?>
                         </tr>

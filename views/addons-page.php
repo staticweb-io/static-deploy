@@ -14,9 +14,9 @@ use StaticDeploy\Controller;
  */
 
 /**
- * @var mixed[] $addons
+ * @var mixed[] $static_deploy_addons
  */
-$addons = $view['addons'];
+$static_deploy_addons = $view['addons'];
 ?>
 
 <div class="wrap">
@@ -33,14 +33,14 @@ $addons = $view['addons'];
             </tr>
         </thead>
         <tbody>
-            <?php if ( ! $addons ) : ?>
+            <?php if ( ! $static_deploy_addons ) : ?>
                 <tr>
                     <td colspan="4">No addons are installed.</td>
                 </tr>
             <?php endif; ?>
 
 
-            <?php foreach ( $addons as $addon ) : ?>
+            <?php foreach ( $static_deploy_addons as $static_deploy_addon ) : ?>
                 <tr>
                     <td>
                         <form
@@ -50,11 +50,11 @@ $addons = $view['addons'];
 
                         <?php wp_nonce_field( strval( $view['nonce_action'] ) ); ?>
                         <input name="action" type="hidden" value="<?php echo esc_attr( Controller::getHookName( 'toggle_addon' ) ); ?>" />
-                        <input name="addon_slug" type="hidden" value="<?php echo esc_attr( $addon->slug ); ?>" />
+                        <input name="addon_slug" type="hidden" value="<?php echo esc_attr( $static_deploy_addon->slug ); ?>" />
 
                         <button>
                         <?php
-                        if ( $addon->enabled ) {
+                        if ( $static_deploy_addon->enabled ) {
                             echo 'Enabled';
                         } else {
                             echo 'Disabled';
@@ -66,16 +66,16 @@ $addons = $view['addons'];
 
                     </td>
                     <td>
-                        <?php echo esc_html( $addon->name ); ?>
+                        <?php echo esc_html( $static_deploy_addon->name ); ?>
                         <br>
-                        <?php echo esc_html( $addon->description ); ?>
+                        <?php echo esc_html( $static_deploy_addon->description ); ?>
                     </td>
-                    <td><?php echo esc_html( $addon->type ); ?></td>
+                    <td><?php echo esc_html( $static_deploy_addon->type ); ?></td>
                     <td>
-                        <a href="<?php echo esc_url( $addon->docs_url ); ?>"><span class="dashicons dashicons-book-alt"></span></a>
+                        <a href="<?php echo esc_url( $static_deploy_addon->docs_url ); ?>"><span class="dashicons dashicons-book-alt"></span></a>
                     </td>
                     <td>
-                        <a href="<?php echo esc_url( admin_url( "admin.php?page={$addon->slug}" ) ); ?>"><span class="dashicons dashicons-admin-generic"></span></a>
+                        <a href="<?php echo esc_url( admin_url( "admin.php?page={$static_deploy_addon->slug}" ) ); ?>"><span class="dashicons dashicons-admin-generic"></span></a>
                     </td>
 
                 </tr>
