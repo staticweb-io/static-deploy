@@ -5,6 +5,7 @@ require_once __DIR__ . '/util/rector/RemoveAlwaysTrueIfConditionRector2.php';
 require_once __DIR__ . '/util/rector/ReduceKnownBooleanAnd.php';
 require_once __DIR__ . '/util/rector/ReduceKnownBooleanOr.php';
 require_once __DIR__ . '/util/rector/ReplaceKnownDefinedWithBooleanRector.php';
+require_once __DIR__ . '/util/rector/ReplaceControllerGetHookNameRector.php';
 
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
@@ -19,6 +20,7 @@ use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Set\ValueObject\SetList;
 use StaticDeploy\Rector\ReduceKnownBooleanAnd;
 use StaticDeploy\Rector\ReduceKnownBooleanOr;
+use StaticDeploy\Rector\ReplaceControllerGetHookNameRector;
 
 // Search rules at https://getrector.com/find-rule
 
@@ -44,6 +46,7 @@ return RectorConfig::configure()
             ReduceKnownBooleanAnd::class,
             ReduceKnownBooleanOr::class,
             ReplaceKnownDefinedWithBooleanRector::class,
+            ReplaceControllerGetHookNameRector::class,
         ]
     )
     ->withSets(

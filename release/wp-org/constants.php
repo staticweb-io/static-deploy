@@ -19,6 +19,8 @@ define( 'STATIC_DEPLOY_DIRECT_FILE_ACCESS', false );
 // This is required to pass Plugin Check Plugin
 define( 'STATIC_DEPLOY_ESCAPE_EXCEPTIONS', true );
 
+define( 'STATIC_DEPLOY_HOOK_NAME_PREFIX', 'static_deploy_' );
+
 // Force the use of functions that wordpress.org requires
 // but we would not use when we aren't forced to.
 // e.g. using wp_rand instead of mt_rand in a context
