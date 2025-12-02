@@ -57,8 +57,7 @@ final class ReplaceControllerGetHookNameRector extends AbstractRector {
         $class_name = $this->getName( $node->class );
 
         // Handle explicit Controller references
-        $is_controller = $class_name === 'Controller'
-            || $class_name === 'StaticDeploy\Controller';
+        $is_controller = $class_name === 'StaticDeploy\Controller';
 
         // Handle self:: references - check if we're inside the Controller class
         $is_self_in_controller = false;
