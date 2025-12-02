@@ -2,7 +2,7 @@
   description = "Static Deploy plugin for WordPress";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -34,7 +34,7 @@
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-UWI9kCQKg+QQcETl15VUOS5RwtCszDaUwyLO/OSKJUA=";
+          vendorHash = "sha256-5ivIzoOkC1Ptgk13UTNbbIdvBAU+2bmcKYlRyJZIb5w=";
         });
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
