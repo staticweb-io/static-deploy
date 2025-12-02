@@ -95,6 +95,11 @@ _test-integration-live:
 # Run tests against a live dev server
 test-live: _test-integration-live _test-aws
 
+# Test against github:staticweb-io/wordpress-flake#prerelease
+test-wordpress-prerelease:
+    @echo "Testing WordPress prerelease version" "$(nix build github:staticweb-io/wordpress-flake#prerelease --print-out-paths | sed 's/^[^-]*-[^-]*-//')"
+    WORDPRESS_PACKAGE=prerelease nix flake check --impure ./dev
+
 _update-composer-deps: && update-hashes
     composer update
 
