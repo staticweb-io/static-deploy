@@ -236,14 +236,6 @@
                   }
                 '';
                 STATIC_DEPLOY_PAGE_CACHE_DEFAULT_CACHE_CONTROL = "max-age=6";
-
-                # WordPress defines this differently than everything else
-                memcached_servers = WPConfigFormat.lib.mkInline ''
-                  global $memcached_servers;
-                  $memcached_servers = [
-                      'default' => [ '127.0.0.1', '${toString memcachedConfig.port}' ],
-                  ];
-                '';
               };
             };
           wpPluginCheck = fetchurl {
