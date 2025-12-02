@@ -3,6 +3,6 @@
   "version": "9.6.0",
   "download_url": "https://github.com/staticweb-io/static-deploy/releases/download/v9.6.0/plugin.zip",
   "requires": "6.4",
-  "tested": "6.8",
+  "tested": "6.9",
   "last_updated": "2025-11-05 11:08:44 -0600"
 }
