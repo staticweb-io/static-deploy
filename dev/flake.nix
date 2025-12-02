@@ -1,5 +1,6 @@
 {
   inputs = {
+    nixos2505.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
@@ -104,8 +105,10 @@
           ...
         }:
         let
+          nixpkgs2505 = import inputs.nixos2505 { inherit system; };
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
           phpPackage = getEnv "PHP_PACKAGE" "php";
+          phpExtensionsName = phpPackage + "Extensions";
           staticDeployPackage = getEnv "STATIC_DEPLOY_PACKAGE" "pluginWpOrg";
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
           staticDeployLib = inputs.static-deploy.lib.${system};
@@ -118,32 +121,37 @@
             opcache.jit_buffer_size = 8M
             upload_max_filesize=1024M
           '';
-          overlay =
-            self: super:
-            let
-              php = super.${phpPackage}.buildEnv {
-                extraConfig = phpOptions;
-                extensions =
-                  { enabled, all }:
-                  enabled
-                  ++ (with all; [
-                    apcu
-                    imagick
-                    memcached
-                  ]);
-              };
-              phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
-                cat ${php}/etc/php.ini > $out
-              '';
-              wp-cli = super.wp-cli.override { phpIniFile = phpIniFile; };
-            in
-            {
-              inherit php wp-cli;
+          phpExtensionsFn =
+            { enabled, all }:
+            enabled
+            ++ (with all; [
+              apcu
+              imagick
+              memcached
+            ]);
+          otherPhpVersionsOverlay = self: super: {
+            php81 = nixpkgs2505.php81;
+            php81Extensions = nixpkgs2505.php81Extensions;
+            php81Packages = nixpkgs2505.php81Packages;
+          };
+          overlay = self: super: {
+            php = super.${phpPackage}.buildEnv {
+              extraConfig = phpOptions;
+              extensions = phpExtensionsFn;
             };
+            phpIniFile = pkgs.runCommand "php.ini" { preferLocalBuild = true; } ''
+              cat ${self.php}/etc/php.ini > $out
+            '';
+            wp-cli = super.wp-cli.override { phpIniFile = self.phpIniFile; };
+          };
           finalPkgs = import pkgs.path {
             inherit (pkgs) system;
-            overlays = [ overlay ];
+            overlays = [
+              otherPhpVersionsOverlay
+              overlay
+            ];
           };
+          phpExtensions = finalPkgs.${phpExtensionsName};
         in
         with finalPkgs;
         let
