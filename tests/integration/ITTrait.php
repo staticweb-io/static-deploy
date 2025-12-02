@@ -11,7 +11,15 @@ trait ITTrait {
         foreach ( json_decode( (string) $plugins, true ) as $plugin ) {
             if ( $plugin['name'] !== 'staticweb-deploy' && $plugin['status'] !== 'dropin' ) {
                 $this->wpCli( [ 'plugin', 'deactivate', $plugin['name'] ] );
-                $this->wpCli( [ 'plugin', 'uninstall', $plugin['name'] ] );
+                $this->wpCli(
+                    [
+                        'plugin',
+                        'uninstall',
+                        $plugin['name'],
+                        '--deactivate',
+                        '--skip-delete',
+                    ]
+                );
             }
         }
 
