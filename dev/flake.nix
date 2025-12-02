@@ -101,11 +101,11 @@
           pkgs,
           config,
           lib,
-          system,
           ...
         }:
         let
-          nixpkgs2505 = import inputs.nixos2505 { inherit system; };
+          system = pkgs.stdenv.hostPlatform.system;
+          nixpkgs2505 = import inputs.nixos2505 { };
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
           phpPackage = getEnv "PHP_PACKAGE" "php";
           phpExtensionsName = phpPackage + "Extensions";
