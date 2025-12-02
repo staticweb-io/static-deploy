@@ -52,9 +52,9 @@ _phpcs:
     php ./vendor/bin/phpcs -d memory_limit=512M -s --standard=./phpcs.xml --extensions=php src tests views *.php
 
 # Run rector code transformations
-rector: && _phpcbf
+rector *args: && _phpcbf
     # We sometimes get errors running without --debug
-    php ./vendor/bin/rector --debug
+    php ./vendor/bin/rector --debug {{ args }}
 
 # Checkout WordPress.org subversion repo
 svn-checkout:
