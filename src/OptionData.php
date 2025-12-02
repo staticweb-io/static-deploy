@@ -102,6 +102,9 @@ final class OptionData {
         }
 
         $value = apply_filters(
+            // Ignore dynamic hook name rule because the prefixing is handled
+            // automatically by OptionSpec.
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             $this->option_spec->filter_name,
             $value
         );
