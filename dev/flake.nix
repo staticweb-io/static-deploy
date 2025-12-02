@@ -8,10 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:john-shaffer/hyperfine-flake";
     };
-    microvm = {
-      url = "github:microvm-nix/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake = {
@@ -52,45 +48,6 @@
         opcache.jit_buffer_size = 8M
         upload_max_filesize=1024M
       '';
-      nixosModules = {
-        wordpress-server = {
-          security.sudo.extraRules = [
-            {
-              users = [ "www" ];
-              commands = [
-                {
-                  command = "ALL";
-                  options = [ "NOPASSWD" ];
-                }
-              ];
-            }
-          ];
-          services.memcached = memcachedConfig;
-          services.mysql = mysqlConfig;
-          # Create the home dir on the volume
-          systemd.tmpfiles.rules = [ "d /home/www 0755 www www -" ];
-          users.users.nginx = {
-            extraGroups = [ "www" ];
-          };
-          users.users.php = {
-            extraGroups = [ "www" ];
-            isSystemUser = true;
-            group = "php";
-          };
-          users.users.www = {
-            extraGroups = [
-              "network"
-              "wheel"
-            ];
-            group = "www";
-            home = "/home/www";
-            isNormalUser = true;
-            password = "";
-          };
-          users.groups.php = { };
-          users.groups.www = { };
-        };
-      };
     in
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
@@ -264,82 +221,6 @@
                 wp plugin install --activate ${wpPluginCheck}
               '';
             };
-          wordpress-firecracker = inputs.nixpkgs.lib.nixosSystem {
-            inherit system;
-            pkgs = finalPkgs;
-            modules = with finalPkgs; [
-              inputs.microvm.nixosModules.microvm
-              nixosModules.wordpress-server
-              ./services/wordpress-installer.nix
-              (
-                { config, ... }:
-                {
-                  environment.systemPackages = [
-                    mariadb
-                    memcached
-                    nginx
-                    php
-                    vim
-                    wp-cli
-                  ];
-                  services.mysql.package = mariadb;
-                  services.nginx = {
-                    enable = true;
-                    httpConfig = nginxHttpConfig "/home/www/wordpress" config.services.phpfpm.pools.default.socket;
-                    port = serverPort;
-                  };
-                  services.phpfpm = {
-                    pools = {
-                      default = {
-                        settings = {
-                          "catch_workers_output" = "yes";
-                          "listen.owner" = config.services.nginx.user;
-                          "php_admin_value[error_log]" = "stderr";
-                          "php_admin_flag[log_errors]" = true;
-                          "pm" = "ondemand";
-                          "pm.max_children" = "5";
-                        };
-                        group = "php";
-                        user = "php";
-                      };
-                    };
-                    phpOptions = phpOptions;
-                  };
-                  services.wordpress-installer = {
-                    enable = true;
-                    package = (wpInstaller "localhost" "www" "/home/www/wordpress");
-                    user = "www";
-                  };
-                  systemd.services.nginx.serviceConfig.ProtectHome = false;
-                  systemd.services.phpfpm-default.serviceConfig.ProtectHome = lib.mkForce false;
-                  systemd.services.wordpress-installer = {
-                    after = [ "mysql.service" ];
-                    wants = [ "mysql.service" ];
-                  };
-                }
-              )
-              {
-                networking.hostName = "wordpress-firecracker";
-                users.users.root.password = "";
-                microvm = {
-                  hypervisor = "firecracker";
-                  socket = "control.socket";
-                  volumes = [
-                    {
-                      mountPoint = "/home";
-                      image = "home.img";
-                      size = 8096;
-                    }
-                    {
-                      mountPoint = "/var";
-                      image = "var.img";
-                      size = 8096;
-                    }
-                  ];
-                };
-              }
-            ];
-          };
           localstackImage = "docker.io/localstack/localstack:4.9.2";
         in
         with finalPkgs;
@@ -452,7 +333,6 @@
               inputs.hyperfine-flake.packages.${system}.scripts
               jq
               just
-              inputs.microvm.packages.${system}.microvm
               nixfmt-rfc-style
               omnix
               parallel
@@ -466,13 +346,6 @@
             ];
             inputsFrom = [ config.process-compose."default".services.outputs.devShell ];
           };
-          packages = {
-            #wordpress-firecracker =
-            #  wordpress-firecracker.config.microvm.declaredRunner;
-          };
         };
-    }
-    // {
-      inherit nixosModules;
     };
 }
