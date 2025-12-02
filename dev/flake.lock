@@ -133,6 +133,22 @@
         "type": "github"
       }
     },
+    "nixos2505": {
+      "locked": {
+        "lastModified": 1764560356,
+        "narHash": "sha256-M5aFEFPppI4UhdOxwdmceJ9bDJC4T6C6CzCK1E2FZyo=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "6c8f0cca84510cc79e09ea99a299c9bc17d03cb6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-25.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1764522689,
@@ -200,6 +216,7 @@
         "flake-parts": "flake-parts",
         "hyperfine-flake": "hyperfine-flake",
         "microvm": "microvm",
+        "nixos2505": "nixos2505",
         "nixpkgs": "nixpkgs",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",

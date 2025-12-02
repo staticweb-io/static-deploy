@@ -117,12 +117,6 @@
             opcache.jit = 1255
             opcache.jit_buffer_size = 8M
             upload_max_filesize=1024M
-            xdebug.mode=trace
-            xdebug.output_dir=/tmp/xd
-            xdebug.start_with_request=trigger
-            xdebug.trace_format=3
-            xdebug.trace_output_name = xdebug.trace.%t.%s
-            xdebug.trigger_value = "e5c2217a39ff4e9ad4c5f99243bb47de68ee112aa685f79264686b202591ec80"
           '';
           overlay =
             self: super:
