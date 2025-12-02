@@ -1,8 +1,12 @@
 ## Unreleased
 
+## 9.7.0 (2025-12-02)
+
 - Don't load plugin code unless in the CLI or an admin.
   This should provide a small speed boost for non-admin
   users.
+- Internal code changes to satisfy wordpress.org policies.
+  This should not affect behavior.
 
 ## 9.6.0 (2025-11-05)
 
