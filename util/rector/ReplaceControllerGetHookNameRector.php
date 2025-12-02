@@ -44,17 +44,36 @@ final class ReplaceControllerGetHookNameRector extends AbstractRector {
             return null;
         }
 
-        // Check if this is a static call to Controller::getHookName
+        // Check if this is a static call to getHookName
+        if ( ! $this->isName( $node->name, 'getHookName' ) ) {
+            return null;
+        }
+
+        // Check if this is a static call to Controller::getHookName or self::getHookName
         if ( ! $node->class instanceof Name ) {
             return null;
         }
 
         $class_name = $this->getName( $node->class );
-        if ( $class_name !== 'Controller' && $class_name !== 'StaticDeploy\Controller' ) {
-            return null;
+
+        // Handle explicit Controller references
+        $is_controller = $class_name === 'Controller'
+            || $class_name === 'StaticDeploy\Controller';
+
+        // Handle self:: references - check if we're inside the Controller class
+        $is_self_in_controller = false;
+        if ( $class_name === 'self' ) {
+            $scope = $node->getAttribute( 'scope' );
+            if ( $scope !== null ) {
+                $class_reflection = $scope->getClassReflection();
+                if ( $class_reflection !== null ) {
+                    $current_class         = $class_reflection->getName();
+                    $is_self_in_controller = $current_class === 'StaticDeploy\Controller';
+                }
+            }
         }
 
-        if ( ! $this->isName( $node->name, 'getHookName' ) ) {
+        if ( ! $is_controller && ! $is_self_in_controller ) {
             return null;
         }
 
