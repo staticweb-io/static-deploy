@@ -3,7 +3,7 @@ Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 9.7.0
+Stable tag: 9.7.1
 Requires PHP: 8.1
 License: Unlicense
 License URI: https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
@@ -34,6 +34,9 @@ This dramatically reduces the attack surface of your website and makes expensive
 
 Full changelog available at https://github.com/staticweb-io/static-deploy/blob/develop/CHANGELOG.md
 
+= 9.7.1 =
+Security update for CVE-2025-14761.
+
 = 9.7.0 =
 Don't load plugin code unless in the CLI or an admin.
 This should provide a small speed boost for non-admin
@@ -46,6 +49,9 @@ Prune unused AWS dependencies.
 Initial submission to WordPress.org.
 
 == Upgrade Notice ==
+
+= 9.7.1 =
+Security update.
 
 = 9.7.0 =
 Minor speed improvements.

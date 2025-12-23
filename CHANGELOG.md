@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 9.7.1 (2025-12-23)
+
+- Update dependencies to fix CVE-2025-14761.
+  This CVE is unlikely to affect any users of the plugin
+  because the affected functionality is not used,
+  but it can still get flagged by automated checks.
+
 ## 9.7.0 (2025-12-02)
 
 - Don't load plugin code unless in the CLI or an admin.
