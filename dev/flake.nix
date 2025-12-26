@@ -68,7 +68,6 @@
           phpExtensionsName = phpPackage + "Extensions";
           staticDeployPackage = getEnv "STATIC_DEPLOY_PACKAGE" "pluginWpOrg";
           wordpressPackage = getEnv "WORDPRESS_PACKAGE" "default";
-          staticDeployLib = inputs.static-deploy.lib.${system};
           staticDeployPkgs = inputs.static-deploy.packages.${system};
           staticDeploy = staticDeployPkgs.${staticDeployPackage};
           # Note that /tmp/xd has to be created to receive traces
@@ -306,7 +305,7 @@
                       mkdir -p "$TMPDIR"
                       echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${toString dbPort}" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
                       cp -r --no-preserve=mode ${staticDeployPkgs.composerVendor}/. .
-                      cp -r ${staticDeployLib.staticDeploySrc}/. .
+                      cp -r ${staticDeployPkgs.pluginDevSrc}/. .
                       composer dump-autoload
                       WORDPRESS_DIR="$(realpath ./data/wordpress1)"
                       export WORDPRESS_DIR

@@ -145,10 +145,10 @@
       in
       {
         checks = { inherit staticDeployCheck; };
-        lib = { inherit staticDeploySrc; };
         packages = {
           inherit composerVendor staticDeploy;
           plugin = staticDeploy;
+          pluginDevSrc = staticDeploySrc;
           pluginGitHubSrc = staticDeployGitHubSrc;
           pluginWpOrg = staticDeployWpOrg;
           pluginWpOrgSrc = staticDeployWpOrgSrc;
