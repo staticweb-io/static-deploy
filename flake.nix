@@ -97,6 +97,7 @@
         staticDeployWpOrgSrc = buildStaticDeploySrc "${releaseExtras}/release/wp-org/constants.php" ''
           composer remove yahnis-elsts/plugin-update-checker --minimal-changes --no-cache
           sed -i '/^use YahnisElsts\\PluginUpdateChecker/d' src/WordPressAdmin.php
+          just rector -c rector-downgrade.php
         '';
         staticDeployGitHubSrc = buildStaticDeploySrc "${releaseExtras}/release/github/constants.php" "";
         pluginZip =
