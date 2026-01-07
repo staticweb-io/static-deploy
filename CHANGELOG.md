@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 9.8.0 (2026-01-07)
+
+- Require PHP 8.2 or later.
+
 ## 9.7.1 (2025-12-23)
 
 - Update dependencies to fix CVE-2025-14761.
