@@ -9,37 +9,37 @@ declare(strict_types=1);
 
 namespace StaticDeploy;
 
-final class OptionSpec {
+final readonly class OptionSpec {
 
-    public readonly string $name;
+    public string $name;
 
-    public readonly string $default_value;
+    public string $default_value;
 
-    public readonly ?array $allowed_values;
+    public ?array $allowed_values;
 
-    public readonly string $filter_name;
+    public string $filter_name;
 
-    public readonly string $input_type;
+    public string $input_type;
 
     public function __construct(
-        public readonly string $type,
+        public string $type,
         string $name,
         string $default_value,
-        public readonly string $label,
-        public readonly string $description,
-        public readonly ?string $default_blob_value = null,
+        public string $label,
+        public string $description,
+        public ?string $default_blob_value = null,
         ?string $filter_name = null,
         ?array $allowed_values = null,
         ?string $input_type = null,
-        public readonly ?int $min_value = null,
+        public ?int $min_value = null,
         /**
          * Used to import from WP2Static options
          */
-        public readonly ?string $wp2static_name = null,
+        public ?string $wp2static_name = null,
         /**
          * Used to import from WP2Static options
          */
-        public readonly ?string $wp2static_table = null,
+        public ?string $wp2static_table = null,
     ) {
         if ( $allowed_values !== null && ! in_array( $default_value, $allowed_values, true ) ) {
             $msg = "Default value {$default_value} not in allowed values for option {$name}";

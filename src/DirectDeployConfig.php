@@ -2,11 +2,11 @@
 
 namespace StaticDeploy;
 
-final class DirectDeployConfig {
+final readonly class DirectDeployConfig {
 
     public function __construct(
-        public readonly ?CrawlConfig $crawl_config = new CrawlConfig(),
-        public readonly bool $do_detect = true,
+        public ?CrawlConfig $crawl_config = new CrawlConfig(),
+        public bool $do_detect = true,
     ) {}
 
     public function toArray(): array

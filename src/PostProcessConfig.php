@@ -2,15 +2,15 @@
 
 namespace StaticDeploy;
 
-final class PostProcessConfig {
+final readonly class PostProcessConfig {
 
-    public readonly ?string $destination_url;
+    public ?string $destination_url;
 
-    public readonly ?array $hosts_to_rewrite;
+    public ?array $hosts_to_rewrite;
 
-    public readonly ?array $replacement_patterns;
+    public ?array $replacement_patterns;
 
-    public readonly ?string $site_url;
+    public ?string $site_url;
 
     public function __construct() {
         if ( Options::getValue( 'skipURLRewrite' ) === '1' ) {

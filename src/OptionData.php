@@ -10,22 +10,22 @@ declare(strict_types=1);
 
 namespace StaticDeploy;
 
-final class OptionData {
+final readonly class OptionData {
     public const CACHE_GROUP = 'static_deploy_option_data';
 
     // It's very cheap to fetch options, so there is no point
     // caching them for long.
     public const CACHE_TTL_SEC = 300;
 
-    public readonly ?string $blob_value;
+    public ?string $blob_value;
 
-    public readonly OptionSpec $option_spec;
+    public OptionSpec $option_spec;
 
-    public readonly ?string $unfiltered_blob_value;
+    public ?string $unfiltered_blob_value;
 
-    public readonly string $unfiltered_value;
+    public string $unfiltered_value;
 
-    public readonly string $value;
+    public string $value;
 
     public function __construct(
         OptionSpec $option_spec,
