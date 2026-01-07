@@ -9,6 +9,10 @@
 
 namespace StaticDeploy;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 class WordPressAdmin {

@@ -2,6 +2,10 @@
 
 namespace StaticDeploy;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /*
  * Trait for controllers that manage a set of options
  * and an options page.

@@ -2,6 +2,10 @@
 
 namespace StaticDeploy;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 trait DeployerTrait {
     public static function registerHooks(): void {
         add_filter(

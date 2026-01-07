@@ -2,6 +2,10 @@
 
 namespace StaticDeploy;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 use Aws\Exception\AwsException;
 
 class AdminBar {
