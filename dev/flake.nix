@@ -187,8 +187,8 @@
               };
             };
           wpPluginCheck = fetchurl {
-            url = "https://downloads.wordpress.org/plugin/plugin-check.1.7.0.zip";
-            hash = "sha256-6yh3an2AZxyR6ytO0UPMVhISyAHOx4nySACDhU162So=";
+            url = "https://downloads.wordpress.org/plugin/plugin-check.1.8.0.zip";
+            hash = "sha256-RUIscSpXHLYZG8Ps3UhlHszaBWW1VnwJRHxV4tbcrYg=";
           };
           wpInstaller =
             dbHost: dbUser: dataDir:
