@@ -57,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <td>
                 <p>The current officially supported PHP versions can be found on <a href="http://php.net/supported-versions.php" target="_blank">PHP.net</a></p>
 
-                <p>Static Deploy now requires a minimum of PHP 8.1.</p>
+                <p>Static Deploy now requires a minimum of PHP 8.2.</p>
                 </td>
             </tr>
             <tr>

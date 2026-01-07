@@ -8,7 +8,7 @@
  * Author URI:        https://github.com/staticweb-io/static-deploy
  * Text Domain:       static-deploy
  * Requires at least: 6.4
- * Requires PHP:      8.1
+ * Requires PHP:      8.2
  * License URI:       https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
  * License:           Unlicense
  */

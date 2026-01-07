@@ -5,7 +5,7 @@ inclusion: always
 # Technology Stack & Development Guidelines
 
 ## Required Code Standards
-- **PHP 8.1+** with `declare(strict_types=1)` in ALL files
+- **PHP 8.2+** with `declare(strict_types=1)` in ALL files
 - **Namespace**: Use `StaticDeploy\` for all classes
 - **PHPStan Level Max**: Code must pass strict static analysis
 - **WordPress Coding Standards**: Follow PHPCS rules with zero violations
