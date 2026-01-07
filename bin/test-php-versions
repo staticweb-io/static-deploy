@@ -4,4 +4,4 @@ set -euo pipefail
 parallel -j "${1:-$(nproc)}" --tagstring "{1}" --line-buffer '
   echo "Testing {1}"
   PHP_PACKAGE="{1}" nix flake check --impure ./dev
-' ::: php84 php83 php82 php81
+' ::: php84 php83 php82

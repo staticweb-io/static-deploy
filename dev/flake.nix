@@ -1,6 +1,5 @@
 {
   inputs = {
-    nixos2505.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
@@ -62,7 +61,6 @@
         }:
         let
           system = pkgs.stdenv.hostPlatform.system;
-          nixpkgs2505 = import inputs.nixos2505 { };
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
           phpPackage = getEnv "PHP_PACKAGE" "php";
           phpExtensionsName = phpPackage + "Extensions";
@@ -85,11 +83,6 @@
               imagick
               memcached
             ]);
-          otherPhpVersionsOverlay = self: super: {
-            php81 = nixpkgs2505.php81;
-            php81Extensions = nixpkgs2505.php81Extensions;
-            php81Packages = nixpkgs2505.php81Packages;
-          };
           overlay = self: super: {
             php = super.${phpPackage}.buildEnv {
               extraConfig = phpOptions;
@@ -103,7 +96,6 @@
           finalPkgs = import pkgs.path {
             inherit (pkgs) system;
             overlays = [
-              otherPhpVersionsOverlay
               overlay
             ];
           };

@@ -5,4 +5,4 @@ set -euo pipefail
 parallel -j "${1:-$(nproc)}" --tagstring "{1} {2}" --line-buffer '
   echo "Testing {2} with {1}"
   PHP_PACKAGE="{1}" STATIC_DEPLOY_PACKAGE="{2}" nix flake check --impure ./dev
-' ::: php84 php81 ::: plugin pluginWpOrg
+' ::: php84 php82 ::: plugin pluginWpOrg
