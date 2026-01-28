@@ -9,6 +9,9 @@ final readonly class DirectDeployConfig {
         public bool $do_detect = true,
     ) {}
 
+    /**
+     * @return array<string, \StaticDeploy\CrawlConfig|bool|null>
+     */
     public function toArray(): array
     {
         return [

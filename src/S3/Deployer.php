@@ -280,6 +280,9 @@ class Deployer {
         }
     }
 
+    /**
+     * @return array<string, string|bool>
+     */
     public static function awsClientOpts(): array {
         $opts = [
             'region' => S3Options::getValue( 'awsRegion' ),

@@ -77,6 +77,9 @@ class PathInfo {
         return false;
     }
 
+    /**
+     * @return array<string, string|int>
+     */
     public function toArray(): array {
         $arr = [
             'path' => $this->path,
