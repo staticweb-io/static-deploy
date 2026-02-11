@@ -6,7 +6,7 @@ wordpress_dir := "./dev/data/wordpress1"
 alias b := build
 alias fmt := format
 alias t := test
-alias u := update-deps
+alias u := update
 alias w := watch-dev
 
 [private]
@@ -105,7 +105,7 @@ _update-composer-deps: && update-hashes
     composer update
 
 # Upgrade dependencies
-update-deps: _update-flakes _update-composer-deps
+update: _update-flakes _update-composer-deps
 
 _update-flakes:
     nix flake update
