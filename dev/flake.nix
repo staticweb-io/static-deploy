@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
     hyperfine-flake = {
@@ -62,6 +63,7 @@
         let
           system = pkgs.stdenv.hostPlatform.system;
           getEnv = name: default: (if "" == builtins.getEnv name then default else builtins.getEnv name);
+          nixpkgs-unstable = import inputs.nixpkgs-unstable { inherit system; };
           phpPackage = getEnv "PHP_PACKAGE" "php";
           phpExtensionsName = phpPackage + "Extensions";
           staticDeployPackage = getEnv "STATIC_DEPLOY_PACKAGE" "pluginWpOrg";
@@ -83,6 +85,11 @@
               imagick
               memcached
             ]);
+          otherPhpVersionsOverlay = self: super: {
+            php85 = nixpkgs-unstable.php85;
+            php85Extensions = nixpkgs-unstable.php85Extensions;
+            php85Packages = nixpkgs-unstable.php85Packages;
+          };
           overlay = self: super: {
             php = super.${phpPackage}.buildEnv {
               extraConfig = phpOptions;
@@ -96,6 +103,7 @@
           finalPkgs = import pkgs.path {
             inherit (pkgs) system;
             overlays = [
+              otherPhpVersionsOverlay
               overlay
             ];
           };
