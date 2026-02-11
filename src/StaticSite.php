@@ -72,10 +72,7 @@ class StaticSite {
         );
 
         foreach ( $iterator as $filename => $file_object ) {
-            /**
-             * @var string $filename
-             */
-            $base_name = basename( $filename );
+            $base_name = basename( (string) $filename );
             if ( $base_name !== '.' && $base_name !== '..' ) {
                 $real_filepath = realpath( $filename );
 
