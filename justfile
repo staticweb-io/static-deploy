@@ -98,7 +98,11 @@ test-live: _test-integration-live _test-aws
 
 # Test against github:staticweb-io/wordpress-flake#prerelease
 test-wordpress-prerelease:
-    @echo "Testing WordPress prerelease version" "$(nix build github:staticweb-io/wordpress-flake#prerelease --print-out-paths | sed 's/^[^-]*-[^-]*-//')"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    rev=$(nix flake metadata ./dev --json 2>/dev/null | jq -r '.locks.nodes["wordpress-flake"].locked.rev')
+    version=$(nix eval "github:staticweb-io/wordpress-flake/$rev#prerelease.version" --raw 2>/dev/null)
+    echo "Testing WordPress prerelease version $version"
     WORDPRESS_PACKAGE=prerelease nix flake check --impure ./dev
 
 _update-composer-deps: && update-hashes
