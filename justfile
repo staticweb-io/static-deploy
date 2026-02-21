@@ -24,9 +24,9 @@ build-wp-org:
 
 # Run tests and other checks
 check: _check_no_test test
+    nix flake lock
 
 _check_no_test: _lint _validate _phpcs
-    nix flake lock
     php ./vendor/bin/rector --debug --dry-run
 
 # Run development server
