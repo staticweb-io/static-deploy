@@ -149,7 +149,10 @@
         packages = {
           inherit composerVendor staticDeploy;
           plugin = staticDeploy;
-          pluginDevSrc = staticDeploySrc;
+          pluginDevSrc = runCommand "static-deploy-dev-src" { } ''
+            mkdir -p $out
+            cp -r ${staticDeploySrc}/* $out/
+          '';
           pluginGitHubSrc = staticDeployGitHubSrc;
           pluginWpOrg = staticDeployWpOrg;
           pluginWpOrgSrc = staticDeployWpOrgSrc;
