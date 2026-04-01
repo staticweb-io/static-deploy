@@ -17,6 +17,7 @@ class OptionRenderer {
     const KSES_ALLOWED_HTML = [
         'br' => [],
         'input' => [
+            'checked' => [],
             'class' => [],
             'id' => [],
             'name' => [],

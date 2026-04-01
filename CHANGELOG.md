@@ -5,6 +5,7 @@
 - Remove warning when post-processing a path with no contents. This was
   triggering for paths with redirect_to targets, which are expected to
   have no contents.
+- Fix checkboxes in admin always being unchecked in WP.org build.
 
 ## 9.8.0 (2026-01-07)
 
