@@ -328,7 +328,7 @@
             buildInputs = [
               fd
               fzf # Used by just --choose
-              inputs.hyperfine-flake.packages.${system}.default
+              hyperfine
               inputs.hyperfine-flake.packages.${system}.scripts
               jq
               just
