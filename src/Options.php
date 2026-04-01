@@ -203,7 +203,7 @@ class Options {
             new OptionSpec(
                 'boolean',
                 'autoJobQueueDirectDeployPost',
-                '0',
+                '1',
                 'Direct Deploy Post',
                 ''
             ),

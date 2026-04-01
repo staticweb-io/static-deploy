@@ -6,6 +6,10 @@
   triggering for paths with redirect_to targets, which are expected to
   have no contents.
 - Fix checkboxes in admin always being unchecked in WP.org build.
+- Enable Direct Deploy Post job by default. This has proven itself in
+  production. It usually takes only a few seconds to run, but gets post
+  updates live much faster compared to waiting for an entire site
+  deploy.
 
 ## 9.8.0 (2026-01-07)
 
