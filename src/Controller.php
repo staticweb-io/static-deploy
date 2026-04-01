@@ -745,8 +745,7 @@ class Controller {
         WsLog::l( 'Sending deployment notification email...' );
 
         $to = Options::getValue( 'completionEmail' );
-        $subject = 'Static Deploy deployment complete on site: ' .
-            $site_title = get_bloginfo( 'name' );
+        $subject = 'Static Deploy deployment complete on site: ' . get_bloginfo( 'name' );
         $body = 'Static Deploy deployment complete!';
         $headers = [];
 
