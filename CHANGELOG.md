@@ -10,6 +10,7 @@
   production. It usually takes only a few seconds to run, but gets post
   updates live much faster compared to waiting for an entire site
   deploy.
+- Fix location in crawler redirect debug message.
 
 ## 9.8.0 (2026-01-07)
 

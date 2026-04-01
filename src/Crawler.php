@@ -156,7 +156,8 @@ class Crawler {
         }
 
         return $this->client->sendAsync( $request )->then(
-            function ( $response ) use ( &$detected, &$site_urls ): array {
+            function ( $response ) use ( $request, &$detected, &$site_urls ): array {
+                $path = $request->getUri()->getPath();
                 $status = $response->getStatusCode();
 
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
@@ -171,7 +172,7 @@ class Crawler {
                     if ( STATIC_DEPLOY_DEBUG ) {
                         WsLog::d(
                             'Crawler encountered redirect from '
-                            . $absolute_uri . ' to ' . $redirect_to
+                            . $path . ' to ' . $redirect_to
                         );
                     }
                 } elseif ( $status === 404 ) {
