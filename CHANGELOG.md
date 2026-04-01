@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Fix attempting to send deployment emails when no email address is set. 
+- Fix typo in deployment email log message.
 
 ## 9.8.0 (2026-01-07)
 

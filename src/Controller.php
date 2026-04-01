@@ -753,7 +753,7 @@ class Controller {
         if ( wp_mail( $to, $subject, $body, $headers ) ) {
             WsLog::l( 'Deployment notification email sent without error.' );
         } else {
-            WsLog::l( 'Failed to send deployment notificaiton email.' );
+            WsLog::l( 'Failed to send deployment notification email.' );
         }
     }
 
