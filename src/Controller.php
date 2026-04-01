@@ -738,13 +738,14 @@ class Controller {
     }
 
     public static function emailDeployNotification(): void {
-        if ( Options::getValue( 'completionEmail' ) === '0' ) {
+        $to = Options::getValue( 'completionEmail' );
+
+        if ( $to === '' ) {
             return;
         }
 
         WsLog::l( 'Sending deployment notification email...' );
 
-        $to = Options::getValue( 'completionEmail' );
         $subject = 'Static Deploy deployment complete on site: ' . get_bloginfo( 'name' );
         $body = 'Static Deploy deployment complete!';
         $headers = [];

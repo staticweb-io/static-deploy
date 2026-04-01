@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix attempting to send deployment emails when no email address is set. 
+
 ## 9.8.0 (2026-01-07)
 
 - Require PHP 8.2 or later.
