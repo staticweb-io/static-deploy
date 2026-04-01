@@ -2,6 +2,9 @@
 
 - Fix attempting to send deployment emails when no email address is set. 
 - Fix typo in deployment email log message.
+- Remove warning when post-processing a path with no contents. This was
+  triggering for paths with redirect_to targets, which are expected to
+  have no contents.
 
 ## 9.8.0 (2026-01-07)
 

@@ -67,9 +67,6 @@ class PostProcessor {
                 ProcessedSite::add( $path_info );
                 ++$this->skipped;
             } else {
-                WsLog::w(
-                    'No contents found for crawled path: ' . json_encode( $path_info )
-                );
                 ++$this->skipped;
             }
         }
