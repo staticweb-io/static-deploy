@@ -103,6 +103,12 @@ class Deployer {
                 $redirect_to = $path_info->redirect_to;
                 $status = $path_info->status;
 
+                if ( mb_substr( $cache_key, -1 ) === '/' ) {
+                    $cache_key .= 'index.html';
+                }
+
+                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+
                 if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
 
@@ -125,11 +131,6 @@ class Deployer {
                     if ( str_starts_with( $content_type, 'text/' ) ) {
                         $content_type .= '; charset=UTF-8';
                     }
-                }
-
-                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
-                if ( mb_substr( $cache_key, -1 ) === '/' ) {
-                    $s3_key .= 'index.html';
                 }
 
                 if ( $status === 404 ) {

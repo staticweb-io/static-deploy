@@ -13,6 +13,8 @@
 - Fix location in crawler redirect debug message.
 - Add more debug messages to crawler.
 - Show data hashes and deployed at datetimes on deploy cache pages.
+- Fix an issue where the deploy cache could contain duplicate rows
+  for the same path.
 
 ## 9.8.0 (2026-01-07)
 
