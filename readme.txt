@@ -2,8 +2,8 @@
 Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4
-Stable tag: 9.8.0
 Tested up to: 7.0
+Stable tag: 9.9.0
 Requires PHP: 8.2
 License: Unlicense
 License URI: https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
@@ -34,24 +34,26 @@ This dramatically reduces the attack surface of your website and makes expensive
 
 Full changelog available at https://github.com/staticweb-io/static-deploy/blob/develop/CHANGELOG.md
 
+= 9.9.0 =
+Enable Direct Deploy Post by default in new installs.
+Show hashes and deployed at times on deploy cache pages.
+Numerous fixes.
+
 = 9.8.0 =
 Require PHP 8.2 or later.
 
 = 9.7.1 =
 Security update for CVE-2025-14761.
 
-= 9.7.0 =
-Don't load plugin code unless in the CLI or an admin.
-This should provide a small speed boost for non-admin
-users.
-
 == Upgrade Notice ==
+
+= 9.9.0 =
+Enable Direct Deploy Post by default in new installs.
+Show hashes and deployed at times on deploy cache pages.
+Numerous fixes.
 
 = 9.8.0 =
 Require PHP 8.2 or later.
 
 = 9.7.1 =
 Security update.
-
-= 9.7.0 =
-Minor speed improvements.

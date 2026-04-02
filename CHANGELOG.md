@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.9.0 (2026-04-02)
+
 - Fix attempting to send deployment emails when no email address is set. 
 - Fix typo in deployment email log message.
 - Remove warning when post-processing a path with no contents. This was
