@@ -2,8 +2,8 @@
 Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4
-Tested up to: 6.9
 Stable tag: 9.8.0
+Tested up to: 7.0
 Requires PHP: 8.2
 License: Unlicense
 License URI: https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
