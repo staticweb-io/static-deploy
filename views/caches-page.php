@@ -17,7 +17,7 @@ use StaticDeploy\URLHelper;
 /**
  * @var int $static_deploy_detected_files_total
  */
-$static_deploy_detected_files_total = $view['DetectedFilesTotal'];
+$static_deploy_detected_files_total = $view['detectedFilesTotal'];
 
 /**
  * @var int $static_deploy_crawled_files_total

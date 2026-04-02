@@ -416,7 +416,7 @@ class ViewRenderer {
             $view['processedSiteFileCount'] = 0;
         }
 
-        $view['DetectedFilesTotal'] = DetectedFiles::getTotal();
+        $view['detectedFilesTotal'] = DetectedFiles::getTotal();
         $view['crawledFilesTotal'] = CrawledFiles::getTotal();
         $view['deployCacheTotalPaths'] = DeployCache::getTotal();
         $view['uploads_path'] = SiteInfo::getPath( 'uploads' );
