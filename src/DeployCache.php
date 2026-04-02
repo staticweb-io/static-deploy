@@ -230,4 +230,29 @@ class DeployCache {
             ),
         );
     }
+
+    /**
+     *  Get all cached rows
+     *
+     *  @return object[] All cached paths
+     */
+    public static function getRows(
+        string $ns,
+    ): array {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT path,data_hash,deployed_at'
+                . ' FROM %i'
+                . ' WHERE namespace = %s'
+                . ' ORDER BY path,namespace,id',
+                $table_name,
+                $ns,
+            ),
+        );
+    }
 }

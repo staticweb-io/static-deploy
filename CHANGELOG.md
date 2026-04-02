@@ -12,6 +12,7 @@
   deploy.
 - Fix location in crawler redirect debug message.
 - Add more debug messages to crawler.
+- Show data hashes and deployed at datetimes on deploy cache pages.
 
 ## 9.8.0 (2026-01-07)
 

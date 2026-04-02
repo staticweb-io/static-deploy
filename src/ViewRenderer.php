@@ -278,9 +278,12 @@ class ViewRenderer {
                 FILTER_SANITIZE_URL,
             )
         );
-        $paths = $deploy_namespace !== ''
-            ? DeployCache::getPaths( $deploy_namespace )
-            : DeployCache::getPaths();
+
+        if ( $deploy_namespace === '' ) {
+            $deploy_namespace = DeployCache::DEFAULT_NAMESPACE;
+        }
+
+        $paths = DeployCache::getRows( $deploy_namespace );
 
         // Apply search
         $search_term = strval( filter_input( INPUT_GET, 's', FILTER_SANITIZE_URL ) );
@@ -292,8 +295,13 @@ class ViewRenderer {
         }
 
         $records = array_map(
-            fn( string $path ): array => [
-                $path,
+            fn( object $row ): array => [
+                $row->path,
+                $row->data_hash,
+                $row->deployed_at
+                . ' ('
+                . human_time_diff( Utils::wpDateTime( $row->deployed_at )->getTimestamp() )
+                . ' ago)',
             ],
             $paths,
         );
@@ -305,6 +313,8 @@ class ViewRenderer {
         $view = [
             'colHeadings' => [
                 'Deployed Files',
+                'Data Hash',
+                'Deployed At',
             ],
             'emptyMessage' => 'There are no deployed files.',
             'paginatorFirstPage' => $paginator->firstPage(),
