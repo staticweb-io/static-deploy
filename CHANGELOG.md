@@ -11,6 +11,7 @@
   updates live much faster compared to waiting for an entire site
   deploy.
 - Fix location in crawler redirect debug message.
+- Add more debug messages to crawler.
 
 ## 9.8.0 (2026-01-07)
 

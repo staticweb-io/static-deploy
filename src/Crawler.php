@@ -160,6 +160,12 @@ class Crawler {
                 $path = $request->getUri()->getPath();
                 $status = $response->getStatusCode();
 
+                if ( STATIC_DEPLOY_DEBUG ) {
+                    WsLog::d(
+                        "Crawler received {$status} response for {$path}"
+                    );
+                }
+
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
                     $location = $response->getHeaderLine( 'Location' );
                     $redirect_to = (string) str_replace( $site_urls, '', $location );
@@ -187,6 +193,13 @@ class Crawler {
                         content_type: $response->getHeaderLine( 'Content-Type' ),
                         status: $status,
                     );
+
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d(
+                            "Crawler processed {$path} at filename "
+                            . $detected->filename
+                        );
+                    }
                 } else {
                     $body = (string) $response->getBody();
                     $path_info = new PathInfo(
@@ -195,6 +208,14 @@ class Crawler {
                         content_type: $response->getHeaderLine( 'Content-Type' ),
                         status: $status,
                     );
+
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        $bytes = strlen( $body );
+                        $hash = $path_info->getContentHash();
+                        WsLog::d(
+                            "Crawler received {$bytes} bytes, content_hash {$hash} for {$path}"
+                        );
+                    }
                 }
 
                 return [
