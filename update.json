@@ -1,8 +1,8 @@
 {
   "name": "StaticWeb Deploy",
-  "version": "9.8.0",
-  "download_url": "https://github.com/staticweb-io/static-deploy/releases/download/v9.8.0/plugin.zip",
+  "version": "9.9.0",
+  "download_url": "https://github.com/staticweb-io/static-deploy/releases/download/v9.9.0/plugin.zip",
   "requires": "6.4",
-  "tested": "6.9",
-  "last_updated": "2026-01-07 12:07:34 -0600"
+  "tested": "7.0",
+  "last_updated": "2026-04-02 09:41:28 -0500"
 }
