@@ -32,6 +32,29 @@ for pkg in $wordpress_packages; do
   fi
 done
 
+prerelease_passed=0
+prerelease_version=$(nix eval "$FLAKE_REF#prerelease.version" --raw 2>/dev/null || echo "")
+
+if [[ -n "$prerelease_version" && -n "$first_pkg" ]]; then
+  stable_parts="${first_pkg#wordpress_}"
+  stable_major="${stable_parts%%_*}"
+  stable_minor="${stable_parts#*_}"; stable_minor="${stable_minor%%_*}"
+  prerelease_major="${prerelease_version%%.*}"
+  prerelease_minor="${prerelease_version#*.}"
+  prerelease_minor="${prerelease_minor%%[^0-9]*}"
+
+  if [[ "$prerelease_major" -gt "$stable_major" ]] || \
+     [[ "$prerelease_major" -eq "$stable_major" && "$prerelease_minor" -gt "$stable_minor" ]]; then
+    echo -e "\n➡️  Testing WordPress prerelease $prerelease_version"
+    if WORDPRESS_PACKAGE=prerelease nix flake check --impure ./dev; then
+      prerelease_passed=1
+      echo "✅ Compatible with WordPress prerelease $prerelease_version"
+    else
+      echo "❌ Not compatible with WordPress prerelease $prerelease_version"
+    fi
+  fi
+fi
+
 if [[ -n "$last_success" ]]; then
   echo -e "\n✅ Last successful version: $last_success"
 
@@ -41,9 +64,14 @@ if [[ -n "$last_success" ]]; then
   requires="${last_success#wordpress_}"
   requires="${requires//_/.}"
   requires="${requires%.*}"  # Remove the patch version
-  tested="${first_pkg#wordpress_}"
-  tested="${tested//_/.}"
-  tested="${tested%.*}"
+
+  if [[ "$prerelease_passed" -eq 1 ]]; then
+    tested="$prerelease_major.$prerelease_minor"
+  else
+    tested="${first_pkg#wordpress_}"
+    tested="${tested//_/.}"
+    tested="${tested%.*}"
+  fi
 
   # Update using jq
   TMPUPDATE=$(mktemp)
