@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FLAKE_REF="github:staticweb-io/wordpress-flake"
+FLAKE_REV=$(nix flake metadata ./dev --json 2>/dev/null | jq -r '.locks.nodes["wordpress-flake"].locked.rev')
+FLAKE_REF="github:staticweb-io/wordpress-flake/$FLAKE_REV"
 SYSTEM=$(nix eval --impure --expr builtins.currentSystem --raw)
 
 echo "Getting wordpress_* packages from $FLAKE_REF for system $SYSTEM..."
