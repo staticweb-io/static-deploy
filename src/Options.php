@@ -680,7 +680,7 @@ class Options {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by calling function
             if ( isset( $_POST[ $name ] ) ) {
                 // phpcs:ignore WordPress.Security.NonceVerification.Missing
-                $v = sanitize_text_field( wp_unslash( $_POST[ $name ] ) );
+                $v = sanitize_textarea_field( wp_unslash( $_POST[ $name ] ) );
             } else {
                 $v = '';
             }

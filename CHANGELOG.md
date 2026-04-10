@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix multiline options in admin did not save properly.
+
 ## 9.9.0 (2026-04-02)
 
 - Fix attempting to send deployment emails when no email address is set. 
