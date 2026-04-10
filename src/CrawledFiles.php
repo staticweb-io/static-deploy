@@ -137,7 +137,12 @@ class CrawledFiles {
                         $static_site_path,
                         $row->path
                     );
-                    if ( file_exists( $cc_path ) ) {
+                    if ( is_dir( $cc_path ) ) {
+                        $index_path = $cc_path . DIRECTORY_SEPARATOR . 'index.html';
+                        if ( file_exists( $index_path ) ) {
+                            $row->filename = $index_path;
+                        }
+                    } elseif ( file_exists( $cc_path ) ) {
                         $row->filename = $cc_path;
                     }
                 }

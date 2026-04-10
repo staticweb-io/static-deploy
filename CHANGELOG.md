@@ -1,6 +1,8 @@
 ## Unreleased
 
 - Fix multiline options in admin did not save properly.
+- Fix an issue where the crawler could pass along a directory path
+  instead of passing the index.html filename for a crawled page.
 
 ## 9.9.0 (2026-04-02)
 
