@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Second fix for subversion release containing wrong version number.
+
 ## 9.9.2 (2026-04-09)
 
 - Fix subversion release containing wrong version number.

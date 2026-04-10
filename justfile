@@ -63,16 +63,17 @@ svn-checkout:
 
 # Release latest source build using version in update.json
 svn-release:
-    just _svn-sync-trunk "$(nix build .#pluginWpOrgSrc --print-out-paths)"
+    just _svn-sync-trunk "$(nix build .#pluginWpOrgSrc --print-out-paths)" "$(jq -r .version update.json)"
     just _svn-release-version "$(jq -r .version update.json)"
 
 _svn-release-version VERSION:
     svn cp "{{ svn_dir }}"/trunk "{{ svn_dir }}"/tags/"{{ VERSION }}"
-    svn ci "{{ svn_dir }}" --username "{{ svn_user }}" -m "tagging version {{ VERSION }}"
+    svn ci "{{ svn_dir }}"/tags/"{{ VERSION }}" --username "{{ svn_user }}" -m "tagging version {{ VERSION }}"
 
-_svn-sync-trunk SRC:
-    rsync -avc --delete --chmod=F664,D775 --owner "{{ SRC }}"/* "{{ svn_dir }}"/trunk/
+_svn-sync-trunk SRC VERSION:
+    rsync -avc --no-times --delete --chmod=F664,D775 --owner "{{ SRC }}"/* "{{ svn_dir }}"/trunk/
     svn add --force "{{ svn_dir }}"/trunk/*
+    svn ci "{{ svn_dir }}"/trunk --username "{{ svn_user }}" -m "version {{ VERSION }}"
 
 # Update subversion repo from WordPress.org
 svn-update:
