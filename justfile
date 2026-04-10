@@ -71,7 +71,7 @@ _svn-release-version VERSION:
     svn ci "{{ svn_dir }}" --username "{{ svn_user }}" -m "tagging version {{ VERSION }}"
 
 _svn-sync-trunk SRC:
-    rsync -av --delete --chmod=F664,D775 --owner "{{ SRC }}"/* "{{ svn_dir }}"/trunk/
+    rsync -avc --delete --chmod=F664,D775 --owner "{{ SRC }}"/* "{{ svn_dir }}"/trunk/
     svn add --force "{{ svn_dir }}"/trunk/*
 
 # Update subversion repo from WordPress.org

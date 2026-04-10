@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix subversion release containing wrong version number.
+
 ## 9.9.1 (2026-04-09)
 
 - Fix multiline options in admin did not save properly.
