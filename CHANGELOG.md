@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.9.4 (2026-04-15)
+
 - Fixed an issue where crawled paths with redirects could be assigned
   filenames.
 
