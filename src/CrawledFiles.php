@@ -132,7 +132,7 @@ class CrawledFiles {
             );
 
             foreach ( $rows as $row ) {
-                if ( ! $row->filename ) {
+                if ( $row->content_hash && ! $row->filename ) {
                     $cc_path = FilesHelper::getFilePath(
                         $static_site_path,
                         $row->path

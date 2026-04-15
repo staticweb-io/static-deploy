@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Fixed an issue where crawled paths with redirects could be assigned
+  filenames.
+
 ## 9.9.3 (2026-04-09)
 
 - Second fix for subversion release containing wrong version number.
