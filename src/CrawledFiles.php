@@ -281,7 +281,9 @@ class CrawledFiles {
 
         $table_name = self::getTableName();
 
-        $sql = 'SELECT id, path_hash, path, content_hash FROM %i ORDER BY path';
+        $sql = 'SELECT id,content_hash,content_type,crawled_at,'
+            . 'path_hash,path,redirect_to,status'
+            . ' FROM %i ORDER BY path';
         // phpcs:ignore PluginCheck.Security.DirectDB, WordPress.DB.DirectDatabaseQuery
         $rows = $wpdb->get_results(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

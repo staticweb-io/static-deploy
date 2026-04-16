@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Add HTTP Status, Content-Type, Redirect To, and Crawled At columns
+  to the crawled files page.
+
 ## 9.9.4 (2026-04-15)
 
 - Fixed an issue where crawled paths with redirects could be assigned

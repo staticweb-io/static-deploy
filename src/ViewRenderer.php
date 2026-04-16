@@ -165,9 +165,16 @@ class ViewRenderer {
         }
 
         $records = array_map(
-            fn( object $url ): array => [
-                $url->path,
-                $url->content_hash,
+            fn( object $row ): array => [
+                $row->path,
+                $row->status,
+                $row->content_type,
+                $row->content_hash,
+                $row->redirect_to,
+                $row->crawled_at
+                . ' ('
+                . human_time_diff( Utils::wpDateTime( $row->crawled_at )->getTimestamp() )
+                . ' ago)',
             ],
             $urls,
         );
@@ -179,7 +186,11 @@ class ViewRenderer {
         $view = [
             'colHeadings' => [
                 'Crawled Files',
+                'HTTP Status',
+                'Content-Type',
                 'Content MD5 Hash',
+                'Redirect To',
+                'Crawled At',
             ],
             'emptyMessage' => 'There are no crawled files.',
             'paginatorFirstPage' => $paginator->firstPage(),
