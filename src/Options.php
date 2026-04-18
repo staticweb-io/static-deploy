@@ -380,7 +380,7 @@ class Options {
         foreach ( $specs as $spec ) {
             $ret[ $spec->name ] = $spec;
         }
-        self::$cached_option_specs = $ret;
+        self::$cached_core_option_specs = $ret;
         return $ret;
     }
 
