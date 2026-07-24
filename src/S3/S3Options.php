@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StaticDeploy\S3;
 
 use StaticDeploy\Controller;

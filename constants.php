@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file can be added to in order to force
  * rector to use certain values for constants.
@@ -7,3 +8,5 @@
  * in order to remove code entirely at build-time if
  * a feature is disabled.
  */
+
+declare(strict_types=1);

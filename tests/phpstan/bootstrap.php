@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // We use core constants instead of core functions
 define( 'WPINC', '' );
 define( 'WP_CONTENT_DIR', '' );
