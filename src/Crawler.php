@@ -168,7 +168,7 @@ class Crawler {
 
                 if ( in_array( $status, STATIC_DEPLOY_REDIRECT_CODES, true ) ) {
                     $location = $response->getHeaderLine( 'Location' );
-                    $redirect_to = (string) str_replace( $site_urls, '', $location );
+                    $redirect_to = str_replace( $site_urls, '', $location );
                     $path_info = new PathInfo(
                         $detected->path,
                         redirect_to: $redirect_to,
