@@ -178,7 +178,7 @@ class CrawledFiles {
         foreach ( $paths as $path ) {
             $outdated = false;
 
-            if ( isset( $path->status ) && $path->status === 404 ) {
+            if ( $path->status === 404 ) {
                 WsLog::l( '404 for URL ' . $path->path );
                 $outdated = true;
             }
