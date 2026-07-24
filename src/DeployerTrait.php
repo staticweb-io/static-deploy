@@ -73,7 +73,7 @@ trait DeployerTrait {
         );
 
         $path_infos = function (
-            $files,
+            \RecursiveIteratorIterator $files,
             $redirects,
         ) use ( $processed_site_path ) {
             foreach ( $files as $filename => $file_object ) {

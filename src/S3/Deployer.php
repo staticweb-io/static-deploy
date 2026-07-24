@@ -75,7 +75,7 @@ class Deployer {
         $items_by_iter_key = [];
 
         $command_generator = function (
-            $iterator,
+            \Iterator $iterator,
         ) use (
             &$items_by_iter_key,
             $base_put_data,

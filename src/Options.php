@@ -17,7 +17,7 @@ class Options {
     /**
      * @var ?array<string, OptionSpec>
      */
-    private static $cached_core_option_specs;
+    private static ?array $cached_core_option_specs = null;
 
     public static function init(): void {
         self::createTable();

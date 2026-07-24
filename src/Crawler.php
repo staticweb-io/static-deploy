@@ -272,7 +272,11 @@ class Crawler {
 
         $last_log_time = microtime( true );
 
-        $responses = function ( &$path_iter ) use ( &$in_flight, $last_log_time, $start_next ) {
+        $responses = function ( \Iterator &$path_iter ) use (
+            &$in_flight,
+            $last_log_time,
+            $start_next,
+        ) {
             while ( $in_flight !== [] ) {
                 $response = Promise\Utils::any( $in_flight )->wait( true );
 
