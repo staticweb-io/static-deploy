@@ -2,6 +2,7 @@
 
 - Add HTTP Status, Content-Type, Redirect To, and Crawled At columns
   to the crawled files page.
+- Add debug log for CommandPool config in S3 deployer.
 
 ## 9.9.4 (2026-04-15)
 

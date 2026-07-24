@@ -228,6 +228,10 @@ class Deployer {
             'concurrency' => $concurrency,
         ];
 
+        if ( STATIC_DEPLOY_DEBUG ) {
+            WsLog::d( 'CommandPool config: ' . json_encode( $config ) );
+        }
+
         $cmd_pool = new CommandPool(
             $this->s3_client,
             $commands,
