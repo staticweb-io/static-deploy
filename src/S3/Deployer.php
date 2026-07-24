@@ -223,7 +223,7 @@ class Deployer {
 
         $commands = $command_generator( $path_infos );
 
-        $concurrency = intval( S3Options::getValue( 'concurrency' ) || '4' );
+        $concurrency = intval( S3Options::getValue( 'concurrency' ) );
         $config = [
             'concurrency' => $concurrency,
         ];
