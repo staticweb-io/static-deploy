@@ -104,7 +104,7 @@ class URLDiscovery {
      */
     public function parseURLs( PathInfo $path_info ): \Iterator {
         $body = null;
-        if ( isset( $path_info->body ) ) {
+        if ( $path_info->body !== null ) {
             $body = $path_info->body;
         } elseif ( $path_info->filename ) {
             $body = file_get_contents( $path_info->filename );

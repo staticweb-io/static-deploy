@@ -84,22 +84,22 @@ class PathInfo {
         $arr = [
             'path' => $this->path,
         ];
-        if ( isset( $this->body ) ) {
+        if ( $this->body !== null ) {
             $arr['body'] = $this->body;
         }
         if ( isset( $this->content_hash ) ) {
             $arr['content_hash'] = $this->content_hash;
         }
-        if ( isset( $this->content_type ) ) {
+        if ( $this->content_type !== null ) {
             $arr['content_type'] = $this->content_type;
         }
         if ( isset( $this->filename ) ) {
             $arr['filename'] = $this->filename;
         }
-        if ( isset( $this->redirect_to ) ) {
+        if ( $this->redirect_to !== null ) {
             $arr['redirect_to'] = $this->redirect_to;
         }
-        if ( isset( $this->status ) ) {
+        if ( $this->status !== null ) {
             $arr['status'] = $this->status;
         }
         return $arr;
@@ -110,7 +110,7 @@ class PathInfo {
             return $this->content_hash;
         }
 
-        if ( isset( $this->body ) ) {
+        if ( $this->body !== null ) {
             $this->content_hash = md5( $this->body );
         }
 
