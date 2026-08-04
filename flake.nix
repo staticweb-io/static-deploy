@@ -36,6 +36,9 @@
           src = composerSrc;
           vendorHash = "sha256-PlSiRAE6ZIA6mjnpAZ07EnsSXNtr0jhpiI/WirzXVb8=";
         });
+        # Plugin source, without tests. Tests are not shipped in the built
+        # plugin, so keeping them out of this derivation stops test-only edits
+        # from invalidating the plugin build.
         staticDeploySrc = pkgs.lib.cleanSourceWith {
           src = self;
           filter =
@@ -45,8 +48,6 @@
             in
             type == "directory" && base == "src"
             || pkgs.lib.hasInfix "/src/" path
-            || type == "directory" && base == "tests"
-            || pkgs.lib.hasInfix "/tests/" path
             || type == "directory" && base == "util"
             || pkgs.lib.hasInfix "/util/" path
             || type == "directory" && base == "views"
@@ -56,8 +57,18 @@
             || base == "composer.lock"
             || base == "justfile"
             || base == "phpcs.xml"
-            || base == "phpunit.xml"
             || base == "readme.txt";
+        };
+        # Tests only, copied in on top of staticDeploySrc for the checks and
+        # the dev test harness.
+        staticDeployTestsSrc = pkgs.lib.cleanSourceWith {
+          src = self;
+          filter =
+            path: type:
+            let
+              base = baseNameOf path;
+            in
+            type == "directory" && base == "tests" || pkgs.lib.hasInfix "/tests/" path || base == "phpunit.xml";
         };
         releaseExtras = pkgs.lib.cleanSourceWith {
           src = self;
@@ -140,6 +151,7 @@
             cd "$PLUGIN_DIR"
             cp -a "${composerVendor}/vendor" .
             cp -r --no-preserve=mode "$src"/* .
+            cp -r --no-preserve=mode "${staticDeployTestsSrc}"/* .
             just _check_no_test
           '';
         };
@@ -152,6 +164,7 @@
           pluginDevSrc = runCommand "static-deploy-dev-src" { } ''
             mkdir -p $out
             cp -r ${staticDeploySrc}/* $out/
+            cp -r ${staticDeployTestsSrc}/* $out/
           '';
           pluginGitHubSrc = staticDeployGitHubSrc;
           pluginWpOrg = staticDeployWpOrg;

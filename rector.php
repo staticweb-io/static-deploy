@@ -31,11 +31,14 @@ return RectorConfig::configure()
         ],
     )
     ->withPaths(
-        [
-            __DIR__ . '/src',
-            __DIR__ . '/tests',
-            __DIR__ . '/views',
-        ]
+        array_filter(
+            [
+                __DIR__ . '/src',
+                // tests/ is excluded from the plugin build source
+                is_dir( __DIR__ . '/tests' ) ? __DIR__ . '/tests' : null,
+                __DIR__ . '/views',
+            ]
+        )
     )
     ->withRootFiles() // Include staticweb-deploy.php and uninstall.php
     ->withPhpSets() // Detects PHP version from composer.json
