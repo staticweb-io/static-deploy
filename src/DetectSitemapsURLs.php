@@ -3,6 +3,7 @@
 namespace StaticDeploy;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
@@ -86,9 +87,19 @@ class DetectSitemapsURLs {
 
         $request = new Request( 'GET', $base_uri . '/robots.txt', $headers );
 
-        $response = $client->send( $request );
+        $robots_exists = false;
+        $robots_body = '';
 
-        $robots_exists = $response->getStatusCode() === 200;
+        try {
+            $response = $client->send( $request );
+
+            if ( $response->getStatusCode() === 200 ) {
+                $robots_exists = true;
+                $robots_body = $response->getBody()->getContents();
+            }
+        } catch ( GuzzleException $e ) {
+            WsLog::w( 'Could not fetch robots.txt: ' . $e->getMessage() );
+        }
 
         try {
             $sitemaps = [];
@@ -98,7 +109,7 @@ class DetectSitemapsURLs {
                 if ( STATIC_DEPLOY_DEBUG ) {
                     WsLog::d( 'Parsing robots.txt for sitemaps' );
                 }
-                $robotsmaps = $parser->parseRobotstxt( $response->getBody()->getContents() );
+                $robotsmaps = $parser->parseRobotstxt( $robots_body );
                 foreach ( $robotsmaps as $robotsmap ) {
                     $sitemaps[ $robotsmap ] = [];
                 }
@@ -143,7 +154,14 @@ class DetectSitemapsURLs {
 
                 $request = new Request( 'GET', $base_uri . $sitemap, $headers );
 
-                $response = $client->send( $request );
+                try {
+                    $response = $client->send( $request );
+                } catch ( GuzzleException $e ) {
+                    WsLog::w(
+                        'Could not fetch sitemap ' . $sitemap . ': ' . $e->getMessage()
+                    );
+                    continue;
+                }
 
                 $status_code = $response->getStatusCode();
 

@@ -94,4 +94,41 @@ PHP;
         $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
         $this->assertContains( '/extra-detected-file.html', $lines );
     }
+
+    /**
+     * A robots.txt or sitemap request that fails with a connection error
+     * should be logged and skipped, not crash the whole detect run.
+     */
+    public function testDetectSurvivesUnreachableSitemapHost(): void
+    {
+        $plugin = <<<'PHP'
+<?php
+
+/**
+ * Plugin Name: Unreachable Site URL Test
+ */
+
+if ( ! defined( 'WPINC' ) ) {
+    die;
+}
+
+function unreachable_site_url_filter ( $info ) {
+    // Nothing is listening on this port, so the plugin's HTTP requests for
+    // robots.txt and sitemaps fail with a connection error. The site_url is
+    // only used for these requests; the database-backed detectors strip the
+    // host from permalinks and so are unaffected.
+    $info['site_url'] = 'http://localhost:59999/';
+    return $info;
+}
+add_filter( 'static_deploy_siteinfo', 'unreachable_site_url_filter' );
+PHP;
+        $this->installStringPlugin( 'unreachable-site-url-test', $plugin );
+
+        // pluginCli asserts a zero exit code, so the previously fatal
+        // connection error would fail here. Detection should still complete
+        // using the database-backed detectors.
+        $this->pluginCli( [ 'detect' ] );
+        $line = $this->pluginCli( [ 'detected-files', 'count' ] )['final_line'];
+        $this->assertGreaterThan( 0, (int) $line );
+    }
 }
