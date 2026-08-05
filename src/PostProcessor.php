@@ -126,10 +126,7 @@ class PostProcessor {
             }
         }
 
-        $rewritten = strtr(
-            $s,
-            $this->config->replacement_patterns
-        );
+        $rewritten = self::rewrite( $s, $this->config );
 
         if ( $rewritten !== $s ) {
             $path_info = $path_info->withBody( $rewritten );
@@ -146,6 +143,30 @@ class PostProcessor {
         }
 
         return $path_info;
+    }
+
+    /**
+     * Rewrite URLs in a string according to the given config.
+     *
+     * Ports on the hosts being rewritten are stripped first, so that a host
+     * such as `localhost` rewrites `//localhost:821/x` to the destination host
+     * without carrying the `:821` over (strtr alone would leave it behind, as
+     * it only replaces the literal host prefix). The destination's own port,
+     * if any, is preserved because it lives in the replacement value.
+     */
+    public static function rewrite(
+        string $content,
+        PostProcessConfig $config
+    ): string {
+        if ( $config->replacement_patterns === null ) {
+            return $content;
+        }
+
+        if ( $config->port_pattern !== null ) {
+            $content = preg_replace( $config->port_pattern, '$1', $content ) ?? $content;
+        }
+
+        return strtr( $content, $config->replacement_patterns );
     }
 
     public function complete(): void {

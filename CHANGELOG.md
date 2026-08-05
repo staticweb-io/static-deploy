@@ -4,6 +4,9 @@
   to the crawled files page.
 - Add debug log for CommandPool config in S3 deployer.
 - Fix S3 deployer concurrency option being ignored. @dunklerfox
+- Add a "Strip Ports From Rewritten Hosts" option so that a
+  rewritten host such as `localhost` maps `localhost:821` to the deployment
+  URL without carrying the port over. It defaults to off.
 
 ## 9.9.4 (2026-04-15)
 

@@ -75,6 +75,7 @@ $static_deploy_row = function ( $option_name ) use ( $static_deploy_options ): v
             <?php $static_deploy_row( 'processedSitePath' ); ?>
             <?php $static_deploy_row( 'skipURLRewrite' ); ?>
             <?php $static_deploy_row( 'hostsToRewrite' ); ?>
+            <?php $static_deploy_row( 'rewriteHostPorts' ); ?>
         </tbody>
     </table>
 

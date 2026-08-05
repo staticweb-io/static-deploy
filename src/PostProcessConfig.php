@@ -8,6 +8,14 @@ final readonly class PostProcessConfig {
 
     public ?array $hosts_to_rewrite;
 
+    /**
+     * A regular expression matching the port on any port-less host in
+     * the hostsToRewrite option, used to strip the port before replacement,
+     * or null when there are no rewrite targets.
+     * Only used when the rewriteHostPorts option is enabled.
+     */
+    public ?string $port_pattern;
+
     public ?array $replacement_patterns;
 
     public ?string $site_url;
@@ -16,6 +24,7 @@ final readonly class PostProcessConfig {
         if ( Options::getValue( 'skipURLRewrite' ) === '1' ) {
             $this->destination_url = null;
             $this->hosts_to_rewrite = null;
+            $this->port_pattern = null;
             $this->replacement_patterns = null;
             $this->site_url = null;
             return;
@@ -45,6 +54,8 @@ final readonly class PostProcessConfig {
                 addcslashes( URLHelper::getProtocolRelativeURL( $destination_url ), '/' ),
         ];
 
+        $strip_host_ports = Options::getValue( 'rewriteHostPorts' ) === '1';
+
         foreach ( $this->hosts_to_rewrite as $host_to_rewrite ) {
             if ( $host_to_rewrite ) {
                 $host_rel = URLHelper::getProtocolRelativeURL( 'http://' . $host_to_rewrite );
@@ -60,10 +71,44 @@ final readonly class PostProcessConfig {
         }
 
         $this->replacement_patterns = $replacement_patterns;
+        $this->port_pattern = $strip_host_ports
+            ? $this->buildPortPattern( $this->hosts_to_rewrite )
+            : null;
 
         if ( STATIC_DEPLOY_DEBUG ) {
             WsLog::l( 'PostProcessConfig: ' . json_encode( $this->toArray() ) );
         }
+    }
+
+    /**
+     * Build a regular expression that matches the `:port` immediately
+     * following any of the hosts to rewrite when the host appears in a URL,
+     * i.e. preceded by `//` or an escaped `\/\/`. The host itself is captured
+     * in group 1 so the match can be replaced with `$1`, dropping only the
+     * port.
+     *
+     * Empty hosts, and hosts that already include a port, are skipped: ported
+     * hosts keep their exact-match behaviour.
+     *
+     * Returns null when there are no hosts to build a pattern for.
+     *
+     * @param string[] $hosts_to_rewrite
+     */
+    private function buildPortPattern( array $hosts_to_rewrite ): ?string {
+        $quoted_hosts = [];
+        foreach ( $hosts_to_rewrite as $host ) {
+            if ( $host && ! preg_match( '/:\d+$/', $host ) ) {
+                $quoted_hosts[] = preg_quote( $host, '#' );
+            }
+        }
+
+        if ( $quoted_hosts === [] ) {
+            return null;
+        }
+
+        // (?:\\?/){2} matches `//` as well as the backslash-escaped `\/\/`
+        // form found in JSON-encoded URLs.
+        return '#((?:\\\\?/){2}(?:' . implode( '|', $quoted_hosts ) . ')):\d+#';
     }
 
     /**
@@ -79,6 +124,10 @@ final readonly class PostProcessConfig {
 
         if ( $this->hosts_to_rewrite ) {
             $arr['hosts_to_rewrite'] = $this->hosts_to_rewrite;
+        }
+
+        if ( $this->port_pattern ) {
+            $arr['port_pattern'] = $this->port_pattern;
         }
 
         if ( $this->replacement_patterns ) {

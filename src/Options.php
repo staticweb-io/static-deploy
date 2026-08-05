@@ -374,6 +374,15 @@ class Options {
                 "Don't rewrite any URLs. This may give a slight speed-up when the"
                 . " deployment URL is the same as WordPress's URL."
             ),
+            new OptionSpec(
+                'boolean',
+                'rewriteHostPorts',
+                '0',
+                'Strip Ports From Rewritten Hosts',
+                'When rewriting a host, also drop any port number that appears on'
+                . ' it. For example, localhost:821 is rewritten to the deployment URL'
+                . ' without the :821. Only applies to hosts listed without a port.'
+            ),
         ];
 
         $ret = [];
@@ -739,6 +748,7 @@ class Options {
                     'crawlConcurrency',
                     'crawledSitePath',
                     'hostsToRewrite',
+                    'rewriteHostPorts',
                     'maxLogRows',
                     'pathsToIgnore',
                     'processedSitePath',
