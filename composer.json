@@ -31,7 +31,7 @@
         "masterminds/html5": "^2",
         "phlak/splat": "^6",
         "aws/aws-sdk-php": "^3",
-        "guzzlehttp/guzzle": "^7"
+        "guzzlehttp/guzzle": "^8"
     },
     "require-dev": {
         "szepeviktor/phpstan-wordpress": "*",

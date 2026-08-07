@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
@@ -306,7 +306,10 @@
                       echo 'SELECT version();' | mysql -h 127.0.0.1 --port="${toString dbPort}" --user="${dbUserName}" --password="${dbUserPass}" "${dbName}"
                       cp -r --no-preserve=mode ${staticDeployPkgs.composerVendor}/. .
                       cp -r ${staticDeployPkgs.pluginDevSrc}/. .
-                      composer dump-autoload
+
+                      # mkComposerVendor strips vendor/bin/
+                      COMPOSER_DISABLE_NETWORK=1 composer --no-cache --no-interaction --optimize-autoloader install
+
                       WORDPRESS_DIR="$(realpath ./data/wordpress1)"
                       export WORDPRESS_DIR
                       php -d sys_temp_dir="$TMPDIR" vendor/bin/phpunit --do-not-cache-result --testsuite Integration

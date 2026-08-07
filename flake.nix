@@ -2,7 +2,7 @@
   description = "Static Deploy plugin for WordPress";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -34,7 +34,7 @@
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-PlSiRAE6ZIA6mjnpAZ07EnsSXNtr0jhpiI/WirzXVb8=";
+          vendorHash = "sha256-/9PGCA4AmI3ja69BPWHI+VefM7Fq4UCchn9Oc3ftEpU=";
         });
         # Plugin source, without tests. Tests are not shipped in the built
         # plugin, so keeping them out of this derivation stops test-only edits
@@ -95,12 +95,15 @@
               cp -r --no-preserve=mode "${composerVendor}/vendor" .
               cp -r --no-preserve=mode "${staticDeploySrc}"/* .
 
+              # mkComposerVendor strips vendor/bin/
+              COMPOSER_DISABLE_NETWORK=1 composer --no-cache --no-interaction --optimize-autoloader install
+
               # Lock certain constants and run rector to remove dead code
               cp ${constantsFile} constants.php
               just rector
 
               ${preComposerInstall}
-              composer install --no-cache --no-dev --optimize-autoloader
+              COMPOSER_DISABLE_NETWORK=1 composer --no-dev --no-cache --no-interaction --optimize-autoloader install
 
               mkdir -p "$out"
               cp -r composer.json readme.txt src staticweb-deploy.php uninstall.php vendor views "$out"
@@ -149,9 +152,8 @@
             export PLUGIN_DIR="$TMPDIR/${name}"
             mkdir -p "$PLUGIN_DIR"
             cd "$PLUGIN_DIR"
-            cp -a "${composerVendor}/vendor" .
-            cp -r --no-preserve=mode "$src"/* .
-            cp -r --no-preserve=mode "${staticDeployTestsSrc}"/* .
+            cp -r --no-preserve=mode "${composerVendor}/vendor" "$src"/* "${staticDeployTestsSrc}"/* .
+            COMPOSER_DISABLE_NETWORK=1 composer --no-cache --no-interaction --optimize-autoloader install
             just _check_no_test
           '';
         };
