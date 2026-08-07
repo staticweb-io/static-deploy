@@ -9,7 +9,6 @@ require_once __DIR__ . '/util/rector/ReplaceControllerGetHookNameRector.php';
 
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Constants\Rector\FuncCall\ReplaceKnownDefinedWithBooleanRector;
@@ -67,7 +66,6 @@ return RectorConfig::configure()
     ->withSkip(
         [
             CatchExceptionNameMatchingTypeRector::class,
-            EncapsedStringsToSprintfRector::class,
             NewlineAfterStatementRector::class,
             NewlineBeforeNewAssignSetRector::class,
             // Allow explicit loops to consume iterators for side-effects
