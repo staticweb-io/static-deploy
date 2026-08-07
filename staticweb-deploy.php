@@ -68,24 +68,6 @@ add_filter(
     'static_deploy_plugin_action_links'
 );
 
-/**
- * Prevent WP scripts from loading which aren't useful
- * on a statically exported site
- */
-function static_deploy_deregister_scripts(): void {
-    wp_dequeue_script( 'wp-embed' );
-    wp_deregister_script( 'wp-embed' );
-    wp_dequeue_script( 'comment-reply' );
-    wp_deregister_script( 'comment-reply' );
-}
-
-add_action( 'wp_footer', 'static_deploy_deregister_scripts' );
-
-// TODO: move into own plugin for WP cleanup, don't belong in core
-remove_action( 'wp_head', 'wlwmanifest_link' );
-remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-remove_action( 'wp_print_styles', 'print_emoji_styles' );
-
 if ( defined( 'WP_CLI' ) ) {
     StaticDeploy\CLI::init();
 }

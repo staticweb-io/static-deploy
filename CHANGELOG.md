@@ -8,6 +8,7 @@
   rewritten host such as `localhost` maps `localhost:821` to the deployment
   URL without carrying the port over. It defaults to off.
 - Prevent issues while detecting sitemap URLs from crashing the job.
+- Remove code that disables some default WordPress actions.
 
 ## 9.9.4 (2026-04-15)
 
