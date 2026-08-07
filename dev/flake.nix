@@ -348,6 +348,71 @@
             ];
             inputsFrom = [ config.process-compose."default".services.outputs.devShell ];
           };
+          packages.plugin-check-report =
+            runCommand "plugin-check-report"
+              {
+                nativeBuildInputs = [
+                  mariadb
+                  php
+                  unzip
+                  wp-cli
+                ];
+              }
+              ''
+                export HOME="$TMPDIR/home"
+                mkdir -p "$HOME"
+
+                MYSQL_DIR="$TMPDIR/mysql"
+                MYSQL_SOCK="$MYSQL_DIR/mysql.sock"
+                mkdir -p "$MYSQL_DIR"
+
+                mysql_install_db --datadir="$MYSQL_DIR/data" --auth-root-authentication-method=normal
+
+                mysqld \
+                  --datadir="$MYSQL_DIR/data" \
+                  --socket="$MYSQL_SOCK" \
+                  --pid-file="$MYSQL_DIR/mysql.pid" \
+                  --tmpdir="$TMPDIR" \
+                  --skip-networking \
+                  --log-error="$MYSQL_DIR/mysql.log" &
+
+                for i in $(seq 1 30); do
+                  if mysqladmin --socket="$MYSQL_SOCK" -u root ping 2>/dev/null; then
+                    break
+                  fi
+                  sleep 1
+                done
+
+                mysql --socket="$MYSQL_SOCK" -u root -e 'CREATE DATABASE wordpress;'
+
+                WP_DIR="$TMPDIR/wordpress"
+                mkdir -p "$WP_DIR"
+                cp -r --no-preserve=mode ${wordpress}/share/wordpress/. "$WP_DIR/"
+
+                wp config create \
+                  --path="$WP_DIR" \
+                  --dbname=wordpress \
+                  --dbuser=root \
+                  --dbpass="" \
+                  --dbhost="localhost:$MYSQL_SOCK"
+
+                wp core install \
+                  --path="$WP_DIR" \
+                  --url=http://localhost \
+                  --title=WordPress \
+                  --admin_user=admin \
+                  --admin_email=admin@example.com \
+                  --admin_password=pass \
+                  --skip-email
+
+                unzip -q ${staticDeployPkgs.pluginWpOrg}/staticweb-deploy.zip -d "$WP_DIR/wp-content/plugins/"
+                unzip -q ${wpPluginCheck} -d "$WP_DIR/wp-content/plugins/"
+
+                wp plugin activate staticweb-deploy plugin-check --path="$WP_DIR"
+
+                mkdir -p "$out"
+                wp plugin check staticweb-deploy --format=strict-json --path="$WP_DIR" > "$out/report.json" || true
+              '';
         };
     };
 }
