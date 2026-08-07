@@ -348,6 +348,27 @@
             ];
             inputsFrom = [ config.process-compose."default".services.outputs.devShell ];
           };
+          checks.plugin-check =
+            runCommand "plugin-check"
+              {
+                nativeBuildInputs = [ jq ];
+              }
+              ''
+                report=${self'.packages.plugin-check-report}/report.json
+                if grep -qxF 'Success: Checks complete. No errors found.' "$report"; then
+                  : # success message
+                elif jq -e '. == []' "$report" > /dev/null 2>&1; then
+                  : # empty JSON array
+                elif jq -e '. | length > 0' "$report" > /dev/null 2>&1; then
+                  jq . "$report" >&2
+                  exit 1
+                else
+                  echo "Unexpected plugin-check output:" >&2
+                  cat "$report" >&2
+                  exit 1
+                fi
+                touch "$out"
+              '';
           packages.plugin-check-report =
             runCommand "plugin-check-report"
               {

@@ -23,11 +23,29 @@ build-wp-org:
     nix build .#pluginWpOrg
 
 # Run tests and other checks
-check: _check_no_test test
+check: _check_no_test _check_plugin_check test
     nix flake lock
 
 _check_no_test: _lint _validate _phpcs
     php ./vendor/bin/rector --debug --dry-run
+
+_check_plugin_check:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    out=$(nix build --print-out-paths './dev#plugin-check-report')
+    report="$out/report.json"
+    if grep -qxF 'Success: Checks complete. No errors found.' "$report"; then
+        : # success message
+    elif jq -e '. == []' "$report" > /dev/null 2>&1; then
+        : # empty JSON array
+    elif jq -e '. | length > 0' "$report" > /dev/null 2>&1; then
+        jq . "$report"
+        exit 1
+    else
+        echo "Unexpected plugin-check output:"
+        cat "$report"
+        exit 1
+    fi
 
 # Run development server
 [working-directory('dev')]
