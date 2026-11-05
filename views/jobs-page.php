@@ -25,6 +25,11 @@ $static_deploy_jobs = $view['jobs'];
  */
 $static_deploy_options = $view['jobOptions'];
 
+/**
+ * @var array<int, int> $static_deploy_paths_crawled
+ */
+$static_deploy_paths_crawled = $view['pathsCrawled'] ?? [];
+
 $static_deploy_input = ( fn( string $name ) => OptionRenderer::echoInput( $static_deploy_options[ $name ] ) );
 
 $static_deploy_label = ( fn( string $name, bool $description = false ) => OptionRenderer::echoLabel( $static_deploy_options[ $name ], $description ) );
@@ -227,6 +232,14 @@ $static_deploy_label = ( fn( string $name, bool $description = false ) => Option
                 <td><?php echo esc_html( $static_deploy_job->job_type ); ?></td>
                 <td><?php echo esc_html( $static_deploy_job->status ); ?>
                 (<?php echo esc_html( human_time_diff( Utils::wpDateTime( $static_deploy_job->status_updated_at )->getTimestamp() ) ); ?> ago)
+                <?php
+                if ( isset( $static_deploy_paths_crawled[ $static_deploy_job->id ] ) ) {
+                    $static_deploy_path_count = $static_deploy_paths_crawled[ $static_deploy_job->id ];
+                    $static_deploy_paths_word = $static_deploy_path_count === 1 ? 'path' : 'paths';
+                    echo ' &mdash; ' . esc_html( (string) $static_deploy_path_count ) .
+                        ' ' . esc_html( $static_deploy_paths_word ) . ' crawled';
+                }
+                ?>
                 </td>
                 <td>
                 <?php

@@ -369,6 +369,32 @@ class CrawledFiles {
     }
 
     /**
+     *  Count files crawled at or after the given datetime.
+     *
+     *  Used to report how many paths a running job has crawled so far, since
+     *  each path is upserted with a fresh crawled_at as it flows through the
+     *  pipeline. Paths are written in chunks, so the count can lag the crawl.
+     *
+     *  @param string $since datetime in 'Y-m-d H:i:s' format
+     */
+    public static function countCrawledSince( string $since ): int {
+        global $wpdb;
+
+        $table_name = self::getTableName();
+
+        return intval(
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+            $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i WHERE crawled_at >= %s',
+                    $table_name,
+                    $since,
+                ),
+            ),
+        );
+    }
+
+    /**
      * @return object[] redirects
      */
     public static function listRedirects(): array {

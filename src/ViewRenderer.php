@@ -349,6 +349,23 @@ class ViewRenderer {
         $view['jobs'] = JobQueue::getJobs();
         $view['jobOptions'] = Options::getAll();
 
+        // Report progress for running jobs that crawl by counting the paths
+        // crawled since the job started. A processing job's status_updated_at
+        // is its start time, unlike created_at, which includes its time queued.
+        $crawling_job_types = [ 'crawl', 'direct_deploy', 'direct_deploy_post' ];
+        $paths_crawled = [];
+        foreach ( $view['jobs'] as $job ) {
+            if (
+                $job->status === 'processing'
+                && in_array( $job->job_type, $crawling_job_types, true )
+            ) {
+                $paths_crawled[ $job->id ] = CrawledFiles::countCrawledSince(
+                    $job->status_updated_at
+                );
+            }
+        }
+        $view['pathsCrawled'] = $paths_crawled;
+
         $view = apply_filters(
             Controller::getHookName( 'render_jobs_page_vars' ),
             $view

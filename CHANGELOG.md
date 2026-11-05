@@ -20,6 +20,8 @@
   isn't crawled before everything from the save has been written.
 - Fix CloudFront invalidations failing when two deployments finished within
   the same second, leaving the second deployment's paths stale.
+- Show the number of paths crawled so far for running Crawl, Direct Deploy,
+  and Direct Deploy Post jobs on the jobs page.
 
 ## 9.9.4 (2026-04-15)
 
