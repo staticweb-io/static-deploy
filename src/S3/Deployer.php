@@ -364,7 +364,7 @@ class Deployer {
             [
                 'DistributionId' => $distribution_id,
                 'InvalidationBatch' => [
-                    'CallerReference' => 'Static Deploy S3 Add-on ' . time(),
+                    'CallerReference' => uniqid( 'Static Deploy S3 Add-on ', true ),
                     'Paths' => [
                         'Items' => $items,
                         'Quantity' => count( $items ),
