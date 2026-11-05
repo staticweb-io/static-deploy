@@ -12,6 +12,8 @@
 - Fix a post with no usable URL, such as a deleted post or one with
   a private post type, failing its Direct Deploy Post job and causing
   all other waiting jobs to be skipped.
+- Fix a Direct Deploy Post job that died while running, such as from a
+  PHP time limit, blocking all later jobs from running.
 
 ## 9.9.4 (2026-04-15)
 

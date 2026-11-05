@@ -6,6 +6,15 @@ use GuzzleHttp\Psr7\Utils as Psr7Utils;
 
 class JobQueue {
 
+    private const JOB_TYPES = [
+        'detect',
+        'crawl',
+        'post_process',
+        'deploy',
+        'direct_deploy',
+        'direct_deploy_post',
+    ];
+
     public static function getTableName(): string {
         return Db::getTableName( 'jobs' );
     }
@@ -195,16 +204,7 @@ class JobQueue {
 
         $table_name = self::getTableName();
 
-        $job_types = [
-            'detect',
-            'crawl',
-            'post_process',
-            'deploy',
-            'direct_deploy',
-            'direct_deploy_post',
-        ];
-
-        foreach ( $job_types as $job_type ) {
+        foreach ( self::JOB_TYPES as $job_type ) {
             // get all jobs for a type where status is 'waiting'
             if ( $job_type === 'direct_deploy_post' ) {
                 // Don't collapse direct_deploy_post jobs that target a specific
@@ -341,13 +341,12 @@ class JobQueue {
     public static function markFailedJobs(): void {
         global $wpdb;
 
-        $job_types = [ 'detect', 'crawl', 'post_process', 'deploy', 'direct_deploy' ];
         $table_name = self::getTableName();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query( 'START TRANSACTION' );
 
-        foreach ( $job_types as $job_type ) {
+        foreach ( self::JOB_TYPES as $job_type ) {
             try {
                 $lock = Db::getLockName( self::getTableName(), $job_type );
                 $free = intval(

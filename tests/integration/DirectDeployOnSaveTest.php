@@ -115,4 +115,23 @@ final class DirectDeployOnSaveTest extends TestCase {
 
         $this->assertDeployed( 'after-deleted-page' );
     }
+
+    /**
+     * If PHP dies during a job, such as by hitting a time limit, the
+     * row stays in 'processing'. That must not block the queue forever.
+     */
+    public function testKilledDirectDeployPostJobDoesNotBlockQueue(): void {
+        $this->createPost( 'after-killed-job' );
+        $this->wpCli(
+            [
+                'eval',
+                '$jobs = ' . \StaticDeploy\JobQueue::class . '::getProcessableJobs();
+                 ' . \StaticDeploy\JobQueue::class . '::setStatus( (int) $jobs[0]->id, "processing" );',
+            ]
+        );
+
+        $this->pluginCli( [ 'jobs', 'process' ] );
+
+        $this->assertDeployed( 'after-killed-job' );
+    }
 }
