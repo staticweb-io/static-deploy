@@ -16,6 +16,8 @@
   PHP time limit, blocking all later jobs from running.
 - Fix jobs added while the queue was being processed, such as from saving
   a post during a deployment, waiting until the next time the queue ran.
+- Queue jobs on wp_after_insert_post instead of save_post, so that a post
+  isn't crawled before everything from the save has been written.
 
 ## 9.9.4 (2026-04-15)
 

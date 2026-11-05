@@ -171,4 +171,34 @@ final class DirectDeployOnSaveTest extends TestCase {
         $this->wpCli( [ 'option', 'delete', 'sd_saved_during_deploy' ] );
         $this->assertDeployed( 'saved-during-deploy' );
     }
+
+    /**
+     * Other save_post callbacks may still change what the page renders,
+     * so a job must not be picked up until they have all run.
+     */
+    public function testJobsAreNotQueuedBeforeSaveFinishes(): void {
+        $this->installStringPlugin(
+            'count-jobs-on-save',
+            '<?php
+            /* Plugin Name: count-jobs-on-save */
+            add_action( "save_post", function () {
+                update_option(
+                    "sd_waiting_jobs_on_save",
+                    ' . \StaticDeploy\JobQueue::class . '::getWaitingJobsCount()
+                );
+            }, 10 );'
+        );
+
+        $this->createPost( 'count-jobs-page' );
+
+        $waiting = $this->wpCli( [ 'option', 'get', 'sd_waiting_jobs_on_save' ] )['final_line'];
+        $this->wpCli( [ 'option', 'delete', 'sd_waiting_jobs_on_save' ] );
+        $this->assertSame( '0', $waiting );
+        $this->assertSame(
+            2,
+            (int) $this->wpCli(
+                [ 'eval', 'echo ' . \StaticDeploy\JobQueue::class . '::getWaitingJobsCount();' ]
+            )['final_line']
+        );
+    }
 }

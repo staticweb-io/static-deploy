@@ -234,10 +234,13 @@ class WordPressAdmin {
             3
         );
 
+        // Run after everything that can change what the post renders, including
+        // other plugins' save_post callbacks and the terms and meta saved by the
+        // block editor's REST requests, or we may crawl the old version.
         add_action(
-            'save_post',
+            'wp_after_insert_post',
             Controller::savePostHandler( ... ),
-            0
+            PHP_INT_MAX
         );
 
         add_action(
