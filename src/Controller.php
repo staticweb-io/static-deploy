@@ -624,8 +624,8 @@ class Controller {
     }
 
     /*
-        Should only process at most 4 jobs here (1 per type), with
-        earlier jobs of the same type having been "squashed" first
+        Processes waiting jobs, with earlier jobs of the same type
+        having been "squashed" first
     */
     public static function processQueue(): void {
         global $wpdb;
@@ -645,12 +645,24 @@ class Controller {
             return;
         }
 
-        // get all with status 'waiting' in order of oldest to newest
-        $jobs = JobQueue::getProcessableJobs();
+        // Any other process that tried to run the queue while we were busy has
+        // given up, so also pick up the jobs that were added in the meantime.
+        // A job can stay waiting if its lock isn't free, so only try it once.
+        $tried = [];
+        do {
+            // get all with status 'waiting' in order of oldest to newest
+            $jobs = array_filter(
+                JobQueue::getProcessableJobs(),
+                fn( \stdClass $job ): bool => ! isset( $tried[ $job->id ] ),
+            );
 
-        foreach ( $jobs as $job ) {
-            JobQueue::process( $job );
-        }
+            foreach ( $jobs as $job ) {
+                $tried[ $job->id ] = true;
+                JobQueue::process( $job );
+            }
+
+            JobQueue::squashQueue();
+        } while ( $jobs !== [] );
     }
 
     /**

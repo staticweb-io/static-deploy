@@ -14,6 +14,8 @@
   all other waiting jobs to be skipped.
 - Fix a Direct Deploy Post job that died while running, such as from a
   PHP time limit, blocking all later jobs from running.
+- Fix jobs added while the queue was being processed, such as from saving
+  a post during a deployment, waiting until the next time the queue ran.
 
 ## 9.9.4 (2026-04-15)
 

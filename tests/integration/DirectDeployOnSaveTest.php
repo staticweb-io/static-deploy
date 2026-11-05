@@ -134,4 +134,41 @@ final class DirectDeployOnSaveTest extends TestCase {
 
         $this->assertDeployed( 'after-killed-job' );
     }
+
+    /**
+     * A concurrent process declines to start while a job is running,
+     * so the running process has to pick up what was queued meanwhile.
+     */
+    public function testPageSavedDuringProcessingIsDeployed(): void {
+        $this->installStringPlugin(
+            'save-during-deploy',
+            '<?php
+            /* Plugin Name: save-during-deploy */
+            add_action( "static_deploy_post_direct_deploy_trigger", function () {
+                // Save during the last of the two queued jobs, so that
+                // nothing already picked up can deploy the page.
+                static $calls = 0;
+                if ( ++$calls === 2 && ! get_option( "sd_saved_during_deploy" ) ) {
+                    update_option( "sd_saved_during_deploy", "1" );
+                    wp_insert_post( [
+                        "post_content" => "content-of-saved-during-deploy",
+                        "post_name" => "saved-during-deploy",
+                        "post_status" => "publish",
+                        "post_title" => "saved-during-deploy",
+                        "post_type" => "page",
+                    ] );
+                }
+            } );'
+        );
+        $this->createPost( 'before-deploy' );
+
+        $this->pluginCli( [ 'jobs', 'process' ] );
+
+        $saved_id = $this->wpCli(
+            [ 'post', 'list', '--post_type=page', '--name=saved-during-deploy', '--field=ID' ]
+        )['final_line'];
+        $this->post_ids[] = $saved_id;
+        $this->wpCli( [ 'option', 'delete', 'sd_saved_during_deploy' ] );
+        $this->assertDeployed( 'saved-during-deploy' );
+    }
 }
