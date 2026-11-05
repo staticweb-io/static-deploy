@@ -9,6 +9,9 @@
   URL without carrying the port over. It defaults to off.
 - Prevent issues while detecting sitemap URLs from crashing the job.
 - Remove code that disables some default WordPress actions.
+- Fix a post with no usable URL, such as a deleted post or one with
+  a private post type, failing its Direct Deploy Post job and causing
+  all other waiting jobs to be skipped.
 
 ## 9.9.4 (2026-04-15)
 

@@ -2,6 +2,8 @@
 
 namespace StaticDeploy;
 
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
+
 class JobQueue {
 
     public static function getTableName(): string {
@@ -384,6 +386,30 @@ class JobQueue {
     }
 
     /**
+     * Get the path to deploy for a post, or null if it doesn't have one.
+     *
+     * A post may not have a usable path by the time its job runs, such as
+     * when it has been deleted or its post type has no public URLs. That
+     * leaves nothing to deploy, but it isn't a failure of the job.
+     */
+    private static function getPostPath( int $post_id ): ?string {
+        if ( $post_id === 0 ) {
+            WsLog::w( 'No post ID found for direct deployment post' );
+            return null;
+        }
+
+        $permalink = get_permalink( $post_id );
+        $path = $permalink ? wp_make_link_relative( $permalink ) : '';
+        $msg = PathInfo::pathErrorMessage( Psr7Utils::uriFor( $path ) );
+        if ( $msg ) {
+            WsLog::w( "Skipping direct deployment of post {$post_id}: {$msg}: \"{$path}\"" );
+            return null;
+        }
+
+        return $path;
+    }
+
+    /**
      * Process a single job
      */
     public static function process( \stdClass $job ): void {
@@ -445,15 +471,12 @@ class JobQueue {
                     break;
                 case 'direct_deploy_post':
                     $deployer = new DirectDeployer();
-                    $post_id = $job->triggering_post_id;
-                    if ( $post_id ) {
-                        $path = wp_make_link_relative( get_permalink( $post_id ) );
+                    $path = self::getPostPath( (int) $job->triggering_post_id );
+                    if ( $path !== null ) {
                         $paths = new \ArrayIterator( [ new PathInfo( $path ) ] );
                         $detected = DetectedFiles::addPathsIter( $paths );
                         WsLog::l( 'Starting direct deployment for path ' . $path );
                         $deployer->deployPaths( $detected );
-                    } else {
-                        WsLog::w( 'No post ID found for direct deployment post' );
                     }
                     $deployer->deployComplete();
                     break;
