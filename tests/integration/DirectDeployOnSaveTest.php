@@ -122,11 +122,12 @@ final class DirectDeployOnSaveTest extends TestCase {
      */
     public function testKilledDirectDeployPostJobDoesNotBlockQueue(): void {
         $this->createPost( 'after-killed-job' );
+        $job_queue = \StaticDeploy\JobQueue::class;
         $this->wpCli(
             [
                 'eval',
-                '$jobs = ' . \StaticDeploy\JobQueue::class . '::getProcessableJobs();
-                 ' . \StaticDeploy\JobQueue::class . '::setStatus( (int) $jobs[0]->id, "processing" );',
+                '$jobs = ' . $job_queue . '::getProcessableJobs();
+                 ' . $job_queue . '::setStatus( (int) $jobs[0]->id, "processing" );',
             ]
         );
 
