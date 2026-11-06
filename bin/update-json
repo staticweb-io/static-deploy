@@ -47,6 +47,25 @@ if [[ -n "$tested_pkg" ]]; then
   tested="${tested_pkg#wordpress_}"
   tested="${tested//_/.}"
   tested="${tested%.*}"
+
+  # Ask the locked flake because that's the prerelease that nix flake check tests
+  locked_rev=$(nix flake metadata ./dev --json 2>/dev/null | jq -r '.locks.nodes["wordpress-flake"].locked.rev')
+  prerelease_version=$(nix eval "$FLAKE_REF/$locked_rev#prerelease.version" --raw 2>/dev/null || echo "")
+
+  # Compare major.minor because that's all that Tested up to records
+  if [[ "$prerelease_version" =~ ^[0-9]+\.[0-9]+ ]]; then
+    prerelease_minor="${BASH_REMATCH[0]}"
+    newest_minor=$(printf '%s\n' "$tested" "$prerelease_minor" | sort -V | tail -n 1)
+    if [[ "$prerelease_minor" != "$tested" && "$prerelease_minor" == "$newest_minor" ]]; then
+      echo -e "\n➡️  Running check for WordPress prerelease $prerelease_version"
+      if WORDPRESS_PACKAGE=prerelease nix flake check --impure ./dev; then
+        tested="$prerelease_minor"
+      else
+        echo "❌ Check failed for WordPress prerelease $prerelease_version"
+      fi
+    fi
+  fi
+
   echo -e "\n✅ Tested up to: $tested"
 
   last_updated=$(git log -1 --format="%ci")
