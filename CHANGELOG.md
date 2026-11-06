@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 9.10.0 (2026-11-05)
+
 - Add HTTP Status, Content-Type, Redirect To, and Crawled At columns
   to the crawled files page.
 - Add debug log for CommandPool config in S3 deployer.

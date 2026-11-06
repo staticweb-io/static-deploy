@@ -3,7 +3,7 @@ Contributors: staticwebio
 Tags: performance, s3, security, speed, static site generator
 Requires at least: 6.4
 Tested up to: 7.2
-Stable tag: 9.9.4
+Stable tag: 9.10.0
 Requires PHP: 8.2
 License: Unlicense
 License URI: https://github.com/staticweb-io/static-deploy/blob/develop/LICENSE
@@ -34,6 +34,14 @@ This dramatically reduces the attack surface of your website and makes expensive
 
 Full changelog available at https://github.com/staticweb-io/static-deploy/blob/develop/CHANGELOG.md
 
+= 9.10.0 =
+Add more columns to the crawled files page.
+Show the number of paths crawled so far for running jobs on the jobs page.
+Add a "Strip Ports From Rewritten Hosts" option.
+Fix S3 deployer concurrency option being ignored.
+Fix CloudFront invalidations failing when two deployments finished within the same second.
+Fix several cases of jobs failing, blocking other jobs, or waiting too long in the queue.
+
 = 9.9.4 =
 Fix crawled redirects getting filenames assigned.
 
@@ -41,14 +49,12 @@ Fix crawled redirects getting filenames assigned.
 Fix multiline options in admin did not save properly.
 Fix an issue where the crawler could pass along a directory path
 instead of passing the index.html filename for a crawled page.
-
-= 9.9.0 =
-Enable Direct Deploy Post by default in new installs.
-Show hashes and deployed at times on deploy cache pages.
-Numerous fixes.
 
 == Upgrade Notice ==
 
+= 9.10.0 =
+S3 deploys now respect the concurrency option (default 4 files at once). It was always 1 before, so lower it if your storage provider limits requests. Also fixes jobs getting stuck in the queue and failed CloudFront invalidations.
+
 = 9.9.4 =
 Fix crawled redirects getting filenames assigned.
 
@@ -56,8 +62,3 @@ Fix crawled redirects getting filenames assigned.
 Fix multiline options in admin did not save properly.
 Fix an issue where the crawler could pass along a directory path
 instead of passing the index.html filename for a crawled page.
-
-= 9.9.0 =
-Enable Direct Deploy Post by default in new installs.
-Show hashes and deployed at times on deploy cache pages.
-Numerous fixes.
