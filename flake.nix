@@ -34,7 +34,7 @@
           pname = "${name}-composer-deps-dev";
           version = "1.0.0";
           src = composerSrc;
-          vendorHash = "sha256-/9PGCA4AmI3ja69BPWHI+VefM7Fq4UCchn9Oc3ftEpU=";
+          vendorHash = "sha256-Kmivz3VRVmpSH0SuoC+z+vjShu4/c6yWcDlq2ky1JnA=";
         });
         # Plugin source, without tests. Tests are not shipped in the built
         # plugin, so keeping them out of this derivation stops test-only edits
