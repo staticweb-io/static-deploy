@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FLAKE_REV=$(nix flake metadata ./dev --json 2>/dev/null | jq -r '.locks.nodes["wordpress-flake"].locked.rev')
-FLAKE_REF="github:staticweb-io/wordpress-flake/$FLAKE_REV"
+FLAKE_REF="github:staticweb-io/wordpress-flake"
 SYSTEM=$(nix eval --impure --expr builtins.currentSystem --raw)
+
+readme_headers=$(nix build --print-out-paths '.#readmeHeaders')
+requires=$(jq -r '.["Requires at least"]' "$readme_headers")
+echo "Declared minimum WP version (Requires at least): $requires"
 
 echo "Getting wordpress_* packages from $FLAKE_REF for system $SYSTEM..."
 
@@ -18,62 +21,38 @@ if [[ -z "$wordpress_packages" ]]; then
   echo "No wordpress_* packages found."
   exit 1
 fi
-last_success=""
-first_pkg=""
+tested_pkg=""
 for pkg in $wordpress_packages; do
-  [[ -z "$first_pkg" ]] && first_pkg="$pkg"
+  pkg_version="${pkg#wordpress_}"
+  pkg_version="${pkg_version//_/.}"
+  pkg_version="${pkg_version%.*}"
 
   echo -e "\n➡️  Running check for WORDPRESS_PACKAGE=$pkg"
   if WORDPRESS_PACKAGE="$pkg" nix flake check --impure ./dev; then
-    last_success="$pkg"
+    [[ -z "$tested_pkg" ]] && tested_pkg="$pkg"
   else
     echo "❌ Check failed for $pkg"
     break
   fi
+
+  # Stop once we've tested down to the declared minimum
+  if [[ "$pkg_version" == "$requires" ]]; then
+    break
+  fi
 done
 
-prerelease_passed=0
-prerelease_version=$(nix eval "$FLAKE_REF#prerelease.version" --raw 2>/dev/null || echo "")
-
-if [[ -n "$prerelease_version" && -n "$first_pkg" ]]; then
-  stable_parts="${first_pkg#wordpress_}"
-  stable_major="${stable_parts%%_*}"
-  stable_minor="${stable_parts#*_}"; stable_minor="${stable_minor%%_*}"
-  prerelease_major="${prerelease_version%%.*}"
-  prerelease_minor="${prerelease_version#*.}"
-  prerelease_minor="${prerelease_minor%%[^0-9]*}"
-
-  if [[ "$prerelease_major" -gt "$stable_major" ]] || \
-     [[ "$prerelease_major" -eq "$stable_major" && "$prerelease_minor" -gt "$stable_minor" ]]; then
-    echo -e "\n➡️  Testing WordPress prerelease $prerelease_version"
-    if WORDPRESS_PACKAGE=prerelease nix flake check --impure ./dev; then
-      prerelease_passed=1
-      echo "✅ Compatible with WordPress prerelease $prerelease_version"
-    else
-      echo "❌ Not compatible with WordPress prerelease $prerelease_version"
-    fi
-  fi
-fi
-
-if [[ -n "$last_success" ]]; then
-  echo -e "\n✅ Last successful version: $last_success"
+if [[ -n "$tested_pkg" ]]; then
+  tested="${tested_pkg#wordpress_}"
+  tested="${tested//_/.}"
+  tested="${tested%.*}"
+  echo -e "\n✅ Tested up to: $tested"
 
   last_updated=$(git log -1 --format="%ci")
 
-  # Extract version from first_pkg (e.g., wordpress_6_8_1 → 6.8.1)
-  requires="${last_success#wordpress_}"
-  requires="${requires//_/.}"
-  requires="${requires%.*}"  # Remove the patch version
+  # Update readme.txt Tested up to
+  sed -i "s/^Tested up to: .*/Tested up to: $tested/" readme.txt
 
-  if [[ "$prerelease_passed" -eq 1 ]]; then
-    tested="$prerelease_major.$prerelease_minor"
-  else
-    tested="${first_pkg#wordpress_}"
-    tested="${tested//_/.}"
-    tested="${tested%.*}"
-  fi
-
-  # Update using jq
+  # Update update.json — requires comes from readme.txt declaration
   TMPUPDATE=$(mktemp)
   jq --arg requires "$requires" --arg tested "$tested" --arg last_updated "$last_updated" \
   '.requires = $requires | .tested = $tested | .last_updated = $last_updated' \
