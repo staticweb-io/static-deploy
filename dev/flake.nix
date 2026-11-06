@@ -264,6 +264,7 @@
                 httpConfig = nginxHttpConfig "./data/wordpress1" "${
                   config.services.phpfpm."phpfpm1".dataDir
                 }/phpfpm.sock";
+                port = serverPort;
               };
               services.phpfpm."phpfpm1" = {
                 enable = true;
