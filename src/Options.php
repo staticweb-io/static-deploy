@@ -585,9 +585,7 @@ class Options {
     ): array {
         global $wpdb;
 
-        if ( $option_specs === null ) {
-            $option_specs = self::optionSpecs();
-        }
+        $option_specs ??= self::optionSpecs();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $options = $wpdb->get_results(

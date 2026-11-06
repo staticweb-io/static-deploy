@@ -34,13 +34,9 @@ final readonly class OptionData {
     ) {
         $min_value = $option_spec->min_value;
 
-        if ( $blob_value === null ) {
-            $blob_value = $option_spec->default_blob_value;
-        }
+        $blob_value ??= $option_spec->default_blob_value;
 
-        if ( $unfiltered_value === null ) {
-            $unfiltered_value = $option_spec->default_value;
-        }
+        $unfiltered_value ??= $option_spec->default_value;
 
         if ( $option_spec->hasBlobValue() ) {
             if ( $blob_value === null ) {

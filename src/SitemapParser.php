@@ -228,9 +228,7 @@ class SitemapParser {
         }
 
         try {
-            if ( ! isset( $this->config['guzzle']['headers']['User-Agent'] ) ) {
-                $this->config['guzzle']['headers']['User-Agent'] = $this->user_agent;
-            }
+            $this->config['guzzle']['headers']['User-Agent'] ??= $this->user_agent;
             $client = new GuzzleHttp\Client( [ 'verify' => false ] );
 
             if ( ! is_array( $this->config['guzzle'] ) ) {
