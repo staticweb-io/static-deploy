@@ -4,10 +4,6 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
-    hyperfine-flake = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:john-shaffer/hyperfine-flake";
-    };
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
     wordpress-flake = {
@@ -332,8 +328,6 @@
             buildInputs = [
               fd
               fzf # Used by just --choose
-              hyperfine
-              inputs.hyperfine-flake.packages.${system}.scripts
               jq
               just
               nixfmt-rfc-style

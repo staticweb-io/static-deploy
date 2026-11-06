@@ -36,27 +36,6 @@
         "type": "github"
       }
     },
-    "hyperfine-flake": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1791214560,
-        "narHash": "sha256-2z3m915KV7dMaXiN9OjNC4ntNiLX7F1XlBjMYQZpJJE=",
-        "owner": "john-shaffer",
-        "repo": "hyperfine-flake",
-        "rev": "595409f483c277315014f180d33031afd5ee00f5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "john-shaffer",
-        "repo": "hyperfine-flake",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1793633738,
@@ -138,7 +117,6 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "hyperfine-flake": "hyperfine-flake",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "process-compose-flake": "process-compose-flake",
@@ -146,27 +124,6 @@
         "static-deploy": "static-deploy",
         "systems": "systems_2",
         "wordpress-flake": "wordpress-flake"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "hyperfine-flake",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791189933,
-        "narHash": "sha256-Y8eN7ki0Urx4Ojf4w1xSpWg8uk/3lJqK+E0Oth77rH0=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "e60029353d0c48d216bc4b065168ccd4079c166f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
       }
     },
     "services-flake": {
