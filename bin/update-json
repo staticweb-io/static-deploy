@@ -9,6 +9,9 @@ requires=$(jq -r '.["Requires at least"]' "$readme_headers")
 echo "Declared minimum WP version (Requires at least): $requires"
 requires_php=$(jq -r '.["Requires PHP"]' "$readme_headers")
 echo "Declared minimum PHP version (Requires PHP): $requires_php"
+version=$(jq -er '.["Stable tag"]' "$readme_headers")
+echo "Plugin version (Stable tag): $version"
+name=$(sed -n 's/^=== \(.*\) ===$/\1/p' readme.txt)
 
 echo "Getting wordpress_* packages from $FLAKE_REF for system $SYSTEM..."
 
@@ -73,11 +76,16 @@ if [[ -n "$tested_pkg" ]]; then
   # Update readme.txt Tested up to
   sed -i "s/^Tested up to: .*/Tested up to: $tested/" readme.txt
 
-  # Update update.json — requires and requires_php come from readme.txt declarations
-  TMPUPDATE=$(mktemp)
-  jq --arg requires "$requires" --arg requires_php "$requires_php" --arg tested "$tested" --arg last_updated "$last_updated" \
-  '.requires = $requires | .requires_php = $requires_php | .tested = $tested | .last_updated = $last_updated' \
-  update.json > "$TMPUPDATE" && mv "$TMPUPDATE" update.json
+  # Generate update.json. Run this after the GitHub release exists, so that download_url resolves.
+  jq -n \
+    --arg download_url "https://github.com/staticweb-io/static-deploy/releases/download/v$version/plugin.zip" \
+    --arg last_updated "$last_updated" \
+    --arg name "$name" \
+    --arg requires "$requires" \
+    --arg requires_php "$requires_php" \
+    --arg tested "$tested" \
+    --arg version "$version" \
+    '$ARGS.named' > update.json
 else
   echo -e "\n❌ No successful checks."
 fi
