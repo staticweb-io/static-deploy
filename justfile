@@ -113,8 +113,8 @@ _test-integration:
     nix flake check ./dev
 
 # Run integration tests against a live dev server
-_test-integration-live:
-    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite Integration
+_test-integration-live *ARGS:
+    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite Integration {{ ARGS }}
 
 # Run tests against a live dev server
 test-live: _test-integration-live _test-aws
