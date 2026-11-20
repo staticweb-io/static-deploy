@@ -213,9 +213,7 @@ class CrawledFiles {
         // both the crawled and the processed.
         array_map(
             function ( string $dir ) use ( $path ): void {
-                $file_path = FilesHelper::getFilePath( $dir, $path );
-                $suffix = ltrim( $file_path, '/' );
-                $full_path = trailingslashit( $dir ) . $suffix;
+                $full_path = FilesHelper::getFilePath( $dir, $path );
                 if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
                     FilesHelper::deleteFile( $full_path );
                 }

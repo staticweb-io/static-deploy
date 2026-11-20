@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix files that no longer exist, or that return a 404, not being deleted
+  from the crawled and processed sites.
 - Add backup plugin directories, database dumps, backup archives,
   `.log` files, and `.env` files to the default Paths to Ignore.
 - Fix posts saved outside of wp-admin not queueing jobs. This includes

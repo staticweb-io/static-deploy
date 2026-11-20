@@ -23,4 +23,26 @@ final class PostProcessTest extends TestCase {
             $content
         );
     }
+
+    /**
+     * A file that no longer exists must be removed from the processed
+     * site, or it would still be deployed.
+     */
+    public function testDeletedFileIsRemoved(): void {
+        $path = ITEnv::getTestContentPath() . '/deleted.txt';
+        $filename = ITEnv::getTestContentDir() . '/deleted.txt';
+        file_put_contents( $filename, 'deleted' );
+        $this->pluginCli( [ 'detect' ] );
+        $this->pluginCli( [ 'crawl' ] );
+        $this->pluginCli( [ 'post-process' ] );
+        $this->assertSame( 'deleted', $this->getProcessedFileContents( $path ) );
+
+        unlink( $filename );
+        $this->pluginCli( [ 'crawl' ] );
+
+        $this->assertFileDoesNotExist(
+            ITEnv::getWordPressDir() . '/wp-content/uploads/'
+            . $this->getOptionValue( 'processedSitePath' ) . $path
+        );
+    }
 }
