@@ -136,6 +136,9 @@ class FilesHelper {
             return $init;
         }
 
+        // Loaded only in wp-admin, but we can run elsewhere, such as WP-Cron
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+
         $init_wpfs = function ( array|bool $creds ) use ( $throw_on_failure ): bool {
             if ( $creds === true ) {
                 $init = WP_Filesystem();
