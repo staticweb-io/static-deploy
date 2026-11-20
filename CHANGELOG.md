@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Fix paths that were detected before matching a Paths to Ignore pattern
+  still being crawled and deployed. They're now removed from the detected
+  and crawled files when crawling.
 - Fix files that no longer exist, or that return a 404, not being deleted
   from the crawled and processed sites.
 - Add backup plugin directories, database dumps, backup archives,

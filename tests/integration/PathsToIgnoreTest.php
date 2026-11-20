@@ -123,4 +123,41 @@ final class PathsToIgnoreTest extends TestCase {
 
         $this->assertSame( $ignored, $actual );
     }
+
+    /**
+     * A path detected before an ignore pattern matched it must be
+     * removed rather than crawled and deployed again.
+     */
+    public function testNewlyIgnoredPathIsRemoved(): void {
+        $path = ITEnv::getTestContentPath() . '/later-ignored.txt';
+        file_put_contents( ITEnv::getTestContentDir() . '/later-ignored.txt', 'secret' );
+        $this->pluginCli( [ 'detect' ] );
+        $this->pluginCli( [ 'crawl' ] );
+        $this->pluginCli( [ 'post_process' ] );
+        $this->assertSame( 'secret', $this->getProcessedFileContents( $path ) );
+
+        $paths_to_ignore = implode(
+            "\n",
+            $this->pluginCli( [ 'options', 'get', 'pathsToIgnore' ] )['output']
+        );
+        try {
+            $this->setOptionValue( 'pathsToIgnore', $paths_to_ignore . "\nlater-ignored.txt" );
+            $this->pluginCli( [ 'detect' ] );
+            $this->pluginCli( [ 'crawl' ] );
+            $this->pluginCli( [ 'post_process' ] );
+        } finally {
+            $this->setOptionValue( 'pathsToIgnore', $paths_to_ignore );
+        }
+
+        $this->assertNotContains(
+            $path,
+            $this->pluginCli( [ 'detected_files', 'list' ] )['output']
+        );
+        $uploads_dir = ITEnv::getWordPressDir() . '/wp-content/uploads/';
+        foreach ( [ 'crawledSitePath', 'processedSitePath' ] as $option_name ) {
+            $this->assertFileDoesNotExist(
+                $uploads_dir . $this->getOptionValue( $option_name ) . $path
+            );
+        }
+    }
 }

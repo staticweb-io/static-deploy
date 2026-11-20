@@ -202,6 +202,26 @@ class CrawledFiles {
     }
 
     /**
+     * Remove paths that match an ignore pattern, such as a
+     * pattern added after the path was added to the database.
+     *
+     * @param \Iterator<PathInfo> $paths
+     * @return \Iterator<PathInfo>
+     */
+    public static function removeIgnored(
+        \Iterator $paths,
+        FileFiltering $filtering,
+    ): \Iterator {
+        foreach ( $paths as $path ) {
+            if ( $filtering->pathLooksCrawlable( $path->path ) ) {
+                yield $path;
+            } else {
+                self::removePath( $path->path );
+            }
+        }
+    }
+
+    /**
      * Remove a path from the detected and crawled files,
      * and its files from the crawled and processed sites.
      */

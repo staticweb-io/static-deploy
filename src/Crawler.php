@@ -98,7 +98,10 @@ class Crawler {
             $crawler = new Crawler( $crawl_config );
             $url_discovery = new URLDiscovery();
 
-            $detected = DetectedFiles::getPathsIter();
+            $detected = CrawledFiles::removeIgnored(
+                DetectedFiles::getPathsIter(),
+                new FileFiltering(),
+            );
             $last_now = Db::now();
             $crawled = $crawler->crawlIter( $detected );
             $crawled = CrawledFiles::removeOutdated( $crawled );
