@@ -233,7 +233,13 @@ class WordPressAdmin {
             10,
             3
         );
+    }
 
+    /**
+     * Register hooks for changes to posts that should queue jobs
+     * or invalidate caches
+     */
+    public static function registerPostHooks(): void {
         // Run after everything that can change what the post renders, including
         // other plugins' save_post callbacks and the terms and meta saved by the
         // block editor's REST requests, or we may crawl the old version.

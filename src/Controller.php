@@ -46,6 +46,7 @@ class Controller {
         }
 
         WordPressAdmin::registerHooks();
+        WordPressAdmin::registerPostHooks();
 
         if ( ! defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) || ! STATIC_DEPLOY_WP_ORG_MODE ) {
             WordPressAdmin::buildUpdateChecker( $bootstrap_file );
