@@ -53,6 +53,10 @@ dev CLEAN="false":
     {{ if CLEAN == "true" { "rm -rf data" } else { "" } }}
     nix run
 
+# Reinstall the plugin in the running development server from the current source
+dev-reinstall-plugin:
+    wp --path="{{ wordpress_dir }}" plugin install --force --activate "$(nix build --print-out-paths .#pluginWpOrg)/staticweb-deploy.zip"
+
 # Format source and then check for unfixable issues
 format: && _format-php
     just --fmt --unstable
