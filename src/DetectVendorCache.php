@@ -41,7 +41,7 @@ class DetectVendorCache {
                     );
 
                 yield new PathInfo(
-                    $prefix . home_url( $detected_filename ),
+                    $prefix . $detected_filename,
                     filename: $filename,
                 );
             }

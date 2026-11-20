@@ -31,6 +31,26 @@ final class DetectTest extends TestCase {
     }
 
     /**
+     * Files in vendor cache dirs such as Divi's et-cache are
+     * detected by their path under wp-content, not by a path
+     * with the URL appended
+     */
+    public function testIncludesVendorCacheFiles(): void {
+        $cache_dir = ITEnv::getWordPressDir() . '/wp-content/et-cache';
+        mkdir( $cache_dir . '/sd-test', 0775, true );
+        file_put_contents( $cache_dir . '/sd-test/style.css', 'body {}' );
+
+        try {
+            $this->pluginCli( [ 'detect' ] );
+            $lines = $this->pluginCli( [ 'detected-files', 'list' ] )['output'];
+            $this->assertContains( '/wp-content/et-cache/sd-test/style.css', $lines );
+            $this->assertSame( [], preg_grep( '#://#', $lines ) );
+        } finally {
+            exec( 'rm -rf ' . escapeshellarg( $cache_dir ) );
+        }
+    }
+
+    /**
      * Test that the detected files list contains expected URL
      */
     public function testList(): void {
