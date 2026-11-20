@@ -113,8 +113,7 @@ class DirectDeployer {
         \Iterator $path_infos,
         bool $remove_404s = true,
     ): void {
-        $filtering = new FileFiltering();
-        $path_infos = $filtering->filterLooksCrawlable( $path_infos );
+        $path_infos = CrawledFiles::removeIgnored( $path_infos, new FileFiltering() );
         $crawled = $this->crawler->crawlIter( $path_infos );
         if ( $remove_404s ) {
             $crawled = CrawledFiles::removeOutdated( $crawled );

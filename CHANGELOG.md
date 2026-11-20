@@ -5,7 +5,7 @@
   that aren't part of the site. It defaults to "off".
 - Fix paths that were detected before matching a Paths to Ignore pattern
   still being crawled and deployed. They're now removed from the detected
-  and crawled files when crawling.
+  and crawled files when crawling or running Direct Deploy.
 - Fix files that no longer exist, or that return a 404, not being deleted
   from the crawled and processed sites.
 - Add backup plugin directories, database dumps, backup archives,

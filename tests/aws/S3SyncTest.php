@@ -200,6 +200,31 @@ final class S3SyncTest extends TestCase {
     }
 
     /**
+     * A path that matched an ignore pattern after it was deployed
+     * is no longer part of the site.
+     */
+    public function testDirectDeployDeletesNewlyIgnoredObject(): void {
+        $this->setOptionValue( 's3_deleteStaleObjects', 'all' );
+        file_put_contents( ITEnv::getTestContentDir() . '/sync.txt', 'sync' );
+        $key = ltrim( ITEnv::getTestContentPath(), '/' ) . '/sync.txt';
+        $this->pluginCli( [ 'direct-deploy' ] );
+        $this->assertKeysPresent( [ $key ] );
+
+        $paths_to_ignore = implode(
+            "\n",
+            $this->pluginCli( [ 'options', 'get', 'pathsToIgnore' ] )['output']
+        );
+        try {
+            $this->setOptionValue( 'pathsToIgnore', $paths_to_ignore . "\nsync.txt" );
+            $this->pluginCli( [ 'direct-deploy' ] );
+        } finally {
+            $this->setOptionValue( 'pathsToIgnore', $paths_to_ignore );
+        }
+
+        $this->assertKeysAbsent( [ $key ] );
+    }
+
+    /**
      * A deleted object's deploy cache entry must be removed too,
      * or the file would be skipped as already deployed if it
      * became part of the site again.
