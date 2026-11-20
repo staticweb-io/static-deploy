@@ -166,6 +166,18 @@ class S3Options {
             ),
             new OptionSpec(
                 'string',
+                self::getName( 'deleteStaleObjects' ),
+                'off',
+                'Delete Stale Objects',
+                'After a full deployment, delete objects under the path prefix' .
+                ' that are not part of the site.' .
+                ' "all" deletes every such object.' .
+                ' "except-ignored" keeps objects whose paths match Paths to Ignore.' .
+                ' This does not happen when deploying a single post.',
+                allowed_values: [ 'off', 'all', 'except-ignored' ],
+            ),
+            new OptionSpec(
+                'string',
                 self::getName( 'headerCacheControl' ),
                 'public, max-age=900',
                 'Cache-Control header value',
@@ -240,6 +252,7 @@ class S3Options {
                         self::getName( 'headerCacheControl' ),
                         self::getName( 'objectAcl' ),
                         self::getName( 'concurrency' ),
+                        self::getName( 'deleteStaleObjects' ),
                     ],
                 ],
                 [

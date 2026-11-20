@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Add a "Delete Stale Objects" option to the S3 add-on. After a full
+  deployment or Direct Deploy, it deletes objects under the path prefix
+  that aren't part of the site. It defaults to "off".
 - Fix paths that were detected before matching a Paths to Ignore pattern
   still being crawled and deployed. They're now removed from the detected
   and crawled files when crawling.

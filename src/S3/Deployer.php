@@ -7,18 +7,29 @@ use Aws\CommandPool;
 use Aws\Credentials\Credentials;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use StaticDeploy\CrawledFiles;
 use StaticDeploy\DeployCache;
 use StaticDeploy\DeployerTrait;
+use StaticDeploy\FileFiltering;
 use StaticDeploy\Options;
 use StaticDeploy\WsLog;
 
 class Deployer {
 
-    use DeployerTrait;
+    use DeployerTrait {
+        uploadFiles as uploadProcessedSite;
+    }
 
     const DEFAULT_NAMESPACE = 'static-deploy-addon-s3/default';
 
     private int $cf_max_paths;
+
+    /**
+     * @var array<string, true>
+     * Keys of objects that are part of the site, from all paths
+     * passed to uploadFilesIter, whether or not they were uploaded.
+     */
+    private array $current_keys = [];
 
     /**
      * @var array
@@ -100,6 +111,10 @@ class Deployer {
 
                 $cache_key = self::cacheKey( $path_info->path );
                 $s3_key = self::s3Key( $cache_key );
+
+                if ( $status !== 404 ) {
+                    $this->current_keys[ $s3_key ] = true;
+                }
 
                 if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
@@ -262,6 +277,118 @@ class Deployer {
             " $this->deploy_error_ct failed," .
             " $this->deploy_cache_ct skipped (cached).";
         WsLog::l( $notice );
+
+        $this->invalidateStalePaths();
+    }
+
+    public function uploadFiles( string $processed_site_path ): void {
+        $this->uploadProcessedSite( $processed_site_path );
+        $this->deleteStaleObjects();
+    }
+
+    /**
+     * Delete objects under the bucket prefix that are not part of
+     * the site, if the deleteStaleObjects option is set.
+     *
+     * Call this only after deploying the whole site. An object is part
+     * of the site if its path was passed to uploadFilesIter by this
+     * instance, or if it is in the crawled files. The crawled files
+     * also cover paths that a deployment skipped, such as from a
+     * crawl that stopped early.
+     */
+    public function deleteStaleObjects(): void {
+        $mode = S3Options::getValue( 'deleteStaleObjects' );
+        if ( $mode !== 'all' && $mode !== 'except-ignored' ) {
+            return;
+        }
+
+        if ( $this->current_keys === [] ) {
+            WsLog::l( 'Not deleting stale S3 objects because no files were deployed.' );
+            return;
+        }
+
+        $current_keys = $this->current_keys;
+        foreach ( CrawledFiles::getPathsIter() as $path_info ) {
+            if ( $path_info->status !== 404 ) {
+                $current_keys[ self::s3Key( self::cacheKey( $path_info->path ) ) ] = true;
+            }
+        }
+
+        $filtering = $mode === 'except-ignored' ? new FileFiltering() : null;
+        $bucket = S3Options::getValue( 'bucketName' );
+        $prefix = self::s3Prefix();
+        $pages = $this->s3_client->getPaginator(
+            'ListObjectsV2',
+            [
+                'Bucket' => $bucket,
+                'Prefix' => $prefix,
+            ]
+        );
+
+        $stale_keys = [];
+        foreach ( $pages as $page ) {
+            foreach ( $page['Contents'] ?? [] as $object ) {
+                $key = $object['Key'];
+                if ( isset( $current_keys[ $key ] ) ) {
+                    continue;
+                }
+                $path = '/' . substr( (string) $key, strlen( $prefix ) );
+                if ( $filtering instanceof FileFiltering
+                && ! $filtering->pathLooksCrawlable( $path ) ) {
+                    continue;
+                }
+                $stale_keys[] = $key;
+            }
+        }
+
+        if ( $stale_keys === [] ) {
+            WsLog::l( 'No stale S3 objects to delete.' );
+            return;
+        }
+
+        $this->cf_stale_paths = [];
+        $deleted_ct = 0;
+        $error_ct = 0;
+        // DeleteObjects accepts up to 1000 keys per request
+        foreach ( array_chunk( $stale_keys, 1000 ) as $chunk ) {
+            $result = $this->s3_client->deleteObjects(
+                [
+                    'Bucket' => $bucket,
+                    'Delete' => [
+                        'Objects' => array_map(
+                            fn( string $key ): array => [ 'Key' => $key ],
+                            $chunk,
+                        ),
+                        'Quiet' => true,
+                    ],
+                ]
+            );
+
+            $failed = [];
+            foreach ( $result['Errors'] ?? [] as $error ) {
+                $failed[ $error['Key'] ] = true;
+                WsLog::e(
+                    'Error deleting S3 object ' . $error['Key'] . ': ' . $error['Message']
+                );
+            }
+            $error_ct += count( $failed );
+
+            $deleted_paths = [];
+            foreach ( $chunk as $key ) {
+                if ( ! isset( $failed[ $key ] ) ) {
+                    $path = '/' . substr( $key, strlen( $prefix ) );
+                    if ( STATIC_DEPLOY_DEBUG ) {
+                        WsLog::d( 'Deleted stale S3 object ' . $key );
+                    }
+                    $deleted_paths[] = $path;
+                    $this->addCfPath( $path );
+                }
+            }
+            DeployCache::rmPaths( $deleted_paths, self::DEFAULT_NAMESPACE );
+            $deleted_ct += count( $deleted_paths );
+        }
+
+        WsLog::l( "Deleted $deleted_ct stale S3 objects, $error_ct failed." );
 
         $this->invalidateStalePaths();
     }

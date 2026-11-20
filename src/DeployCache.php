@@ -137,6 +137,37 @@ class DeployCache {
         );
     }
 
+    /**
+     * Remove paths from the deploy cache, so that they are
+     * deployed again.
+     *
+     * @param string[] $paths
+     */
+    public static function rmPaths(
+        array $paths,
+        string $ns = self::DEFAULT_NAMESPACE,
+    ): void {
+        if ( $paths === [] ) {
+            return;
+        }
+
+        global $wpdb;
+
+        $path_hashes = array_map( md5( ... ), $paths );
+        $placeholders = implode( ',', array_fill( 0, count( $path_hashes ), '%s' ) );
+
+        Db::query(
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+            $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'DELETE FROM %i WHERE namespace = %s AND path_hash IN (' . $placeholders . ')',
+                self::getTableName(),
+                $ns,
+                ...$path_hashes,
+            ),
+        );
+    }
+
     public static function truncate(
         string $ns = ''
     ): void {

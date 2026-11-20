@@ -81,6 +81,16 @@ class DirectDeployer {
             $added = DetectedFiles::withPathsIter( $detected );
             $this->deployPaths( $added, false );
         }
+
+        // A shard deploys only some of the site's paths
+        $path_hash_prefix = $this->config->crawl_config?->path_hash_prefix;
+        if ( $path_hash_prefix !== null && $path_hash_prefix !== '' ) {
+            return;
+        }
+
+        if ( method_exists( $this->deployer, 'deleteStaleObjects' ) ) {
+            $this->deployer->deleteStaleObjects();
+        }
     }
 
     public function deployComplete(): void {
