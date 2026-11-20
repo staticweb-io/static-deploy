@@ -105,8 +105,8 @@ svn-update:
 test: _test-integration
 
 # Run AWS tests against a live dev server
-_test-aws:
-    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite AWS
+_test-aws *ARGS:
+    WORDPRESS_DIR="$(realpath {{ wordpress_dir }})" php ./vendor/bin/phpunit --testsuite AWS {{ ARGS }}
 
 # Run integration tests in a sandbox
 _test-integration:
