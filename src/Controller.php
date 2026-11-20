@@ -44,6 +44,7 @@ class Controller {
         // Posts can be saved outside of wp-admin, such as through the REST
         // API by the block editor and page builders, or by WP-Cron.
         WordPressAdmin::registerPostHooks();
+        WordPressAdmin::registerCronHooks();
 
         if ( ! $plugin_instance->loadAdmin() ) {
             return $plugin_instance;
@@ -240,7 +241,7 @@ class Controller {
             return true;
         }
 
-        return is_admin();
+        return is_admin() || wp_doing_cron();
     }
 
     public function deleteDeployCache(): void {

@@ -41,17 +41,6 @@ class WordPressAdmin {
      * @param string $bootstrap_file main plugin filepath
      */
     public static function registerHooks(): void {
-        add_filter(
-            // phpcs:ignore WordPress.WP.CronInterval -- namespaces not yet fully supported
-            'cron_schedules',
-            WPCron::customCronSchedules( ... )
-        );
-
-        add_filter(
-            'cron_request',
-            WPCron::cronWithBasicAuth( ... )
-        );
-
         add_action(
             'wp_ajax_' . Controller::getHookName( 'run' ),
             Controller::ajaxRun( ... ),
@@ -232,6 +221,23 @@ class WordPressAdmin {
             [ Crawler::class, 'crawl' ],
             10,
             3
+        );
+    }
+
+    /**
+     * Register WP-Cron filters, which any request can use to spawn
+     * or reschedule cron events
+     */
+    public static function registerCronHooks(): void {
+        add_filter(
+            // phpcs:ignore WordPress.WP.CronInterval -- namespaces not yet fully supported
+            'cron_schedules',
+            WPCron::customCronSchedules( ... )
+        );
+
+        add_filter(
+            'cron_request',
+            WPCron::cronWithBasicAuth( ... )
         );
     }
 

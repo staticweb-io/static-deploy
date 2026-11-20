@@ -22,6 +22,45 @@ final class JobsTest extends TestCase {
     }
 
     /**
+     * WP-Cron runs scheduled events through wp-cron.php, where is_admin()
+     * is false, so the hooks that process jobs must be registered there too.
+     */
+    public function testWpCronProcessesQueue(): void {
+        $this->pluginCli( [ 'jobs', 'add', 'detect' ] );
+        $this->pluginCli( [ 'jobs', 'add', 'crawl' ] );
+        $this->wpCli( [ 'eval', WPCron::class . '::setRecurringEvent( 1 );' ] );
+
+        try {
+            $site_url = $this->wpCli( [ 'option', 'get', 'siteurl' ] )['final_line'];
+            $this->assertNotFalse( file_get_contents( $site_url . '/wp-cron.php' ) );
+
+            // wp-cron.php finishes the request before running events
+            $code = <<<'PHP'
+                global $wpdb;
+                $table = StaticDeploy\JobQueue::getTableName();
+                echo implode( ',', $wpdb->get_col( "SELECT status FROM {$table} ORDER BY id" ) );
+                PHP;
+            $deadline = time() + 30;
+            while ( true ) {
+                $statuses = $this->wpCli( [ 'eval', $code ] )['final_line'];
+                $unfinished = preg_match( '/waiting|processing/', (string) $statuses );
+                if ( ! $unfinished || time() >= $deadline ) {
+                    break;
+                }
+                usleep( 500_000 );
+            }
+
+            $this->assertSame( 'completed,completed', $statuses );
+            $this->assertStringContainsString(
+                'Welcome to WordPress',
+                $this->getCrawledFileContents( 'index.html' )
+            );
+        } finally {
+            $this->wpCli( [ 'eval', WPCron::class . '::clearRecurringEvent();' ] );
+        }
+    }
+
+    /**
      * A job can wait in the queue while earlier jobs crawl, and those
      * paths must not count towards its progress. Holding the job's lock
      * stops the page from marking it as failed.
