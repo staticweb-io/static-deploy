@@ -69,9 +69,6 @@ class Deployer {
             $base_put_data['CacheControl'] = $cache_control;
         }
 
-        $s3_remote_path = S3Options::getValue( 'bucketPrefix' );
-        $s3_prefix = $s3_remote_path !== '' ? $s3_remote_path . '/' : '';
-
         $items_by_iter_key = [];
 
         $command_generator = function (
@@ -79,7 +76,6 @@ class Deployer {
         ) use (
             &$items_by_iter_key,
             $base_put_data,
-            $s3_prefix,
         ) {
             $iter_key = 0;
             $last_log_time = microtime( true );
@@ -97,17 +93,13 @@ class Deployer {
                 }
 
                 $body = $path_info->body;
-                $cache_key = $path_info->path;
                 $content_type = $path_info->content_type;
                 $filename = $path_info->filename;
                 $redirect_to = $path_info->redirect_to;
                 $status = $path_info->status;
 
-                if ( mb_substr( $cache_key, -1 ) === '/' ) {
-                    $cache_key .= 'index.html';
-                }
-
-                $s3_key = $s3_prefix . ltrim( $cache_key, '/' );
+                $cache_key = self::cacheKey( $path_info->path );
+                $s3_key = self::s3Key( $cache_key );
 
                 if ( ! $body && $filename ) {
                     $real_filepath = realpath( $filename );
@@ -271,6 +263,41 @@ class Deployer {
             " $this->deploy_cache_ct skipped (cached).";
         WsLog::l( $notice );
 
+        $this->invalidateStalePaths();
+    }
+
+    /**
+     * Returns the deploy cache key for a path, which is the
+     * path of the file it is deployed to.
+     */
+    public static function cacheKey( string $path ): string {
+        if ( mb_substr( $path, -1 ) === '/' ) {
+            return $path . 'index.html';
+        }
+        return $path;
+    }
+
+    /**
+     * Returns the bucket prefix that all objects are deployed under,
+     * ending with a / unless it is empty.
+     */
+    public static function s3Prefix(): string {
+        $s3_remote_path = S3Options::getValue( 'bucketPrefix' );
+        return $s3_remote_path !== '' ? $s3_remote_path . '/' : '';
+    }
+
+    /**
+     * Returns the S3 object key for a deploy cache key.
+     */
+    public static function s3Key( string $cache_key ): string {
+        return self::s3Prefix() . ltrim( $cache_key, '/' );
+    }
+
+    /**
+     * Invalidate the CloudFront paths of deployed files, if a
+     * distribution is set.
+     */
+    public function invalidateStalePaths(): void {
         $distribution_id = S3Options::getValue( 'distributionId' );
         $num_stale = count( $this->cf_stale_paths );
         if ( $distribution_id && $num_stale > 0 ) {
