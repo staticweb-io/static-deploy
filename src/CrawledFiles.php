@@ -194,26 +194,34 @@ class CrawledFiles {
             }
 
             if ( $outdated ) {
-                self::rmUrl( $path->path );
-                // Delete from detected files to prevent crawling not found urls forever.
-                DetectedFiles::rmUrl( $path->path );
-                // Delete previously generated files under the directories,
-                // both the crawled and the processed.
-                array_map(
-                    function ( string $dir ) use ( $path ): void {
-                        $file_path = FilesHelper::getFilePath( $dir, $path->path );
-                        $suffix = ltrim( $file_path, '/' );
-                        $full_path = trailingslashit( $dir ) . $suffix;
-                        if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
-                            FilesHelper::deleteFile( $full_path );
-                        }
-                    },
-                    [ StaticSite::getPath(), ProcessedSite::getPath() ]
-                );
+                self::removePath( $path->path );
             } else {
                 yield $path;
             }
         }
+    }
+
+    /**
+     * Remove a path from the detected and crawled files,
+     * and its files from the crawled and processed sites.
+     */
+    public static function removePath( string $path ): void {
+        self::rmUrl( $path );
+        // Delete from detected files so that the path isn't crawled again.
+        DetectedFiles::rmUrl( $path );
+        // Delete previously generated files under the directories,
+        // both the crawled and the processed.
+        array_map(
+            function ( string $dir ) use ( $path ): void {
+                $file_path = FilesHelper::getFilePath( $dir, $path );
+                $suffix = ltrim( $file_path, '/' );
+                $full_path = trailingslashit( $dir ) . $suffix;
+                if ( file_exists( $full_path ) && ! is_dir( $full_path ) ) {
+                    FilesHelper::deleteFile( $full_path );
+                }
+            },
+            [ StaticSite::getPath(), ProcessedSite::getPath() ]
+        );
     }
 
     public static function addUrl(
