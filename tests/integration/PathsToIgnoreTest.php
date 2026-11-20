@@ -70,4 +70,57 @@ final class PathsToIgnoreTest extends TestCase {
             'Vendored files are ignored'
         );
     }
+
+    /**
+     * The default patterns ignore backups, database dumps and logs,
+     * but not site files with similar names.
+     */
+    public function testDefaultsIgnoreBackups(): void {
+        $ignored = [
+            '/.env',
+            '/wp-content/ai1wm-backups/file.txt',
+            '/wp-content/backup-migration/file.txt',
+            '/wp-content/backups-dup-lite/file.txt',
+            '/wp-content/backups-dup-pro/file.txt',
+            '/wp-content/debug.log',
+            '/wp-content/updraft/file.txt',
+            '/wp-content/uploads/backup-guard/file.txt',
+            '/wp-content/uploads/backupbuddy_backups/file.txt',
+            '/wp-content/uploads/db-backup/file.txt',
+            '/wp-content/uploads/site.bak',
+            '/wp-content/uploads/site.daf',
+            '/wp-content/uploads/site.jpa',
+            '/wp-content/uploads/site.sql.bz2',
+            '/wp-content/uploads/site.sql.gz',
+            '/wp-content/uploads/site.sql.zip',
+            '/wp-content/uploads/site.wpress',
+            '/wp-content/uploads/site-db.gz',
+            '/wp-content/uploads/wp-migrate-db/file.txt',
+            '/wp-content/uploads/wp-staging/file.txt',
+            '/wp-content/wpvividbackups/file.txt',
+            '/wp-snapshots/file.txt',
+            '/x/.env',
+            '/x/.env.production',
+        ];
+        $crawlable = [
+            '/changelog/',
+            '/wp-content/plugins/updraftplus/css/admin.css',
+            '/wp-content/themes/theme/app.js.gz',
+            '/wp-content/themes/theme/style.css.gz',
+            '/wp-content/uploads/catalog.pdf',
+            '/wp-content/uploads/db-backups-guide.pdf',
+            '/wp-content/uploads/environment.png',
+        ];
+
+        $paths_json = json_encode( [ ...$ignored, ...$crawlable ] );
+        $code = '$filtering = new ' . FileFiltering::class . '();'
+            . ' $ignored = [];'
+            . " foreach ( json_decode( '{$paths_json}' ) as \$path ) {"
+            . '   if ( ! $filtering->pathLooksCrawlable( $path ) ) { $ignored[] = $path; }'
+            . ' }'
+            . ' echo json_encode( $ignored );';
+        $actual = json_decode( (string) $this->wpCli( [ 'eval', $code ] )['final_line'], true );
+
+        $this->assertSame( $ignored, $actual );
+    }
 }
