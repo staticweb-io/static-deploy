@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Fix posts saved outside of wp-admin not queueing jobs. This includes
+  saves through the REST API, such as from Divi and the block editor,
+  and scheduled posts published by WP-Cron.
+
 ## 9.10.0 (2026-11-05)
 
 - Add HTTP Status, Content-Type, Redirect To, and Crawled At columns

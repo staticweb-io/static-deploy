@@ -41,12 +41,15 @@ class Controller {
             self::deactivate( ... )
         );
 
+        // Posts can be saved outside of wp-admin, such as through the REST
+        // API by the block editor and page builders, or by WP-Cron.
+        WordPressAdmin::registerPostHooks();
+
         if ( ! $plugin_instance->loadAdmin() ) {
             return $plugin_instance;
         }
 
         WordPressAdmin::registerHooks();
-        WordPressAdmin::registerPostHooks();
 
         if ( ! defined( 'STATIC_DEPLOY_WP_ORG_MODE' ) || ! STATIC_DEPLOY_WP_ORG_MODE ) {
             WordPressAdmin::buildUpdateChecker( $bootstrap_file );

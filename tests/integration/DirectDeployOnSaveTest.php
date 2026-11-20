@@ -202,4 +202,40 @@ final class DirectDeployOnSaveTest extends TestCase {
             )['final_line']
         );
     }
+
+    /**
+     * Page builders such as Divi, and the block editor, save posts
+     * through the REST API, where is_admin() is false.
+     */
+    public function testPageSavedThroughRestApiIsDeployed(): void {
+        $this->installStringPlugin(
+            'rest-save',
+            '<?php
+            /* Plugin Name: rest-save */
+            add_action( "rest_api_init", function () {
+                register_rest_route( "sd-test/v1", "/save/(?P<id>[0-9]+)", [
+                    "callback" => fn ( $request ) => wp_update_post( [
+                        "ID" => (int) $request["id"],
+                        "post_content" => "content-of-rest-saved-page",
+                    ] ),
+                    "methods" => "POST",
+                    "permission_callback" => "__return_true",
+                ] );
+            } );'
+        );
+        $post_id = $this->createPost( 'rest-saved-page' );
+        $this->pluginCli( [ 'jobs', 'delete', '--yes' ] );
+
+        $site_url = $this->wpCli( [ 'option', 'get', 'siteurl' ] )['final_line'];
+        $response = file_get_contents(
+            $site_url . '/?rest_route=/sd-test/v1/save/' . $post_id,
+            false,
+            stream_context_create( [ 'http' => [ 'method' => 'POST' ] ] ),
+        );
+        $this->assertSame( $post_id, $response );
+
+        $this->pluginCli( [ 'jobs', 'process' ] );
+
+        $this->assertDeployed( 'rest-saved-page' );
+    }
 }
