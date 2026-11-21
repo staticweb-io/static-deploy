@@ -97,7 +97,9 @@ class WPCron {
 
         $cron_request_args = (array) ( $cron_request['args'] ?? [] );
         $cron_request_headers = (array) ( $cron_request_args['headers'] ?? [] );
+        $cron_request_args['headers'] = array_merge( $cron_request_headers, $auth_headers );
+        $cron_request['args'] = $cron_request_args;
 
-        return array_merge( $cron_request_headers, $auth_headers );
+        return $cron_request;
     }
 }

@@ -13,6 +13,7 @@
 - Fix posts saved outside of wp-admin not queueing jobs. This includes
   saves through the REST API, such as from Divi and the block editor,
   and scheduled posts published by WP-Cron.
+- Fix WP-Cron failing to spawn when basic auth credentials are set.
 
 ## 9.10.0 (2026-11-05)
 
