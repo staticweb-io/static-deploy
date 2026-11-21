@@ -49,12 +49,17 @@ final class S3SyncTest extends TestCase {
         $this->setOptionValue( 's3_awsRegion', 'us-east-1' );
         $this->setOptionValue( 's3_awsSecretAccessKey', 'test' );
         $this->setOptionValue( 's3_bucketName', self::BUCKET );
+        $this->setOptionValue( 's3_deleteStaleObjectsCooldown', '0' );
         $this->pluginCli( [ 'addons', 'enable', 'static-deploy-addon-s3' ] );
+        $this->wpCli(
+            [ 'eval', "delete_option( 'static_deploy_s3_deleteStaleObjectsLastRun' );" ]
+        );
     }
 
     protected function tearDown(): void {
         $this->setOptionValue( 's3_bucketPrefix', '' );
         $this->setOptionValue( 's3_deleteStaleObjects', 'off' );
+        $this->setOptionValue( 's3_deleteStaleObjectsCooldown', '24' );
     }
 
     /**
@@ -151,6 +156,35 @@ final class S3SyncTest extends TestCase {
         $this->assertKeysPresent(
             [ 'outside.html', 'site-other/stray.html', 'site/index.html' ]
         );
+    }
+
+    public function testStaleObjectsAreKeptDuringCooldown(): void {
+        $this->setOptionValue( 's3_deleteStaleObjects', 'all' );
+        $this->setOptionValue( 's3_deleteStaleObjectsCooldown', '24' );
+        $this->putObject( 'stray.html' );
+        $this->pluginCli( [ 'full-workflow' ] );
+        $this->assertKeysAbsent( [ 'stray.html' ] );
+        $this->putObject( 'stray.html' );
+
+        $this->pluginCli( [ 'full-workflow' ] );
+
+        $this->assertKeysPresent( [ 'stray.html' ] );
+    }
+
+    /**
+     * The cooldown applies to the bucket and prefix that were
+     * cleaned up, not to a new deployment target.
+     */
+    public function testCooldownIsResetByChangingPrefix(): void {
+        $this->setOptionValue( 's3_deleteStaleObjects', 'all' );
+        $this->setOptionValue( 's3_deleteStaleObjectsCooldown', '24' );
+        $this->pluginCli( [ 'full-workflow' ] );
+        $this->setOptionValue( 's3_bucketPrefix', 'site' );
+        $this->putObject( 'site/stray.html' );
+
+        $this->pluginCli( [ 'full-workflow' ] );
+
+        $this->assertKeysAbsent( [ 'site/stray.html' ] );
     }
 
     /**

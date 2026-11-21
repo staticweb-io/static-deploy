@@ -2,7 +2,8 @@
 
 - Add a "Delete Stale Objects" option to the S3 add-on. After a full
   deployment or Direct Deploy, it deletes objects under the path prefix
-  that aren't part of the site. It defaults to "off".
+  that aren't part of the site. It defaults to "off". It runs at most
+  once per "Delete Stale Objects Cooldown", which defaults to 24 hours.
 - Fix paths that were detected before matching a Paths to Ignore pattern
   still being crawled and deployed. They're now removed from the detected
   and crawled files when crawling or running Direct Deploy.

@@ -26,3 +26,5 @@ foreach ( $static_deploy_table_slugs as $static_deploy_table_slug ) {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $static_deploy_table_name ) );
 }
+
+delete_option( 'static_deploy_s3_deleteStaleObjectsLastRun' );

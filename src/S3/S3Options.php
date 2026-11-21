@@ -177,6 +177,17 @@ class S3Options {
                 allowed_values: [ 'off', 'all', 'except-ignored' ],
             ),
             new OptionSpec(
+                'integer',
+                self::getName( 'deleteStaleObjectsCooldown' ),
+                '24',
+                'Delete Stale Objects Cooldown',
+                'Minimum hours between deletions of stale objects,' .
+                ' since listing the bucket can be slow and costly.' .
+                ' Changing the bucket or path prefix starts a new cooldown.' .
+                ' 0 deletes stale objects after every full deployment.',
+                min_value: 0,
+            ),
+            new OptionSpec(
                 'string',
                 self::getName( 'headerCacheControl' ),
                 'public, max-age=900',
@@ -253,6 +264,7 @@ class S3Options {
                         self::getName( 'objectAcl' ),
                         self::getName( 'concurrency' ),
                         self::getName( 'deleteStaleObjects' ),
+                        self::getName( 'deleteStaleObjectsCooldown' ),
                     ],
                 ],
                 [

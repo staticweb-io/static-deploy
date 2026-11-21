@@ -22,6 +22,12 @@ class Deployer {
 
     const DEFAULT_NAMESPACE = 'static-deploy-addon-s3/default';
 
+    /**
+     * WordPress option recording when stale objects were last deleted,
+     * and from which bucket and prefix
+     */
+    const STALE_OBJECTS_LAST_RUN_OPTION = 'static_deploy_s3_deleteStaleObjectsLastRun';
+
     private int $cf_max_paths;
 
     /**
@@ -290,6 +296,9 @@ class Deployer {
      * Delete objects under the bucket prefix that are not part of
      * the site, if the deleteStaleObjects option is set.
      *
+     * Skipped if it already ran for the same bucket and prefix within
+     * the deleteStaleObjectsCooldown period.
+     *
      * Call this only after deploying the whole site. An object is part
      * of the site if its path was passed to uploadFilesIter by this
      * instance, or if it is in the crawled files. The crawled files
@@ -307,6 +316,23 @@ class Deployer {
             return;
         }
 
+        $bucket = S3Options::getValue( 'bucketName' );
+        $prefix = self::s3Prefix();
+        $target = $bucket . '/' . $prefix;
+        $cooldown_hours = intval( S3Options::getValue( 'deleteStaleObjectsCooldown' ) );
+        $last_run = get_option( self::STALE_OBJECTS_LAST_RUN_OPTION );
+        if ( $cooldown_hours > 0
+        && is_array( $last_run )
+        && ( $last_run['target'] ?? null ) === $target
+        && time() - intval( $last_run['time'] ?? 0 ) < $cooldown_hours * HOUR_IN_SECONDS ) {
+            WsLog::l(
+                'Not deleting stale S3 objects because they were deleted' .
+                " less than {$cooldown_hours} hours ago."
+            );
+            return;
+        }
+        $started_at = time();
+
         $current_keys = $this->current_keys;
         foreach ( CrawledFiles::getPathsIter() as $path_info ) {
             if ( $path_info->status !== 404 ) {
@@ -315,8 +341,6 @@ class Deployer {
         }
 
         $filtering = $mode === 'except-ignored' ? new FileFiltering() : null;
-        $bucket = S3Options::getValue( 'bucketName' );
-        $prefix = self::s3Prefix();
         $pages = $this->s3_client->getPaginator(
             'ListObjectsV2',
             [
@@ -343,6 +367,7 @@ class Deployer {
 
         if ( $stale_keys === [] ) {
             WsLog::l( 'No stale S3 objects to delete.' );
+            $this->recordStaleObjectsDeleted( $target, $started_at );
             return;
         }
 
@@ -390,7 +415,23 @@ class Deployer {
 
         WsLog::l( "Deleted $deleted_ct stale S3 objects, $error_ct failed." );
 
+        // Record time even if some deletions failed because
+        // listing the bucket can be expensive. It's okay if
+        // some files stick around for the next deletion pass.
+        $this->recordStaleObjectsDeleted( $target, $started_at );
+
         $this->invalidateStalePaths();
+    }
+
+    private function recordStaleObjectsDeleted( string $target, int $time ): void {
+        update_option(
+            self::STALE_OBJECTS_LAST_RUN_OPTION,
+            [
+                'target' => $target,
+                'time' => $time,
+            ],
+            false
+        );
     }
 
     /**
